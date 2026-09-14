@@ -244,9 +244,11 @@ function OtherProvisions({ groups, tableKey, onSelect }) {
   // "It should look like the rest of the table structure etc and for now no
   // summary is fine but ultimately we want to get to summary". The same
   // card, header and Term / Provision columns as the grid above it; the
-  // Term is the section reference until a summary exists; a sentence cut
-  // into branches is one row with its branches indented under it, the way
-  // a row's sub-items are.
+  // Term is a summary from the fact's component labels ("it needs to be a
+  // summary of the provision on the right etc - like in the normal course.
+  // Not just a sec ref...!"), the section reference quiet beside it; a
+  // sentence cut into branches is one row with its branches indented under
+  // it, each with its own term, the way a row's sub-items are.
   return (
     <div className={`${CARD} mt-3`} data-testid="other-provisions" data-open={open || undefined}>
       <button type="button" onClick={() => setOpen((current) => !current)} aria-expanded={open} className={`flex w-full items-center justify-between ${TH}`} data-testid="other-provisions-toggle">
@@ -267,7 +269,10 @@ function OtherProvisions({ groups, tableKey, onSelect }) {
               const lead = group.branches[0];
               const line = (
                 <tr key={key} className="border-b border-border last:border-0" data-testid="other-provision" data-branches={group.branches.length > 1 ? group.branches.length : undefined}>
-                  <td className={`${TD} font-ui text-sm font-medium text-ink`}>{lead.section_reference ? `§ ${lead.section_reference}` : ''}</td>
+                  <td className={`${TD} font-ui text-sm font-medium text-ink`}>
+                    <span data-testid="other-provision-term">{group.term || ''}</span>
+                    {lead.section_reference ? <span className={`ml-2 ${QUIET}`} data-testid="other-provision-ref">§ {lead.section_reference}</span> : null}
+                  </td>
                   <td className={TD}>
                     <button type="button" data-testid="other-provision-line" onClick={() => select(lead.fact_id)} className="text-left font-body text-sm leading-relaxed text-ink hover:text-accent">{group.common_text}</button>
                   </td>
@@ -276,7 +281,7 @@ function OtherProvisions({ groups, tableKey, onSelect }) {
               if (group.branches.length === 1) return [line];
               return [line, ...group.branches.map((branch, branchIndex) => (
                 <tr key={`${key}-${branchIndex}`} className="border-b border-border last:border-0" data-testid="other-provision-branch-row">
-                  <td className={`${TD} pl-8 font-ui text-xs text-inkFaint`}>{branchIndex === 0 ? 'Branches' : ''}</td>
+                  <td className={`${TD} pl-8 font-ui text-sm text-inkMid`} data-testid="other-provision-branch-term">{branch.term || ''}</td>
                   <td className={`${TD} pl-8`}>
                     <button type="button" data-testid="other-provision-branch" onClick={() => select(branch.fact_id)} className="text-left font-body text-sm leading-relaxed text-inkMid hover:text-accent">{branch.text}</button>
                   </td>

@@ -368,12 +368,15 @@ test('a one-per-agreement table renders its other provisions as a collapsed Term
   assert.match(html, /<table[^>]*data-testid="other-provisions-table"[^>]*hidden/, 'collapsed to start');
   assert.match(html, /Other provisions \(3\)/);
   assert.match(html, /data-testid="other-provisions-table"[^]*?<th[^>]*>Term<\/th><th[^>]*>Provision<\/th>/);
-  assert.match(html, /data-testid="other-provision"[^>]*><td[^>]*>§ 1\.03</, 'the section reference is the Term until a summary exists');
+  // The Term is a summary from the component labels, the reference quiet beside it.
+  assert.match(html, /data-testid="other-provision-term">files</);
+  assert.match(html, /data-testid="other-provision-term">files · obj</);
+  assert.match(html, /data-testid="other-provision-ref">§ 1\.03</);
+  assert.match(html, /data-testid="other-provision-branch-term">obj</);
   // The block sits under the grid: after the attribute-grid table, before the next section.
   assert.ok(html.indexOf('data-layout="attribute-grid"') < html.indexOf('data-testid="other-provisions"'));
   assert.equal((html.match(/data-testid="other-provision"/g) || []).length, 2, 'two lines: one sentence with branches, one sentence alone');
   assert.match(html, /data-branches="2"/);
-  assert.match(html, />Branches</);
   assert.equal((html.match(/data-testid="other-provision-branch-row"/g) || []).length, 2, 'branches are indented rows under their sentence');
   assert.equal((html.match(/data-testid="other-provision-branch"/g) || []).length, 2);
   assert.match(html, /data-testid="other-provision-line"[^>]*>the Company shall file</);
