@@ -48,7 +48,7 @@ test('the Claude CLI provider is a hosted provider with a frozen call-kind map',
 
 test('the CLI is invoked without tools, settings or a saved session, on the subscription token only', () => {
   assert.deepEqual(buildClaudeExecArgs({ model: 'claude-opus-5', effort: 'high', systemPrompt: 'JSON only' }), [
-    '-p', '--output-format', 'json', '--model', 'claude-opus-5', '--effort', 'high',
+    '-p', '--output-format', 'stream-json', '--verbose', '--model', 'claude-opus-5', '--effort', 'high',
     '--no-session-persistence', '--tools', '', '--setting-sources', '', '--strict-mcp-config',
     '--permission-mode', 'dontAsk', '--system-prompt', 'JSON only',
   ]);
@@ -66,6 +66,21 @@ test('the CLI result object is the one accepted shape', () => {
   assert.equal(claudeJsonResult(raw).subtype, 'success');
   assert.throws(() => claudeJsonResult('not json'), /CLAUDE_CLI_JSON/);
   assert.throws(() => claudeJsonResult('{"type":"assistant"}'), /CLAUDE_CLI_JSON/);
+  // The stream: the answer is every assistant text block joined in order,
+  // not the stream's own `result` (the last block alone).
+  const stream = [
+    { type: 'system', subtype: 'init' },
+    { type: 'assistant', message: { content: [{ type: 'thinking', thinking: 'x' }] } },
+    { type: 'assistant', message: { content: [{ type: 'text', text: '{"facts":[{"a":1},' }] } },
+    { type: 'assistant', message: { content: [{ type: 'thinking', thinking: 'y' }] } },
+    { type: 'assistant', message: { content: [{ type: 'text', text: '{"a":2}]}' }] } },
+    { type: 'result', subtype: 'success', is_error: false, result: '{"a":2}]}', usage: { input_tokens: 1, output_tokens: 9 } },
+  ].map((event) => JSON.stringify(event)).join('\n');
+  const joined = claudeJsonResult(stream);
+  assert.equal(joined.result, '{"facts":[{"a":1},{"a":2}]}');
+  assert.equal(joined.text_blocks, 2);
+  assert.equal(joined.usage.output_tokens, 9);
+  assert.throws(() => claudeJsonResult('{"type":"system"}\n{"type":"assistant","message":{"content":[]}}'), /CLAUDE_CLI_JSON/);
   assert.equal(unfenced('```json\n{"ok":true}\n```'), '{"ok":true}');
   assert.equal(isUsageLimitError(new Error("claude -p error: You've hit your usage limit")), true);
 });

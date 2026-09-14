@@ -42,5 +42,9 @@ unset ANTHROPIC_API_KEY OPENAI_API_KEY CODEX_API_KEY CODEX_ACCESS_TOKEN
 cd /vercel/sandbox/pm-product
 
 # Concurrent wakes wait for the same account instead of sharing its refresh token.
+# The worker's output is kept in the sandbox as well as on the detached
+# command (whose log nobody can reach once its id is gone): Metsera
+# generation 6 lost two attempts of 3.02 with no record of why.
+LOG_FILE="/vercel/sandbox/pm-worker-$1.log"
 exec flock --wait 3600 --conflict-exit-code 75 /vercel/.codex/pm-worker.lock \
-  node scripts/product-hosted-worker.js --run-id "$1" --actor ben --workers 2
+  bash -c 'set -o pipefail; node scripts/product-hosted-worker.js --run-id "$1" --actor ben --workers 2 2>&1 | tee -a "$2"' bash "$1" "$LOG_FILE"
