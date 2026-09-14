@@ -2205,7 +2205,26 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       candidates have distinct component footprints re-keys them and
       keeps them valid; identical footprints are still held. Model-side
       and left: a 3.16 component with no byte range, a 3.12 lease limb
-      with LIST_ELEMENTs outside a LIST. Then every section of the output is read
+      with LIST_ELEMENTs outside a LIST. (12) 3.04 (authority, board
+      approval, takeover statutes) was routed IMMATERIAL because the
+      router reads the catalogue's allowed fact types, and 3.08 (absence
+      of changes) to INTERIM_OPERATING alone, so neither was extracted as
+      a representation although the residual pass named REPRESENTATIONS
+      on their paragraphs (the same two sections were empty in generation
+      3). The routing is now widened, never narrowed, by two facts the
+      code holds: a section under an article headed "Representations and
+      Warranties" is routed to REPRESENTATIONS, and a family the residual
+      pass names on a paragraph of the section is routed; the record
+      keeps the model's own answer and says what was added and why. 04:40
+      UTC, at 45 of 85: every empty section so far (3.22 brokers, 3.23
+      fairness opinions, IV-INTRO, 4.03 authority, 4.06 brokers, 4.08
+      Section 203, 4.09 funds) is the same IMMATERIAL routing of a
+      representation, which the widening now catches; 3.21 (insurance)
+      is all-INVALID on quotes cited with an occurrence index past the
+      last occurrence, the case (1) fixed after the worker was updated.
+      3.17, 3.18, 3.20, 3.25, 3.26, 4.01, 4.04 and 4.07 read clean
+      (row_detail names each limb; 4.04 lists each consent exception).
+      Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
       4.06, 4.08, 4.09, 6.15) and the all-INVALID ones (3.03, 3.05,

@@ -11,6 +11,7 @@ const {
   buildAgreementDraft,
   buildAgreementSectionDraft,
   canonicalLinkSourceSpanIds,
+  articleHeading,
   canonicalProposalSourceSpanIds,
   canonicalRoutingDisagreements,
   canonicalRoutingDisposition,
@@ -270,7 +271,11 @@ function createSyntheticConchoModel({ failAtCall = null } = {}) {
             family_keys: families,
             rationale: families.length ? 'Covered by a routed family.' : 'No material residual in this fixture.',
           })) }
-          : extractionResponse(sectionReference, families, request.source_closure);
+          // The extraction answers for the families actually requested: a
+          // section under the representations article is routed to
+          // REPRESENTATIONS by the code (Metsera generation 5), and the
+          // fixture answers NOT_FOUND for it.
+          : extractionResponse(sectionReference, request.family_contracts.map((family) => family.family_key), request.source_closure);
       return {
         provider_id: 'SYNTHETIC_TEST_PROVIDER',
         model_id: 'SYNTHETIC_LEGAL_MODEL/V1',
@@ -974,7 +979,13 @@ test('real Concho SEC source reaches a reproducible, coherent draft with all-fam
   assert.equal(draft.coverage_assertions.find((item) => item.subject_kind === 'FAMILY' && item.family_key === 'NO_SHOP').state, 'UNRESOLVED');
   assert.equal(draft.coverage_assertions.filter((item) => item.subject_kind === 'FAMILY').length, 25);
   assert.equal(draft.residual_passes.length, draft.sections.length);
-  assert.equal(draft.model_calls.length, (draft.sections.length * 2) + 6);
+  // Routing and residual per section, six extractions the fixture routes,
+  // and one extraction per section under a representations article, which
+  // the code routes to REPRESENTATIONS (Metsera generation 5).
+  const representationSections = substantiveSections(agreementStructure)
+    .filter((node) => /representations?\s+and\s+warranties/i.test(articleHeading(sourceDocument, agreementStructure, node) || '')).length;
+  assert.equal(representationSections, 48);
+  assert.equal(draft.model_calls.length, (draft.sections.length * 2) + 6 + representationSections);
   assert.equal(new Set(draft.model_calls.map((item) => item.model_call_id)).size, draft.model_calls.length);
   assert.equal(sourceDocument.raw_sha256, '3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6');
   assert.equal(sourceDocument.canonical_text_sha256, '30d929c76ab9cd2bddecf3f2df2f2ec107146c2ae31b241110c9923ef03e3be5');

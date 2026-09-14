@@ -59,7 +59,10 @@ function calibrationModel() {
       }
       const coverage = {};
       const fact_type_coverage = {};
-      for (const familyKey of families) {
+      // Coverage answers for the families the request carries: a section
+      // under the representations article is routed to REPRESENTATIONS by
+      // the code, and this fixture answers NOT_FOUND for it.
+      for (const familyKey of (request.family_contracts || []).map((family) => family.family_key)) {
         const family = legalSchema.families.find((item) => item.family_key === familyKey);
         coverage[familyKey] = proposals.some((item) => item.family_key === familyKey) ? 'FOUND' : 'NOT_FOUND';
         fact_type_coverage[familyKey] = Object.fromEntries(family.required_fact_types.map((factType) => [factType, proposals.some((item) => item.fact_type === factType) ? 'FOUND' : 'NOT_FOUND']));
