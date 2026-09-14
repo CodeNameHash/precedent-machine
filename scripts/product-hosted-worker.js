@@ -79,6 +79,10 @@ async function runHostedWorker(options, output = process.stdout, dependencies = 
         const analysis = await advance({
           runId: options.runId, store: workerStore, legalSchema, model,
           workerId: `product-hosted:${process.pid}:${number}`, leaseSeconds: 900,
+          // Every lease renewal outcome on the worker's output (tee'd to
+          // the sandbox log by launch.sh): generation 6 lost 2.02 three
+          // times to an expired lease with nothing to read.
+          log: (event) => output.write(`${JSON.stringify({ at: new Date().toISOString(), ...event })}\n`),
         });
         const progress = analysis.progress || {};
         const marker = `${analysis.status}:${analysis.stage}:${progress.completed}:${progress.failed}`;

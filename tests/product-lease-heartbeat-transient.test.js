@@ -52,3 +52,29 @@ test('a stale renewal loses the section at once', async () => {
   assert.equal(isStaleLeaseError(Object.assign(new Error('x'), { code: '40001' })), true);
   assert.equal(isStaleLeaseError(new Error('fetch failed')), false);
 });
+
+// Metsera generation 6 (2026-09-14): 2.02 lost its lease on all three
+// attempts with one renewal recorded per attempt; later ticks had queued
+// behind a renewal that never returned. A renewal that does not answer
+// within renewTimeoutMs is a transient failure, the next tick renews on
+// its own request, and every outcome reaches the log.
+test('a renewal that never answers times out and the next tick renews on its own request', async () => {
+  let renewals = 0;
+  const events = [];
+  const result = await withSectionLeaseHeartbeat({
+    ...options(),
+    renewTimeoutMs: 60,
+    log: (event) => events.push(event.event),
+    store: { renewSectionLease: () => {
+      renewals += 1;
+      if (renewals === 2) return new Promise(() => {});
+      return Promise.resolve();
+    } },
+    action: () => new Promise((resolve) => setTimeout(() => resolve('built'), 450)),
+    commit: async (value) => value,
+  });
+  assert.equal(result, 'built');
+  assert.ok(renewals >= 4, `renewals kept going after the hung one (${renewals})`);
+  assert.ok(events.includes('LEASE_RENEWAL_FAILED'), JSON.stringify(events));
+  assert.ok(events.includes('LEASE_RENEWED'), JSON.stringify(events));
+});

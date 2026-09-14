@@ -2364,6 +2364,24 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       fill_from component when its words parse (`derivedValueCell`), so
       the Absence of Changes row shows January 1, 2025 and Labor Matters
       January 1, 2023.
+      (17) 11:55 UTC, at 17 of 85: FAILED again, on 2.02 and 3.09. 3.09
+      (eleven limbs, 7k bytes): Claude Opus 5 at high effort answered
+      with over 89k output tokens, past Claude Code's 64k cap, and the
+      continuation was a second object ("resume_note": "Continuing ...
+      truncated by the output limit") that the joined stream could not
+      parse. In code: the long-section split now starts at 5,000 bytes
+      and three limbs in parts of about 3,500 bytes (3.02, 3.06, 3.09
+      and 2.02 all split), the system prompt asks for compact JSON, and
+      the case is named CLAUDE_OUTPUT_TRUNCATED. 2.02: SECTION_LEASE_
+      EXPIRED on all three attempts with one renewal recorded per attempt
+      (the later ticks queued behind a renewal that never returned; a
+      stale renewal probed from the sandbox hung over a minute because
+      SQLSTATE 40001 is retried by PostgREST). In code: a renewal that does
+      not answer in 60 s counts as a transient failure and the next tick
+      renews on its own request, every renewal outcome is written to the
+      worker's log, and the lease functions raise P0001 (migration
+      `20260914123000_product_section_stale_errcode`). Worker updated and
+      the run retried.
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,

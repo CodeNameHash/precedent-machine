@@ -184,3 +184,14 @@ test('the run route wakes the sandbox for a Claude CLI run with the deployment\'
   });
   assert.equal(response.body.execution_mode, 'HOSTED');
 });
+
+// Metsera generation 6, 3.09: the answer outran the CLI's output cap and
+// the continuation was a second object ("resume_note": "Continuing ...").
+// Several text blocks that do not join into one object fail as
+// CLAUDE_OUTPUT_TRUNCATED, so the attempt history says why.
+test('several text blocks that do not join into one JSON object fail as truncated output', async () => {
+  const response = completed('{"proposals":[{"a":1}{"resume_note":"Continuing","proposals":[]}');
+  response.claude_completion.text_blocks = 2;
+  const model = createClaudeCliProductModel({ client: { messages: { create: async () => response } } });
+  await assert.rejects(model.complete({ call_kind: 'EXTRACTION', prompt_version: 'E1', request: {} }), /CLAUDE_OUTPUT_TRUNCATED: 2 text blocks/);
+});
