@@ -15,7 +15,7 @@
 // commit the sandbox is on before and after. Exits non-zero if the sandbox
 // checkout is not a git repository, so nothing is half-updated.
 
-const { SANDBOX_NAME, SANDBOX_WORKDIR } = require('../../lib/product/sandbox-wake');
+const { SANDBOX_NAME, SANDBOX_WORKDIR, sandboxCredentials } = require('../../lib/product/sandbox-wake');
 
 const REPO = 'https://github.com/CodeNameHash/precedent-machine.git';
 const branch = process.argv[2] || 'codex/product-implementation-plan-20260904';
@@ -36,7 +36,7 @@ async function run(sandbox, cmd, args) {
 
 (async () => {
   const { Sandbox } = await import('@vercel/sandbox');
-  const sandbox = await Sandbox.get({ name: SANDBOX_NAME, resume: true });
+  const sandbox = await Sandbox.get({ name: SANDBOX_NAME, resume: true, ...sandboxCredentials() });
   const isGit = await run(sandbox, 'sh', ['-c', `test -d ${SANDBOX_WORKDIR}/.git && echo yes || echo no`]);
   if (isGit !== 'yes') {
     // The checkout lost its .git directory (seen 2026-09-12 after the

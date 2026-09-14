@@ -2136,9 +2136,19 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       call per part for the few long sections (Metsera 5.01: about four
       calls in place of one that partially declined). Ben may set the
       thresholds (`LONG_SECTION_SPLIT`).
-- [ ] Q8 Generation 4 (Metsera). Ben: `git pull`,
-      `node scripts/product/update-sandbox-worker.js`, submit on
-      `/review?generation=4`. Then every section of the output is read
+- [ ] Q8 Generation 4 (Metsera). Ben, 2026-09-14: "Why can't you do
+      this git stuff?" / "Server side route is fine. Tell me how to get
+      you the vercel stuff you need". Built: the internal bearer token
+      path (`PRODUCT_INTERNAL_TOKEN` on the deployment; the actor is the
+      login user) and explicit sandbox credentials from the environment,
+      with `scripts/product/start-generation.js`. Once Ben sets
+      `PRODUCT_INTERNAL_TOKEN` on the Vercel preview environment and gives
+      this environment `PRODUCT_INTERNAL_TOKEN`, `VERCEL_TOKEN`,
+      `VERCEL_TEAM_ID` and `VERCEL_PROJECT_ID`, the cycle runs from here:
+      `node scripts/product/update-sandbox-worker.js`, then
+      `node scripts/product/start-generation.js <preview-url> <sec-url> 4`.
+      Until then Ben: `git pull`, `node scripts/product/update-sandbox-worker.js`,
+      submit on `/review?generation=4`. Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
       4.06, 4.08, 4.09, 6.15) and the all-INVALID ones (3.03, 3.05,

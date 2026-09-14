@@ -29,7 +29,7 @@
 
 ## Security and release
 
-- Require authentication on private product and mutation routes.
+- Require authentication on private product and mutation routes. The only non-session path is the internal bearer token (`PRODUCT_INTERNAL_TOKEN`, 32 characters or more, set on the deployment and held by the operator's scripts); it acts as the configured login user and is never sent to a browser.
 - Use least-privilege database roles.
 - Never expose service credentials to browser code or logs.
 - Test database migrations and rollback when database code changes.
