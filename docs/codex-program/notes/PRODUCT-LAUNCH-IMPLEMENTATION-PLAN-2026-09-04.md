@@ -2224,6 +2224,11 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       last occurrence, the case (1) fixed after the worker was updated.
       3.17, 3.18, 3.20, 3.25, 3.26, 4.01, 4.04 and 4.07 read clean
       (row_detail names each limb; 4.04 lists each consent exception).
+      (13) 6.01 (Parent, as sole stockholder, adopts the agreement) came
+      back twice, as a GENERAL_COVENANTS Merger Sub obligation and again
+      as a MERGER_STRUCTURE_CLOSING transaction step with an empty row:
+      the overlay now says a covenant in the additional agreements
+      article is never a transaction step.
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,

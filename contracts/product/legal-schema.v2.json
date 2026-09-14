@@ -5094,7 +5094,7 @@
       "materiality_rules": [
         "Every independently operative unit is captured as one fact with its components. Reader-facing headline: the operative term and what distinguishes it from other deals."
       ],
-      "layer_rules": "One fact per independently operative unit. Components follow the sentence: actor, operation, object, then each condition, exception, threshold, period and qualifier as its own component; lists that vary between deals as LIST with LIST_ELEMENTs; synonym litanies as one LITANY. Nothing is invented for an absent timing, qualification or forum.",
+      "layer_rules": "One fact per independently operative unit. Components follow the sentence: actor, operation, object, then each condition, exception, threshold, period and qualifier as its own component; lists that vary between deals as LIST with LIST_ELEMENTs; synonym litanies as one LITANY. Nothing is invented for an absent timing, qualification or forum. A MERGER_STRUCTURE_CLOSING fact comes from the merger article: the merger itself, the closing, the effective time, the legal effect of the merger, the surviving corporation's documents, directors and officers. A covenant in the additional agreements article that a party will do something (Parent, as sole stockholder of Merger Sub, adopting the agreement immediately after signing) is a GENERAL_COVENANTS fact (MERGER_SUB_OBLIGATION), never a transaction step (Metsera generation 5, 6.01: the same sentence came back under both families).",
       "headline": {
         "label_source": "subtype_label",
         "distinguishing_kinds": [

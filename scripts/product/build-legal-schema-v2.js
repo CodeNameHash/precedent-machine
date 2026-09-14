@@ -22,6 +22,8 @@ function titleCase(key) {
 // Overlay: Ben's names and decisions from the 2026-09-12 review, and the
 // headline and layer rules per family. `rename` maps V1 subtype to V2 key.
 // `add` lists new subtypes. `labels` are human headline labels.
+const GENERIC_LAYERS = 'One fact per independently operative unit. Components follow the sentence: actor, operation, object, then each condition, exception, threshold, period and qualifier as its own component; lists that vary between deals as LIST with LIST_ELEMENTs; synonym litanies as one LITANY. Nothing is invented for an absent timing, qualification or forum.';
+
 const OVERLAY = {
   TERMINATION: {
     layers: 'One fact per termination right. Layer 1: trigger, terminating party, conditions to exercise, expiry of the right. Cure mechanics as a branch: breach that would fail a condition; curable or not; cure window measured from notice and capped at the outside date. Cross-reference the closing conditions the breach must fail. A BREACH fact is one right: Parent terminating for the Company\'s breach and the Company terminating for Parent\'s breach are two facts. Conditions on a right stated in a later section (the Company may terminate for a Superior Proposal only if it has complied with the no-shop and pays the fee concurrently) are facts of that right\'s subtype (SUPERIOR_PROPOSAL), never of another right. The formalities of terminating (written notice, board action, no stockholder approval needed) are TERMINATION_NOTICE facts. An outside-date extension (automatic or elective, to a later date) is a fact of OUTSIDE_DATE carrying the extended DATE (Metsera generation 3, 2026-09-14).',
@@ -128,6 +130,9 @@ const OVERLAY = {
       { subtype_key: 'SUPPORT_AGREEMENT_DELIVERY', label: 'Support agreement delivery', required_roles: ['LEGAL_ACTOR_OR_SUBJECT', 'LEGAL_OPERATION', 'OPERATIVE_OBJECT'], optional_roles: ['TEMPORAL_OR_TRIGGER_SCOPE', 'QUALIFICATIONS', 'consenting_stockholders'], relationships: ['QUALIFIES', 'REQUIRES', 'TRIGGERS'] },
     ],
   },
+  MERGER_STRUCTURE_CLOSING: {
+    layers: GENERIC_LAYERS + ' A MERGER_STRUCTURE_CLOSING fact comes from the merger article: the merger itself, the closing, the effective time, the legal effect of the merger, the surviving corporation\'s documents, directors and officers. A covenant in the additional agreements article that a party will do something (Parent, as sole stockholder of Merger Sub, adopting the agreement immediately after signing) is a GENERAL_COVENANTS fact (MERGER_SUB_OBLIGATION), never a transaction step (Metsera generation 5, 6.01: the same sentence came back under both families).',
+  },
   MISC_BOILERPLATE: {
     coverage_only: true,
     layers: 'Coverage only: shown to the reader as one collapsed, expandable section after the operative families (Ben, 2026-09-12). Every construction rule gets a category label so boilerplate can be compared later.',
@@ -139,7 +144,6 @@ const OVERLAY = {
   },
 };
 
-const GENERIC_LAYERS = 'One fact per independently operative unit. Components follow the sentence: actor, operation, object, then each condition, exception, threshold, period and qualifier as its own component; lists that vary between deals as LIST with LIST_ELEMENTs; synonym litanies as one LITANY. Nothing is invented for an absent timing, qualification or forum.';
 
 function transformSubtype(family, subtype) {
   const overlay = OVERLAY[family.family_key] || {};
