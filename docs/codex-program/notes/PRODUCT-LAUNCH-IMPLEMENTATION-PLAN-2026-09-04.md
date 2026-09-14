@@ -2408,6 +2408,15 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       against continued service; plain component labels). Left for Ben:
       a `headline.summary` field on the fact contract for the
       other-provisions Term (a contract and store change).
+      (19) 12:43 UTC, from the new log: every split section failed with
+      "invalid product model invocation identity". A part's call carries
+      an identity derived from "<attempt token>:part-<n>" so the parts of
+      one attempt do not collide, but the admission check derived it from
+      the bare token; the split path (added after generation 5) had never
+      recorded a call in the hosted worker. Migration
+      `20260914125500_product_model_call_part_identity`: the expected
+      identity follows the part number the call's request carries. No
+      worker change; the failed sections retry under attempts remaining.
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
