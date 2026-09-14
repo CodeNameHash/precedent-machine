@@ -289,6 +289,11 @@ test('EvidenceSidebar quotes, marks and lights every cited component when a cell
   // Also call it Interpretation Tree ... Can't we just do the bit in
   // highlight and below?" Closed to start, named so, own components only.
   assert.match(html, /data-testid="interpretation-tree-toggle"[^>]*><span>Interpretation Tree</);
+  // Ben, 2026-09-14: "I'd put interpretation tree above the clause and
+  // have the top level interpretation tree items shown."
+  assert.ok(html.indexOf('data-testid="evidence-layers"') < html.indexOf('data-testid="evidence-clause"'), 'tree above the clause');
+  const opened = renderToStaticMarkup(React.createElement(EvidenceSidebar, { fact, componentId: 'st-actor', componentIds: ['st-actor', 'st-op', 'st-term'], sectionText: { exact_text: clause, start_byte: 0 } }));
+  assert.match(opened, /aria-expanded="true"[^>]*data-testid="interpretation-tree-toggle"/, 'open to start');
   assert.doesNotMatch(html, /Full layer tree/);
   assert.doesNotMatch(html, /data-testid="evidence-layers"[^]*?data-origin="INHERITED"/);
 });

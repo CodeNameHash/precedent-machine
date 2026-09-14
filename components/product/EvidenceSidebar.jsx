@@ -86,7 +86,7 @@ function LinkedDefinition({ definition, onOpen }) {
 export default function EvidenceSidebar({
   fact, componentId = null, componentIds = null, reviewItem = null, provenance = null, sectionText = null,
   onDecision = null, onComment = null, onReset = null, onClose = null, busy = false,
-  linkedDefinition = null, onOpenDefinition = null, initialTreeOpen = false,
+  linkedDefinition = null, onOpenDefinition = null, initialTreeOpen = true,
 }) {
   if (!fact) return null;
   // A coded cell may rest on several components read together (a merger
@@ -168,6 +168,24 @@ export default function EvidenceSidebar({
       {component ? components.map((item) => <p key={item.component_id} className={`mt-1 ${BODY}`}>&ldquo;{item.text}&rdquo;</p>) : <p className="mt-1 text-xs font-ui text-inkLight">The whole fact is marked in the clause below; select a pill for the words behind one reading.</p>}
     </section>
 
+    <section data-testid="evidence-layers">
+      {/* Ben, 2026-09-14: "in right hand side bar - hide detail under the
+          full layer tree as the default. Also call it Interpretation Tree
+          and also why do we show the greyed out text and the rest? Can't we
+          just do the bit in highlight and below?" and then "In sidebar I'd
+          put interpretation tree above the clause and have the top level
+          interpretation tree items shown." The tree sits above the clause,
+          open to its top-level items with each item's detail closed, and
+          shows the fact's own components only (the inherited chapeau and
+          the representing words that precede them are context, not this
+          fact). */}
+      <button type="button" onClick={() => setTreeOpen((current) => !current)} aria-expanded={treeOpen} className={`${LABEL} flex w-full items-center justify-between text-left`} data-testid="interpretation-tree-toggle">
+        <span>Interpretation Tree</span>
+        <span className="font-normal normal-case tracking-normal text-inkFaint">{treeOpen ? 'hide' : 'show'}</span>
+      </button>
+      {treeOpen ? <ComponentLayer components={ownComponents} initiallyExpanded={false} selectedComponentId={componentId} selectedComponentIds={citedIds} /> : null}
+    </section>
+
     {clauseParts ? <section data-testid="evidence-clause">
       <p className={LABEL}>Clause</p>
       <pre className={`mt-1 whitespace-pre-wrap ${BODY}`}>{(() => {
@@ -186,20 +204,6 @@ export default function EvidenceSidebar({
       })()}</pre>
     </section> : null}
 
-    <section data-testid="evidence-layers">
-      {/* Ben, 2026-09-14: "in right hand side bar - hide detail under the
-          full layer tree as the default. Also call it Interpretation Tree
-          and also why do we show the greyed out text and the rest? Can't we
-          just do the bit in highlight and below?" The tree is closed to
-          start, its nodes' detail closed too, and it shows the fact's own
-          components only (the inherited chapeau and the representing
-          words that precede them are context, not this fact). */}
-      <button type="button" onClick={() => setTreeOpen((current) => !current)} aria-expanded={treeOpen} className={`${LABEL} flex w-full items-center justify-between text-left`} data-testid="interpretation-tree-toggle">
-        <span>Interpretation Tree</span>
-        <span className="font-normal normal-case tracking-normal text-inkFaint">{treeOpen ? 'hide' : 'show'}</span>
-      </button>
-      {treeOpen ? <ComponentLayer components={ownComponents} initiallyExpanded={false} selectedComponentId={componentId} selectedComponentIds={citedIds} /> : null}
-    </section>
     </>}
 
     {tab !== 'source' ? null : <>
