@@ -2440,7 +2440,38 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       (`extraction_part.covers_chapeau`, "treat those words as a limb of
       this part") and the LONG_SECTION_SPLIT issue records
       `chapeau_in_part`. Generation 6 stands as extracted; generation 7
-      carries the fix. Ben's afternoon decisions,
+      carries the fix.
+      (21) 15:40 UTC, Articles VI to VIII read against the text. 7.01's
+      Stockholder Approval condition was INVALID: the model cited its
+      words on a span id that is in no closure, though the words are the
+      section's own. A quote on an unknown span that is verbatim in the
+      section now resolves against the section's full span (recorded as
+      `unknown_span_resolved_from`); one absent from the section stays
+      UNKNOWN_SOURCE_COMPONENT. 7.02's second bring-down tier and the
+      buyer's officer certificate came back with no readout and fell under
+      "without a readout" though their rows are fixed: a closing
+      condition's row follows from its fact type (`fact_type_rows` on the
+      three conditions tables, "FACT_TYPE:SUBTYPE" the more specific key)
+      and the party's table from the statement's words
+      (`statement_words`); `defaultConclusions` gives such a proposal that
+      row at extraction (note CONCLUSIONS_DEFAULTED) and the page applies
+      the same rule to stored facts. Performance of Covenants repeated
+      itself as a sub-item ("True in all material respects"): a sub-item
+      made from a column's value stands only beside another. 6.11's
+      adjournment for insufficient votes had no code (INSUFFICIENT_VOTES
+      and PARENT_REQUEST added to the permitted reasons). 8.01's outside
+      date read as its own extension and the extension as an outside
+      date: the omitted-cell completion read each fact's one DATE into
+      both DATE columns; a component read into a value column of one kind
+      is not read into another of that kind (generation 6's stored cells
+      keep the doubling; generation 7 does not). Open, for generation 7's
+      read: the tail fee's threshold (8.02's 20% to 50% variant of the
+      takeover proposal definition is a KEY_DEFINED_TERMS fact, and the
+      tail-fee table takes TERMINATION_FEE only) and the willful breach
+      definition (8.02(a)) sit under "without a readout"; the general
+      covenants Access row shows every standard of its twelve facts
+      joined, not a summary; 6.03's efforts and remedy rows wait on the
+      split fix. Ben's afternoon decisions,
       2026-09-14, each in code: "by miscoded I meant oyu currentl have it
       messed up and you need to move it over to what we had in the old
       vesrion...." (the reps table opens with General Exceptions: SEC

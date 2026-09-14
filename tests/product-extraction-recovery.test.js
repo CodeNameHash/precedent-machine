@@ -32,6 +32,10 @@ test('one unknown evidence component stays invalid while usable proposals and ro
       const byRef = new Map(result.response.proposals.map((proposal) => [proposal.client_ref, proposal]));
       const unknown = byRef.get('p-ns-exception');
       unknown.evidence_quotes[0].source_span_id = 'unknown-component-from-provider';
+      // A verbatim quote on an unknown span resolves against the section
+      // (Metsera generation 6, 7.01); only words absent from the section
+      // keep the proposal invalid.
+      unknown.evidence_quotes[0].quote = `${unknown.evidence_quotes[0].quote} (words not in the section)`;
 
       const caseVariant = byRef.get('p-ns-notice');
       caseVariant.roles.NOTICE_GIVER = caseVariant.roles.notice_giver;

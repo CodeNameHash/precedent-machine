@@ -439,6 +439,14 @@ test('an omitted value column is not completed when two components could fill it
   // A readout on a fact with no parsable words is left as it was.
   const none = absenceFact([]);
   assert.deepEqual(normaliseConclusionValues(none, tableShapes).cells, none.conclusions.cells);
+  // A date already read into one DATE column is not read into another
+  // (Metsera generation 6, 8.01: the outside date became its own extension).
+  const outside = {
+    family_key: 'TERMINATION', subtype_key: 'OUTSIDE_DATE', fact_type: 'TERMINATION_RIGHT',
+    components: [{ component_id: 'od-date', kind: 'DATE', label: 'date', text: 'March 21, 2026', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 14, gap_before: false, children: [] }],
+    conclusions: { table_key: 'termination-rights-mutual', row_label: 'Outside / End Date', cells: [{ column_id: 'outsideDate', value: { canonical: '2026-03-21', unit: 'ISO_DATE' }, component_ids: ['od-date'] }] },
+  };
+  assert.deepEqual(normaliseConclusionValues(outside, tableShapes).cells.map((cell) => cell.column_id), ['outsideDate']);
 });
 
 // Ben, 2026-09-14: "sure add a table". A capitalization count is parsed
@@ -511,4 +519,21 @@ test('a period written in words with parenthetical digits parses to the digits',
   assert.deepEqual(parseComponentValue('PERIOD', 'within twenty-four hours'), { canonical: 24, unit: 'HOUR' });
   assert.deepEqual(parseComponentValue('PERIOD', 'within five (5) Business Days'), { canonical: 5, unit: 'BUSINESS_DAY' });
   assert.deepEqual(parseComponentValue('PERIOD', 'at least two (2) Business Days prior'), { canonical: 2, unit: 'BUSINESS_DAY' });
+});
+
+// Metsera generation 6, 7.02 (2026-09-14): the extractor returned the second
+// bring-down tier and the buyer's officer certificate without conclusions.
+// A closing condition's row follows from its fact type, and the party's
+// table from the statement's words.
+test('defaultConclusions gives a fact with no readout the row its fact type names, on the table its statement words choose', () => {
+  const { defaultConclusions } = require('../lib/product/fact-conclusions');
+  const buyer = defaultConclusions({ family_key: 'CLOSING_CONDITIONS', subtype_key: 'OFFICER_CERTIFICATE', fact_type: 'OFFICER_CERTIFICATE_REQUIRED', statement: 'The respective obligation of Parent and Merger Sub to effect the Merger is subject to a certificate.' }, tableShapes);
+  assert.deepEqual(buyer, { table_key: 'conditions-b-table', row_label: "Officer's Certificate", cells: [] });
+  const seller = defaultConclusions({ family_key: 'CLOSING_CONDITIONS', subtype_key: 'BRINGDOWN', fact_type: 'GENERAL_CLOSING_CONDITION', statement: 'The obligation of the Company to effect the Merger is subject to the representations being true.' }, tableShapes);
+  assert.deepEqual(seller, { table_key: 'conditions-s-table', row_label: 'Accuracy of Representations', cells: [] });
+  const mutual = defaultConclusions({ family_key: 'CLOSING_CONDITIONS', subtype_key: 'STOCKHOLDER_APPROVAL', fact_type: 'STOCKHOLDER_APPROVAL_CONDITION', statement: 'The respective obligation of each party to effect the Merger is subject to the Company Stockholder Approval.' }, tableShapes);
+  assert.deepEqual(mutual, { table_key: 'conditions-table', row_label: 'Stockholder Approval', cells: [] });
+  assert.equal(defaultConclusions({ family_key: 'CLOSING_CONDITIONS', subtype_key: 'GENERAL_CLOSING_CONDITION', fact_type: 'GENERAL_CLOSING_CONDITION', statement: 'The obligation of the Company to effect the Merger is subject to a condition.' }, tableShapes), null, 'a general condition that is not a bring-down names no row');
+  assert.equal(defaultConclusions({ family_key: 'CLOSING_CONDITIONS', subtype_key: 'OFFICER_CERTIFICATE', fact_type: 'OFFICER_CERTIFICATE_REQUIRED', statement: 'A certificate is delivered.' }, tableShapes), null, 'no words, no table');
+  assert.deepEqual(validateFactConclusions({ ...{ family_key: 'CLOSING_CONDITIONS', subtype_key: 'OFFICER_CERTIFICATE', components: [] }, conclusions: buyer }, { tableShapes }), []);
 });

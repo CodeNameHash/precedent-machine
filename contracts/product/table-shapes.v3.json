@@ -5252,6 +5252,20 @@
                     "page": 114,
                     "row_label": "Adjournment rights"
                   }
+                },
+                {
+                  "code": "INSUFFICIENT_VOTES",
+                  "label": "Insufficient votes",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Metsera generation 6, 6.11: adjournment when there are not sufficient affirmative votes to adopt the agreement; the precedent named only supplemental disclosure and absence of quorum."
+                },
+                {
+                  "code": "PARENT_REQUEST",
+                  "label": "At Parent's request",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Metsera generation 6, 6.11: the row also takes an adjournment made because Parent asked for it."
                 }
               ],
               "fill_from": [
@@ -5468,7 +5482,18 @@
             "Stock Exchange Listing",
             "Frustration of conditions"
           ],
-          "guidance": "One row per mutual condition as the precedent names it (Stockholder Approval with its vote standard; No Legal Restraint; Antitrust / Regulatory Clearance, each regime a sub-item; S-4 / Proxy Effective; Stock Exchange Listing) and the frustration rule (a FRUSTRATION fact: no party may rely on a failed condition its own breach caused) as a row, each as drafted."
+          "guidance": "One row per mutual condition as the precedent names it (Stockholder Approval with its vote standard; No Legal Restraint; Antitrust / Regulatory Clearance, each regime a sub-item; S-4 / Proxy Effective; Stock Exchange Listing) and the frustration rule (a FRUSTRATION fact: no party may rely on a failed condition its own breach caused) as a row, each as drafted.",
+          "fact_type_rows": {
+            "STOCKHOLDER_APPROVAL_CONDITION": "Stockholder Approval",
+            "LEGAL_RESTRAINT_CONDITION": "No Legal Restraint",
+            "GOVERNMENT_PROCEEDING_CONDITION": "No Legal Restraint",
+            "REGULATORY_APPROVAL_CONDITION": "Antitrust / Regulatory Clearance",
+            "S4_CONDITION_COMPONENT": "S-4 / Proxy Effective",
+            "LISTING_CONDITION": "Stock Exchange Listing",
+            "FRUSTRATION_BREACH_STANDARD": "Frustration of conditions",
+            "METSERA_7_04_FRUSTRATION_BRANCH": "Frustration of conditions"
+          },
+          "statement_words": "obligations? of each (party|of the parties)"
         }
       ],
       "print_pages": [
@@ -5572,7 +5597,15 @@
             "Performance of Covenants": "Ben's decision 2026-09-13 #24: \"where is cov compliance\" -- the covenant performance condition is a row of its own."
           },
           "sub_row_from_column": "standard",
-          "guidance": "One line per bring-down tier under Accuracy of Representations (each tier is a fact with its standard, the representations it covers as resolved CROSS_REFERENCE components, and whether materiality qualifiers are disregarded); the covenant performance condition, the no-MAE condition and the officer's certificate are rows of their own."
+          "guidance": "One line per bring-down tier under Accuracy of Representations (each tier is a fact with its standard, the representations it covers as resolved CROSS_REFERENCE components, and whether materiality qualifiers are disregarded); the covenant performance condition, the no-MAE condition and the officer's certificate are rows of their own.",
+          "fact_type_rows": {
+            "GENERAL_CLOSING_CONDITION:BRINGDOWN": "Accuracy of Representations",
+            "COVENANT_COMPLIANCE_STANDARD": "Performance of Covenants",
+            "NO_MAE_CONDITION": "No Material Adverse Effect",
+            "NO_MAE_CONDITION_CONTINUING": "No Material Adverse Effect",
+            "OFFICER_CERTIFICATE_REQUIRED": "Officer's Certificate"
+          },
+          "statement_words": "obligations? of (each of )?Parent"
         }
       ],
       "print_pages": [
@@ -5675,7 +5708,15 @@
             "Performance of Covenants": "Ben's decision 2026-09-13 #24: \"where is cov compliance\" -- the covenant performance condition is a row of its own."
           },
           "sub_row_from_column": "standard",
-          "guidance": "One line per bring-down tier under Accuracy of Representations (each tier is a fact with its standard, the representations it covers as resolved CROSS_REFERENCE components, and whether materiality qualifiers are disregarded); the covenant performance condition, the no-MAE condition and the officer's certificate are rows of their own."
+          "guidance": "One line per bring-down tier under Accuracy of Representations (each tier is a fact with its standard, the representations it covers as resolved CROSS_REFERENCE components, and whether materiality qualifiers are disregarded); the covenant performance condition, the no-MAE condition and the officer's certificate are rows of their own.",
+          "fact_type_rows": {
+            "GENERAL_CLOSING_CONDITION:BRINGDOWN": "Accuracy of Representations",
+            "COVENANT_COMPLIANCE_STANDARD": "Performance of Covenants",
+            "NO_MAE_CONDITION": "No Material Adverse Effect",
+            "NO_MAE_CONDITION_CONTINUING": "No Material Adverse Effect",
+            "OFFICER_CERTIFICATE_REQUIRED": "Officer's Certificate"
+          },
+          "statement_words": "obligations? of the Company"
         }
       ],
       "print_pages": [

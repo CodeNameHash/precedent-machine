@@ -302,6 +302,18 @@ test('bring-down tiers are lines under Accuracy of Representations, referencing 
   assert.equal(row.sub_rows[0].subject, 'True except for de minimis inaccuracies');
   assert.equal(row.sub_rows[1].cells.find((cell) => cell.column_id === 'reference').label, 'Section 3.01 (Organization, Standing and Corporate Power); Section 3.04 (Authority)');
   assert.equal(row.cells.find((cell) => cell.column_id === 'standard').values.length, 2, 'the overview keeps both tiers');
+  // One fact, one column-made sub-item: the row is the line (Metsera
+  // generation 6, 7.02: Performance of Covenants repeated beneath itself).
+  const alone = buildTableView({ facts: [facts[0]], tableShapes, legalSchema });
+  const aloneRow = alone.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'conditions-b-table').rows[0];
+  assert.equal(aloneRow.sub_rows, undefined);
+  assert.equal(aloneRow.cells.find((cell) => cell.column_id === 'standard').label, 'True except for de minimis inaccuracies');
+  // A fact with no readout takes the row its fact type names (the page
+  // applies the extractor's default; Metsera generation 6, 7.02).
+  const certificate = { fact_id: 'cert', proposal_id: 'cert', family_key: 'CLOSING_CONDITIONS', subtype_key: 'OFFICER_CERTIFICATE', fact_type: 'OFFICER_CERTIFICATE_REQUIRED', section_reference: '7.02', statement: 'The respective obligation of Parent and Merger Sub to effect the Merger is subject to a certificate.', headline: { label: 'Officer certificate', distinguishing_component_ids: [] }, components: [] };
+  const withDefault = buildTableView({ facts: [...facts, certificate], tableShapes, legalSchema });
+  const bTable = withDefault.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'conditions-b-table');
+  assert.ok(bTable.rows.find((candidate) => candidate.subject === "Officer's Certificate" && !candidate.absent && candidate.backing_facts.some((b) => b.fact_id === 'cert')));
 });
 
 test('an MAE-coded pill carries a link to the MAE definition section', () => {

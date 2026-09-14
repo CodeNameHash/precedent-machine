@@ -567,9 +567,38 @@ function applyConditions(doc) {
   const mutual = findTable(findSection(doc, 'conditions'), 'conditions-table');
   if (!mutual.fixed_row_labels.includes('Frustration of conditions')) mutual.fixed_row_labels.push('Frustration of conditions');
   mutual.guidance = 'One row per mutual condition as the precedent names it (Stockholder Approval with its vote standard; No Legal Restraint; Antitrust / Regulatory Clearance, each regime a sub-item; S-4 / Proxy Effective; Stock Exchange Listing) and the frustration rule (a FRUSTRATION fact: no party may rely on a failed condition its own breach caused) as a row, each as drafted.';
-  for (const [sectionKey, tableKey] of [['conditions-b', 'conditions-b-table'], ['conditions-s', 'conditions-s-table']]) {
+  // Metsera generation 6, 7.01 and 7.02 (2026-09-14): the extractor gave
+  // no readout for the second bring-down tier and the buyer's officer
+  // certificate, and they fell under "without a readout". A closing
+  // condition's row follows from its fact type (a bring-down is Accuracy
+  // of Representations whatever the tier), so a fact with no readout takes
+  // that row (fact_type_rows, "FACT_TYPE:SUBTYPE" the more specific key);
+  // the party's table follows from the statement's words (statement_words).
+  mutual.fact_type_rows = {
+    STOCKHOLDER_APPROVAL_CONDITION: 'Stockholder Approval',
+    LEGAL_RESTRAINT_CONDITION: 'No Legal Restraint',
+    GOVERNMENT_PROCEEDING_CONDITION: 'No Legal Restraint',
+    REGULATORY_APPROVAL_CONDITION: 'Antitrust / Regulatory Clearance',
+    S4_CONDITION_COMPONENT: 'S-4 / Proxy Effective',
+    LISTING_CONDITION: 'Stock Exchange Listing',
+    FRUSTRATION_BREACH_STANDARD: 'Frustration of conditions',
+    METSERA_7_04_FRUSTRATION_BRANCH: 'Frustration of conditions',
+  };
+  mutual.statement_words = 'obligations? of each (party|of the parties)';
+  for (const [sectionKey, tableKey, words] of [
+    ['conditions-b', 'conditions-b-table', 'obligations? of (each of )?Parent'],
+    ['conditions-s', 'conditions-s-table', 'obligations? of the Company'],
+  ]) {
     const table = findTable(findSection(doc, sectionKey), tableKey);
     if (!table.columns.some((column) => column.column_id === 'asDrafted')) table.columns.push(asDrafted(why));
+    table.fact_type_rows = {
+      'GENERAL_CLOSING_CONDITION:BRINGDOWN': 'Accuracy of Representations',
+      COVENANT_COMPLIANCE_STANDARD: 'Performance of Covenants',
+      NO_MAE_CONDITION: 'No Material Adverse Effect',
+      NO_MAE_CONDITION_CONTINUING: 'No Material Adverse Effect',
+      OFFICER_CERTIFICATE_REQUIRED: "Officer's Certificate",
+    };
+    table.statement_words = words;
   }
 }
 
@@ -1184,6 +1213,16 @@ function applyVotesAndCovenants(doc) {
   const restriction = findColumn(adjournment, 'restriction');
   restriction.header = 'As drafted';
   restriction.display = 'fact_text';
+  // Metsera generation 6, 6.11 (2026-09-14): the Company must adjourn when
+  // "there are not sufficient affirmative votes", the commonest permitted
+  // reason, and the precedent's two codes could not say so (the cell was
+  // empty). Parent's request is the other reason the corpus uses.
+  const permittedReason = findColumn(adjournment, 'permittedReason');
+  permittedReason.vocabulary = [
+    ...permittedReason.vocabulary,
+    code('Insufficient votes', 'Metsera generation 6, 6.11: adjournment when there are not sufficient affirmative votes to adopt the agreement; the precedent named only supplemental disclosure and absence of quorum.', { code: 'INSUFFICIENT_VOTES' }),
+    code("At Parent's request", 'Metsera generation 6, 6.11: the row also takes an adjournment made because Parent asked for it.', { code: 'PARENT_REQUEST' }),
+  ];
   const proxy = findTable(votesSection, 'votes-proxy-sec');
   const provision = findColumn(proxy, 'provision');
   provision.header = 'As drafted';

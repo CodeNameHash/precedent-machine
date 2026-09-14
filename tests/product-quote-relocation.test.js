@@ -58,6 +58,10 @@ test('a quote from a sibling span and an occurrence past the end both resolve to
               { ref: 'c1', kind: 'OPERATION', label: 'op', quote: firstQuote, source_span_id: spans[0].span_id, occurrence: 7, origin: 'OWN', gap_before: false, children: [] },
               // the second limb's words, cited on the first limb's span
               { ref: 'c2', kind: 'OBJECT', label: 'obj', quote: secondQuote, source_span_id: spans[0].span_id, occurrence: 0, origin: 'OWN', gap_before: true, children: [] },
+              // the second limb's words, cited on a span id that is in no
+              // closure (Metsera generation 6, 7.01: the stockholder
+              // approval condition was INVALID on a mistyped id)
+              { ref: 'c3', kind: 'QUALIFIER', label: 'q', quote: secondQuote, source_span_id: 'f'.repeat(64), occurrence: 0, origin: 'OWN', gap_before: true, children: [] },
             ],
           }],
           groups: [{ client_ref: 'g-1', family_key: 'NO_SHOP', subtype_key: 'PROHIBITED_ACTION' }],
@@ -72,7 +76,8 @@ test('a quote from a sibling span and an occurrence past the end both resolve to
   const section = await buildAgreementSectionDraft({ sourceDocument, agreementStructure, legalSchema: schema, model, node });
   const proposal = section.proposals[0];
   assert.equal(proposal.validation_status, 'VALID', JSON.stringify(section.issues.map((issue) => issue.payload?.message || issue.message).slice(0, 3)));
-  const [first, second] = proposal.components;
+  const [first, second, third] = proposal.components;
+  assert.ok(Number.isSafeInteger(third.start_byte) && third.start_byte === second.start_byte && third.end_byte === second.end_byte, 'an unknown span id resolves against the section');
   assert.ok(Number.isSafeInteger(first.start_byte) && first.start_byte >= spans[0].start_byte && first.end_byte <= spans[0].end_byte);
   assert.ok(Number.isSafeInteger(second.start_byte) && second.start_byte >= spans[1].start_byte && second.end_byte <= spans[1].end_byte, 'relocated into the sibling limb');
 });
