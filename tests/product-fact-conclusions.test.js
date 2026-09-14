@@ -320,6 +320,8 @@ test('a counted instrument keeps its parsed COUNT whatever unit the model wrote'
   const normalised = normaliseConclusionValues(fact, tableShapes);
   assert.deepEqual(normalised.cells[0].value, { canonical: 1, unit: 'COUNT' });
   assert.equal(formatValue(normalised.cells[0].value, 'AMOUNT'), '1');
+  assert.equal(formatValue({ canonical: 47.5, unit: 'USD' }, 'AMOUNT'), '$47.50');
+  assert.equal(formatValue({ canonical: 190000000, unit: 'USD' }, 'AMOUNT'), '$190,000,000');
 });
 
 test('C11 / C14: an exchange-mechanics fact gets no per-share row, and appraisal rights are derived from the appraisal provision, never coded', () => {

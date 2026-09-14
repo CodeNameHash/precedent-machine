@@ -2501,7 +2501,20 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       https://claude.ai/code/artifact/502d2ef5-634b-4fe0-8440-192a10c342df,
       the live run page staying at its run URL. Generation 7 submitted
       as run `8c53fb92-06c9-40f1-b6b3-f9da5cdf7b3d` (stored generation
-      7) on the worker at e7d675d, woken 16:35 UTC. Ben's afternoon decisions,
+      7) on the worker at e7d675d, woken 16:35 UTC.
+      (25) 16:50 UTC, generation 7's Articles I and II.01 read: the
+      summaries hold ("Merger Sub merges with and into the Company at the
+      Effective Time"; "Each Company share receives $47.50 cash plus one
+      CVR"). Fixed from the read: the Other provisions Term had become
+      the summary sentence with the drafted words as the Summary (the
+      Term stays the label-built term, the summary is the Summary cell);
+      five summaries dropped for naming Section 259, Section 262 or
+      Article VII (a statute's section, numbered without a dot, and an
+      Article of the agreement are content; the agreement's own dotted
+      section numbers stay refused); the cash amount read "$47.5" (cents
+      kept); the six appraisal mechanics of 2.01 had no section at all
+      and fell off the page (APPRAISAL_DISSENTERS_RIGHTS joins the
+      consideration section: they are the grid's Other provisions). Ben's afternoon decisions,
       2026-09-14, each in code: "by miscoded I meant oyu currentl have it
       messed up and you need to move it over to what we had in the old
       vesrion...." (the reps table opens with General Exceptions: SEC

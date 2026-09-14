@@ -965,6 +965,12 @@ function applyConsideration(doc) {
   appraisal.render = 'boolean';
   delete appraisal.display;
   appraisal.guidance = 'Derived by the page from the appraisal provision itself (the CONSIDERATION/APPRAISAL_LINK fact, else the APPRAISAL_DISSENTERS_RIGHTS facts): Present when the agreement has one. Never filled from a readout.';
+  // Metsera generation 7, 2.01 (2026-09-14): the six appraisal mechanics
+  // (status, entitlement, withdrawal and reconversion, notice to Parent,
+  // negotiation control, settlement consent) had no section at all and
+  // fell off the page. They are the consideration grid's Other provisions,
+  // one line each with its summary.
+  ensureFamily(section, 'APPRAISAL_DISSENTERS_RIGHTS');
   structure.guidance = `${structure.guidance} An APPRAISAL_LINK fact carries no cells at all (its line is derived); the consideration type is coded from the CONSIDERATION_PACKAGE fact (the Merger Consideration definition or conversion clause), never from an appraisal, exclusion or Merger Sub share fact.`;
   const components = findTable(section, 'consideration-components');
   components.guidance = `${components.guidance} The conversion of Merger Sub's shares into shares of the Surviving Corporation is a MERGER_STRUCTURE_CLOSING/LEGAL_EFFECT fact, never a row here.`;

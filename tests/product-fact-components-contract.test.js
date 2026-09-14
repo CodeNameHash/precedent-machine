@@ -108,6 +108,8 @@ test('headline.summary is optional; headlineSummaryProblems checks it without ho
   assert.deepEqual(headlineSummaryProblems('The Merger has the effects set forth in Section 259 of the DGCL'), []);
   assert.deepEqual(headlineSummaryProblems('Company exempts dispositions under Section 16 of the Exchange Act'), []);
   assert.deepEqual(headlineSummaryProblems('Closing occurs third business day after Article VII conditions satisfied or waived'), []);
+  assert.deepEqual(headlineSummaryProblems('Shares of properly demanding Section 262 holders are cancelled Appraisal Shares'), []);
+  assert.ok(headlineSummaryProblems('Company terminates under Section 8.01(f)').some((problem) => problem.includes('section reference')));
   assert.ok(headlineSummaryProblems('Parent pays the "Termination Fee"').some((problem) => problem.includes('quotation mark')));
   assert.ok(headlineSummaryProblems('Parent pays the fee.').some((problem) => problem.includes('ends with a period')));
   assert.deepEqual(headlineSummaryProblems("Parent's obligation survives the Closing"), [], 'a possessive apostrophe is not a quotation mark');
