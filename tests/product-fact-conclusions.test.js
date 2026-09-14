@@ -294,7 +294,7 @@ test('a counted instrument keeps its parsed COUNT whatever unit the model wrote'
   assert.equal(formatValue(normalised.cells[0].value, 'AMOUNT'), '1');
 });
 
-test('C11 / C12: an exchange-mechanics fact gets no per-share row, and appraisal rights come only from the appraisal provision', () => {
+test('C11 / C14: an exchange-mechanics fact gets no per-share row, and appraisal rights are derived from the appraisal provision, never coded', () => {
   const mechanics = {
     fact_id: 'xm-1', proposal_id: 'xm-1', family_key: 'CONSIDERATION', subtype_key: 'EXCHANGE_MECHANICS', section_reference: '2.02',
     headline: { label: 'Exchange fund', distinguishing_component_ids: ['xm-1-c'] },
@@ -308,7 +308,7 @@ test('C11 / C12: an exchange-mechanics fact gets no per-share row, and appraisal
     components: [{ component_id: 'ex-1-c', kind: 'OPERATION', label: 'no consideration', text: 'no consideration shall be delivered or deliverable in exchange therefor', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 70, gap_before: false, children: [] }],
     conclusions: { table_key: 'consideration-structure', row_label: 'The deal', cells: [{ column_id: 'appraisalRights', text: 'no consideration shall be delivered or deliverable in exchange therefor', component_ids: ['ex-1-c'] }] },
   };
-  assert.ok(validateFactConclusions(exclusion, { tableShapes }).some((p) => /filled only by APPRAISAL_LINK facts/.test(p)));
+  assert.ok(validateFactConclusions(exclusion, { tableShapes }).some((p) => /derived by the page from APPRAISAL_DISSENTERS_RIGHTS facts/.test(p)));
 });
 
 test('a vocabulary column accepts two distinct codes on one fact (knowledge and materiality qualifiers), not the same code twice', () => {
@@ -327,4 +327,16 @@ test('a vocabulary column accepts two distinct codes on one fact (knowledge and 
   assert.deepEqual(validateFactConclusions(fact, { tableShapes }), []);
   const twice = { ...fact, conclusions: { ...fact.conclusions, cells: [fact.conclusions.cells[0], { ...fact.conclusions.cells[0] }] } };
   assert.ok(validateFactConclusions(twice, { tableShapes }).some((p) => /duplicate column materiality/.test(p)));
+});
+
+test('C13: a vocabulary_by_row column rejects a code from another row\'s list and accepts one from its own', () => {
+  const fact = (rowLabel, codeValue) => ({
+    fact_id: 'ar-1', proposal_id: 'ar-1', family_key: 'ANTITRUST_REGULATORY', subtype_key: 'EFFORTS', section_reference: '6.03',
+    headline: { label: 'Efforts', distinguishing_component_ids: ['ar-1-c'] },
+    components: [{ component_id: 'ar-1-c', kind: 'EFFORTS_STANDARD', label: 'efforts', text: 'reasonable best efforts', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 23, gap_before: false, children: [] }],
+    conclusions: { table_key: 'antitrust-regulatory-table', row_label: rowLabel, cells: [{ column_id: 'provision', code: codeValue, component_ids: ['ar-1-c'] }] },
+  });
+  assert.deepEqual(validateFactConclusions(fact('Efforts standard', 'REASONABLE_BEST_EFFORTS'), { tableShapes }), []);
+  const problems = validateFactConclusions(fact('Efforts standard', 'PARENT_CONTROLS'), { tableShapes });
+  assert.ok(problems.some((p) => /is not one of the provision codes for row "Efforts standard"/.test(p)), problems.join('; '));
 });

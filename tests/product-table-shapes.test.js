@@ -358,30 +358,37 @@ test('Decision 32: Material Contracts rows are the canonical categories, absent 
 });
 
 // Decision 7: two columns per negative-covenant row, and empty_band_is_error on the Exceptions / Other Restrictions bands.
-test('Decision 7: Interim covenants keep Specific Restrictions and Exceptions as two per-row columns, and mark empty_band_is_error on the Exceptions and Other Restrictions bands', () => {
+test('Decision 34 (was 7): Interim covenants are one row per restriction category, as drafted, with threshold, exceptions and consent; the general terms are a Term / Provision table', () => {
   for (const sectionKey of ['ioc-exceptions', 'parent-ioc-exceptions']) {
     const section = findSectionV3(sectionKey);
     const negative = findTableV3(section, `${sectionKey}-negative-covenants`);
-    assert.ok(negative.columns.find((c) => c.column_id === 'specificRestrictions'));
-    assert.ok(negative.columns.find((c) => c.column_id === 'exceptions'));
-    assert.equal(findTableV3(section, `${sectionKey}-exceptions`).empty_band_is_error, true);
-    assert.equal(findTableV3(section, `${sectionKey}-other-restrictions`).empty_band_is_error, true);
+    assert.equal(negative.rows_are, 'fixed list');
+    assert.ok(negative.fixed_row_labels.includes('Indebtedness') && negative.fixed_row_labels.includes('Capital Expenditures'));
+    assert.equal(negative.open_rows, true);
+    assert.deepEqual(negative.columns.map((c) => c.column_id), ['asDrafted', 'threshold', 'exceptions', 'consent']);
+    assert.equal(negative.columns[0].display, 'fact_text');
+    const general = findTableV3(section, `${sectionKey}-general-terms`);
+    assert.deepEqual(general.fixed_row_labels, ['Consent standard', 'General exceptions', 'Ordinary course standard']);
+    assert.equal(section.tables.some((t) => t.table_key === `${sectionKey}-exceptions` || t.table_key === `${sectionKey}-other-restrictions`), false);
   }
 });
 
-// Decision 8: four present/absent prohibited-verb columns; one Engagement standard row, full text on click.
-test('Decision 8: No-Shop splits the prohibited-verb litany into four boolean columns, and Fiduciary-Out collapses to one Engagement standard row with full_text_on_click', () => {
+// Decision 34 (was 8): every no-shop row answers its own question with a code from its row's list.
+test('Decision 34 (was 8): the no-shop core mechanics list the prohibited acts as codes of one row, and the fiduciary-out rows carry the engagement and board standards', () => {
   const coreTable = findTableV3(findSectionV3('nosol-noshop'), 'nosol-noshop-core-mechanics');
-  for (const columnId of ['solicit', 'initiate', 'knowinglyEncourage', 'facilitate']) {
-    const column = coreTable.columns.find((c) => c.column_id === columnId);
-    assert.ok(column, `column ${columnId} present`);
-    assert.equal(column.render, 'boolean');
+  const provision = coreTable.columns.find((c) => c.column_id === 'provision');
+  assert.equal(provision.render, 'vocabulary');
+  for (const codeValue of ['SOLICIT', 'INITIATE', 'KNOWINGLY_ENCOURAGE', 'KNOWINGLY_FACILITATE', 'FURNISH_INFORMATION']) {
+    assert.ok(provision.vocabulary_by_row['No-shop restriction (prohibited acts)'].includes(codeValue), codeValue);
   }
-  assert.equal(coreTable.columns.find((c) => c.column_id === 'prohibitedVerb'), undefined, 'single prohibitedVerb column replaced');
+  assert.ok(provision.vocabulary_by_row['Representative control standard'].includes('SHALL_CAUSE_REPRESENTATIVES'));
+  assert.ok(coreTable.columns.some((c) => c.column_id === 'asDrafted' && c.display === 'fact_text'));
+  assert.equal(coreTable.columns.some((c) => c.render === 'boolean'), false);
 
   const fiduciaryTable = findTableV3(findSectionV3('nosol-fiduciary'), 'nosol-fiduciary-table');
-  assert.deepEqual(fiduciaryTable.fixed_row_labels, ['Engagement standard', 'Final determination standard']);
-  assert.equal(fiduciaryTable.columns.find((c) => c.column_id === 'signals').full_text_on_click, true);
+  assert.deepEqual(fiduciaryTable.fixed_row_labels.slice(0, 2), ['Engagement standard', 'Board determination standard']);
+  assert.ok(fiduciaryTable.columns.find((c) => c.column_id === 'provision').vocabulary_by_row['Engagement standard'].includes('IS_A_SUPERIOR_PROPOSAL'));
+  assert.equal(tableShapesV3.sections.some((s) => s.section_key === 'nosol'), false, 'the overview section is removed');
 });
 
 // Decision 9: Proxy filing deadline / Mailing / Meeting each get their own trigger vocabulary.
@@ -474,11 +481,12 @@ test('Decision 15: Defined Terms is marked kind: reference_appendix, excluded fr
 // later removed Approvals / Votes (it mapped to TERMINATION, a harvest
 // artefact) and the SEC-meeting section (no printed shape), folding the
 // proxy and SEC facts into the votes section as a two-column table.
-test('Decision 16 / 23: Antitrust / Regulatory and Advisers / Fees / Expenses stay; Approvals / Votes and SEC meeting are folded into the votes section', () => {
-  for (const sectionKey of ['antitrust-regulatory', 'advisers-fees-expenses', 'votes-approvals-meeting']) {
+test('Decision 16 / 23 / 34: Antitrust / Regulatory stays; Approvals / Votes and SEC meeting are folded into the votes section', () => {
+  for (const sectionKey of ['antitrust-regulatory', 'votes-approvals-meeting']) {
     assert.ok(findSectionV3(sectionKey), `section '${sectionKey}' is kept`);
   }
-  for (const sectionKey of ['approvals-votes', 'sec-meeting']) {
+  // Decision 34 removed Advisers / Fees / Expenses (a harvest artefact with no print).
+  for (const sectionKey of ['approvals-votes', 'sec-meeting', 'advisers-fees-expenses']) {
     assert.equal(tableShapesV3.sections.some((s) => s.section_key === sectionKey), false, `section '${sectionKey}' is removed`);
   }
   const votes = findSectionV3('votes-approvals-meeting');
@@ -558,9 +566,60 @@ test('Decision 33: consideration shapes name their sources', () => {
   const structure = findTableV3(section, 'consideration-structure');
   const appraisal = structure.columns.find((c) => c.column_id === 'appraisalRights');
   assert.equal(appraisal.display, 'fact_text');
-  assert.deepEqual(appraisal.from_subtype_keys, ['APPRAISAL_LINK']);
+  // Decision 34: derived by the page from the appraisal provision's own family.
+  assert.equal(appraisal.from_subtype_keys, undefined);
+  assert.deepEqual(appraisal.derived, { from_family: 'APPRAISAL_DISSENTERS_RIGHTS', from_subtype: 'APPRAISAL_STATUS', join: 'presence' });
   const components = findTableV3(section, 'consideration-components');
   assert.equal(components.row_from_column, 'form');
   assert.deepEqual(components.only_subtype_keys, ['CASH_COMPONENT', 'STOCK_COMPONENT', 'CVR_COMPONENT', 'CONSIDERATION_PACKAGE']);
   assert.ok(components.fixed_row_labels.includes('CVR'));
+});
+
+// Decision 34: every table is the precedent's row list; every column coded, a number, yes / no or as drafted.
+test('Decision 34: no fact table carries a free-text column that is not the fact as drafted or a resolved reference', () => {
+  for (const section of tableShapesV3.sections) {
+    if (section.excluded_from_fact_tables) continue;
+    for (const table of section.tables) {
+      for (const column of table.columns) {
+        if (column.render === 'verbatim') assert.ok(['fact_text', 'resolved_reference'].includes(column.display), `${table.table_key}.${column.column_id} is a verbatim column without as-drafted display`);
+      }
+    }
+  }
+});
+
+test('Decision 34: Antitrust / Regulatory is the Envestnet row list, each row named from the subtype with its own Provision codes', () => {
+  const table = findTableV3(findSectionV3('antitrust-regulatory'), 'antitrust-regulatory-table');
+  assert.equal(table.rows_are, 'fixed list');
+  assert.deepEqual(table.fixed_row_labels.slice(0, 7), ['Efforts standard', 'Filing deadline', 'Other regulatory filings', 'Remedy commitment (divestiture cap)', 'Regulatory litigation', 'Strategy control', 'Consultation and participation']);
+  assert.equal(table.subtype_rows.EFFORTS, 'Efforts standard');
+  const provision = table.columns.find((c) => c.column_id === 'provision');
+  assert.deepEqual(provision.vocabulary_by_row['Efforts standard'], ['REASONABLE_BEST_EFFORTS', 'BEST_EFFORTS', 'COMMERCIALLY_REASONABLE_EFFORTS', 'HELL_OR_HIGH_WATER']);
+  assert.deepEqual(provision.vocabulary_by_row['Strategy control'], ['PARENT_CONTROLS', 'COMPANY_CONTROLS', 'JOINT_CONTROL']);
+  assert.deepEqual(table.columns.map((c) => c.column_id), ['provision', 'period', 'asDrafted']);
+});
+
+test('Decision 34: the intervening-event and superior-proposal tables derive their termination rows from the TERMINATION family', () => {
+  const intervening = findTableV3(findSectionV3('nosol-intervening'), 'nosol-intervening-table');
+  assert.ok(intervening.fixed_row_labels.includes('Matching period') && intervening.fixed_row_labels.includes('Notice period'));
+  assert.deepEqual(intervening.columns.find((c) => c.column_id === 'provision').derived, { from_family: 'TERMINATION', from_subtype: 'RECOMMENDATION_CHANGE', join: 'presence', rows: ['Parent termination right on a change'] });
+  const superior = findTableV3(findSectionV3('nosol-superior'), 'nosol-superior-table');
+  assert.deepEqual(superior.columns.find((c) => c.column_id === 'provision').derived.rows, ['Company termination for Superior Proposal']);
+  assert.ok(findSectionV3('nosol-superior').v2_family_keys.some((f) => f.key === 'KEY_DEFINED_TERMS'));
+});
+
+test('Decision 34: termination rights name their rows from the subtype, the effect of termination is its own table, and D&O indemnification is a section', () => {
+  const section = findSectionV3('termination-rights');
+  assert.equal(findTableV3(section, 'termination-rights-buyer-may-terminate').subtype_rows.BREACH, 'Company (Target) breach');
+  assert.equal(findTableV3(section, 'termination-rights-company-may-terminate').subtype_rows.BREACH, 'Parent (Buyer) breach');
+  assert.equal(findTableV3(section, 'termination-rights-effect').subtype_rows.TERMINATION_NOTICE, 'Termination formalities');
+  assert.equal(section.tables.some((t) => t.table_key === 'termination-rights-remedies'), false);
+  const dno = findSectionV3('dno-indemnification');
+  assert.equal(dno.rail.group, 'Other Covenants');
+  assert.equal(findTableV3(dno, 'dno-indemnification-table').subtype_rows.DNO_INSURANCE_TAIL, 'D&O insurance tail');
+  const misc = findTableV3(findSectionV3('misc-boilerplate'), 'misc-boilerplate-table');
+  assert.ok(misc.fixed_row_labels.includes('Specific performance') && misc.fixed_row_labels.includes('Notices'));
+  assert.ok(findSectionV3('misc-boilerplate').v2_family_keys.some((f) => f.key === 'SPECIFIC_PERFORMANCE_REMEDIES'));
+  const reps = findTableV3(findSectionV3('representations-qualifiers'), 'representations-qualifiers-table');
+  assert.ok(reps.fixed_row_labels.includes('No Undisclosed Liabilities'));
+  assert.ok(reps.detail_labels_by_row['Capitalization; Subsidiaries'].includes('Authorized capital stock'));
 });

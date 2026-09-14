@@ -2102,9 +2102,49 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       to Ben: no fragment columns anywhere (coded, number, yes / no or as
       drafted only) and a shape per remaining section, listed in the
       note for his sign-off before generation 4.
-- [ ] Q7 Decision 34: apply the no-fragment rule and the remaining
-      section shapes once Ben signs off the row and code names.
-- [ ] Q6 Long sections. The interim operating covenants section is one
+- [x] Q7 Decision 34 applied, 2026-09-14 03:30 UTC. Ben, 2026-09-14:
+      "why would you use top build? You know it is missing many
+      provisions. Use bain/envestnet but then look at all of the output
+      yourself and analyze if you think it is right or wrong and if not,
+      iterate to improve it"; "just go through Metsera first and fix it
+      all to be perfect before you go off on another deal"; "What
+      terrifies me atm is that you actually don't know what the fuck you
+      have extracted". Every section of generation 3 was read against
+      the agreement text: `docs/codex-program/notes/METSERA-GENERATION-3-AUDIT-2026-09-14.md`
+      (the component layer is granular and accurate; the table layer,
+      four family and subtype assignments, one long-section partial
+      decline and a few empty sections are the defects, each with its
+      fix). The Envestnet old-app page (`scripts/product/legacy-review-print.js`)
+      is the specification; `scripts/product/table-shapes-decision-34.js`
+      rebuilds every remaining section to its row list with coded,
+      number, yes / no or as-drafted columns only, with `vocabulary_by_row`
+      (rule C13), presence-derived cells from another family (rule C14),
+      a D&O section, boilerplate rendered collapsed, and the extractor
+      request carrying the new fields (shapes note "Decision 34
+      applied"). Also fixed: the declined-extraction rule no longer fires
+      on a replayed recording with a stated provider incompatibility
+      (`tests/product-phase-4.test.js` had been failing since 03eeca4a).
+- [x] Q6 Long sections, 2026-09-14 03:30 UTC. A section over 12k bytes
+      with four or more child limbs is extracted per group of limbs
+      (about 8k bytes each, the chapeau, definitions and cross-references
+      as context, `part_instruction` naming the part), each part checked
+      for a decline on its own, the parts merged with the part number
+      prefixed on every ref (`longSectionGroups`, `mergePartResponses`,
+      `tests/product-long-section-split.test.js`). The analysis runner
+      passes `LONG_SECTION_SPLIT`; a direct call of the section builder
+      extracts whole, so the recorded fixtures replay unchanged. Cost: one extraction
+      call per part for the few long sections (Metsera 5.01: about four
+      calls in place of one that partially declined). Ben may set the
+      thresholds (`LONG_SECTION_SPLIT`).
+- [ ] Q8 Generation 4 (Metsera). Ben: `git pull`,
+      `node scripts/product/update-sandbox-worker.js`, submit on
+      `/review?generation=4`. Then every section of the output is read
+      against the text the way generation 3 was, and the run log is read
+      for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
+      4.06, 4.08, 4.09, 6.15) and the all-INVALID ones (3.03, 3.05,
+      9.05); nothing is reported as right until it holds. Olaplex and
+      Apogee wait until Metsera does.
+- [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
       The source closure already knows the children (`operativeNodes` in

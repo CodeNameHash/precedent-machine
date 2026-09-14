@@ -95,15 +95,13 @@ function table(sectionKey, tableKey) {
 
 test('sections come out in the table shapes order, only for sections that ended up with rows', () => {
   const keys = view.sections.map((candidate) => candidate.section_key);
-  assert.deepEqual(keys, ['material-contracts', 'mae-definitions', 'termination-fees'], 'the old app\'s order (decision 27)');
+  assert.deepEqual(keys, ['material-contracts', 'mae-definitions', 'termination-fees', 'misc-boilerplate'], 'the old app\'s order (decision 27)');
 });
 
-test('a coverage-only fact never reaches a table', () => {
-  assert.equal(section('misc-boilerplate'), undefined);
-  const allFactIds = view.sections.flatMap((candidate) => candidate.tables)
-    .flatMap((candidate) => candidate.rows)
-    .flatMap((row) => row.backing_facts.map((entry) => entry.fact_id));
-  assert.ok(!allFactIds.includes('f-boilerplate-notices-1'));
+test('a coverage-only fact reaches its precedent row; its section is flagged coverage_only so the page starts it collapsed (decision 34)', () => {
+  const misc = section('misc-boilerplate');
+  assert.equal(misc.coverage_only, true);
+  assert.equal(section('termination-fees').coverage_only, undefined);
 });
 
 test('a fact with no conclusions never becomes a row; it is listed under its section as evidence without a readout', () => {
@@ -140,7 +138,7 @@ test('a fact with conclusions but no table_key is placed by matching row_label a
   assert.equal(byColumn.payer.kind, 'pill');
   assert.equal(byColumn.payer.tone, 'seller');
   assert.equal(byColumn.trigger.kind, 'dash');
-  assert.equal(byColumn.deemingRulePresent.kind, 'dash');
+  assert.equal(byColumn.provision.kind, 'dash');
 
   // The fixture's own termination-fee-trigger fact has no conclusions: it is
   // never a row, and is listed under the section as evidence without a readout.
@@ -350,14 +348,16 @@ test('a carve-out row with no carve-back reading says No, and the carve-back fac
   const carveback = maeFact('mae-cb', 'DISPROPORTIONALITY_CARVEBACK', 'carve-back', { table_key: 'mae-carveouts-company', row_label: 'Disproportionate carve-back', cells: [{ column_id: 'provision', text: 'except to the extent disproportionate', component_ids: ['mae-cb-c'] }] }, 'except to the extent disproportionate');
   const view = buildTableView({ facts: [gaap, war, carveback], tableShapes, legalSchema });
   const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'mae-carveouts-company');
-  assert.deepEqual(table.rows.map((row) => row.subject), ['Changes in GAAP or accounting principles', 'Acts of war, armed hostilities, or terrorism']);
-  const gaapCell = table.rows[0].cells.find((cell) => cell.column_id === 'disproportionateCarveback');
+  // Rows follow the precedent's fixed order (decision 34), not arrival order.
+  assert.deepEqual(table.rows.map((row) => row.subject), ['Acts of war, armed hostilities, or terrorism', 'Changes in GAAP or accounting principles']);
+  const gaapCell = table.rows[1].cells.find((cell) => cell.column_id === 'disproportionateCarveback');
   assert.equal(gaapCell.label, 'No');
   assert.equal(gaapCell.code, 'NO');
   assert.equal(gaapCell.defaulted, true);
-  assert.equal(table.rows[1].cells.find((cell) => cell.column_id === 'disproportionateCarveback').label, 'Yes');
+  assert.equal(table.rows[0].cells.find((cell) => cell.column_id === 'disproportionateCarveback').label, 'Yes');
   assert.equal(table.footer.label, 'Disproportionate carve-back as drafted');
-  assert.deepEqual(table.footer.entries.map((entry) => [entry.fact_id, entry.text]), [['mae-cb', 'except to the extent disproportionate']]);
+  // The footer shows the carve-back as drafted (its own words in full), not the cited fragment (decision 34).
+  assert.deepEqual(table.footer.entries.map((entry) => [entry.fact_id, entry.text]), [['mae-cb', 'except to the extent disproportionate clauses (i) through (iv)']]);
 });
 
 test('a fact_text detail column shows the fact\'s own words as drafted, not the cited fragment', () => {
@@ -451,4 +451,36 @@ test('two codes on one vocabulary column render as one cell with two readings', 
   const cell = table.rows[0].cells.find((candidate) => candidate.column_id === 'materiality');
   assert.equal(cell.values.length, 2);
   assert.deepEqual(cell.values.map((value) => value.code), ['KNOWLEDGE_QUALIFIED_PARTIAL', 'MATERIAL_TO_THE_REP_PARTIAL']);
+});
+
+test('a presence-derived row is created from another family\'s fact: Company termination for a Superior Proposal from the TERMINATION right', () => {
+  const right = {
+    fact_id: 'term-sp', family_key: 'TERMINATION', subtype_key: 'SUPERIOR_PROPOSAL', section_reference: '8.01(f)',
+    headline: { label: 'Superior proposal', distinguishing_component_ids: ['term-sp-c'] },
+    components: [{ component_id: 'term-sp-c', kind: 'ACTOR', label: 'terminating party', text: 'the Company', origin: 'OWN', source_span_id: 's', start_byte: 10, end_byte: 21, children: [] }],
+    conclusions: { table_key: 'termination-rights-company-may-terminate', row_label: 'Superior Proposal', cells: [{ column_id: 'window', code: 'PRE_STOCKHOLDER_VOTE_ONLY', component_ids: ['term-sp-c'] }] },
+  };
+  const view = buildTableView({ facts: [right], tableShapes, legalSchema });
+  const superior = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'nosol-superior-table');
+  assert.ok(superior, 'the superior-proposal table appears for the derived row alone');
+  const row = superior.rows.find((candidate) => candidate.subject === 'Company termination for Superior Proposal');
+  const cell = row.cells.find((candidate) => candidate.column_id === 'provision');
+  assert.equal(cell.label, 'Yes');
+  assert.deepEqual(cell.fact_ids, ['term-sp']);
+  // The termination table itself still has the right as a row named from its subtype.
+  const company = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'termination-rights-company-may-terminate');
+  assert.ok(company.rows.some((candidate) => candidate.subject === 'Superior Proposal'));
+});
+
+test('a presence-derived line of the consideration grid shows the appraisal provision as drafted', () => {
+  const appraisal = {
+    fact_id: 'appr-1', family_key: 'APPRAISAL_DISSENTERS_RIGHTS', subtype_key: 'APPRAISAL_STATUS', section_reference: '2.01(d)',
+    headline: { label: 'Appraisal', distinguishing_component_ids: ['appr-1-c'] },
+    components: [{ component_id: 'appr-1-c', kind: 'OPERATION', label: 'not converted', text: 'shall not be converted into the right to receive the Merger Consideration', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 74, children: [] }],
+  };
+  const view = buildTableView({ facts: [appraisal], tableShapes, legalSchema });
+  const structure = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'consideration-structure');
+  const cell = structure.rows[0].cells.find((candidate) => candidate.column_id === 'appraisalRights');
+  assert.equal(cell.kind, 'text');
+  assert.equal(cell.label, 'shall not be converted into the right to receive the Merger Consideration');
 });

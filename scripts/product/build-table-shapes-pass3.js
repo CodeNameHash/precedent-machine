@@ -19,6 +19,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { validateTableShapesV3 } = require('../../lib/product/table-shapes');
+const { applyDecision34 } = require('./table-shapes-decision-34');
 
 const ROOT = path.join(__dirname, '..', '..');
 const PASS2_PATH = path.join(ROOT, 'contracts/product/table-shapes.v2.json');
@@ -805,14 +806,17 @@ const RAIL_GROUPS = [
   { group: 'Material Contracts', hex: '#8A8782', sections: [['material-contracts', 'Material Contracts']] },
   { group: 'Material Adverse Effect', hex: '#8B5B3A', sections: [['mae-definitions', 'Material Adverse Effect']] },
   { group: 'Interim Operating Covenants', hex: '#B5862E', sections: [['ioc-exceptions', 'Company / Target'], ['parent-ioc-exceptions', 'Buyer / Parent']] },
-  { group: 'No-Solicitation / No-Shop', hex: '#A8538C', sections: [['nosol', 'Overview'], ['nosol-noshop', 'No-Shop Core Mechanics'], ['nosol-fiduciary', 'Fiduciary-Out Mechanics'], ['nosol-intervening', 'Intervening Event Mechanics'], ['nosol-superior', 'Superior Proposal']] },
+  // Decision 34: the no-shop overview section is removed (its content is
+  // the four tables); Advisers / Fees / Expenses is removed (a harvest
+  // artefact with no print); D&O indemnification is a section of its own.
+  { group: 'No-Solicitation / No-Shop', hex: '#A8538C', sections: [['nosol-noshop', 'No-Shop Core Mechanics'], ['nosol-fiduciary', 'Fiduciary-Out / Engagement'], ['nosol-intervening', 'Intervening Event'], ['nosol-superior', 'Superior Proposal']] },
   { group: 'Antitrust / Regulatory', hex: '#2F8FA8', sections: [['antitrust-regulatory', 'Antitrust / Regulatory']] },
   { group: 'SEC Filing / Meeting Requirements', hex: '#6E8AA8', sections: [['votes-approvals-meeting', 'Votes / Approvals / SEC Filing / Meeting']] },
   { group: 'Conditions to Closing', hex: '#5660B0', sections: [['conditions', 'Mutual'], ['conditions-b', 'Buyer'], ['conditions-s', 'Seller']] },
   { group: 'Termination Rights', hex: '#C0673A', sections: [['termination-rights', 'Termination Rights']] },
   { group: 'Termination Fees', hex: '#B14E63', sections: [['termination-fees', 'Termination Fees'], ['tail-fee', 'Tail Fee Mechanics']] },
   { group: 'Employee Benefits', hex: '#6E8AA8', sections: [['employee-benefits', 'Employee Benefits']] },
-  { group: 'Other Covenants', hex: '#6E8AA8', sections: [['general-covenants', 'Other Covenants'], ['advisers-fees-expenses', 'Advisers / Fees / Expenses']] },
+  { group: 'Other Covenants', hex: '#6E8AA8', sections: [['general-covenants', 'Other Covenants'], ['dno-indemnification', 'D&O Indemnification']] },
   { group: 'Miscellaneous / Boilerplate', hex: '#8A8782', sections: [['misc-boilerplate', 'Miscellaneous / Boilerplate']] },
   { group: 'No Other Reps / Fraud', hex: '#8A8782', sections: [['no-other-reps-fraud', 'No Other Reps / Fraud']] },
   { group: 'Definitions', hex: '#4E6FA6', sections: [['defined-terms', 'Defined Terms']] },
@@ -1151,6 +1155,9 @@ function build() {
   applyDecision11TerminationForBreach(doc);
   applyDecision13EmployeeBenefits(doc);
   applyDecision15DefinedTerms(doc);
+  // Decision 34 (2026-09-14): every table is the precedent's (Envestnet)
+  // row list; no fragment columns anywhere. scripts/product/table-shapes-decision-34.js.
+  applyDecision34(doc);
   applyDecision27SectionOrder(doc);
   // Any MAE-coded entry added by a later decision links to the definition too.
   linkMaeCodesToDefinition(doc);

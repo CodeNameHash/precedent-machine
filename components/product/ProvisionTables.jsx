@@ -388,7 +388,10 @@ export default function ProvisionTables({
   // Each section collapses on its heading; the bar above offers collapse /
   // expand all (Ben, 2026-09-13). Collapsed keys live here so a republish of
   // the table view keeps the reader's choice.
-  const [collapsed, setCollapsed] = useState(() => new Set());
+  // A coverage-only section (Miscellaneous / Boilerplate) starts collapsed
+  // (Ben, 2026-09-12: one collapsed, expandable section after the operative
+  // families).
+  const [collapsed, setCollapsed] = useState(() => new Set((tableView?.sections || []).filter((section) => section.coverage_only).map((section) => section.section_key)));
 
   if (!tableView || tableView.sections.length === 0) return null;
 
