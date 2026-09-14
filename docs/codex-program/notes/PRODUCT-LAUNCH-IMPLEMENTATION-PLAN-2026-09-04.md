@@ -2328,7 +2328,13 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       of the table structure etc and for now no summary is fine but
       ultimately we want to get to summary" (the same card and Term /
       Provision columns as the grid, the section reference as the Term,
-      branches as indented rows; the summary is a later rule).
+      branches as indented rows; the summary is a later rule). On the
+      unvested option sub-row: "While fully vested is normally right I know
+      why this is coded as such but it should say Fully Vested (Conditional
+      Upon Service) or similar" (vesting code
+      FULLY_VESTED_CONDITIONAL_UPON_SERVICE in the equity awards shape with
+      guidance for generation 7; a stored "accelerated" cell whose fact
+      carries a continued-service condition reads that way already).
       (16) 11:25 UTC, at 13 of 85: generation 6 went FAILED on 3.02
       (Capitalization) after three attempts. Claude Code's `result`
       field is the last text block of the answer; at high effort the

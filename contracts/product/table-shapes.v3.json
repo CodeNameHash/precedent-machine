@@ -730,6 +730,13 @@
                     "page": 15,
                     "row_label": "Stock Options"
                   }
+                },
+                {
+                  "code": "FULLY_VESTED_CONDITIONAL_UPON_SERVICE",
+                  "label": "Fully vested (conditional upon service)",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"While fully vested is normally right I know why this is coded as such but it should say Fully Vested (Conditional Upon Service) or similar\" (an unvested option whose converted payments vest at the first anniversary of the Closing subject to continued service)."
                 }
               ],
               "fill_from": [
@@ -784,7 +791,7 @@
             "Unvested, not vesting by its terms",
             "Out of the money (exercise price at or above the deal price)"
           ],
-          "guidance": "One row per instrument class (row_label from fixed_row_labels, a new class name only when none fits). Each class of that instrument treated differently is a sub-item: row_detail from detail_labels (Vested; Unvested, vesting by its terms at the Effective Time; Unvested, not vesting by its terms; Out of the money), a new detail only when none fits, never the agreement's own words as the row. A fact about the instrument as a whole carries no row_detail and gives the overview. A cell states only what its own fact says about its own class: an out-of-the-money option cancelled for no consideration never fills the in-the-money class's cells. The treatment of an award class in the general case (a vested or vesting, in-the-money option) is the row itself, with no row_detail; each exception (unvested awards, out-of-the-money options, awards held by a named group) is a sub-item with row_detail naming the exception.",
+          "guidance": "One row per instrument class (row_label from fixed_row_labels, a new class name only when none fits). Each class of that instrument treated differently is a sub-item: row_detail from detail_labels (Vested; Unvested, vesting by its terms at the Effective Time; Unvested, not vesting by its terms; Out of the money), a new detail only when none fits, never the agreement's own words as the row. A fact about the instrument as a whole carries no row_detail and gives the overview. A cell states only what its own fact says about its own class: an out-of-the-money option cancelled for no consideration never fills the in-the-money class's cells. The treatment of an award class in the general case (a vested or vesting, in-the-money option) is the row itself, with no row_detail; each exception (unvested awards, out-of-the-money options, awards held by a named group) is a sub-item with row_detail naming the exception. Vesting Treatment: FULLY_VESTED_CONDITIONAL_UPON_SERVICE when the converted award or its payments vest in full at a later date or on the original schedule subject to the holder's continued service or employment; FULLY_VESTED_ACCELERATED only when vesting occurs at the Effective Time with no continued-service condition.",
           "sub_rows_label": "Exceptions"
         }
       ],

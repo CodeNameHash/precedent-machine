@@ -734,3 +734,31 @@ test('a one-per-agreement table exposes its no-cell facts as other_provisions, g
   assert.equal(again.other_provisions.length, 2);
   assert.ok(again.other_provisions.some((group) => group.branches[0].fact_id === 'ts-7'));
 });
+
+// Ben, 2026-09-14, on the unvested option sub-row: "While fully vested is
+// normally right I know why this is coded as such but it should say Fully
+// Vested (Conditional Upon Service) or similar". A stored "Fully vested
+// (accelerated)" cell whose fact carries a continued-service condition
+// reads as conditional upon service; without the condition it stays.
+test('a fully-vested cell with a continued service condition reads as conditional upon service', () => {
+  const shapes = require('../contracts/product/table-shapes.v3.json');
+  const schema = require('../contracts/product/legal-schema.v2.json');
+  const award = (id, conditionText) => ({
+    fact_id: id, proposal_id: id, family_key: 'CONSIDERATION', subtype_key: 'EQUITY_AWARD', section_reference: '2.03', structure_node_id: 'n-2-03',
+    headline: { label: 'Equity award', distinguishing_component_ids: [] },
+    conclusions: { table_key: 'equity-awards-table', row_label: 'Company Stock Option', row_detail: 'Unvested, not vesting by its terms', cells: [{ column_id: 'vestingTreatment', code: 'FULLY_VESTED_ACCELERATED', component_ids: [`${id}-o`] }] },
+    components: [
+      ...(conditionText ? [{ component_id: `${id}-c`, kind: 'CONDITION', label: 'Continued service', text: conditionText, origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: conditionText.length, gap_before: false, children: [] }] : []),
+      { component_id: `${id}-a`, kind: 'ACTOR', label: 'payments', text: 'all such payments', origin: 'OWN', source_span_id: 's', start_byte: 200, end_byte: 217, gap_before: false, children: [] },
+      { component_id: `${id}-o`, kind: 'OPERATION', label: 'vest', text: 'shall become vested', origin: 'OWN', source_span_id: 's', start_byte: 218, end_byte: 237, gap_before: false, children: [] },
+    ],
+  });
+  const view = buildTableView({ facts: [award('ea-1', 'subject to the holder’s continued service with Parent through the first anniversary of the Closing'), award('ea-2', null)], tableShapes: shapes, legalSchema: schema });
+  const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'equity-awards-table');
+  const row = table.rows.find((candidate) => candidate.subject === 'Company Stock Option');
+  const sub = (row.sub_rows || []).find((candidate) => candidate.subject === 'Unvested, not vesting by its terms');
+  const cell = sub.cells.find((candidate) => candidate.column_id === 'vestingTreatment');
+  const labels = (cell.values || [cell]).map((value) => value.label);
+  assert.ok(labels.includes('Fully vested (conditional upon service)'), JSON.stringify(labels));
+  assert.ok(labels.includes('Fully vested (accelerated)'), JSON.stringify(labels));
+});

@@ -751,6 +751,18 @@ function applyEquityAwards(doc) {
   const table = findTable(findSection(doc, 'equity-awards'), 'equity-awards-table');
   table.sub_rows_label = 'Exceptions';
   table.guidance = `${table.guidance} The treatment of an award class in the general case (a vested or vesting, in-the-money option) is the row itself, with no row_detail; each exception (unvested awards, out-of-the-money options, awards held by a named group) is a sub-item with row_detail naming the exception.`;
+  // Ben, 2026-09-14, on the unvested option sub-row coded "Fully vested
+  // (accelerated)" where the payments vest at the first anniversary of the
+  // Closing subject to continued service: "While fully vested is normally
+  // right I know why this is coded as such but it should say Fully Vested
+  // (Conditional Upon Service) or similar". A converted award that vests
+  // in full at a later date, or on the original schedule, subject to the
+  // holder's continued service is that code; "accelerated" is vesting at
+  // the Effective Time with no service condition.
+  const vesting = findColumn(table, 'vestingTreatment');
+  const conditional = code('Fully vested (conditional upon service)', `${BEN}: "While fully vested is normally right I know why this is coded as such but it should say Fully Vested (Conditional Upon Service) or similar" (an unvested option whose converted payments vest at the first anniversary of the Closing subject to continued service).`, { code: 'FULLY_VESTED_CONDITIONAL_UPON_SERVICE' });
+  if (!vesting.vocabulary.some((existing) => existing.code === conditional.code)) vesting.vocabulary.push(conditional);
+  table.guidance = `${table.guidance} Vesting Treatment: FULLY_VESTED_CONDITIONAL_UPON_SERVICE when the converted award or its payments vest in full at a later date or on the original schedule subject to the holder's continued service or employment; FULLY_VESTED_ACCELERATED only when vesting occurs at the Effective Time with no continued-service condition.`;
 }
 
 function applyEmployeeBenefits(doc) {
