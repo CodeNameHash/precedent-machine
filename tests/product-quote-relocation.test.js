@@ -65,7 +65,9 @@ test('a quote from a sibling span and an occurrence past the end both resolve to
             ],
           }],
           groups: [{ client_ref: 'g-1', family_key: 'NO_SHOP', subtype_key: 'PROHIBITED_ACTION' }],
-          links: [],
+          // A link citing a span in no closure is dropped with an issue, never a
+          // section failure (Metsera generation 7, 3.11: FACT_LINK_SPAN).
+          links: [{ from_ref: 'p-1', to_ref: 'p-1', relationship_type: 'QUALIFIES', source_span_ids: ['e'.repeat(64)] }],
           coverage: { NO_SHOP: 'FOUND' },
           fact_type_coverage: { NO_SHOP: Object.fromEntries(schema.families.find((family) => family.family_key === 'NO_SHOP').required_fact_types.map((factType) => [factType, factType === 'PROHIBITED_ACTION' ? 'FOUND' : 'NOT_FOUND'])) },
         };
@@ -76,6 +78,8 @@ test('a quote from a sibling span and an occurrence past the end both resolve to
   const section = await buildAgreementSectionDraft({ sourceDocument, agreementStructure, legalSchema: schema, model, node });
   const proposal = section.proposals[0];
   assert.equal(proposal.validation_status, 'VALID', JSON.stringify(section.issues.map((issue) => issue.payload?.message || issue.message).slice(0, 3)));
+  assert.equal((section.fact_links || section.links || []).length, 0, 'the link on an unknown span is dropped');
+  assert.ok(section.issues.some((issue) => issue.code === 'UNSUPPORTED_FACT_LINK' && /unknown_source_span_ids/.test(issue.message)), 'and noted');
   const [first, second, third] = proposal.components;
   assert.ok(Number.isSafeInteger(third.start_byte) && third.start_byte === second.start_byte && third.end_byte === second.end_byte, 'an unknown span id resolves against the section');
   assert.ok(Number.isSafeInteger(first.start_byte) && first.start_byte >= spans[0].start_byte && first.end_byte <= spans[0].end_byte);
