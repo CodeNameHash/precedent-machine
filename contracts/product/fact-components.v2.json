@@ -7,11 +7,12 @@
       "fact_id": "stable identity, unchanged from PRODUCT_PROPOSAL identity rules",
       "family_key": "legal schema family",
       "subtype_key": "legal schema subtype (V2 names)",
-      "headline": "object: { label, distinguishing_component_ids }",
+      "headline": "object: { label, distinguishing_component_ids, summary }",
       "components": "ordered array of component objects; the top layer of the tree",
       "coverage_only": "boolean; true for families the reader does not see (boilerplate)"
     },
-    "headline_rule": "label is a controlled term from the V2 schema for the subtype; distinguishing_component_ids point at the components whose text distinguishes this provision from its counterpart in another deal (threshold, carve-out, standard, trigger, party). The rendered headline is the label followed by the distinguishing components' verbatim text. Topic alone is not a headline."
+    "headline_rule": "label is a controlled term from the V2 schema for the subtype; distinguishing_component_ids point at the components whose text distinguishes this provision from its counterpart in another deal (threshold, carve-out, standard, trigger, party). The rendered headline is the label followed by the distinguishing components' verbatim text. Topic alone is not a headline.",
+    "summary_rule": "summary is optional: one plain-English line of at most 15 words stating the provision's operative effect in the parties' defined names (for example 'Company files the Certificate of Merger with the Delaware Secretary of State'), no section reference, no quotation marks, no trailing period, no leading or trailing whitespace. The extractor writes it for every proposal (Ben, 2026-09-14, on the Other provisions table: 'it needs to be a summary of the provision on the right etc - like in the normal course. Not just a sec ref...!'; asked whether the extractor should write a short summary per fact as part of the fact contract: '1. for now - yes'). Older generations have none; a missing summary is a review note, never a held fact."
   },
   "component": {
     "fields": {
@@ -50,14 +51,14 @@
     "R10 The V1 statement and roles are retained on the fact for comparison during Phase 5B and removed from the reader view."
   ],
   "rendering": {
-    "layer_0": "headline: label + distinguishing components' text",
+    "layer_0": "headline: label + distinguishing components' text; the summary, when present, is the provision's line in the Other provisions table",
     "layer_n": "the components at that depth, each clickable when it has children, inherited words marked, [...] where gap_before is true",
     "hover": "DEFINED_TERM and CROSS_REFERENCE show resolves_to.text"
   },
   "example_fact": {
     "family_key": "MAE_DEFINITION",
     "subtype_key": "EXCLUSION",
-    "headline": { "label": "MAE carve-out", "distinguishing_component_ids": ["c-war"] },
+    "headline": { "label": "MAE carve-out", "distinguishing_component_ids": ["c-war"], "summary": "Material Adverse Effect excludes effects of war, terrorism and sabotage" },
     "components": [
       { "component_id": "c-litany", "kind": "LITANY", "label": "affected matters", "text": "any event, change, circumstance, occurrence, effect or state of facts", "origin": "CHAPEAU", "members": ["event", "change", "circumstance", "occurrence", "effect", "state of facts"], "children": [] },
       { "component_id": "c-resulting", "kind": "OPERATION", "label": "resulting from", "text": "to the extent resulting from", "origin": "CHAPEAU", "children": [] },

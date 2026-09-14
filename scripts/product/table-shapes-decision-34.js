@@ -989,69 +989,175 @@ const CAPITALISATION_LIMBS = [
   'Subsidiary equity interests', 'No other securities, options or voting agreements', 'Valid issuance, fully paid and nonassessable',
 ];
 
+// The general exceptions and knowledge rows at the head of each
+// representations table, as the old app had them. Ben, 2026-09-14, on the
+// Article III introduction rendered as seven status and document
+// representations: "all of this is miscoded. THis is the standard intro to
+// the reps that provides the exceptions for all reps - look at the old
+// system - we should be able to show the reader the general categories of
+// the exceptions (SEC filings) and as they click into deeper levels show
+// more detail (last X days) etc"; and, on the separate general
+// qualifications table that followed: "by miscoded I meant oyu currentl
+// have it messed up and you need to move it over to what we had in the old
+// vesrion....". The old version (the Envestnet print,
+// scripts/product/legacy-review-print.js) opened the table with a "General
+// Exceptions" row (SEC Filings: Cut-off, Portions excluded; Disclosure
+// Letter) and a "Knowledge" row (Standard, Persons), ahead of the
+// representations. So: those two fixed rows first, their categories as
+// sub-items behind "More detail", the cut-off in the Lookback column and
+// the excluded portions, the arrangement rule and the knowledge standard as
+// codes in the Qualifiers column. The separate general-qualifications table
+// is retired; the REPRESENTATION_QUALIFICATION subtype stays.
+const GENERAL_EXCEPTIONS_ROW = 'General Exceptions';
+const KNOWLEDGE_ROW = 'Knowledge';
+const GENERAL_EXCEPTION_DETAILS = ['SEC Filings', 'Disclosure Letter', 'Other'];
+const KNOWLEDGE_DETAILS = ['Standard', 'Persons'];
+
+function generalExceptionCodes(why) {
+  return [
+    code('Except as disclosed in SEC filings', why, { code: 'EXCEPT_AS_DISCLOSED_IN_SEC_FILINGS' }),
+    code('Forward-looking statements excluded', why, { code: 'EXCLUDES_FORWARD_LOOKING_STATEMENTS' }),
+    code('Risk Factors excluded', why, { code: 'EXCLUDES_RISK_FACTORS' }),
+    code('Exhibits excluded', why, { code: 'EXCLUDES_EXHIBITS' }),
+    code('Specific historical facts still count', why, { code: 'SPECIFIC_HISTORICAL_FACTS_NOT_EXCLUDED' }),
+    code('Except as set forth in the Disclosure Letter', why, { code: 'EXCEPT_AS_SET_FORTH_IN_DISCLOSURE_LETTER' }),
+    code('Arranged by section', why, { code: 'ARRANGED_BY_SECTION' }),
+    code('Disclosure qualifies other sections where reasonably apparent', why, { code: 'CROSS_SECTION_WHERE_REASONABLY_APPARENT' }),
+    code('Disclosure qualifies only the section it is made against', why, { code: 'SECTION_SPECIFIC_ONLY' }),
+    code('Materiality standard for the article', why, { code: 'ARTICLE_MATERIALITY_STANDARD' }),
+  ];
+}
+
+function knowledgeCodes(why) {
+  return [
+    code('Knowledge after reasonable inquiry', why, { code: 'KNOWLEDGE_AFTER_REASONABLE_INQUIRY' }),
+    code('Actual knowledge', why, { code: 'ACTUAL_KNOWLEDGE' }),
+    code('Constructive knowledge (should have known)', why, { code: 'CONSTRUCTIVE_KNOWLEDGE' }),
+    code('Persons listed on Disclosure Letter', why, { code: 'PERSONS_LISTED_ON_DISCLOSURE_LETTER' }),
+    code('Named individuals', why, { code: 'NAMED_INDIVIDUALS' }),
+    code('Officers', why, { code: 'OFFICERS' }),
+  ];
+}
+
 function applyRepresentations(doc) {
   for (const sectionKey of ['representations-qualifiers', 'parent-representations-qualifiers']) {
     const section = findSection(doc, sectionKey);
     ensureFamily(section, 'CAPITALISATION');
+    // The Knowledge row takes the knowledge definition (KEY_DEFINED_TERMS/KNOWLEDGE).
+    section.v2_family_keys.push({ key: 'KEY_DEFINED_TERMS', confidence: 'low' });
     const table = section.tables[0];
     for (const label of EXTRA_REP_ROWS) if (!table.fixed_row_labels.includes(label)) table.fixed_row_labels.push(label);
-    table.fixed_row_labels_source = `${table.fixed_row_labels_source}; lib/rubric.js REP-T-* labels (decision 34)`;
-    table.detail_labels_by_row = { ...(table.detail_labels_by_row || {}), 'Capitalization; Subsidiaries': [...CAPITALISATION_LIMBS] };
-    table.guidance = `${table.guidance} A CAPITALISATION fact (authorized capital, issued and outstanding shares, reserved securities, the award inventory, subsidiary equity) is a limb of Capitalization; Subsidiaries: row_label that representation, row_detail the limb from its list. The article's introductory sentence (the representing party, the disclosure-letter and SEC-document exceptions) is never a row of this table: its REPRESENTATION_QUALIFICATION facts go to the general qualifications table.`;
-    table.only_subtype_keys = ['STATUS_REPRESENTATION', 'COMPLIANCE_REPRESENTATION', 'DOCUMENT_REPRESENTATION', 'CONTRACT_REPRESENTATION', 'FINANCIAL_REPRESENTATION', 'NEGATIVE_REPRESENTATION'];
-    // Ben, 2026-09-14, on the Article III introduction rendered as seven
-    // status and document representations: "all of this is miscoded. This
-    // is the standard intro to the reps that provides the exceptions for
-    // all reps - look at the old system - we should be able to show the
-    // reader the general categories of the exceptions (SEC filings) and as
-    // they click into deeper levels show more detail (last X days) etc".
-    const why = `${BEN}: the general qualifications to every representation, by category.`;
-    const qualifications = provisionTable({
-      tableKey: sectionKey === 'representations-qualifiers' ? 'representations-general-qualifications' : 'parent-representations-general-qualifications',
-      termHeader: 'Qualification',
-      rows: [
-        ['SEC filings exception', [
-          code('Except as disclosed in SEC filings', why, { code: 'EXCEPT_AS_DISCLOSED_IN_SEC_FILINGS' }),
-          code('Filings within a stated window', why, { code: 'FILINGS_WITHIN_STATED_WINDOW' }),
-          code('Risk factors and forward-looking statements excluded', why, { code: 'RISK_FACTORS_AND_FORWARD_LOOKING_EXCLUDED' }),
-          code('Exhibits excluded', why, { code: 'EXHIBITS_EXCLUDED' }),
-          code('Specific historical facts still count', why, { code: 'SPECIFIC_HISTORICAL_FACTS_NOT_EXCLUDED' }),
-        ]],
-        ['Disclosure Letter exception', [
-          code('Except as set forth in the Disclosure Letter', why, { code: 'EXCEPT_AS_SET_FORTH_IN_DISCLOSURE_LETTER' }),
-          code('Arranged by section', why, { code: 'ARRANGED_BY_SECTION' }),
-          code('Disclosure qualifies other sections where reasonably apparent', why, { code: 'CROSS_SECTION_WHERE_REASONABLY_APPARENT' }),
-          code('Disclosure qualifies only the section it is made against', why, { code: 'SECTION_SPECIFIC_ONLY' }),
-        ]],
-        ['Other general qualification', [
-          code('Knowledge standard for the article', why, { code: 'ARTICLE_KNOWLEDGE_STANDARD' }),
-          code('Materiality standard for the article', why, { code: 'ARTICLE_MATERIALITY_STANDARD' }),
-        ]],
-      ],
-      numberColumns: [{
-        column_id: 'window',
-        header: 'Window',
+    table.fixed_row_labels = [GENERAL_EXCEPTIONS_ROW, KNOWLEDGE_ROW, ...table.fixed_row_labels.filter((label) => label !== GENERAL_EXCEPTIONS_ROW && label !== KNOWLEDGE_ROW)];
+    table.fixed_row_labels_source = `${table.fixed_row_labels_source}; lib/rubric.js REP-T-* labels (decision 34); Envestnet print General Exceptions and Knowledge rows (Ben, 2026-09-14)`;
+    table.detail_labels_by_row = {
+      [GENERAL_EXCEPTIONS_ROW]: [...GENERAL_EXCEPTION_DETAILS],
+      [KNOWLEDGE_ROW]: [...KNOWLEDGE_DETAILS],
+      ...(table.detail_labels_by_row || {}),
+      'Capitalization; Subsidiaries': [...CAPITALISATION_LIMBS],
+    };
+    const why = `${BEN}: "look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc" (the General Exceptions and Knowledge rows of the old version's representations table).`;
+    const qualifiers = findColumn(table, 'materiality');
+    for (const entry of [...generalExceptionCodes(why), ...knowledgeCodes(why)]) {
+      if (!qualifiers.vocabulary.some((existing) => existing.code === entry.code)) qualifiers.vocabulary.push(entry);
+    }
+    qualifiers.vocabulary_by_row = {
+      ...(qualifiers.vocabulary_by_row || {}),
+      [GENERAL_EXCEPTIONS_ROW]: generalExceptionCodes(why).map((entry) => entry.code),
+      [KNOWLEDGE_ROW]: knowledgeCodes(why).map((entry) => entry.code),
+    };
+    qualifiers.guidance = 'On a representation row: the materiality or knowledge qualifier the representation carries. On the General Exceptions row: the codes the article introduction establishes for that source of exception (the portions of the SEC filings excluded, the arrangement and cross-section rule of the Disclosure Letter), several cells when it establishes several. On the Knowledge row: the knowledge standard (Standard) and whose knowledge counts (Persons).';
+    const lookback = findColumn(table, 'lookback');
+    lookback.guidance = 'On a representation row: the look-back date or period the representation states. On the General Exceptions row, SEC Filings sub-item: the cut-off of the SEC filings exception (filed since a date; at least one business day before signing), as the cited words parse.';
+    // The rows the page fills from stored generations' facts (the page rule in
+    // lib/product/table-view.js): the article introduction's facts go to
+    // intro_facts_row, the knowledge definition to knowledge_facts_row.
+    table.intro_facts_row = GENERAL_EXCEPTIONS_ROW;
+    table.knowledge_facts_row = KNOWLEDGE_ROW;
+    table.guidance = `${table.guidance} A CAPITALISATION fact (authorized capital, issued and outstanding shares, reserved securities, the award inventory, subsidiary equity) is a limb of Capitalization; Subsidiaries: row_label that representation, row_detail the limb from its list; a fact that states a count of a security class is coded to the capitalization table instead (see capitalization-table). The article's introductory sentence (the disclosure-letter and SEC-document exceptions to every representation) is the ${GENERAL_EXCEPTIONS_ROW} row, the first row of this table: each REPRESENTATION_QUALIFICATION fact carries row_label "${GENERAL_EXCEPTIONS_ROW}" and row_detail the source of exception from its list ("SEC Filings" for the Filed SEC Documents exception, "Disclosure Letter" for the Disclosure Letter exception, "Other" for any other article-wide qualification), its Qualifiers cells the codes the clause establishes (EXCLUDES_FORWARD_LOOKING_STATEMENTS, EXCLUDES_RISK_FACTORS, EXCLUDES_EXHIBITS, SPECIFIC_HISTORICAL_FACTS_NOT_EXCLUDED on the SEC filings exception; ARRANGED_BY_SECTION, CROSS_SECTION_WHERE_REASONABLY_APPARENT or SECTION_SPECIFIC_ONLY on the Disclosure Letter exception) and its lookback cell the SEC filings cut-off (the date filed since, or the period before signing). The knowledge standard is the ${KNOWLEDGE_ROW} row, the second row: a KEY_DEFINED_TERMS/KNOWLEDGE fact (the "Knowledge" definition) or an article-wide knowledge standard from the introduction carries row_label "${KNOWLEDGE_ROW}", row_detail "Standard" (the standard: KNOWLEDGE_AFTER_REASONABLE_INQUIRY, ACTUAL_KNOWLEDGE, CONSTRUCTIVE_KNOWLEDGE) or "Persons" (whose knowledge counts: PERSONS_LISTED_ON_DISCLOSURE_LETTER, NAMED_INDIVIDUALS, OFFICERS); a single fact that states both carries no row_detail and both codes. Never a numbered representation on either row.`;
+    table.only_subtype_keys = ['STATUS_REPRESENTATION', 'COMPLIANCE_REPRESENTATION', 'DOCUMENT_REPRESENTATION', 'CONTRACT_REPRESENTATION', 'FINANCIAL_REPRESENTATION', 'NEGATIVE_REPRESENTATION', 'REPRESENTATION_QUALIFICATION', 'KNOWLEDGE', ...CAPITALISATION_SUBTYPES];
+    // The separate general-qualifications table (an earlier reading of the
+    // same instruction) is retired: its rows are the General Exceptions row.
+    section.tables = section.tables.filter((candidate) => !/general-qualifications$/.test(candidate.table_key));
+  }
+}
+
+// ==========================================================================
+// Capitalization: the capitalization representation's counts by security
+// class. Ben, 2026-09-14, asked whether the counts should have a table of
+// their own rather than sub-items of Capitalization; Subsidiaries: "sure
+// add a table". Rows are the security classes (open to a new one), the
+// columns the authorised, issued and outstanding and reserved counts and
+// the date they speak to, every number parsed from the cited words; the
+// absence facts (no other securities, no voting agreements) sit under the
+// table as drafted; the representations row keeps its sub-items.
+// ==========================================================================
+
+const CAPITALISATION_SUBTYPES = ['AUTHORISED_CAPITAL', 'ISSUED_AND_OUTSTANDING', 'RESERVED_OR_ISSUABLE_SECURITIES', 'EQUITY_AWARD_INVENTORY', 'VALID_ISSUANCE_STATUS', 'CAPITALISATION_ABSENCE', 'PARTNERSHIP_OR_SUBSIDIARY_EQUITY'];
+const CAPITALIZATION_ROWS = ['Common Stock', 'Preferred Stock', 'Company Stock Options', 'Company RSUs', 'Company PSUs', 'Company Restricted Stock Awards', 'ESPP', 'Warrants', 'Subsidiary equity'];
+
+function applyCapitalization(doc) {
+  const why = `${BEN}: "sure add a table" (the capitalization counts by security class).`;
+  const countColumn = (columnId, header, subtypes, guidance) => ({
+    column_id: columnId,
+    header,
+    render: 'value',
+    value_kind: 'COUNT',
+    fill_from: ['AMOUNT', 'THRESHOLD'],
+    from_subtype_keys: subtypes,
+    addition: true,
+    reason: why,
+    guidance,
+  });
+  const table = {
+    table_key: 'capitalization-table',
+    group_header: null,
+    term_column: { header: 'Security class', source: 'subject', fill_from: ['TERM', 'OBJECT', 'DEFINED_TERM'] },
+    columns: [
+      countColumn('authorised', 'Authorised', ['AUTHORISED_CAPITAL'], 'The number of shares of this class the charter authorises (an AUTHORISED_CAPITAL fact), parsed from the cited count.'),
+      countColumn('issued', 'Issued and outstanding', ['ISSUED_AND_OUTSTANDING', 'EQUITY_AWARD_INVENTORY'], 'The number of shares of this class issued and outstanding (an ISSUED_AND_OUTSTANDING fact), or, on an award class, the shares subject to outstanding awards of that class (an EQUITY_AWARD_INVENTORY fact), parsed from the cited count.'),
+      countColumn('reserved', 'Reserved for issuance', ['RESERVED_OR_ISSUABLE_SECURITIES'], 'The number of shares reserved for issuance under this class or plan (a RESERVED_OR_ISSUABLE_SECURITIES fact), parsed from the cited count.'),
+      {
+        column_id: 'asOf',
+        header: 'As of',
         render: 'value',
-        value_kind: 'PERIOD',
-        fill_from: ['PERIOD', 'DATE'],
+        value_kind: 'DATE',
+        fill_from: ['DATE', 'TRIGGER'],
         addition: true,
         reason: why,
-        guidance: 'The look-back or cut-off the exception states (filed since a date, at least one business day before signing), as the cited words parse; omitted when the clause states none.',
-      }],
-      reason: why,
-      subtypeKeys: ['REPRESENTATION_QUALIFICATION'],
-      openRows: true,
-      guidance: 'One row per general qualification the article introduction states for every representation: row_label the category (SEC filings exception, Disclosure Letter exception), provision the codes the clause establishes (several cells when it establishes several), window its date or period, the as-drafted column the operative words; the reader opens the fact for the full detail. Only REPRESENTATION_QUALIFICATION facts belong here; a limb of a numbered representation never does.',
-    });
-    qualifications.only_subtype_keys = ['REPRESENTATION_QUALIFICATION'];
-    // Facts the extractor cut from an article introduction without a
-    // readout (generation 6 read them as status and document
-    // representations) are shown under this table as other provisions,
-    // grouped by sentence, until the REPRESENTATION_QUALIFICATION reading
-    // replaces them.
-    qualifications.intro_facts_of_family = 'REPRESENTATIONS';
-    section.tables.push(qualifications);
-  }
+        guidance: 'The date the count speaks to (the Measurement Date or capitalization date), as the cited words parse; cite the chapeau\'s date when the limb inherits it.',
+      },
+      {
+        column_id: 'validIssuance',
+        header: 'Validly issued',
+        render: 'boolean',
+        fill_from: ['LITANY', 'OPERATION', 'STANDARD'],
+        from_subtype_keys: ['VALID_ISSUANCE_STATUS'],
+        addition: true,
+        reason: why,
+        guidance: 'Present when the representation states that the class is duly authorized, validly issued, fully paid and nonassessable (a VALID_ISSUANCE_STATUS fact on that class\'s row).',
+      },
+      asDrafted(why, ['OPERATION', 'OBJECT', 'AMOUNT', 'QUALIFIER', 'EXCEPTION', 'LIST', 'LITANY']),
+    ],
+    rows_are: 'fixed list',
+    fixed_row_labels: [...CAPITALIZATION_ROWS],
+    open_rows: true,
+    only_subtype_keys: [...CAPITALISATION_SUBTYPES],
+    // Stored generations' facts without a readout are placed by the page
+    // by the security class their words name (lib/product/table-view.js).
+    row_from_security_class: true,
+    footer_from_subtype: { subtype_key: 'CAPITALISATION_ABSENCE', label: 'No other securities' },
+    guidance: `One row per security class as the precedent names it (fixed_row_labels; a new class label only when none fits, in the same style). The extractor cuts one fact per class and count: an AUTHORISED_CAPITAL fact goes to the class's row with its authorised count, an ISSUED_AND_OUTSTANDING fact with its issued count, a RESERVED_OR_ISSUABLE_SECURITIES fact with its reserved count (the ESPP reserve on the ESPP row), an EQUITY_AWARD_INVENTORY fact to the award class's row (Company Stock Options, Company RSUs, Company PSUs, Company Restricted Stock Awards) with the shares subject to outstanding awards in the issued column; a sentence that counts two classes is two facts. Every count is parsed by code from the cited words (never written by the model); asOf is the date the count speaks to. A VALID_ISSUANCE_STATUS fact marks its class Validly issued. A CAPITALISATION_ABSENCE fact (no other securities, options, voting agreements or voting debt; no rights plan) is never a row: it carries row_label "No other securities" and no cells, and the page shows it as drafted under the table. A PARTNERSHIP_OR_SUBSIDIARY_EQUITY fact is the Subsidiary equity row, or the Subsidiary equity interests limb of Capitalization; Subsidiaries on the representations table.`,
+  };
+  const section = {
+    section_key: 'capitalization',
+    title: 'Capitalization',
+    legacy_config: 'components/review/table-configs/representations-qualifiers.config.js',
+    note: 'Added 2026-09-14 (Ben: "sure add a table"); the old app carried the capitalization counts inside the Capitalization; Subsidiaries representation row.',
+    v2_family_keys: [{ key: 'CAPITALISATION', confidence: 'high' }],
+    tables: [table],
+  };
+  const index = doc.sections.findIndex((candidate) => candidate.section_key === 'parent-representations-qualifiers');
+  doc.sections.splice(index + 1, 0, section);
 }
 
 // ==========================================================================
@@ -1114,8 +1220,9 @@ function applyDecision34(doc) {
   applyDnoIndemnification(doc);
   applyConsideration(doc);
   applyRepresentations(doc);
+  applyCapitalization(doc);
   applyVotesAndCovenants(doc);
   return doc;
 }
 
-module.exports = { applyDecision34, IOC_CATEGORIES, EXTRA_REP_ROWS, CAPITALISATION_LIMBS };
+module.exports = { applyDecision34, IOC_CATEGORIES, EXTRA_REP_ROWS, CAPITALISATION_LIMBS, CAPITALISATION_SUBTYPES, CAPITALIZATION_ROWS, GENERAL_EXCEPTIONS_ROW, KNOWLEDGE_ROW, GENERAL_EXCEPTION_DETAILS, KNOWLEDGE_DETAILS };

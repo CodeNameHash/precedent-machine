@@ -826,7 +826,9 @@ function applyDecision26DetailColumns(doc) {
 const RAIL_GROUPS = [
   { group: 'Structure & Mechanics', hex: '#7459A6', sections: [['structure-mechanics', 'Structure & Mechanics']] },
   { group: 'Consideration', hex: '#2F8B7E', sections: [['consideration-hero', 'Consideration'], ['equity-awards', 'Equity Awards']] },
-  { group: 'Representations', hex: '#3F8A6A', sections: [['representations-qualifiers', 'Company / Target'], ['parent-representations-qualifiers', 'Buyer / Parent']] },
+  // Capitalization (Ben, 2026-09-14: "sure add a table") sits with the
+  // representations it is cut from.
+  { group: 'Representations', hex: '#3F8A6A', sections: [['representations-qualifiers', 'Company / Target'], ['parent-representations-qualifiers', 'Buyer / Parent'], ['capitalization', 'Capitalization']] },
   { group: 'Material Contracts', hex: '#8A8782', sections: [['material-contracts', 'Material Contracts']] },
   { group: 'Material Adverse Effect', hex: '#8B5B3A', sections: [['mae-definitions', 'Material Adverse Effect']] },
   { group: 'Interim Operating Covenants', hex: '#B5862E', sections: [['ioc-exceptions', 'Company / Target'], ['parent-ioc-exceptions', 'Buyer / Parent']] },

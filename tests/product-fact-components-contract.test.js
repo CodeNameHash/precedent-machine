@@ -77,3 +77,37 @@ test('a CROSS_REFERENCE to a statute outside the agreement needs no resolution; 
   fact.components.push(stamp({ component_id: 'int-1', kind: 'CROSS_REFERENCE', label: 'internal', text: 'Section 8.02', origin: 'OWN', children: [] }));
   assert.equal(validateFactComponents(fact).filter((problem) => problem.includes('must resolve')).length, 1);
 });
+
+// headline.summary (Ben, 2026-09-14, on the Other provisions table: "it
+// needs to be a summary of the provision on the right etc - like in the
+// normal course. Not just a sec ref...!"; asked whether the extractor should
+// write a short summary per fact as part of the fact contract: "1. for now -
+// yes"). Optional; when present it is one line of at most 15 words, no
+// section reference, no quotation marks, no trailing period, no leading or
+// trailing whitespace. headlineSummaryProblems is the checker; a bad summary
+// is a problem for the extractor to drop with a note, never a held fact, so
+// validateFactComponents does not report it.
+test('headline.summary is optional; headlineSummaryProblems checks it without holding the fact', () => {
+  const { headlineSummaryProblems, HEADLINE_SUMMARY_MAX_WORDS } = require('../lib/product/fact-components');
+  const fact = example();
+  fact.components.forEach((component) => { if (component.origin === 'CHAPEAU') component.origin_structure_node_id = 'n31'; });
+  assert.equal(HEADLINE_SUMMARY_MAX_WORDS, 15);
+  assert.equal(typeof fact.headline.summary, 'string', 'the contract example carries a summary');
+  assert.deepEqual(headlineSummaryProblems(fact.headline.summary), []);
+  assert.deepEqual(validateFactComponents(fact), []);
+  delete fact.headline.summary;
+  assert.deepEqual(validateFactComponents(fact), [], 'an older generation without a summary is valid');
+  assert.deepEqual(headlineSummaryProblems(undefined), []);
+  assert.deepEqual(headlineSummaryProblems(null), []);
+  assert.deepEqual(headlineSummaryProblems('Company files the Certificate of Merger with the Delaware Secretary of State'), []);
+  assert.ok(headlineSummaryProblems(12).some((problem) => problem.includes('headline summary must be a string')));
+  assert.ok(headlineSummaryProblems(' Parent pays the fee ').some((problem) => problem.includes('leading or trailing whitespace')));
+  assert.ok(headlineSummaryProblems('one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen').some((problem) => problem.includes('over 15 words')));
+  assert.ok(headlineSummaryProblems('Parent pays the fee under Section 8.3').some((problem) => problem.includes('section reference')));
+  assert.ok(headlineSummaryProblems('Parent pays the "Termination Fee"').some((problem) => problem.includes('quotation mark')));
+  assert.ok(headlineSummaryProblems('Parent pays the fee.').some((problem) => problem.includes('ends with a period')));
+  assert.deepEqual(headlineSummaryProblems("Parent's obligation survives the Closing"), [], 'a possessive apostrophe is not a quotation mark');
+  // A malformed summary never feeds the INVALID_FACT_COMPONENTS path.
+  fact.headline.summary = 'Parent pays the fee under Section 8.3.';
+  assert.deepEqual(validateFactComponents(fact), []);
+});

@@ -341,3 +341,29 @@ test('a conclusions readout with an unknown vocabulary code is not written; the 
   assert.deepEqual(readProposal.conclusions, conclusions);
   assert.equal(readProposal.validation_status, 'VALID');
 });
+
+// headline.summary round-trips through the headline row's nullable
+// `summary` column (migration 20260914140000; Ben, 2026-09-14: "it needs to
+// be a summary of the provision on the right etc - like in the normal
+// course. Not just a sec ref...!"; "1. for now - yes"). A headline without
+// one reads back without the key, so older generations are unchanged.
+test('headline.summary is written to the headline row and read back into headline.summary', async () => {
+  const client = createFakeClient();
+  const store = new ProductPhase2Store({ client });
+  const components = nestedComponents();
+  const headline = { label: 'MAE carve-out', distinguishing_component_ids: ['c-war'], summary: 'Material Adverse Effect excludes effects of war, terrorism and sabotage' };
+  const proposal = baseProposal({ components, headline });
+  await store.commitSection({ runId: RUN_ID, nodeId: NODE_ID, workerId: 'worker', attemptToken: 't'.repeat(8), result: baseResult({ proposals: [proposal] }) });
+  assert.equal(client.tables.product_fact_headlines.length, 1);
+  assert.equal(client.tables.product_fact_headlines[0].summary, headline.summary);
+  assert.equal(client.tables.product_issues.length, 0);
+  const sections = await store.loadCompletedSectionResults(RUN_ID);
+  assert.deepEqual(sections[0].proposals[0].headline, headline);
+
+  const older = createFakeClient();
+  const olderStore = new ProductPhase2Store({ client: older });
+  await olderStore.commitSection({ runId: RUN_ID, nodeId: NODE_ID, workerId: 'worker', attemptToken: 't'.repeat(8), result: baseResult({ proposals: [baseProposal({ components: nestedComponents(), headline: { label: 'MAE carve-out', distinguishing_component_ids: ['c-war'] } })] }) });
+  assert.equal(older.tables.product_fact_headlines[0].summary, null, 'the column is nullable');
+  const olderSections = await olderStore.loadCompletedSectionResults(RUN_ID);
+  assert.equal(Object.hasOwn(olderSections[0].proposals[0].headline, 'summary'), false);
+});

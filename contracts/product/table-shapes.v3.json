@@ -826,6 +826,10 @@
         {
           "key": "CAPITALISATION",
           "confidence": "high"
+        },
+        {
+          "key": "KEY_DEFINED_TERMS",
+          "confidence": "low"
         }
       ],
       "tables": [
@@ -922,12 +926,147 @@
                     "page": 19,
                     "row_label": "Information Supplied / Proxy Statement"
                   }
+                },
+                {
+                  "code": "EXCEPT_AS_DISCLOSED_IN_SEC_FILINGS",
+                  "label": "Except as disclosed in SEC filings",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
+                },
+                {
+                  "code": "EXCLUDES_FORWARD_LOOKING_STATEMENTS",
+                  "label": "Forward-looking statements excluded",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
+                },
+                {
+                  "code": "EXCLUDES_RISK_FACTORS",
+                  "label": "Risk Factors excluded",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
+                },
+                {
+                  "code": "EXCLUDES_EXHIBITS",
+                  "label": "Exhibits excluded",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
+                },
+                {
+                  "code": "SPECIFIC_HISTORICAL_FACTS_NOT_EXCLUDED",
+                  "label": "Specific historical facts still count",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
+                },
+                {
+                  "code": "EXCEPT_AS_SET_FORTH_IN_DISCLOSURE_LETTER",
+                  "label": "Except as set forth in the Disclosure Letter",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
+                },
+                {
+                  "code": "ARRANGED_BY_SECTION",
+                  "label": "Arranged by section",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
+                },
+                {
+                  "code": "CROSS_SECTION_WHERE_REASONABLY_APPARENT",
+                  "label": "Disclosure qualifies other sections where reasonably apparent",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
+                },
+                {
+                  "code": "SECTION_SPECIFIC_ONLY",
+                  "label": "Disclosure qualifies only the section it is made against",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
+                },
+                {
+                  "code": "ARTICLE_MATERIALITY_STANDARD",
+                  "label": "Materiality standard for the article",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
+                },
+                {
+                  "code": "KNOWLEDGE_AFTER_REASONABLE_INQUIRY",
+                  "label": "Knowledge after reasonable inquiry",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
+                },
+                {
+                  "code": "ACTUAL_KNOWLEDGE",
+                  "label": "Actual knowledge",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
+                },
+                {
+                  "code": "CONSTRUCTIVE_KNOWLEDGE",
+                  "label": "Constructive knowledge (should have known)",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
+                },
+                {
+                  "code": "PERSONS_LISTED_ON_DISCLOSURE_LETTER",
+                  "label": "Persons listed on Disclosure Letter",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
+                },
+                {
+                  "code": "NAMED_INDIVIDUALS",
+                  "label": "Named individuals",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
+                },
+                {
+                  "code": "OFFICERS",
+                  "label": "Officers",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
                 }
               ],
               "fill_from": [
                 "STANDARD",
                 "MATERIALITY_QUALIFIER"
-              ]
+              ],
+              "vocabulary_by_row": {
+                "General Exceptions": [
+                  "EXCEPT_AS_DISCLOSED_IN_SEC_FILINGS",
+                  "EXCLUDES_FORWARD_LOOKING_STATEMENTS",
+                  "EXCLUDES_RISK_FACTORS",
+                  "EXCLUDES_EXHIBITS",
+                  "SPECIFIC_HISTORICAL_FACTS_NOT_EXCLUDED",
+                  "EXCEPT_AS_SET_FORTH_IN_DISCLOSURE_LETTER",
+                  "ARRANGED_BY_SECTION",
+                  "CROSS_SECTION_WHERE_REASONABLY_APPARENT",
+                  "SECTION_SPECIFIC_ONLY",
+                  "ARTICLE_MATERIALITY_STANDARD"
+                ],
+                "Knowledge": [
+                  "KNOWLEDGE_AFTER_REASONABLE_INQUIRY",
+                  "ACTUAL_KNOWLEDGE",
+                  "CONSTRUCTIVE_KNOWLEDGE",
+                  "PERSONS_LISTED_ON_DISCLOSURE_LETTER",
+                  "NAMED_INDIVIDUALS",
+                  "OFFICERS"
+                ]
+              },
+              "guidance": "On a representation row: the materiality or knowledge qualifier the representation carries. On the General Exceptions row: the codes the article introduction establishes for that source of exception (the portions of the SEC filings excluded, the arrangement and cross-section rule of the Disclosure Letter), several cells when it establishes several. On the Knowledge row: the knowledge standard (Standard) and whose knowledge counts (Persons)."
             },
             {
               "column_id": "lookback",
@@ -938,11 +1077,14 @@
                 "DATE"
               ],
               "value_kind": "PERIOD",
-              "hover": "date"
+              "hover": "date",
+              "guidance": "On a representation row: the look-back date or period the representation states. On the General Exceptions row, SEC Filings sub-item: the cut-off of the SEC filings exception (filed since a date; at least one business day before signing), as the cited words parse."
             }
           ],
           "rows_are": "fixed list",
           "fixed_row_labels": [
+            "General Exceptions",
+            "Knowledge",
             "Organization; Qualification; Standing",
             "Capitalization; Subsidiaries",
             "Authority; Enforceability",
@@ -984,9 +1126,18 @@
             "Ownership of Company Stock; No Interested Stockholder",
             "Merger Sub Operations"
           ],
-          "fixed_row_labels_source": "TopBuild print pp.17-19, Representations & Warranties rows (legacy vocabulary); lib/rubric.js REP-T-* labels (decision 34)",
+          "fixed_row_labels_source": "TopBuild print pp.17-19, Representations & Warranties rows (legacy vocabulary); lib/rubric.js REP-T-* labels (decision 34); Envestnet print General Exceptions and Knowledge rows (Ben, 2026-09-14)",
           "open_rows": true,
           "detail_labels_by_row": {
+            "General Exceptions": [
+              "SEC Filings",
+              "Disclosure Letter",
+              "Other"
+            ],
+            "Knowledge": [
+              "Standard",
+              "Persons"
+            ],
             "Organization; Qualification; Standing": [
               "Due organization, valid existence and good standing",
               "Corporate power and authority to own, lease and operate its properties and assets and to conduct its business",
@@ -1014,189 +1165,26 @@
               "Valid issuance, fully paid and nonassessable"
             ]
           },
-          "guidance": "row_label is the representation as the precedent names it (one of fixed_row_labels); add a new row label only for a representation none of them covers (for example a regulatory or FDA representation). Each limb of a representation is a sub-item: row_detail is the canonical limb name from detail_labels_by_row for that row (a new limb name only when none fits, in the same style, never the agreement's own words); a fact about the representation as a whole carries no row_detail and gives the overview. The bringdown column is never filled from a representation: it comes from the closing conditions. A CAPITALISATION fact (authorized capital, issued and outstanding shares, reserved securities, the award inventory, subsidiary equity) is a limb of Capitalization; Subsidiaries: row_label that representation, row_detail the limb from its list. The article's introductory sentence (the representing party, the disclosure-letter and SEC-document exceptions) is never a row of this table: its REPRESENTATION_QUALIFICATION facts go to the general qualifications table.",
+          "guidance": "row_label is the representation as the precedent names it (one of fixed_row_labels); add a new row label only for a representation none of them covers (for example a regulatory or FDA representation). Each limb of a representation is a sub-item: row_detail is the canonical limb name from detail_labels_by_row for that row (a new limb name only when none fits, in the same style, never the agreement's own words); a fact about the representation as a whole carries no row_detail and gives the overview. The bringdown column is never filled from a representation: it comes from the closing conditions. A CAPITALISATION fact (authorized capital, issued and outstanding shares, reserved securities, the award inventory, subsidiary equity) is a limb of Capitalization; Subsidiaries: row_label that representation, row_detail the limb from its list; a fact that states a count of a security class is coded to the capitalization table instead (see capitalization-table). The article's introductory sentence (the disclosure-letter and SEC-document exceptions to every representation) is the General Exceptions row, the first row of this table: each REPRESENTATION_QUALIFICATION fact carries row_label \"General Exceptions\" and row_detail the source of exception from its list (\"SEC Filings\" for the Filed SEC Documents exception, \"Disclosure Letter\" for the Disclosure Letter exception, \"Other\" for any other article-wide qualification), its Qualifiers cells the codes the clause establishes (EXCLUDES_FORWARD_LOOKING_STATEMENTS, EXCLUDES_RISK_FACTORS, EXCLUDES_EXHIBITS, SPECIFIC_HISTORICAL_FACTS_NOT_EXCLUDED on the SEC filings exception; ARRANGED_BY_SECTION, CROSS_SECTION_WHERE_REASONABLY_APPARENT or SECTION_SPECIFIC_ONLY on the Disclosure Letter exception) and its lookback cell the SEC filings cut-off (the date filed since, or the period before signing). The knowledge standard is the Knowledge row, the second row: a KEY_DEFINED_TERMS/KNOWLEDGE fact (the \"Knowledge\" definition) or an article-wide knowledge standard from the introduction carries row_label \"Knowledge\", row_detail \"Standard\" (the standard: KNOWLEDGE_AFTER_REASONABLE_INQUIRY, ACTUAL_KNOWLEDGE, CONSTRUCTIVE_KNOWLEDGE) or \"Persons\" (whose knowledge counts: PERSONS_LISTED_ON_DISCLOSURE_LETTER, NAMED_INDIVIDUALS, OFFICERS); a single fact that states both carries no row_detail and both codes. Never a numbered representation on either row.",
+          "intro_facts_row": "General Exceptions",
+          "knowledge_facts_row": "Knowledge",
           "only_subtype_keys": [
             "STATUS_REPRESENTATION",
             "COMPLIANCE_REPRESENTATION",
             "DOCUMENT_REPRESENTATION",
             "CONTRACT_REPRESENTATION",
             "FINANCIAL_REPRESENTATION",
-            "NEGATIVE_REPRESENTATION"
+            "NEGATIVE_REPRESENTATION",
+            "REPRESENTATION_QUALIFICATION",
+            "KNOWLEDGE",
+            "AUTHORISED_CAPITAL",
+            "ISSUED_AND_OUTSTANDING",
+            "RESERVED_OR_ISSUABLE_SECURITIES",
+            "EQUITY_AWARD_INVENTORY",
+            "VALID_ISSUANCE_STATUS",
+            "CAPITALISATION_ABSENCE",
+            "PARTNERSHIP_OR_SUBSIDIARY_EQUITY"
           ]
-        },
-        {
-          "table_key": "representations-general-qualifications",
-          "group_header": null,
-          "term_column": {
-            "header": "Qualification",
-            "source": "subject",
-            "fill_from": [
-              "TERM"
-            ]
-          },
-          "columns": [
-            {
-              "column_id": "provision",
-              "header": "Provision",
-              "render": "vocabulary",
-              "vocabulary": [
-                {
-                  "code": "EXCEPT_AS_DISCLOSED_IN_SEC_FILINGS",
-                  "label": "Except as disclosed in SEC filings",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
-                },
-                {
-                  "code": "FILINGS_WITHIN_STATED_WINDOW",
-                  "label": "Filings within a stated window",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
-                },
-                {
-                  "code": "RISK_FACTORS_AND_FORWARD_LOOKING_EXCLUDED",
-                  "label": "Risk factors and forward-looking statements excluded",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
-                },
-                {
-                  "code": "EXHIBITS_EXCLUDED",
-                  "label": "Exhibits excluded",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
-                },
-                {
-                  "code": "SPECIFIC_HISTORICAL_FACTS_NOT_EXCLUDED",
-                  "label": "Specific historical facts still count",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
-                },
-                {
-                  "code": "EXCEPT_AS_SET_FORTH_IN_DISCLOSURE_LETTER",
-                  "label": "Except as set forth in the Disclosure Letter",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
-                },
-                {
-                  "code": "ARRANGED_BY_SECTION",
-                  "label": "Arranged by section",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
-                },
-                {
-                  "code": "CROSS_SECTION_WHERE_REASONABLY_APPARENT",
-                  "label": "Disclosure qualifies other sections where reasonably apparent",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
-                },
-                {
-                  "code": "SECTION_SPECIFIC_ONLY",
-                  "label": "Disclosure qualifies only the section it is made against",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
-                },
-                {
-                  "code": "ARTICLE_KNOWLEDGE_STANDARD",
-                  "label": "Knowledge standard for the article",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
-                },
-                {
-                  "code": "ARTICLE_MATERIALITY_STANDARD",
-                  "label": "Materiality standard for the article",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
-                }
-              ],
-              "vocabulary_by_row": {
-                "SEC filings exception": [
-                  "EXCEPT_AS_DISCLOSED_IN_SEC_FILINGS",
-                  "FILINGS_WITHIN_STATED_WINDOW",
-                  "RISK_FACTORS_AND_FORWARD_LOOKING_EXCLUDED",
-                  "EXHIBITS_EXCLUDED",
-                  "SPECIFIC_HISTORICAL_FACTS_NOT_EXCLUDED"
-                ],
-                "Disclosure Letter exception": [
-                  "EXCEPT_AS_SET_FORTH_IN_DISCLOSURE_LETTER",
-                  "ARRANGED_BY_SECTION",
-                  "CROSS_SECTION_WHERE_REASONABLY_APPARENT",
-                  "SECTION_SPECIFIC_ONLY"
-                ],
-                "Other general qualification": [
-                  "ARTICLE_KNOWLEDGE_STANDARD",
-                  "ARTICLE_MATERIALITY_STANDARD"
-                ]
-              },
-              "fill_from": [
-                "STANDARD",
-                "EFFORTS_STANDARD",
-                "OPERATION",
-                "CONDITION",
-                "EXCEPTION",
-                "QUALIFIER",
-                "ACTOR",
-                "FORUM"
-              ],
-              "addition": true,
-              "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category.",
-              "guidance": "One code from this row's own list (vocabulary_by_row); several cells with distinct codes when the clause states several of them (the acts a no-shop prohibits, the events an intervening-event definition excludes); never a code from another row's list."
-            },
-            {
-              "column_id": "window",
-              "header": "Window",
-              "render": "value",
-              "value_kind": "PERIOD",
-              "fill_from": [
-                "PERIOD",
-                "DATE"
-              ],
-              "addition": true,
-              "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category.",
-              "guidance": "The look-back or cut-off the exception states (filed since a date, at least one business day before signing), as the cited words parse; omitted when the clause states none."
-            },
-            {
-              "column_id": "asDrafted",
-              "header": "As drafted",
-              "render": "verbatim",
-              "display": "fact_text",
-              "fill_from": [
-                "OPERATION",
-                "OBJECT",
-                "CONDITION",
-                "STANDARD",
-                "EXCEPTION",
-                "QUALIFIER"
-              ],
-              "addition": true,
-              "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category.",
-              "guidance": "Shown as the fact's own words as drafted (every component in source order); cite the operative words."
-            }
-          ],
-          "rows_are": "fixed list",
-          "fixed_row_labels": [
-            "SEC filings exception",
-            "Disclosure Letter exception",
-            "Other general qualification"
-          ],
-          "open_rows": true,
-          "subtype_keys": [
-            "REPRESENTATION_QUALIFICATION"
-          ],
-          "guidance": "One row per general qualification the article introduction states for every representation: row_label the category (SEC filings exception, Disclosure Letter exception), provision the codes the clause establishes (several cells when it establishes several), window its date or period, the as-drafted column the operative words; the reader opens the fact for the full detail. Only REPRESENTATION_QUALIFICATION facts belong here; a limb of a numbered representation never does.",
-          "only_subtype_keys": [
-            "REPRESENTATION_QUALIFICATION"
-          ],
-          "intro_facts_of_family": "REPRESENTATIONS"
         }
       ],
       "print_pages": [
@@ -1222,6 +1210,10 @@
         {
           "key": "CAPITALISATION",
           "confidence": "high"
+        },
+        {
+          "key": "KEY_DEFINED_TERMS",
+          "confidence": "low"
         }
       ],
       "tables": [
@@ -1318,12 +1310,147 @@
                     "page": 19,
                     "row_label": "Information Supplied / Proxy Statement"
                   }
+                },
+                {
+                  "code": "EXCEPT_AS_DISCLOSED_IN_SEC_FILINGS",
+                  "label": "Except as disclosed in SEC filings",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
+                },
+                {
+                  "code": "EXCLUDES_FORWARD_LOOKING_STATEMENTS",
+                  "label": "Forward-looking statements excluded",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
+                },
+                {
+                  "code": "EXCLUDES_RISK_FACTORS",
+                  "label": "Risk Factors excluded",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
+                },
+                {
+                  "code": "EXCLUDES_EXHIBITS",
+                  "label": "Exhibits excluded",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
+                },
+                {
+                  "code": "SPECIFIC_HISTORICAL_FACTS_NOT_EXCLUDED",
+                  "label": "Specific historical facts still count",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
+                },
+                {
+                  "code": "EXCEPT_AS_SET_FORTH_IN_DISCLOSURE_LETTER",
+                  "label": "Except as set forth in the Disclosure Letter",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
+                },
+                {
+                  "code": "ARRANGED_BY_SECTION",
+                  "label": "Arranged by section",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
+                },
+                {
+                  "code": "CROSS_SECTION_WHERE_REASONABLY_APPARENT",
+                  "label": "Disclosure qualifies other sections where reasonably apparent",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
+                },
+                {
+                  "code": "SECTION_SPECIFIC_ONLY",
+                  "label": "Disclosure qualifies only the section it is made against",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
+                },
+                {
+                  "code": "ARTICLE_MATERIALITY_STANDARD",
+                  "label": "Materiality standard for the article",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
+                },
+                {
+                  "code": "KNOWLEDGE_AFTER_REASONABLE_INQUIRY",
+                  "label": "Knowledge after reasonable inquiry",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
+                },
+                {
+                  "code": "ACTUAL_KNOWLEDGE",
+                  "label": "Actual knowledge",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
+                },
+                {
+                  "code": "CONSTRUCTIVE_KNOWLEDGE",
+                  "label": "Constructive knowledge (should have known)",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
+                },
+                {
+                  "code": "PERSONS_LISTED_ON_DISCLOSURE_LETTER",
+                  "label": "Persons listed on Disclosure Letter",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
+                },
+                {
+                  "code": "NAMED_INDIVIDUALS",
+                  "label": "Named individuals",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
+                },
+                {
+                  "code": "OFFICERS",
+                  "label": "Officers",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): \"look at the old system - we should be able to show the reader the general categories of the exceptions (SEC filings) and as they click into deeper levels show more detail (last X days) etc\" (the General Exceptions and Knowledge rows of the old version's representations table)."
                 }
               ],
               "fill_from": [
                 "STANDARD",
                 "MATERIALITY_QUALIFIER"
-              ]
+              ],
+              "vocabulary_by_row": {
+                "General Exceptions": [
+                  "EXCEPT_AS_DISCLOSED_IN_SEC_FILINGS",
+                  "EXCLUDES_FORWARD_LOOKING_STATEMENTS",
+                  "EXCLUDES_RISK_FACTORS",
+                  "EXCLUDES_EXHIBITS",
+                  "SPECIFIC_HISTORICAL_FACTS_NOT_EXCLUDED",
+                  "EXCEPT_AS_SET_FORTH_IN_DISCLOSURE_LETTER",
+                  "ARRANGED_BY_SECTION",
+                  "CROSS_SECTION_WHERE_REASONABLY_APPARENT",
+                  "SECTION_SPECIFIC_ONLY",
+                  "ARTICLE_MATERIALITY_STANDARD"
+                ],
+                "Knowledge": [
+                  "KNOWLEDGE_AFTER_REASONABLE_INQUIRY",
+                  "ACTUAL_KNOWLEDGE",
+                  "CONSTRUCTIVE_KNOWLEDGE",
+                  "PERSONS_LISTED_ON_DISCLOSURE_LETTER",
+                  "NAMED_INDIVIDUALS",
+                  "OFFICERS"
+                ]
+              },
+              "guidance": "On a representation row: the materiality or knowledge qualifier the representation carries. On the General Exceptions row: the codes the article introduction establishes for that source of exception (the portions of the SEC filings excluded, the arrangement and cross-section rule of the Disclosure Letter), several cells when it establishes several. On the Knowledge row: the knowledge standard (Standard) and whose knowledge counts (Persons)."
             },
             {
               "column_id": "lookback",
@@ -1334,11 +1461,14 @@
                 "DATE"
               ],
               "value_kind": "PERIOD",
-              "hover": "date"
+              "hover": "date",
+              "guidance": "On a representation row: the look-back date or period the representation states. On the General Exceptions row, SEC Filings sub-item: the cut-off of the SEC filings exception (filed since a date; at least one business day before signing), as the cited words parse."
             }
           ],
           "rows_are": "fixed list",
           "fixed_row_labels": [
+            "General Exceptions",
+            "Knowledge",
             "Organization; Qualification; Standing",
             "Capitalization; Subsidiaries",
             "Authority; Enforceability",
@@ -1380,9 +1510,18 @@
             "Ownership of Company Stock; No Interested Stockholder",
             "Merger Sub Operations"
           ],
-          "fixed_row_labels_source": "TopBuild print pp.17-19, Representations & Warranties rows (legacy vocabulary); lib/rubric.js REP-T-* labels (decision 34)",
+          "fixed_row_labels_source": "TopBuild print pp.17-19, Representations & Warranties rows (legacy vocabulary); lib/rubric.js REP-T-* labels (decision 34); Envestnet print General Exceptions and Knowledge rows (Ben, 2026-09-14)",
           "open_rows": true,
           "detail_labels_by_row": {
+            "General Exceptions": [
+              "SEC Filings",
+              "Disclosure Letter",
+              "Other"
+            ],
+            "Knowledge": [
+              "Standard",
+              "Persons"
+            ],
             "Organization; Qualification; Standing": [
               "Due organization, valid existence and good standing",
               "Corporate power and authority to own, lease and operate its properties and assets and to conduct its business",
@@ -1410,189 +1549,26 @@
               "Valid issuance, fully paid and nonassessable"
             ]
           },
-          "guidance": "row_label is the representation as the precedent names it (one of fixed_row_labels); add a new row label only for a representation none of them covers (for example a regulatory or FDA representation). Each limb of a representation is a sub-item: row_detail is the canonical limb name from detail_labels_by_row for that row (a new limb name only when none fits, in the same style, never the agreement's own words); a fact about the representation as a whole carries no row_detail and gives the overview. The bringdown column is never filled from a representation: it comes from the closing conditions. A CAPITALISATION fact (authorized capital, issued and outstanding shares, reserved securities, the award inventory, subsidiary equity) is a limb of Capitalization; Subsidiaries: row_label that representation, row_detail the limb from its list. The article's introductory sentence (the representing party, the disclosure-letter and SEC-document exceptions) is never a row of this table: its REPRESENTATION_QUALIFICATION facts go to the general qualifications table.",
+          "guidance": "row_label is the representation as the precedent names it (one of fixed_row_labels); add a new row label only for a representation none of them covers (for example a regulatory or FDA representation). Each limb of a representation is a sub-item: row_detail is the canonical limb name from detail_labels_by_row for that row (a new limb name only when none fits, in the same style, never the agreement's own words); a fact about the representation as a whole carries no row_detail and gives the overview. The bringdown column is never filled from a representation: it comes from the closing conditions. A CAPITALISATION fact (authorized capital, issued and outstanding shares, reserved securities, the award inventory, subsidiary equity) is a limb of Capitalization; Subsidiaries: row_label that representation, row_detail the limb from its list; a fact that states a count of a security class is coded to the capitalization table instead (see capitalization-table). The article's introductory sentence (the disclosure-letter and SEC-document exceptions to every representation) is the General Exceptions row, the first row of this table: each REPRESENTATION_QUALIFICATION fact carries row_label \"General Exceptions\" and row_detail the source of exception from its list (\"SEC Filings\" for the Filed SEC Documents exception, \"Disclosure Letter\" for the Disclosure Letter exception, \"Other\" for any other article-wide qualification), its Qualifiers cells the codes the clause establishes (EXCLUDES_FORWARD_LOOKING_STATEMENTS, EXCLUDES_RISK_FACTORS, EXCLUDES_EXHIBITS, SPECIFIC_HISTORICAL_FACTS_NOT_EXCLUDED on the SEC filings exception; ARRANGED_BY_SECTION, CROSS_SECTION_WHERE_REASONABLY_APPARENT or SECTION_SPECIFIC_ONLY on the Disclosure Letter exception) and its lookback cell the SEC filings cut-off (the date filed since, or the period before signing). The knowledge standard is the Knowledge row, the second row: a KEY_DEFINED_TERMS/KNOWLEDGE fact (the \"Knowledge\" definition) or an article-wide knowledge standard from the introduction carries row_label \"Knowledge\", row_detail \"Standard\" (the standard: KNOWLEDGE_AFTER_REASONABLE_INQUIRY, ACTUAL_KNOWLEDGE, CONSTRUCTIVE_KNOWLEDGE) or \"Persons\" (whose knowledge counts: PERSONS_LISTED_ON_DISCLOSURE_LETTER, NAMED_INDIVIDUALS, OFFICERS); a single fact that states both carries no row_detail and both codes. Never a numbered representation on either row.",
+          "intro_facts_row": "General Exceptions",
+          "knowledge_facts_row": "Knowledge",
           "only_subtype_keys": [
             "STATUS_REPRESENTATION",
             "COMPLIANCE_REPRESENTATION",
             "DOCUMENT_REPRESENTATION",
             "CONTRACT_REPRESENTATION",
             "FINANCIAL_REPRESENTATION",
-            "NEGATIVE_REPRESENTATION"
+            "NEGATIVE_REPRESENTATION",
+            "REPRESENTATION_QUALIFICATION",
+            "KNOWLEDGE",
+            "AUTHORISED_CAPITAL",
+            "ISSUED_AND_OUTSTANDING",
+            "RESERVED_OR_ISSUABLE_SECURITIES",
+            "EQUITY_AWARD_INVENTORY",
+            "VALID_ISSUANCE_STATUS",
+            "CAPITALISATION_ABSENCE",
+            "PARTNERSHIP_OR_SUBSIDIARY_EQUITY"
           ]
-        },
-        {
-          "table_key": "parent-representations-general-qualifications",
-          "group_header": null,
-          "term_column": {
-            "header": "Qualification",
-            "source": "subject",
-            "fill_from": [
-              "TERM"
-            ]
-          },
-          "columns": [
-            {
-              "column_id": "provision",
-              "header": "Provision",
-              "render": "vocabulary",
-              "vocabulary": [
-                {
-                  "code": "EXCEPT_AS_DISCLOSED_IN_SEC_FILINGS",
-                  "label": "Except as disclosed in SEC filings",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
-                },
-                {
-                  "code": "FILINGS_WITHIN_STATED_WINDOW",
-                  "label": "Filings within a stated window",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
-                },
-                {
-                  "code": "RISK_FACTORS_AND_FORWARD_LOOKING_EXCLUDED",
-                  "label": "Risk factors and forward-looking statements excluded",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
-                },
-                {
-                  "code": "EXHIBITS_EXCLUDED",
-                  "label": "Exhibits excluded",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
-                },
-                {
-                  "code": "SPECIFIC_HISTORICAL_FACTS_NOT_EXCLUDED",
-                  "label": "Specific historical facts still count",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
-                },
-                {
-                  "code": "EXCEPT_AS_SET_FORTH_IN_DISCLOSURE_LETTER",
-                  "label": "Except as set forth in the Disclosure Letter",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
-                },
-                {
-                  "code": "ARRANGED_BY_SECTION",
-                  "label": "Arranged by section",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
-                },
-                {
-                  "code": "CROSS_SECTION_WHERE_REASONABLY_APPARENT",
-                  "label": "Disclosure qualifies other sections where reasonably apparent",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
-                },
-                {
-                  "code": "SECTION_SPECIFIC_ONLY",
-                  "label": "Disclosure qualifies only the section it is made against",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
-                },
-                {
-                  "code": "ARTICLE_KNOWLEDGE_STANDARD",
-                  "label": "Knowledge standard for the article",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
-                },
-                {
-                  "code": "ARTICLE_MATERIALITY_STANDARD",
-                  "label": "Materiality standard for the article",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category."
-                }
-              ],
-              "vocabulary_by_row": {
-                "SEC filings exception": [
-                  "EXCEPT_AS_DISCLOSED_IN_SEC_FILINGS",
-                  "FILINGS_WITHIN_STATED_WINDOW",
-                  "RISK_FACTORS_AND_FORWARD_LOOKING_EXCLUDED",
-                  "EXHIBITS_EXCLUDED",
-                  "SPECIFIC_HISTORICAL_FACTS_NOT_EXCLUDED"
-                ],
-                "Disclosure Letter exception": [
-                  "EXCEPT_AS_SET_FORTH_IN_DISCLOSURE_LETTER",
-                  "ARRANGED_BY_SECTION",
-                  "CROSS_SECTION_WHERE_REASONABLY_APPARENT",
-                  "SECTION_SPECIFIC_ONLY"
-                ],
-                "Other general qualification": [
-                  "ARTICLE_KNOWLEDGE_STANDARD",
-                  "ARTICLE_MATERIALITY_STANDARD"
-                ]
-              },
-              "fill_from": [
-                "STANDARD",
-                "EFFORTS_STANDARD",
-                "OPERATION",
-                "CONDITION",
-                "EXCEPTION",
-                "QUALIFIER",
-                "ACTOR",
-                "FORUM"
-              ],
-              "addition": true,
-              "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category.",
-              "guidance": "One code from this row's own list (vocabulary_by_row); several cells with distinct codes when the clause states several of them (the acts a no-shop prohibits, the events an intervening-event definition excludes); never a code from another row's list."
-            },
-            {
-              "column_id": "window",
-              "header": "Window",
-              "render": "value",
-              "value_kind": "PERIOD",
-              "fill_from": [
-                "PERIOD",
-                "DATE"
-              ],
-              "addition": true,
-              "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category.",
-              "guidance": "The look-back or cut-off the exception states (filed since a date, at least one business day before signing), as the cited words parse; omitted when the clause states none."
-            },
-            {
-              "column_id": "asDrafted",
-              "header": "As drafted",
-              "render": "verbatim",
-              "display": "fact_text",
-              "fill_from": [
-                "OPERATION",
-                "OBJECT",
-                "CONDITION",
-                "STANDARD",
-                "EXCEPTION",
-                "QUALIFIER"
-              ],
-              "addition": true,
-              "reason": "Ben's decision 2026-09-14 (decision 34): the general qualifications to every representation, by category.",
-              "guidance": "Shown as the fact's own words as drafted (every component in source order); cite the operative words."
-            }
-          ],
-          "rows_are": "fixed list",
-          "fixed_row_labels": [
-            "SEC filings exception",
-            "Disclosure Letter exception",
-            "Other general qualification"
-          ],
-          "open_rows": true,
-          "subtype_keys": [
-            "REPRESENTATION_QUALIFICATION"
-          ],
-          "guidance": "One row per general qualification the article introduction states for every representation: row_label the category (SEC filings exception, Disclosure Letter exception), provision the codes the clause establishes (several cells when it establishes several), window its date or period, the as-drafted column the operative words; the reader opens the fact for the full detail. Only REPRESENTATION_QUALIFICATION facts belong here; a limb of a numbered representation never does.",
-          "only_subtype_keys": [
-            "REPRESENTATION_QUALIFICATION"
-          ],
-          "intro_facts_of_family": "REPRESENTATIONS"
         }
       ],
       "print_pages": [
@@ -1602,6 +1578,164 @@
       "rail": {
         "group": "Representations",
         "label": "Buyer / Parent",
+        "hex": "#3F8A6A"
+      }
+    },
+    {
+      "section_key": "capitalization",
+      "title": "Capitalization",
+      "legacy_config": "components/review/table-configs/representations-qualifiers.config.js",
+      "note": "Added 2026-09-14 (Ben: \"sure add a table\"); the old app carried the capitalization counts inside the Capitalization; Subsidiaries representation row.",
+      "v2_family_keys": [
+        {
+          "key": "CAPITALISATION",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "capitalization-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Security class",
+            "source": "subject",
+            "fill_from": [
+              "TERM",
+              "OBJECT",
+              "DEFINED_TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "authorised",
+              "header": "Authorised",
+              "render": "value",
+              "value_kind": "COUNT",
+              "fill_from": [
+                "AMOUNT",
+                "THRESHOLD"
+              ],
+              "from_subtype_keys": [
+                "AUTHORISED_CAPITAL"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): \"sure add a table\" (the capitalization counts by security class).",
+              "guidance": "The number of shares of this class the charter authorises (an AUTHORISED_CAPITAL fact), parsed from the cited count."
+            },
+            {
+              "column_id": "issued",
+              "header": "Issued and outstanding",
+              "render": "value",
+              "value_kind": "COUNT",
+              "fill_from": [
+                "AMOUNT",
+                "THRESHOLD"
+              ],
+              "from_subtype_keys": [
+                "ISSUED_AND_OUTSTANDING",
+                "EQUITY_AWARD_INVENTORY"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): \"sure add a table\" (the capitalization counts by security class).",
+              "guidance": "The number of shares of this class issued and outstanding (an ISSUED_AND_OUTSTANDING fact), or, on an award class, the shares subject to outstanding awards of that class (an EQUITY_AWARD_INVENTORY fact), parsed from the cited count."
+            },
+            {
+              "column_id": "reserved",
+              "header": "Reserved for issuance",
+              "render": "value",
+              "value_kind": "COUNT",
+              "fill_from": [
+                "AMOUNT",
+                "THRESHOLD"
+              ],
+              "from_subtype_keys": [
+                "RESERVED_OR_ISSUABLE_SECURITIES"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): \"sure add a table\" (the capitalization counts by security class).",
+              "guidance": "The number of shares reserved for issuance under this class or plan (a RESERVED_OR_ISSUABLE_SECURITIES fact), parsed from the cited count."
+            },
+            {
+              "column_id": "asOf",
+              "header": "As of",
+              "render": "value",
+              "value_kind": "DATE",
+              "fill_from": [
+                "DATE",
+                "TRIGGER"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): \"sure add a table\" (the capitalization counts by security class).",
+              "guidance": "The date the count speaks to (the Measurement Date or capitalization date), as the cited words parse; cite the chapeau's date when the limb inherits it."
+            },
+            {
+              "column_id": "validIssuance",
+              "header": "Validly issued",
+              "render": "boolean",
+              "fill_from": [
+                "LITANY",
+                "OPERATION",
+                "STANDARD"
+              ],
+              "from_subtype_keys": [
+                "VALID_ISSUANCE_STATUS"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): \"sure add a table\" (the capitalization counts by security class).",
+              "guidance": "Present when the representation states that the class is duly authorized, validly issued, fully paid and nonassessable (a VALID_ISSUANCE_STATUS fact on that class's row)."
+            },
+            {
+              "column_id": "asDrafted",
+              "header": "As drafted",
+              "render": "verbatim",
+              "display": "fact_text",
+              "fill_from": [
+                "OPERATION",
+                "OBJECT",
+                "AMOUNT",
+                "QUALIFIER",
+                "EXCEPTION",
+                "LIST",
+                "LITANY"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): \"sure add a table\" (the capitalization counts by security class).",
+              "guidance": "Shown as the fact's own words as drafted (every component in source order); cite the operative words."
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Common Stock",
+            "Preferred Stock",
+            "Company Stock Options",
+            "Company RSUs",
+            "Company PSUs",
+            "Company Restricted Stock Awards",
+            "ESPP",
+            "Warrants",
+            "Subsidiary equity"
+          ],
+          "open_rows": true,
+          "only_subtype_keys": [
+            "AUTHORISED_CAPITAL",
+            "ISSUED_AND_OUTSTANDING",
+            "RESERVED_OR_ISSUABLE_SECURITIES",
+            "EQUITY_AWARD_INVENTORY",
+            "VALID_ISSUANCE_STATUS",
+            "CAPITALISATION_ABSENCE",
+            "PARTNERSHIP_OR_SUBSIDIARY_EQUITY"
+          ],
+          "row_from_security_class": true,
+          "footer_from_subtype": {
+            "subtype_key": "CAPITALISATION_ABSENCE",
+            "label": "No other securities"
+          },
+          "guidance": "One row per security class as the precedent names it (fixed_row_labels; a new class label only when none fits, in the same style). The extractor cuts one fact per class and count: an AUTHORISED_CAPITAL fact goes to the class's row with its authorised count, an ISSUED_AND_OUTSTANDING fact with its issued count, a RESERVED_OR_ISSUABLE_SECURITIES fact with its reserved count (the ESPP reserve on the ESPP row), an EQUITY_AWARD_INVENTORY fact to the award class's row (Company Stock Options, Company RSUs, Company PSUs, Company Restricted Stock Awards) with the shares subject to outstanding awards in the issued column; a sentence that counts two classes is two facts. Every count is parsed by code from the cited words (never written by the model); asOf is the date the count speaks to. A VALID_ISSUANCE_STATUS fact marks its class Validly issued. A CAPITALISATION_ABSENCE fact (no other securities, options, voting agreements or voting debt; no rights plan) is never a row: it carries row_label \"No other securities\" and no cells, and the page shows it as drafted under the table. A PARTNERSHIP_OR_SUBSIDIARY_EQUITY fact is the Subsidiary equity row, or the Subsidiary equity interests limb of Capitalization; Subsidiaries on the representations table."
+        }
+      ],
+      "rail": {
+        "group": "Representations",
+        "label": "Capitalization",
         "hex": "#3F8A6A"
       }
     },

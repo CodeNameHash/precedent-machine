@@ -517,25 +517,226 @@ test('the per-share grid shows the defined term under the component and the pack
   assert.equal(table.combined_definition.fact_id, 'pack');
 });
 
-// Ben, 2026-09-14: "This is the standard intro to the reps that provides
-// the exceptions for all reps". Until the extractor reads the introduction
-// as REPRESENTATION_QUALIFICATION facts, its facts sit under the general
-// qualifications table as other provisions, never as facts without a readout.
-test('representation facts from an article introduction without a readout become other provisions of the general qualifications table', () => {
-  const component = (id, kind, text, start) => ({ component_id: id, kind, label: id, text, origin: 'OWN', source_span_id: 'intro', start_byte: start, end_byte: start + text.length, gap_before: false, children: [] });
-  const sec = {
-    fact_id: 'intro-sec', proposal_id: 'intro-sec', family_key: 'REPRESENTATIONS', subtype_key: 'DOCUMENT_REPRESENTATION', section_reference: 'III-INTRO', structure_node_id: 'n-intro',
-    headline: { label: 'Document representation', distinguishing_component_ids: ['sec-obj'] },
-    components: [component('sec-exc', 'EXCEPTION', 'Except as disclosed in', 0), component('sec-obj', 'OBJECT', 'the Filed Company SEC Documents', 23)],
-  };
-  const view = buildTableView({ facts: [sec], tableShapes, legalSchema });
+// Ben, 2026-09-14, on the Article III introduction rendered as seven
+// status and document representations: "all of this is miscoded. THis is
+// the standard intro to the reps that provides the exceptions for all reps
+// - look at the old system - we should be able to show the reader the
+// general categories of the exceptions (SEC filings) and as they click
+// into deeper levels show more detail (last X days) etc"; and today: "by
+// miscoded I meant oyu currentl have it messed up and you need to move it
+// over to what we had in the old vesrion....". The old version's table
+// opened with a General Exceptions row (SEC Filings: cut-off, portions
+// excluded; Disclosure Letter) and a Knowledge row (Standard, Persons).
+const introComponent = (id, kind, text, start, extra = {}) => ({ component_id: id, kind, label: id, text, origin: 'OWN', source_span_id: 'intro', start_byte: start, end_byte: start + text.length, gap_before: false, children: [], ...extra });
+const introFact = (id, subtype, components, reference = 'III-INTRO') => ({
+  fact_id: id, proposal_id: id, family_key: 'REPRESENTATIONS', subtype_key: subtype, section_reference: reference, structure_node_id: `n-${reference}`, validation_status: 'VALID',
+  headline: { label: 'Document representation', distinguishing_component_ids: [components[0].component_id] },
+  components,
+});
+
+test('generation 6 article-introduction facts land on the General Exceptions row: SEC Filings with its cut-off and excluded portions, Disclosure Letter with its arrangement rule, the rest under Other', () => {
+  const window = introFact('intro-window', 'DOCUMENT_REPRESENTATION', [
+    introComponent('w-exc', 'EXCEPTION', 'Except as disclosed in', 0),
+    introComponent('w-obj', 'OBJECT', 'filed by the Company with, or furnished by the Company to, the Securities and Exchange Commission (the “SEC”)', 30),
+    introComponent('w-period', 'PERIOD', 'at least one (1) business day prior to the date of this Agreement', 150),
+  ]);
+  const excluded = introFact('intro-excluded', 'DOCUMENT_REPRESENTATION', [
+    introComponent('x-exc', 'EXCEPTION', '(excluding any exhibits to any Filed Company SEC Documents', 300),
+    introComponent('x-list', 'LIST', 'disclosures contained in any part of any Filed Company SEC Document entitled “Risk Factors,” disclosures of risks set forth in any “Forward-Looking Statements” disclaimer', 360, { children: [
+      introComponent('x-risk', 'LIST_ELEMENT', '“Risk Factors,”', 420),
+      introComponent('x-fls', 'LIST_ELEMENT', 'disclosures of risks set forth in any “Forward-Looking Statements” disclaimer', 440),
+    ] }),
+  ]);
+  const carveBack = introFact('intro-carve-back', 'DOCUMENT_REPRESENTATION', [
+    introComponent('c-actor', 'ACTOR', 'specific historical factual information contained within such headings, disclosures or statements', 600),
+    introComponent('c-op', 'OPERATION', 'shall not be excluded)', 700),
+  ]);
+  const letter = introFact('intro-letter', 'DOCUMENT_REPRESENTATION', [
+    introComponent('l-actor', 'ACTOR', '(the “Company Disclosure Letter”)', 800),
+    introComponent('l-op', 'OPERATION', '(which shall be arranged in numbered and lettered sections', 840),
+  ]);
+  const other = introFact('intro-other', 'STATUS_REPRESENTATION', [
+    introComponent('o-actor', 'ACTOR', 'the Company', 900),
+    introComponent('o-op', 'OPERATION', 'represents and warrants', 912),
+  ]);
+  const view = buildTableView({ facts: [window, excluded, carveBack, letter, other], tableShapes, legalSchema });
   const section = view.sections.find((candidate) => candidate.section_key === 'representations-qualifiers');
   assert.ok(section, 'the representations section renders');
   assert.equal((section.facts_without_readout || []).length, 0);
-  const table = section.tables.find((candidate) => candidate.table_key === 'representations-general-qualifications');
-  assert.ok(table, 'the general qualifications table renders for the intro facts');
-  assert.equal(table.other_provisions.length, 1);
-  assert.equal(table.other_provisions[0].branches[0].fact_id, 'intro-sec');
+  assert.equal(section.tables.length, 1, 'the separate general-qualifications table is retired');
+  const table = section.tables[0];
+  assert.equal(table.table_key, 'representations-qualifiers-table');
+  assert.equal(table.rows[0].subject, 'General Exceptions', 'the first row of the table');
+  const row = table.rows[0];
+  assert.deepEqual(row.sub_rows.map((sub) => sub.subject), ['SEC Filings', 'Disclosure Letter', 'Other']);
+  const cellOf = (line, columnId) => line.cells.find((cell) => cell.column_id === columnId);
+  const labels = (cell) => (cell.values ? cell.values.map((value) => value.label) : [cell.label]);
+  const sec = row.sub_rows[0];
+  assert.deepEqual(labels(cellOf(sec, 'materiality')).sort(), ['Exhibits excluded', 'Forward-looking statements excluded', 'Risk Factors excluded', 'Specific historical facts still count']);
+  assert.equal(cellOf(sec, 'lookback').label, '1 business day', 'the cut-off parsed from the PERIOD component');
+  assert.deepEqual(cellOf(sec, 'lookback').component_ids, ['w-period']);
+  assert.deepEqual(sec.backing_facts.map((entry) => entry.fact_id), ['intro-window', 'intro-excluded', 'intro-carve-back']);
+  const fls = cellOf(sec, 'materiality').values.find((value) => value.code === 'EXCLUDES_FORWARD_LOOKING_STATEMENTS');
+  assert.ok(fls.component_ids.includes('x-fls'), 'the code cites the words that name it');
+  const disclosure = row.sub_rows[1];
+  assert.deepEqual(labels(cellOf(disclosure, 'materiality')), ['Arranged by section']);
+  assert.deepEqual(disclosure.backing_facts.map((entry) => entry.fact_id), ['intro-letter']);
+  assert.deepEqual(row.sub_rows[2].backing_facts.map((entry) => entry.fact_id), ['intro-other']);
+  // The row's own line is the overview of its sub-items: the categories
+  // first, the detail on opening.
+  assert.ok(labels(cellOf(row, 'materiality')).includes('Risk Factors excluded'));
+  assert.equal(cellOf(row, 'lookback').label, '1 business day');
+});
+
+test('the introduction of the Parent article goes to the Parent representations table', () => {
+  const parentIntro = introFact('iv-intro', 'STATUS_REPRESENTATION', [
+    introComponent('p-exc', 'EXCEPTION', 'Except as set forth in the Parent Disclosure Letter', 0),
+    introComponent('p-actor', 'ACTOR', 'Parent and Merger Sub', 60),
+    introComponent('p-op', 'OPERATION', 'jointly and severally represent and warrant', 82),
+  ], 'IV-INTRO');
+  const view = buildTableView({ facts: [parentIntro], tableShapes, legalSchema });
+  assert.equal(view.sections.some((candidate) => candidate.section_key === 'representations-qualifiers'), false);
+  const parent = view.sections.find((candidate) => candidate.section_key === 'parent-representations-qualifiers');
+  assert.equal(parent.tables[0].rows[0].subject, 'General Exceptions');
+  assert.deepEqual(parent.tables[0].rows[0].sub_rows.map((sub) => sub.subject), ['Disclosure Letter']);
+});
+
+test('a REPRESENTATION_QUALIFICATION readout coded to the General Exceptions row renders as the extractor wrote it', () => {
+  const coded = {
+    ...introFact('coded-sec', 'REPRESENTATION_QUALIFICATION', [
+      introComponent('k-date', 'DATE', 'filed or furnished on or after January 1, 2023', 0),
+      introComponent('k-risk', 'LIST_ELEMENT', '“Risk Factors”', 60),
+    ]),
+    conclusions: { table_key: 'representations-qualifiers-table', row_label: 'General Exceptions', row_detail: 'SEC Filings', cells: [
+      { column_id: 'materiality', code: 'EXCLUDES_RISK_FACTORS', component_ids: ['k-risk'] },
+      { column_id: 'lookback', value: { canonical: '2023-01-01', unit: 'ISO_DATE' }, component_ids: ['k-date'] },
+    ] },
+  };
+  const view = buildTableView({ facts: [coded], tableShapes, legalSchema });
+  const row = view.sections.find((candidate) => candidate.section_key === 'representations-qualifiers').tables[0].rows[0];
+  assert.equal(row.subject, 'General Exceptions');
+  assert.equal(row.sub_rows[0].subject, 'SEC Filings');
+  assert.equal(row.sub_rows[0].cells.find((cell) => cell.column_id === 'lookback').label, 'January 1, 2023');
+  assert.equal(row.sub_rows[0].cells.find((cell) => cell.column_id === 'materiality').label, 'Risk Factors excluded');
+});
+
+test('the Knowledge definition lands on the Knowledge row: the standard under Standard, whose knowledge counts under Persons', () => {
+  const knowledge = {
+    fact_id: 'def-knowledge', proposal_id: 'def-knowledge', family_key: 'KEY_DEFINED_TERMS', subtype_key: 'KNOWLEDGE', section_reference: '9.03', structure_node_id: 'n-9-03', validation_status: 'VALID',
+    headline: { label: 'Knowledge', distinguishing_component_ids: ['kn-std'] },
+    components: [
+      introComponent('kn-term', 'DEFINED_TERM', '“Knowledge of the Company” means', 0),
+      introComponent('kn-std', 'STANDARD', 'the actual knowledge, after reasonable inquiry,', 40),
+      introComponent('kn-persons', 'ACTOR', 'of the individuals listed in Section 9.03 of the Company Disclosure Letter', 90),
+    ],
+  };
+  const view = buildTableView({ facts: [knowledge], tableShapes, legalSchema });
+  const section = view.sections.find((candidate) => candidate.section_key === 'representations-qualifiers');
+  const row = section.tables[0].rows[0];
+  assert.equal(row.subject, 'Knowledge');
+  assert.deepEqual(row.sub_rows.map((sub) => sub.subject), ['Standard', 'Persons']);
+  const labels = (line) => { const cell = line.cells.find((candidate) => candidate.column_id === 'materiality'); return cell.values ? cell.values.map((value) => value.label) : [cell.label]; };
+  assert.deepEqual(labels(row.sub_rows[0]).sort(), ['Actual knowledge', 'Knowledge after reasonable inquiry']);
+  assert.deepEqual(labels(row.sub_rows[1]), ['Persons listed on Disclosure Letter']);
+  assert.equal(section.facts_without_readout.length, 0);
+  // The definition of Parent's knowledge goes to the Parent table.
+  const parentKnowledge = { ...knowledge, fact_id: 'def-parent-knowledge', components: [introComponent('pk-term', 'DEFINED_TERM', '“Knowledge of Parent” means', 0), introComponent('pk-std', 'STANDARD', 'the actual knowledge', 30)] };
+  const parentView = buildTableView({ facts: [parentKnowledge], tableShapes, legalSchema });
+  assert.equal(parentView.sections.find((candidate) => candidate.section_key === 'parent-representations-qualifiers').tables[0].rows[0].subject, 'Knowledge');
+});
+
+// Ben, 2026-09-14: "sure add a table". The capitalization counts by
+// security class, every number parsed from the cited words.
+const capComponent = (id, kind, text, start, origin = 'OWN') => ({ component_id: id, kind, label: id, text, origin, source_span_id: 'cap', start_byte: start, end_byte: start + text.length, gap_before: false, children: [] });
+const capFact = (id, subtype, components) => ({
+  fact_id: id, proposal_id: id, family_key: 'CAPITALISATION', subtype_key: subtype, section_reference: '3.02', structure_node_id: 'n-3-02', validation_status: 'VALID',
+  headline: { label: subtype, distinguishing_component_ids: [components[0].component_id] },
+  components,
+});
+
+test('capitalisation facts without a readout fill the capitalization table by security class, the counts parsed from the cited words, the absence facts under the table', () => {
+  const measurement = capComponent('cap-date', 'TRIGGER', 'At the close of business on September 18, 2025 (the “Measurement Date”)', 0, 'CHAPEAU');
+  const authorised = capFact('cap-auth', 'AUTHORISED_CAPITAL', [
+    capComponent('a-op', 'OPERATION', 'The authorized capital stock of the Company consists of', 100),
+    capComponent('a-common', 'AMOUNT', '800,000,000 shares of Company Common Stock', 160),
+    capComponent('a-pref', 'AMOUNT', '10,000,000 shares of preferred stock, par value $0.00001 per share', 210),
+  ]);
+  const issued = capFact('cap-issued', 'ISSUED_AND_OUTSTANDING', [measurement,
+    capComponent('i-amount', 'AMOUNT', '105,278,627 shares of Company Common Stock', 300),
+    capComponent('i-op', 'OPERATION', 'were issued and outstanding', 350),
+    capComponent('i-qual', 'QUALIFIER', '(including 147,624 shares of Company Common Stock that were subject to outstanding Company Restricted Stock Awards)', 380),
+  ]);
+  const options = capFact('cap-options', 'EQUITY_AWARD_INVENTORY', [measurement,
+    capComponent('o-amount', 'AMOUNT', '12,262,280 shares of Company Common Stock', 500),
+    capComponent('o-op', 'OPERATION', 'were subject to outstanding Company Stock Options', 550),
+  ]);
+  const espp = capFact('cap-espp', 'RESERVED_OR_ISSUABLE_SECURITIES', [measurement,
+    capComponent('e-amount', 'AMOUNT', '1,263,830 shares of Company Common Stock', 600),
+    capComponent('e-op', 'OPERATION', 'were reserved and available for purchase under the Company ESPP', 650),
+  ]);
+  const plans = capFact('cap-plans', 'RESERVED_OR_ISSUABLE_SECURITIES', [measurement,
+    capComponent('r-amount', 'AMOUNT', '6,331,920 additional shares of Company Common Stock', 700),
+    capComponent('r-op', 'OPERATION', 'were reserved for issuance pursuant to the Company Stock Plans', 760),
+    capComponent('r-exc', 'EXCEPTION', '(other than the Company ESPP)', 830),
+  ]);
+  const valid = capFact('cap-valid', 'VALID_ISSUANCE_STATUS', [
+    capComponent('v-actor', 'ACTOR', 'All of the outstanding shares of Company Common Stock', 900),
+    capComponent('v-litany', 'LITANY', 'duly authorized, validly issued, fully paid and nonassessable', 960),
+  ]);
+  const absence = capFact('cap-absence', 'CAPITALISATION_ABSENCE', [
+    capComponent('n-op', 'OPERATION', 'no shares of Company Preferred Stock were issued or outstanding', 1000),
+  ]);
+  const uncounted = capFact('cap-list', 'EQUITY_AWARD_INVENTORY', [
+    capComponent('u-actor', 'ACTOR', 'Section 3.02(b) of the Company Disclosure Letter', 1100),
+    capComponent('u-op', 'OPERATION', 'sets forth each outstanding Company Equity Award', 1150),
+  ]);
+  const view = buildTableView({ facts: [authorised, issued, options, espp, plans, valid, absence, uncounted], tableShapes, legalSchema });
+  const section = view.sections.find((candidate) => candidate.section_key === 'capitalization');
+  assert.ok(section, 'the capitalization section renders');
+  assert.equal(section.rail.group, 'Representations');
+  const table = section.tables[0];
+  assert.equal(table.table_key, 'capitalization-table');
+  assert.deepEqual(table.columns.map((column) => column.column_id), ['authorised', 'issued', 'reserved', 'asOf', 'validIssuance', 'asDrafted']);
+  const cellOf = (row, columnId) => row.cells.find((cell) => cell.column_id === columnId);
+  const rowOf = (subject) => table.rows.find((row) => row.subject === subject);
+  assert.deepEqual(table.rows.map((row) => row.subject), ['Common Stock', 'Company Stock Options', 'ESPP']);
+  const common = rowOf('Common Stock');
+  assert.equal(cellOf(common, 'authorised').label, '800000000', 'the first count names the common stock');
+  assert.deepEqual(cellOf(common, 'authorised').component_ids, ['a-common']);
+  assert.equal(cellOf(common, 'issued').label, '105278627');
+  assert.equal(cellOf(common, 'reserved').label, '6331920', 'the plan reserve, its ESPP exception not naming the row');
+  assert.equal(cellOf(common, 'asOf').label, 'September 18, 2025', 'the Measurement Date inherited from the chapeau');
+  assert.equal(cellOf(common, 'validIssuance').label, 'Present');
+  assert.deepEqual(common.backing_facts.map((entry) => entry.fact_id), ['cap-auth', 'cap-issued', 'cap-plans', 'cap-valid']);
+  // A column filled only by named subtypes is never completed from another
+  // subtype's number: the issued count does not become an authorised count.
+  assert.equal(cellOf(rowOf('Company Stock Options'), 'authorised').kind, 'dash');
+  assert.equal(cellOf(rowOf('Company Stock Options'), 'issued').label, '12262280');
+  assert.equal(cellOf(rowOf('ESPP'), 'reserved').label, '1263830');
+  assert.equal(table.footer.label, 'No other securities');
+  assert.deepEqual(table.footer.entries.map((entry) => entry.fact_id), ['cap-absence']);
+  assert.equal(table.footer.entries[0].text, 'no shares of Company Preferred Stock were issued or outstanding');
+  // A counted fact without a count stays without a readout.
+  const reps = view.sections.find((candidate) => candidate.section_key === 'representations-qualifiers');
+  assert.deepEqual((reps?.facts_without_readout || []).map((entry) => entry.fact_id), ['cap-list']);
+});
+
+test('a capitalisation readout coded by the extractor keeps the representations row\'s sub-item and the table row apart', () => {
+  const limb = {
+    ...capFact('cap-limb', 'PARTNERSHIP_OR_SUBSIDIARY_EQUITY', [capComponent('s-op', 'OPERATION', 'All of the outstanding shares of capital stock of each Company Subsidiary are owned by the Company', 0)]),
+    conclusions: { table_key: 'representations-qualifiers-table', row_label: 'Capitalization; Subsidiaries', row_detail: 'Subsidiary equity interests', cells: [] },
+  };
+  const count = {
+    ...capFact('cap-count', 'ISSUED_AND_OUTSTANDING', [capComponent('c-amount', 'AMOUNT', '105,278,627 shares of Company Common Stock', 0)]),
+    conclusions: { table_key: 'capitalization-table', row_label: 'Common Stock', cells: [{ column_id: 'issued', value: { canonical: 105278627, unit: 'COUNT' }, component_ids: ['c-amount'] }] },
+  };
+  const view = buildTableView({ facts: [limb, count], tableShapes, legalSchema });
+  const reps = view.sections.find((candidate) => candidate.section_key === 'representations-qualifiers').tables[0];
+  assert.equal(reps.rows[0].subject, 'Capitalization; Subsidiaries');
+  assert.equal(reps.rows[0].sub_rows[0].subject, 'Subsidiary equity interests');
+  const cap = view.sections.find((candidate) => candidate.section_key === 'capitalization').tables[0];
+  assert.equal(cap.rows[0].subject, 'Common Stock');
+  assert.equal(cap.rows[0].cells.find((cell) => cell.column_id === 'issued').label, '105278627');
 });
 
 test('two readings in one cell come out in source order, and a fact_text line shows each alternative in full', () => {
@@ -809,4 +1010,23 @@ test('a party column cell that cites the entity and the term reads as entity (te
   const cell = table.rows[0].cells.find((candidate) => candidate.column_id === 'survivingEntityStep1');
   assert.equal(cell.label, 'the Company (the “Surviving Corporation”)');
   assert.deepEqual(cell.component_ids, ['sv2-actor', 'sv2-term']);
+});
+
+// The Term of an other-provision row is the extractor's headline.summary
+// when the fact carries one (Ben, 2026-09-14: "it needs to be a summary of
+// the provision on the right etc - like in the normal course. Not just a
+// sec ref...!"; "1. for now - yes"); the label-built term stays for older
+// generations without one.
+test('provisionTerm prefers headline.summary and falls back to the label-built term', () => {
+  const { provisionTerm } = require('../lib/product/table-view');
+  const components = [
+    { component_id: 'pt-actor', kind: 'ACTOR', label: 'Company', text: 'the Company', origin: 'OWN', children: [] },
+    { component_id: 'pt-op', kind: 'OPERATION', label: 'files', text: 'shall file', origin: 'OWN', children: [] },
+  ];
+  const older = { fact_id: 'pt-1', headline: { label: 'Certificate of merger filing', distinguishing_component_ids: ['pt-op'] }, components };
+  assert.equal(provisionTerm(older, components), 'Company · files');
+  const summarised = { ...older, headline: { ...older.headline, summary: 'Company files the Certificate of Merger with the Delaware Secretary of State' } };
+  assert.equal(provisionTerm(summarised, components), 'Company files the Certificate of Merger with the Delaware Secretary of State');
+  const blank = { ...older, headline: { ...older.headline, summary: '   ' } };
+  assert.equal(provisionTerm(blank, components), 'Company · files', 'a blank summary is no summary');
 });

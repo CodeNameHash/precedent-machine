@@ -378,9 +378,12 @@ async function draftIntroSection(subtypeKey) {
               { ref: 'win', kind: 'DATE', label: 'Filing window', quote: 'since January 1, 2024', source_span_id: spanId, occurrence: 0, origin: 'OWN', gap_before: true, children: [] },
               { ref: 'op', kind: 'OPERATION', label: 'Representation', quote: 'represents and warrants', source_span_id: spanId, occurrence: 0, origin: 'OWN', gap_before: true, children: [] },
             ],
+            // Ben, 2026-09-14: "you need to move it over to what we had in the
+            // old vesrion": the introduction's readout is the representations
+            // table's General Exceptions row, never a table of its own.
             conclusions: {
-              table_key: 'representations-general-qualifications', row_label: 'SEC filings exception',
-              cells: [{ column_id: 'provision', code: 'EXCEPT_AS_DISCLOSED_IN_SEC_FILINGS', component_refs: ['src'] }],
+              table_key: 'representations-qualifiers-table', row_label: 'General Exceptions', row_detail: 'SEC Filings',
+              cells: [{ column_id: 'materiality', code: 'EXCEPT_AS_DISCLOSED_IN_SEC_FILINGS', component_refs: ['src'] }],
             },
           };
           modelResponse = {
@@ -411,16 +414,22 @@ test('an article introduction routed to REPRESENTATIONS is told its facts are RE
   const accepted = await draftIntroSection('REPRESENTATION_QUALIFICATION');
   assert.equal(accepted.section.proposals[0].validation_status, 'VALID', JSON.stringify(accepted.section.issues));
   assert.equal(accepted.section.issues.some((candidate) => candidate.code === 'INTRO_NOT_QUALIFICATION'), false);
-  assert.equal(accepted.section.proposals[0].conclusions.table_key, 'representations-general-qualifications');
-  // The Window column the readout omitted is completed from the fact's own
-  // DATE at extraction, so the stored readout carries it on every deal.
-  const window = accepted.section.proposals[0].conclusions.cells.find((cell) => cell.column_id === 'window');
-  assert.ok(window, JSON.stringify(accepted.section.proposals[0].conclusions.cells));
-  assert.deepEqual(window.value, { canonical: '2024-01-01', unit: 'ISO_DATE' });
-  // Every column's guidance reaches the extractor, not only the basis and
-  // from-subtype columns'.
-  const qualifications = accepted.request.table_shapes.REPRESENTATIONS.find((entry) => entry.table_key === 'representations-general-qualifications');
-  assert.match(qualifications.columns.find((column) => column.column_id === 'window').guidance, /look-back or cut-off/);
+  assert.equal(accepted.section.proposals[0].conclusions.table_key, 'representations-qualifiers-table');
+  assert.equal(accepted.section.proposals[0].conclusions.row_label, 'General Exceptions');
+  assert.equal(accepted.section.proposals[0].conclusions.row_detail, 'SEC Filings');
+  // The Lookback column (the SEC filings cut-off) the readout omitted is
+  // completed from the fact's own DATE at extraction, so the stored readout
+  // carries it on every deal.
+  const lookback = accepted.section.proposals[0].conclusions.cells.find((cell) => cell.column_id === 'lookback');
+  assert.ok(lookback, JSON.stringify(accepted.section.proposals[0].conclusions.cells));
+  assert.deepEqual(lookback.value, { canonical: '2024-01-01', unit: 'ISO_DATE' });
+  // The instruction and every column's guidance reach the extractor: the
+  // separate general-qualifications table is gone.
+  assert.match(accepted.request.article_introduction_instruction, /"General Exceptions" \(row_detail "SEC Filings", "Disclosure Letter" or "Other"/);
+  assert.equal(accepted.request.table_shapes.REPRESENTATIONS.some((entry) => /general-qualifications$/.test(entry.table_key)), false);
+  const reps = accepted.request.table_shapes.REPRESENTATIONS.find((entry) => entry.table_key === 'representations-qualifiers-table');
+  assert.match(reps.columns.find((column) => column.column_id === 'lookback').guidance, /cut-off of the SEC filings exception/);
+  assert.match(reps.guidance, /row_label "General Exceptions" and row_detail the source of exception/);
 });
 
 test('a numbered representation section is not an article introduction: no instruction, no hold', async () => {
@@ -474,9 +483,57 @@ test('the V9 request carries the value-column, party, label and DEFINED_TERM rul
   assert.match(request.conclusion_instruction, /A column with display party names an entity/);
   assert.match(request.component_instruction, /never a tag such as "Subject:", "Operation:" or "Actor:"/);
   assert.match(request.component_instruction, /resolves_to whose text is the definition's own words/);
+  // headline.summary on every proposal (Ben, 2026-09-14: "it needs to be a
+  // summary of the provision on the right etc - like in the normal course.
+  // Not just a sec ref...!"; "1. for now - yes").
+  assert.match(request.component_instruction, /and summary, on every proposal: summary is one plain-English line of at most 15 words stating the provision's operative effect in the parties' defined names/);
+  assert.match(request.component_instruction, /no section reference, no quotation marks and no trailing period/);
+  assert.equal(typeof request.response_contract.proposals[0].headline.summary, 'string');
   const structure = request.table_shapes.MERGER_STRUCTURE_CLOSING.find((entry) => entry.table_key === 'structure-mechanics-table');
   const surviving = structure.columns.find((column) => column.column_id === 'survivingEntityStep1');
   assert.equal(surviving.display, 'party');
   assert.match(surviving.guidance, /never the defined term alone/);
   assert.equal('article_introduction_instruction' in request, false);
+});
+
+// headline.summary travels from the model's proposal into the compiled fact
+// like label and distinguishing_refs (Ben, 2026-09-14, on the Other
+// provisions table: "it needs to be a summary of the provision on the right
+// etc - like in the normal course. Not just a sec ref...!"; asked whether
+// the extractor should write a short summary per fact as part of the fact
+// contract: "1. for now - yes"). A missing summary is a VALIDATION note,
+// never a held fact: older generations have none.
+test('a proposal\'s headline.summary reaches the fact; a missing one is a VALIDATION note and the fact stays VALID', () => {
+  const components = [
+    component('resulting', 'OPERATION', 'resulting from', 'to the extent resulting from'),
+    component('war', 'LIST', 'war, terrorism and sabotage', 'geopolitical conditions or changes that are the result of the outbreak, conduct or escalation of war (whether declared or undeclared) or acts of terrorism or sabotage (including cyber-attacks)', {
+      children: [component('war-2', 'LIST_ELEMENT', 'war', 'the outbreak, conduct or escalation of war (whether declared or undeclared)')],
+    }),
+  ];
+  const withSummary = compile(response(components, { label: 'MAE carve-out', distinguishing_refs: ['war'], summary: ' Material Adverse Effect excludes effects of war, terrorism and sabotage ' }));
+  assert.equal(withSummary.proposals[0].validation_status, 'VALID', JSON.stringify(withSummary.issues.map((issue) => issue.message)));
+  assert.equal(withSummary.proposals[0].headline.summary, 'Material Adverse Effect excludes effects of war, terrorism and sabotage');
+  assert.equal(withSummary.issues.some((issue) => issue.code === 'HEADLINE_SUMMARY_MISSING'), false);
+
+  const without = compile(response(components, { label: 'MAE carve-out', distinguishing_refs: ['war'] }));
+  assert.equal(without.proposals[0].validation_status, 'VALID');
+  assert.equal(Object.hasOwn(without.proposals[0].headline, 'summary'), false);
+  const note = without.issues.find((issue) => issue.code === 'HEADLINE_SUMMARY_MISSING');
+  assert.ok(note, 'a missing summary is noted');
+  assert.equal(note.kind, 'VALIDATION');
+  assert.equal(note.family_key, 'MAE_DEFINITION');
+
+  // A summary that breaks the rule (a section reference) never holds the
+  // fact: it is dropped with a HEADLINE_SUMMARY_DROPPED note carrying the
+  // problem, the way CONCLUSIONS_DROPPED works, and the fact stays VALID.
+  const bad = compile(response(components, { label: 'MAE carve-out', distinguishing_refs: ['war'], summary: 'Parent pays the fee under Section 8.3' }));
+  assert.equal(bad.proposals[0].validation_status, 'VALID', JSON.stringify(bad.issues.map((issue) => issue.message)));
+  assert.equal(Object.hasOwn(bad.proposals[0].headline, 'summary'), false);
+  assert.equal(bad.issues.some((issue) => issue.code === 'INVALID_FACT_COMPONENTS'), false);
+  const dropped = bad.issues.find((issue) => issue.code === 'HEADLINE_SUMMARY_DROPPED');
+  assert.ok(dropped, 'a malformed summary is noted');
+  assert.equal(dropped.kind, 'VALIDATION');
+  assert.match(dropped.message, /headline summary contains a section reference/);
+  assert.match(dropped.message, /Section 8\.3/);
+  assert.equal(bad.issues.some((issue) => issue.code === 'HEADLINE_SUMMARY_MISSING'), false);
 });

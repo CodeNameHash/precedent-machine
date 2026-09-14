@@ -652,3 +652,74 @@ test('the surviving-entity party columns carry extractor guidance to cite the en
     assert.match(column.guidance, /never the defined term alone/);
   }
 });
+
+// Ben, 2026-09-14, on the Article III introduction: "all of this is
+// miscoded. THis is the standard intro to the reps that provides the
+// exceptions for all reps - look at the old system - we should be able to
+// show the reader the general categories of the exceptions (SEC filings)
+// and as they click into deeper levels show more detail (last X days) etc";
+// and today: "by miscoded I meant oyu currentl have it messed up and you
+// need to move it over to what we had in the old vesrion....".
+test('the representations tables open with the old version\'s General Exceptions and Knowledge rows, the separate general-qualifications table is retired', () => {
+  for (const [sectionKey, tableKey] of [['representations-qualifiers', 'representations-qualifiers-table'], ['parent-representations-qualifiers', 'parent-representations-qualifiers-table']]) {
+    const section = findSectionV3(sectionKey);
+    assert.equal(section.tables.length, 1, 'one table per party');
+    assert.equal(section.tables.some((table) => /general-qualifications$/.test(table.table_key)), false);
+    const table = findTableV3(section, tableKey);
+    assert.deepEqual(table.fixed_row_labels.slice(0, 3), ['General Exceptions', 'Knowledge', 'Organization; Qualification; Standing']);
+    assert.deepEqual(table.detail_labels_by_row['General Exceptions'], ['SEC Filings', 'Disclosure Letter', 'Other']);
+    assert.deepEqual(table.detail_labels_by_row['Knowledge'], ['Standard', 'Persons']);
+    assert.equal(table.intro_facts_row, 'General Exceptions');
+    assert.equal(table.knowledge_facts_row, 'Knowledge');
+    assert.deepEqual(table.columns.map((column) => column.column_id), ['bringdown', 'materiality', 'lookback'], 'no new column: the cut-off is the Lookback, the excluded portions are Qualifiers codes');
+    const qualifiers = table.columns.find((column) => column.column_id === 'materiality');
+    for (const code of ['EXCLUDES_FORWARD_LOOKING_STATEMENTS', 'EXCLUDES_RISK_FACTORS', 'EXCLUDES_EXHIBITS', 'ARRANGED_BY_SECTION', 'CROSS_SECTION_WHERE_REASONABLY_APPARENT']) {
+      assert.ok(qualifiers.vocabulary_by_row['General Exceptions'].includes(code), code);
+    }
+    for (const code of ['KNOWLEDGE_AFTER_REASONABLE_INQUIRY', 'ACTUAL_KNOWLEDGE', 'PERSONS_LISTED_ON_DISCLOSURE_LETTER']) {
+      assert.ok(qualifiers.vocabulary_by_row.Knowledge.includes(code), code);
+    }
+    assert.equal(qualifiers.vocabulary_by_row['Organization; Qualification; Standing'], undefined, 'representation rows keep the open qualifier vocabulary');
+    assert.ok(qualifiers.vocabulary.some((entry) => entry.code === 'MAE_AGGREGATE'), 'the print vocabulary stays');
+    assert.ok(table.only_subtype_keys.includes('REPRESENTATION_QUALIFICATION'));
+    assert.ok(table.only_subtype_keys.includes('KNOWLEDGE'));
+    assert.ok(table.only_subtype_keys.includes('AUTHORISED_CAPITAL'), 'the reps row keeps its capitalisation sub-items');
+    assert.ok(section.v2_family_keys.some((entry) => entry.key === 'KEY_DEFINED_TERMS'));
+    assert.match(table.guidance, /row_label "General Exceptions" and row_detail the source of exception/);
+    assert.match(table.guidance, /row_label "Knowledge", row_detail "Standard"/);
+  }
+  const broken = structuredClone(tableShapesV3);
+  broken.sections.find((s) => s.section_key === 'representations-qualifiers').tables[0].intro_facts_row = 'No such row';
+  assert.throws(() => validateTableShapesV3(broken, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_PAGE_RULE_ROW_UNKNOWN/);
+});
+
+// Ben, 2026-09-14: "sure add a table".
+test('the capitalization table counts each security class, the numbers parsed from cited words, the absence facts as its footer', () => {
+  const section = findSectionV3('capitalization');
+  assert.deepEqual(section.v2_family_keys.map((entry) => entry.key), ['CAPITALISATION']);
+  assert.deepEqual(section.rail, { group: 'Representations', label: 'Capitalization', hex: '#3F8A6A' });
+  const keys = tableShapesV3.sections.map((s) => s.section_key);
+  assert.equal(keys.indexOf('capitalization'), keys.indexOf('parent-representations-qualifiers') + 1);
+  const table = findTableV3(section, 'capitalization-table');
+  assert.equal(table.rows_are, 'fixed list');
+  assert.equal(table.open_rows, true);
+  assert.equal(table.row_from_security_class, true);
+  assert.deepEqual(table.fixed_row_labels, ['Common Stock', 'Preferred Stock', 'Company Stock Options', 'Company RSUs', 'Company PSUs', 'Company Restricted Stock Awards', 'ESPP', 'Warrants', 'Subsidiary equity']);
+  const byId = Object.fromEntries(table.columns.map((column) => [column.column_id, column]));
+  for (const [columnId, subtypes] of [['authorised', ['AUTHORISED_CAPITAL']], ['issued', ['ISSUED_AND_OUTSTANDING', 'EQUITY_AWARD_INVENTORY']], ['reserved', ['RESERVED_OR_ISSUABLE_SECURITIES']]]) {
+    assert.equal(byId[columnId].render, 'value');
+    assert.equal(byId[columnId].value_kind, 'COUNT');
+    assert.deepEqual(byId[columnId].from_subtype_keys, subtypes);
+    assert.ok(byId[columnId].fill_from.includes('AMOUNT'));
+  }
+  assert.equal(byId.asOf.value_kind, 'DATE');
+  assert.equal(byId.validIssuance.render, 'boolean');
+  assert.deepEqual(byId.validIssuance.from_subtype_keys, ['VALID_ISSUANCE_STATUS']);
+  assert.equal(byId.asDrafted.display, 'fact_text');
+  assert.deepEqual(table.footer_from_subtype, { subtype_key: 'CAPITALISATION_ABSENCE', label: 'No other securities' });
+  assert.deepEqual(table.only_subtype_keys, ['AUTHORISED_CAPITAL', 'ISSUED_AND_OUTSTANDING', 'RESERVED_OR_ISSUABLE_SECURITIES', 'EQUITY_AWARD_INVENTORY', 'VALID_ISSUANCE_STATUS', 'CAPITALISATION_ABSENCE', 'PARTNERSHIP_OR_SUBSIDIARY_EQUITY']);
+  assert.match(table.guidance, /one fact per class and count/);
+  const broken = structuredClone(tableShapesV3);
+  broken.sections.find((s) => s.section_key === 'capitalization').tables[0].row_from_security_class = 'yes';
+  assert.throws(() => validateTableShapesV3(broken, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_ROW_FROM_SECURITY_CLASS/);
+});

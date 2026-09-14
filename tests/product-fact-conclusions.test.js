@@ -440,3 +440,55 @@ test('an omitted value column is not completed when two components could fill it
   const none = absenceFact([]);
   assert.deepEqual(normaliseConclusionValues(none, tableShapes).cells, none.conclusions.cells);
 });
+
+// Ben, 2026-09-14: "sure add a table". A capitalization count is parsed
+// from the cited words as a COUNT (the par value in the same words is not
+// the count), never taken from the model.
+test('a COUNT value cell on the capitalization table takes the code-parsed count of its cited words', () => {
+  const component = (id, kind, text, start) => ({ component_id: id, kind, label: id, text, origin: 'OWN', source_span_id: 's', start_byte: start, end_byte: start + text.length, gap_before: false, children: [] });
+  const fact = {
+    fact_id: 'cap-1', proposal_id: 'cap-1', family_key: 'CAPITALISATION', subtype_key: 'AUTHORISED_CAPITAL', section_reference: '3.02',
+    headline: { label: 'Authorised capital', distinguishing_component_ids: ['cap-1-pref'] },
+    components: [component('cap-1-pref', 'AMOUNT', '10,000,000 shares of preferred stock, par value $0.00001 per share', 0)],
+    conclusions: { table_key: 'capitalization-table', row_label: 'Preferred Stock', cells: [{ column_id: 'authorised', value: { canonical: 10, unit: 'million' }, component_ids: ['cap-1-pref'] }] },
+  };
+  assert.ok(validateFactConclusions(fact, { tableShapes }).some((p) => /parseComponentValue/.test(p)), 'the model\'s own number does not validate');
+  const normalised = { ...fact, conclusions: normaliseConclusionValues(fact, tableShapes) };
+  assert.deepEqual(normalised.conclusions.cells[0].value, { canonical: 10000000, unit: 'COUNT' });
+  assert.deepEqual(validateFactConclusions(normalised, { tableShapes }), []);
+  assert.equal(formatValue(normalised.conclusions.cells[0].value, 'COUNT'), '10000000');
+  // The issued count never fills the authorised column (C12), and an
+  // absence fact is the footer, never a row with cells.
+  const issued = { ...fact, subtype_key: 'ISSUED_AND_OUTSTANDING', conclusions: { ...normalised.conclusions, row_label: 'Common Stock' } };
+  assert.ok(validateFactConclusions(issued, { tableShapes }).some((p) => /filled only by AUTHORISED_CAPITAL facts/.test(p)));
+  const absence = { ...fact, subtype_key: 'CAPITALISATION_ABSENCE', conclusions: { table_key: 'capitalization-table', row_label: 'No other securities', cells: [] } };
+  assert.deepEqual(validateFactConclusions(absence, { tableShapes }), []);
+});
+
+// Ben, 2026-09-14: "you need to move it over to what we had in the old
+// vesrion". The article introduction's readout goes to the representations
+// table's General Exceptions row with the row's own codes.
+test('a REPRESENTATION_QUALIFICATION readout on the General Exceptions row validates with a code from that row\'s list, not with a representation qualifier', () => {
+  const component = (id, kind, text, start) => ({ component_id: id, kind, label: id, text, origin: 'OWN', source_span_id: 's', start_byte: start, end_byte: start + text.length, gap_before: false, children: [] });
+  const fact = {
+    fact_id: 'intro-1', proposal_id: 'intro-1', family_key: 'REPRESENTATIONS', subtype_key: 'REPRESENTATION_QUALIFICATION', section_reference: 'III-INTRO',
+    headline: { label: 'SEC filings exception', distinguishing_component_ids: ['intro-1-period'] },
+    components: [
+      component('intro-1-risk', 'LIST_ELEMENT', '“Risk Factors,”', 0),
+      component('intro-1-period', 'PERIOD', 'at least one (1) business day prior to the date of this Agreement', 20),
+    ],
+    conclusions: { table_key: 'representations-qualifiers-table', row_label: 'General Exceptions', row_detail: 'SEC Filings', cells: [
+      { column_id: 'materiality', code: 'EXCLUDES_RISK_FACTORS', component_ids: ['intro-1-risk'] },
+      { column_id: 'lookback', value: { canonical: 1, unit: 'BUSINESS_DAY' }, component_ids: ['intro-1-period'] },
+    ] },
+  };
+  assert.deepEqual(validateFactConclusions(fact, { tableShapes }), []);
+  const wrongRow = { ...fact, conclusions: { ...fact.conclusions, cells: [{ column_id: 'materiality', code: 'MAE_AGGREGATE', component_ids: ['intro-1-risk'] }] } };
+  assert.ok(validateFactConclusions(wrongRow, { tableShapes }).some((p) => /not one of the materiality codes for row "General Exceptions"/.test(p)));
+  const knowledge = {
+    ...fact, fact_id: 'kn-1', family_key: 'KEY_DEFINED_TERMS', subtype_key: 'KNOWLEDGE',
+    conclusions: { table_key: 'representations-qualifiers-table', row_label: 'Knowledge', row_detail: 'Standard', cells: [{ column_id: 'materiality', code: 'KNOWLEDGE_AFTER_REASONABLE_INQUIRY', component_ids: ['intro-1-risk'] }] },
+  };
+  assert.deepEqual(validateFactConclusions(knowledge, { tableShapes }), [], 'the knowledge definition belongs on the Knowledge row');
+  assert.equal(tableForFact({ family_key: 'REPRESENTATIONS', conclusions: { table_key: 'representations-general-qualifications' } }, tableShapes), null, 'the separate table is gone');
+});
