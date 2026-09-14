@@ -3,10 +3,10 @@
 const { createClient } = require('@supabase/supabase-js');
 const { legalSchemaForVersion } = require('../lib/product/legal-schema-selection');
 const { advanceAgreementDraftAnalysis } = require('../lib/product/analysis-runner');
-const { createCodexCliProductModel } = require('../lib/product/codex-cli-model');
+const { createHostedProductModel } = require('../lib/product/claude-cli-model');
 const { ProductPhase3Store } = require('../lib/product/phase-3-store');
 const {
-  CODEX_MODEL_CONFIG, assertConfiguredRunModelConfig,
+  CLAUDE_CLI_PROVIDER_ID, assertConfiguredRunModelConfig, hostedModelConfigFor, isHostedProvider,
 } = require('../lib/product/product-model-config');
 const { assertDisposableDatabaseUrl } = require('../lib/product/sandbox-wake');
 const { isUsageLimitError } = require('../lib/llm-cli-client');
@@ -47,12 +47,20 @@ async function runHostedWorker(options, output = process.stdout, dependencies = 
   }
   assertDisposableDatabaseUrl(process.env.SUPABASE_URL);
   const makeStore = dependencies.createStore || createStore;
-  const makeModel = dependencies.createModel || createCodexCliProductModel;
+  const makeModel = dependencies.createModel || createHostedProductModel;
   const advance = dependencies.advance || advanceAgreementDraftAnalysis;
   const store = makeStore();
   const run = await store.getRun(options.runId);
   const legalSchema = legalSchemaForVersion(run?.schema_version);
-  assertConfiguredRunModelConfig(run, CODEX_MODEL_CONFIG);
+  // The run's own model_config names the provider (Codex CLI or Claude CLI);
+  // it must be that provider's canonical config, and a Claude run needs the
+  // subscription login the wake passed in.
+  const providerId = run?.model_config?.provider_id;
+  if (!isHostedProvider(providerId)) throw new Error('PRODUCT_RUN_MODEL_CONFIG_MISMATCH: not a hosted provider');
+  assertConfiguredRunModelConfig(run, hostedModelConfigFor(providerId));
+  if (providerId === CLAUDE_CLI_PROVIDER_ID && !process.env.CLAUDE_CODE_OAUTH_TOKEN) {
+    throw new Error('PRODUCT_HOSTED_CLAUDE_LOGIN_REQUIRED');
+  }
   await store.assertAccess({ runId: options.runId, actor: options.actor });
   if (run.stage === 'DOCUMENT_IDENTITY_REVIEW') throw new Error('PRODUCT_HOSTED_IDENTITY_REVIEW_REQUIRED');
   if (run.status === 'READY') return run;
@@ -63,7 +71,7 @@ async function runHostedWorker(options, output = process.stdout, dependencies = 
   const worker = async (number) => {
     try {
       const workerStore = number === 1 ? store : makeStore();
-      const model = makeModel({ modelConfig: run.model_config });
+      const model = makeModel(run);
       let priorMarker = '';
       while (!stopped) {
         await workerStore.recoverExpiredSections({ runId: options.runId });

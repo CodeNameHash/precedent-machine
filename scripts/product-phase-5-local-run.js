@@ -2,7 +2,7 @@
 
 const { createClient } = require('@supabase/supabase-js');
 const { advanceAgreementDraftAnalysis } = require('../lib/product/analysis-runner');
-const { createCodexCliProductModel } = require('../lib/product/codex-cli-model');
+const { createHostedProductModel } = require('../lib/product/claude-cli-model');
 const { ProductPhase3Store } = require('../lib/product/phase-3-store');
 const {
   CODEX_MODEL_CONFIG, assertConfiguredRunModelConfig,
@@ -69,7 +69,7 @@ async function run(options, output = process.stdout) {
   const started = Date.now();
   const worker = async (number) => {
     const store = makeStore();
-    const model = createCodexCliProductModel({ modelConfig: runRecord.model_config });
+    const model = createHostedProductModel(runRecord);
     let previous = '';
     for (;;) {
       const analysis = await advanceAgreementDraftAnalysis({

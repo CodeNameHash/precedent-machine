@@ -12,10 +12,30 @@ if [[ "${SUPABASE_URL:-}" != 'https://ecrtoofsyxozazkvsvcl.supabase.co' || -z "$
   exit 78
 fi
 
-if [[ ! -f /vercel/.codex/auth.json ]]; then
-  printf '%s\n' 'PRODUCT_HOSTED_CODEX_LOGIN_REQUIRED' >&2
-  exit 78
-fi
+# Ben, 2026-09-14: "Can you flip the codex cli to Claude cli?" The wake names
+# the provider; each path checks its own login and nothing else.
+case "${PRODUCT_MODEL_PROVIDER:-OPENAI_CODEX_CLI_SUBSCRIPTION}" in
+  OPENAI_CODEX_CLI_SUBSCRIPTION)
+    if [[ ! -f /vercel/.codex/auth.json ]]; then
+      printf '%s\n' 'PRODUCT_HOSTED_CODEX_LOGIN_REQUIRED' >&2
+      exit 78
+    fi
+    ;;
+  ANTHROPIC_CLAUDE_CLI_SUBSCRIPTION)
+    if [[ -z "${CLAUDE_CODE_OAUTH_TOKEN:-}" ]]; then
+      printf '%s\n' 'PRODUCT_HOSTED_CLAUDE_LOGIN_REQUIRED' >&2
+      exit 78
+    fi
+    if ! command -v claude >/dev/null 2>&1; then
+      printf '%s\n' 'PRODUCT_HOSTED_CLAUDE_CLI_REQUIRED' >&2
+      exit 78
+    fi
+    ;;
+  *)
+    printf '%s\n' 'PRODUCT_HOSTED_PROVIDER_UNSUPPORTED' >&2
+    exit 78
+    ;;
+esac
 
 export PATH="/vercel/sandbox/pm-cli/bin:$PATH"
 unset ANTHROPIC_API_KEY OPENAI_API_KEY CODEX_API_KEY CODEX_ACCESS_TOKEN

@@ -617,6 +617,7 @@ test('Sandbox wake uses one fixed detached launcher and does not return credenti
     env: {
       SUPABASE_URL: 'https://ecrtoofsyxozazkvsvcl.supabase.co',
       SUPABASE_SERVICE_ROLE_KEY: 'service-role-secret-value',
+      PRODUCT_MODEL_PROVIDER: CODEX_PROVIDER_ID,
     },
     detached: true,
     timeoutMs: MINIMUM_SESSION_MS,

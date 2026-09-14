@@ -2249,6 +2249,15 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       of burning three attempts per section. Generation 5 resumes with
       "Retry failed sections" once the account has credits; generation
       6 (every fix above, worker updated to the codex head) follows.
+      Ben, 2026-09-14: "Can you flip the codex cli to Claude cli?" Done
+      in code: provider ANTHROPIC_CLAUDE_CLI_SUBSCRIPTION runs Claude
+      Code (`claude -p`, already installed in the sandbox at 2.1.224) on
+      a Claude subscription login, Claude Opus 5 on every call kind, the
+      same hosted worker, wake and run identity rules as the Codex path;
+      the branch's PRODUCT_MODEL_PROVIDER is flipped. Outstanding, Ben's:
+      the login token from `claude setup-token`, set on the deployment as
+      PRODUCT_CLAUDE_CODE_OAUTH_TOKEN. Then the worker is updated and
+      generation 6 starts on Claude.
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
