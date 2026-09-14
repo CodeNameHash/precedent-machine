@@ -85,3 +85,47 @@ test('a quote from a sibling span and an occurrence past the end both resolve to
   assert.ok(Number.isSafeInteger(first.start_byte) && first.start_byte >= spans[0].start_byte && first.end_byte <= spans[0].end_byte);
   assert.ok(Number.isSafeInteger(second.start_byte) && second.start_byte >= spans[1].start_byte && second.end_byte <= spans[1].end_byte, 'relocated into the sibling limb');
 });
+
+// Metsera generation 7, 5.02: ten no-shop facts were INVALID on a legacy
+// role the model left out while their component trees were whole. With a
+// compiled tree the missing role is a note and the fact stays VALID.
+test('a missing legacy role is a note, not a hold, when the component tree compiles', async () => {
+  const sourceDocument = await conchoSource();
+  const agreementStructure = buildAgreementStructure({
+    agreement_id: sourceDocument.source_document_id,
+    canonical_text: sourceDocument.canonical_text,
+    canonical_text_sha256: sourceDocument.canonical_text_sha256,
+  });
+  const node = substantiveSections(agreementStructure).find((item) => item.reference === '6.3');
+  const closure = buildSourceClosure({ sourceDocument, agreementStructure, nodeId: node.node_id });
+  const span = closure.spans.find((candidate) => candidate.kind === 'OPERATIVE');
+  const quote = span.exact_text.split(/\s+/).slice(2, 7).join(' ');
+  const model = {
+    async complete({ call_kind: kind, request }) {
+      let response;
+      if (kind === 'ROUTING') response = { families: ['NO_SHOP'], disposition: 'FAMILY_ASSIGNED', rationale: 'r', deterministic_disagreements: [] };
+      else if (kind === 'RESIDUAL') response = { paragraphs: request.paragraphs.map((paragraph) => ({ source_span_id: paragraph.source_span_id, disposition: 'KNOWN_FAMILY', family_keys: ['NO_SHOP'], rationale: 'c' })) };
+      else {
+        response = {
+          proposals: [{
+            client_ref: 'p-1', group_ref: 'g-1', family_key: 'NO_SHOP', subtype_key: 'PROHIBITED_ACTION', fact_type: 'PROHIBITED_ACTION',
+            statement: 'x', roles: { covenant_obligor: 'Company' }, value: null,
+            evidence_quotes: [{ quote, source_span_id: span.span_id, occurrence: 0 }],
+            headline: { label: 'Prohibition', distinguishing_refs: ['c1'], summary: 'Company must not solicit proposals' },
+            components: [{ ref: 'c1', kind: 'OPERATION', label: 'op', quote, source_span_id: span.span_id, occurrence: 0, origin: 'OWN', gap_before: false, children: [] }],
+          }],
+          groups: [{ client_ref: 'g-1', family_key: 'NO_SHOP', subtype_key: 'PROHIBITED_ACTION' }],
+          links: [],
+          coverage: { NO_SHOP: 'FOUND' },
+          fact_type_coverage: { NO_SHOP: Object.fromEntries(schema.families.find((family) => family.family_key === 'NO_SHOP').required_fact_types.map((factType) => [factType, factType === 'PROHIBITED_ACTION' ? 'FOUND' : 'NOT_FOUND'])) },
+        };
+      }
+      return { provider_id: 'SYNTHETIC_TEST_PROVIDER', model_id: 'SYNTHETIC_LEGAL_MODEL/V1', raw_request: request, raw_response: response, response, input_tokens: 1, output_tokens: 1, cost_microusd: 1, duration_ms: 1 };
+    },
+  };
+  const section = await buildAgreementSectionDraft({ sourceDocument, agreementStructure, legalSchema: schema, model, node });
+  const proposal = section.proposals[0];
+  assert.equal(proposal.validation_status, 'VALID', JSON.stringify(section.issues.map((issue) => `${issue.kind}:${issue.code}`)));
+  const note = section.issues.find((issue) => issue.code === 'MISSING_REQUIRED_ROLE');
+  assert.ok(note && note.kind === 'NOTE', JSON.stringify(note));
+});

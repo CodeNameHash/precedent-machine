@@ -2621,7 +2621,27 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       extended to the Claude stream), "session limit" counts as a usage
       limit, and the worker stops with PRODUCT_HOSTED_CODEX_USAGE_LIMIT
       instead of burning attempts. 20:44 UTC, the limit reset: the two
-      sections retried and the run is RUNNING again. Ben's afternoon decisions,
+      sections retried and the run is RUNNING again.
+      (35) 20:50 UTC, generation 7's 5.02 read: the no-shop's limb (a)
+      is extracted (solicit, negotiate, waive a standstill;
+      representative control; 48-hour notice), the fiduciary-out, the
+      change-of-recommendation mechanics, the intervening event (four
+      business days' notice, the excluded events), the 50% Superior
+      Proposal threshold, the 20% Company Takeover Proposal definition
+      and the matching rights all on their tables. Ten of its facts were
+      INVALID on legacy checks while their component trees were whole:
+      six change-of-recommendation facts on a missing permitted_trigger
+      role, three 48-hour notice facts on a period unit the model named
+      differently, one match-period fact on "two business days" beside
+      "four business days". Under the layered model a compiled tree is
+      the fact: a missing legacy role or an unsettled legacy value is a
+      NOTE and the fact stays VALID (evidence problems and role
+      collisions still hold it). Nine facts without a readout (the
+      deemed-breach and no-restricting-agreement clauses, the bidder
+      information permission, the once-only reaffirmation, three
+      definitions the model typed OTHER_DEFINED_TERM) stay under
+      "without a readout" or the Defined Terms; the model's readouts,
+      not new page rules, are the fix for those. Ben's afternoon decisions,
       2026-09-14, each in code: "by miscoded I meant oyu currentl have it
       messed up and you need to move it over to what we had in the old
       vesrion...." (the reps table opens with General Exceptions: SEC
