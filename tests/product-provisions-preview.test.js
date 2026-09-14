@@ -113,19 +113,21 @@ test('ProvisionsPreviewBody renders the rail, the tables and no decision control
 // 52px semibold, one grey metadata line with what the run knows, a 3px
 // black rule; no card, no shadow. The page root sets Inter through the
 // --font-sans / --font-serif variables and the white ground; the rail is
-// the 340px black column.
+// the black column. Then, at the same browser zoom, "please fix relative
+// sizes" ("zoom level is the same"): every px scaled by 0.58 (title 30,
+// rail 197 wide).
 test('the page header is the Storylines header with the agreement date, SEC source and generation', () => {
   const html = renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: workspace(), runId: 'run-1' }));
   assert.match(html, /<div class="flex min-h-screen bg-white text-\[#1f1f1f\]" style="--font-sans:&#x27;Inter&#x27;[^"]*--font-serif:&#x27;Inter&#x27;[^"]*" data-testid="provisions-page"/);
-  assert.match(html, /<header class="mb-7" data-testid="preview-header"/);
-  assert.match(html, /<p class="font-ui text-\[13px\] uppercase tracking-\[0\.12em\] text-\[#6b6b6b\]">Lawyer preview<\/p>/);
-  assert.match(html, /<h1 class="mt-3 font-sans text-\[40px\] font-semibold leading-\[1\.05\] tracking-tight text-\[#1f1f1f\] md:text-\[52px\]">Parent Inc\. \/ Target Corp\.<\/h1>/);
+  assert.match(html, /<header class="mb-\[16px\]" data-testid="preview-header"/);
+  assert.match(html, /<p class="font-ui text-\[8px\] uppercase tracking-\[0\.12em\] text-\[#6b6b6b\]">Lawyer preview<\/p>/);
+  assert.match(html, /<h1 class="mt-\[7px\] font-sans text-\[23px\] font-semibold leading-\[1\.05\] tracking-tight text-\[#1f1f1f\] md:text-\[30px\]">Parent Inc\. \/ Target Corp\.<\/h1>/);
   assert.match(html, /data-testid="preview-badge"[^>]*>Draft</);
   assert.match(html, /Date: <span class="text-inkMid">September 18, 2025</);
   assert.match(html, /data-testid="preview-source-link"[^>]*>EX-2\.1 · 0001193125-25-000001</);
   assert.match(html, /Generation: <span class="text-inkMid">6</);
-  assert.match(html, /<div class="mt-7 h-\[3px\] w-full bg-black" data-testid="preview-rule"/);
-  assert.match(html, /<nav[^>]*class="[^"]*bg-black[^"]*" style="width:340px;padding:28px" data-testid="provision-rail"/);
+  assert.match(html, /<div class="mt-\[16px\] h-\[2px\] w-full bg-black" data-testid="preview-rule"/);
+  assert.match(html, /<nav[^>]*class="[^"]*bg-black[^"]*" style="width:197px;padding:16px" data-testid="provision-rail"/);
   assert.doesNotMatch(html, /shadow/);
   assert.doesNotMatch(html, /font-display/);
 });

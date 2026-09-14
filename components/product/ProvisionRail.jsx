@@ -1,5 +1,10 @@
 import { useState } from 'react';
 
+// Ben, 2026-09-14, comparing the deployed page with Deal Storylines at the
+// same browser zoom ("zoom level is the same"): the rail was 590 device px
+// against the reference's 340, so "please fix relative sizes". Every px
+// below is the first reading scaled by 0.58: width 197, padding 16, title
+// 20, nav 10.5 with 8 / 10 padding and 6 gaps, sub-items 9 indented 8.
 // The left rail in the Deal Storylines / Corpus style (Ben, 2026-09-13:
 // "shift the page design to match this ... mainly thinking of the left hand
 // side bar, page header and the right hand side bar"): a black column, the
@@ -43,8 +48,8 @@ export default function ProvisionRail({ sections, title = null }) {
         onClick={() => setActive(sectionKey)}
         data-testid="provision-rail-item"
         data-active={isActive || undefined}
-        className={`block rounded font-sans leading-snug ${sub ? 'text-[15px]' : 'text-[18px]'} ${isActive ? 'bg-white font-bold text-black' : 'font-normal text-white/90 hover:bg-white/10 hover:text-white'}`}
-        style={{ padding: sub ? '8px 18px' : '14px 18px', marginLeft: sub ? 14 : 0 }}
+        className={`block rounded-[2px] font-sans leading-snug ${sub ? 'text-[9px]' : 'text-[10.5px]'} ${isActive ? 'bg-white font-bold text-black' : 'font-normal text-white/90 hover:bg-white/10 hover:text-white'}`}
+        style={{ padding: sub ? '4.5px 10px' : '8px 10px', marginLeft: sub ? 8 : 0 }}
       >
         {label}
       </a>
@@ -54,13 +59,13 @@ export default function ProvisionRail({ sections, title = null }) {
     <nav
       aria-label="Provision sections"
       className="sticky top-0 hidden h-screen max-h-screen shrink-0 self-start overflow-y-auto bg-black lg:block [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      style={{ width: 340, padding: 28 }}
+      style={{ width: 197, padding: 16 }}
       data-testid="provision-rail"
     >
       {title ? (
-        <p className="mb-8 font-sans text-[34px] font-bold leading-[1.1] tracking-tight text-white" data-testid="provision-rail-title">{title}</p>
+        <p className="mb-[18.5px] font-sans text-[20px] font-bold leading-[1.1] tracking-tight text-white" data-testid="provision-rail-title">{title}</p>
       ) : null}
-      <div className="flex flex-col" style={{ gap: 10 }}>
+      <div className="flex flex-col" style={{ gap: 6 }}>
         {groups.map((group) => (
           <div key={group.label} data-testid="provision-rail-group">
             {group.sections.length === 1
@@ -68,7 +73,7 @@ export default function ProvisionRail({ sections, title = null }) {
               : (
                 <>
                   {item(group.sections[0].section_key, group.label)}
-                  <div className="flex flex-col" style={{ gap: 4, marginTop: 4 }}>
+                  <div className="flex flex-col" style={{ gap: 2.5, marginTop: 2.5 }}>
                     {group.sections.map((section) => item(section.section_key, section.label, { sub: true }))}
                   </div>
                 </>

@@ -8,6 +8,12 @@ import { previewFactsFromWorkspace } from '../../../../lib/product/provisions-pr
 import legalSchemaV2 from '../../../../contracts/product/legal-schema.v2.json';
 import tableShapesV3 from '../../../../contracts/product/table-shapes.v3.json';
 
+// Ben, 2026-09-14, comparing the deployed page with Deal Storylines at the
+// same browser zoom ("zoom level is the same"): every dimension of ours was
+// about 1.7x the reference, so "please fix relative sizes". Every px size
+// below is the first reading divided by 1.73 (scaled by 0.58, to the half
+// px): content paddings 37 / 37 / 56, eyebrow 8, title 30, rule 2,
+// metadata and counts lines 9.
 // Lawyer preview of one run: the draft's valid layered facts in the table
 // layout (mockup approved by Ben 2026-09-12/13), read-only. The review page
 // stays the place to decide; this page shows what a reader would see.
@@ -52,7 +58,7 @@ function formatAgreementDate(value) {
 // the Tailwind accent tokens under the page resolve to it).
 const INTER = "'Inter', ui-sans-serif, -apple-system, 'Segoe UI', Roboto, sans-serif";
 const PAGE_STYLE = { '--font-sans': INTER, '--font-serif': INTER, '--accent-rgb': '47 86 184', '--accent-soft': '#e9effa', fontFamily: INTER };
-// The state badge as a small rounded chip in a soft tint, no border.
+// The state badge as a small rounded-[2px] chip in a soft tint, no border.
 function stateBadge(progress, published) {
   if (progress && progress.status === 'FAILED') return { label: 'Run failed', className: 'bg-amber-50 text-amber-700' };
   if (progress && progress.status !== 'READY') return { label: 'In progress', className: 'bg-amber-50 text-amber-700' };
@@ -89,18 +95,18 @@ export function ProvisionsPreviewBody({ workspace, runId }) {
   return (
     <div className="flex min-h-screen bg-white text-[#1f1f1f]" style={PAGE_STYLE} data-testid="provisions-page">
       {preview.facts.length === 0 ? (
-        <div className="p-4 md:p-8"><EmptyState icon="" title={live ? 'No sections in yet' : 'No layered facts'} description={live ? 'The first completed section appears here within a few minutes.' : 'This run has no valid layered (V2) facts to show.'} /></div>
+        <div className="p-[9.5px] md:p-[18.5px]"><EmptyState icon="" title={live ? 'No sections in yet' : 'No layered facts'} description={live ? 'The first completed section appears here within a few minutes.' : 'This run has no valid layered (V2) facts to show.'} /></div>
       ) : (
         <>
           <ProvisionRail sections={tableShapesV3.sections} title={title} />
-          <div className="min-w-0 flex-1 px-4 py-8 md:px-8 lg:pb-24 lg:pl-16 lg:pr-24 lg:pt-16">
-            <header className="mb-7" data-testid="preview-header">
-              <div className="flex flex-wrap items-center gap-3">
-                <p className="font-ui text-[13px] uppercase tracking-[0.12em] text-[#6b6b6b]">Lawyer preview</p>
-                <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[12px] font-ui font-medium uppercase tracking-wide ${badge.className}`} data-testid="preview-badge">{badge.label}</span>
+          <div className="min-w-0 flex-1 px-[9px] py-[18.5px] md:px-[18.5px] lg:pb-[56px] lg:pl-[37px] lg:pr-[56px] lg:pt-[37px]">
+            <header className="mb-[16px]" data-testid="preview-header">
+              <div className="flex flex-wrap items-center gap-[7px]">
+                <p className="font-ui text-[8px] uppercase tracking-[0.12em] text-[#6b6b6b]">Lawyer preview</p>
+                <span className={`inline-flex items-center rounded-full px-[6px] py-[1px] text-[7px] font-ui font-medium uppercase tracking-wide ${badge.className}`} data-testid="preview-badge">{badge.label}</span>
               </div>
-              <h1 className="mt-3 font-sans text-[40px] font-semibold leading-[1.05] tracking-tight text-[#1f1f1f] md:text-[52px]">{title}</h1>
-              <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-[15px] font-ui text-[#6b6b6b]" data-testid="preview-state">
+              <h1 className="mt-[7px] font-sans text-[23px] font-semibold leading-[1.05] tracking-tight text-[#1f1f1f] md:text-[30px]">{title}</h1>
+              <div className="mt-[9.5px] flex flex-wrap gap-x-[11.5px] gap-y-[2.5px] text-[9px] font-ui text-[#6b6b6b]" data-testid="preview-state">
                 <span>State: <span className="text-inkMid">{stateLabel}</span></span>
                 {agreementDate ? <span>Date: <span className="text-inkMid">{agreementDate}</span></span> : null}
                 {secLabel ? (
@@ -110,11 +116,11 @@ export function ProvisionsPreviewBody({ workspace, runId }) {
                 ) : null}
                 {generation !== null ? <span>Generation: <span className="text-inkMid">{generation}</span></span> : null}
               </div>
-              <p className="mt-2 text-[15px] font-ui text-[#6b6b6b]" data-testid="preview-counts">
+              <p className="mt-[4.5px] text-[9px] font-ui text-[#6b6b6b]" data-testid="preview-counts">
                 {preview.facts.length} layered facts across {preview.section_count} sections{preview.held_count ? ` · ${preview.held_count} held by validation, not shown` : ''}. Click a row or a pill for the words behind it.
               </p>
-              {live && progress.status !== 'FAILED' ? <p className="mt-3 rounded bg-amber-50 px-3 py-2 text-[13px] font-ui text-amber-700" data-testid="preview-live">Filling in as sections complete. This page refreshes itself every minute.</p> : null}
-              <div className="mt-7 h-[3px] w-full bg-black" data-testid="preview-rule" aria-hidden="true" />
+              {live && progress.status !== 'FAILED' ? <p className="mt-[7px] rounded-[2px] bg-amber-50 px-[7px] py-[4.5px] text-[7.5px] font-ui text-amber-700" data-testid="preview-live">Filling in as sections complete. This page refreshes itself every minute.</p> : null}
+              <div className="mt-[16px] h-[2px] w-full bg-black" data-testid="preview-rule" aria-hidden="true" />
             </header>
             <PublishedSummary
               groups={[{ family_key: 'ALL', collapsed: false, facts: preview.facts }]}
@@ -160,8 +166,8 @@ export default function ProvisionsPreviewPage() {
     load();
     return () => { cancelled = true; if (timer) clearTimeout(timer); };
   }, [id]);
-  if (error) return <div className="p-8"><ErrorState message={error} /></div>;
-  if (!id || !workspace) return <div className="space-y-4 p-8"><SkeletonCard /><SkeletonCard /></div>;
+  if (error) return <div className="p-[18.5px]"><ErrorState message={error} /></div>;
+  if (!id || !workspace) return <div className="space-y-[9.5px] p-[18.5px]"><SkeletonCard /><SkeletonCard /></div>;
   return <ProvisionsPreviewBody workspace={workspace} runId={id} />;
 }
 ProvisionsPreviewPage.noLayout = true;

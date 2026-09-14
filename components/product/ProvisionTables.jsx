@@ -3,6 +3,12 @@ import EvidenceSidebar from './EvidenceSidebar';
 import { factIdOf, factSummaryText } from '../../lib/product/table-view';
 import { walk } from '../../lib/product/fact-components';
 
+// Ben, 2026-09-14, comparing the deployed page with Deal Storylines at the
+// same browser zoom ("zoom level is the same"): every dimension was about
+// 1.7x the reference, so "please fix relative sizes". Every px below is the
+// first reading scaled by 0.58: tabs 10 with 7 / 12 padding, header band
+// 30 with its title at 11, body padding 14, header labels 7.5, cells 9.5,
+// chips 7, cards 16 apart.
 // Renders a lib/product/table-view.js buildTableView() result as the small
 // tables of coded headline conclusions, pills per subject, that the
 // published and Query pages show (mockup approved by Ben 2026-09-12/13):
@@ -24,40 +30,40 @@ import { walk } from '../../lib/product/fact-components';
 // values near-black; a related detail in a tinted box. Here each provision
 // section is one card (the green tint; the definitions section the blue),
 // the tables inside keep their columns with header labels uppercase 12px
-// grey, cells at 16px, pills as small rounded tinted chips of 12px
+// grey, cells at 16px, pills as small rounded-[2px] tinted chips of 12px
 // uppercase text, row separators 1px #ececec and no heavy borders; links
 // are near-black with an underline under the pointer; the blue is the one
 // accent, for buttons and the active tab.
 
-const CARD = 'bg-white border border-[#dcdcdc] rounded overflow-hidden';
-const CARD_BODY = 'p-6';
+const CARD = 'bg-white border border-[#dcdcdc] rounded-[2px] overflow-hidden';
+const CARD_BODY = 'p-[14px]';
 // The header band's tints: green for provision sections, blue for the
 // definitions section.
 const TINTS = {
   green: { band: 'bg-[#e8f3ee] border-b border-[#cfe3d8] text-[#2f7a5b]', box: 'bg-[#e8f3ee] text-[#2f7a5b]' },
   blue: { band: 'bg-[#e9effa] border-b border-[#d0dbf3] text-[#2f56b8]', box: 'bg-[#e9effa] text-[#2f56b8]' },
 };
-const TH = 'border-b border-[#ececec] px-3 py-2 text-left text-[12px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b]';
-const TD = 'px-3 py-3 align-top';
+const TH = 'border-b border-[#ececec] px-[7px] py-[4.5px] text-left text-[7.5px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b]';
+const TD = 'px-[7px] py-[7px] align-top';
 const ROW = 'border-b border-[#ececec] last:border-0';
-const TEXT = 'text-[16px] leading-relaxed text-[#1f1f1f]';
-const SUBJECT = 'font-ui text-[16px] font-medium text-[#1f1f1f]';
-const LINK = 'text-[13px] font-ui text-[#1f1f1f] underline-offset-2 hover:underline';
-const FOOT = 'border-t border-[#ececec] bg-[#fafafa] px-3 py-3 align-top';
-const FOOT_LABEL = 'text-[12px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b]';
+const TEXT = 'text-[9.5px] leading-relaxed text-[#1f1f1f]';
+const SUBJECT = 'font-ui text-[9.5px] font-medium text-[#1f1f1f]';
+const LINK = 'text-[7.5px] font-ui text-[#1f1f1f] underline-offset-2 hover:underline';
+const FOOT = 'border-t border-[#ececec] bg-[#fafafa] px-[7px] py-[7px] align-top';
+const FOOT_LABEL = 'text-[7.5px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b]';
 // Ben, 2026-09-14: "UI point, 'see provision' has too much visual hierarchy
 // and color which distracts readability." Every "See provision" control and
 // the § reference links used the same way (backing-fact lists, Other
 // provisions, footers, the combined definition) are quiet: small, faint,
 // no capitals, no weight, an underline only under the pointer, placed after
 // the subject so they never compete with it.
-const QUIET = 'text-[11px] font-ui font-normal normal-case tracking-normal text-inkFaint hover:underline hover:text-inkLight';
+const QUIET = 'text-[6.5px] font-ui font-normal normal-case tracking-normal text-inkFaint hover:underline hover:text-inkLight';
 // Ben, 2026-09-14: "make the elements below the top level reps (e.g.
 // Organization) collapsable and hide them initially but have a clear 'more
 // detail' button or similar". The control under a row's subject.
-const DETAIL = 'mt-1 block text-[13px] font-ui font-medium text-accent hover:underline';
-// A pill: a small rounded tinted chip, 12px uppercase text, no border.
-const BADGE = 'inline-flex items-center rounded-full px-2.5 py-0.5 text-[12px] font-ui font-medium uppercase tracking-wide';
+const DETAIL = 'mt-[2.5px] block text-[7.5px] font-ui font-medium text-accent hover:underline';
+// A pill: a small rounded-[2px] tinted chip, 12px uppercase text, no border.
+const BADGE = 'inline-flex items-center rounded-full px-[6px] py-[1px] text-[7px] font-ui font-medium uppercase tracking-wide';
 
 // Tones as soft tints with the tint's darker colour for the text (the
 // Storylines green and blue, grey for the neutral readings).
@@ -85,7 +91,7 @@ function Cell({ cell, tableKey, rowIndex, subIndex = null, selected, onSelect })
   }
   if (Array.isArray(cell.values) && cell.values.length > 1) {
     return (
-      <span className="inline-flex flex-wrap gap-1" data-testid="table-multi">
+      <span className="inline-flex flex-wrap gap-[2.5px]" data-testid="table-multi">
         {cell.values.map((value, index) => (
           <Cell key={`${value.label}-${index}`} cell={{ ...value, column_id: cell.column_id }} tableKey={tableKey} rowIndex={rowIndex} subIndex={subIndex} selected={selected} onSelect={onSelect} />
         ))}
@@ -143,14 +149,14 @@ function TermCell({ row, tableKey, rowIndex, subIndex = null, onSelect, detail =
   // the subject does; no list of section references.
   const openFirst = () => onSelect({ tableKey, rowIndex, subIndex, columnId: null, componentId: null, componentIds: [], factId: first.fact_id });
   return (
-    <div className="font-ui text-[16px]">
+    <div className="font-ui text-[9.5px]">
       {first ? (
         <button type="button" data-testid="term-open" onClick={openFirst} className={`text-left underline-offset-2 hover:underline ${SUBJECT}`}>{row.subject}</button>
       ) : <span className={SUBJECT}>{row.subject}</span>}
       {first ? (
-        <button type="button" onClick={openFirst} className={`ml-2 ${QUIET}`} data-testid="see-provision">See provision</button>
+        <button type="button" onClick={openFirst} className={`ml-[4.5px] ${QUIET}`} data-testid="see-provision">See provision</button>
       ) : null}
-      {row.subject_note ? <div className="mt-0.5 font-body text-[13px] text-[#6b6b6b]" data-testid="subject-note">{row.subject_note}</div> : null}
+      {row.subject_note ? <div className="mt-[1px] font-body text-[7.5px] text-[#6b6b6b]" data-testid="subject-note">{row.subject_note}</div> : null}
       {detail ? <DetailControl {...detail} /> : null}
     </div>
   );
@@ -197,7 +203,7 @@ function attributeLines(table, row) {
 function GroupHeader({ table }) {
   if (!table.group_header) return null;
   return (
-    <caption className="pb-2 text-left text-[12px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b]" data-testid="table-group-header">{table.group_header}</caption>
+    <caption className="pb-[4.5px] text-left text-[7.5px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b]" data-testid="table-group-header">{table.group_header}</caption>
   );
 }
 
@@ -212,7 +218,7 @@ function AttributeGrid({ table, selection, onSelect }) {
         <GroupHeader table={table} />
         <thead>
           <tr>
-            <th className={`w-48 ${TH}`}>Term</th>
+            <th className={`w-[111.5px] ${TH}`}>Term</th>
             <th className={TH}>Provision</th>
           </tr>
         </thead>
@@ -245,7 +251,7 @@ function AttributeTerm({ header, backing, tableKey, onSelect }) {
     <div>
       <span>{header}</span>
       {first ? (
-        <button type="button" onClick={() => onSelect({ tableKey, rowIndex: 0, columnId: null, componentId: null, componentIds: [], factId: first.fact_id })} className={`ml-2 ${QUIET}`} data-testid="see-provision">See provision</button>
+        <button type="button" onClick={() => onSelect({ tableKey, rowIndex: 0, columnId: null, componentId: null, componentIds: [], factId: first.fact_id })} className={`ml-[4.5px] ${QUIET}`} data-testid="see-provision">See provision</button>
       ) : null}
     </div>
   );
@@ -273,8 +279,8 @@ function OtherProvisions({ groups, tableKey, onSelect }) {
   // sentence cut into branches is one row with its branches indented under
   // it, each with its own term, the way a row's sub-items are.
   return (
-    <div className="mt-4 rounded border border-[#dcdcdc]" data-testid="other-provisions" data-open={open || undefined}>
-      <button type="button" onClick={() => setOpen((current) => !current)} aria-expanded={open} className={`flex w-full items-center justify-between px-3 py-2 text-left text-[12px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b] ${open ? 'border-b border-[#ececec]' : ''}`} data-testid="other-provisions-toggle">
+    <div className="mt-[9.5px] rounded-[2px] border border-[#dcdcdc]" data-testid="other-provisions" data-open={open || undefined}>
+      <button type="button" onClick={() => setOpen((current) => !current)} aria-expanded={open} className={`flex w-full items-center justify-between px-[7px] py-[4.5px] text-left text-[7.5px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b] ${open ? 'border-b border-[#ececec]' : ''}`} data-testid="other-provisions-toggle">
         <span>Other provisions ({count})</span>
         <span className="text-inkFaint">{open ? '▾' : '▸'}</span>
       </button>
@@ -282,7 +288,7 @@ function OtherProvisions({ groups, tableKey, onSelect }) {
         <table className="w-full border-collapse text-left" data-testid="other-provisions-table" hidden={!open}>
           <thead>
             <tr>
-              <th className={`w-48 ${TH}`}>Term</th>
+              <th className={`w-[111.5px] ${TH}`}>Term</th>
               <th className={TH}>Provision</th>
             </tr>
           </thead>
@@ -294,7 +300,7 @@ function OtherProvisions({ groups, tableKey, onSelect }) {
                 <tr key={key} className={ROW} data-testid="other-provision" data-branches={group.branches.length > 1 ? group.branches.length : undefined}>
                   <td className={`${TD} ${SUBJECT}`}>
                     <span data-testid="other-provision-term">{group.term || ''}</span>
-                    {lead.section_reference ? <span className={`ml-2 ${QUIET}`} data-testid="other-provision-ref">§ {lead.section_reference}</span> : null}
+                    {lead.section_reference ? <span className={`ml-[4.5px] ${QUIET}`} data-testid="other-provision-ref">§ {lead.section_reference}</span> : null}
                   </td>
                   <td className={TD}>
                     <button type="button" data-testid="other-provision-line" onClick={() => select(lead.fact_id)} className={`text-left font-body underline-offset-2 hover:underline ${TEXT}`}>{group.common_text}</button>
@@ -304,9 +310,9 @@ function OtherProvisions({ groups, tableKey, onSelect }) {
               if (group.branches.length === 1) return [line];
               return [line, ...group.branches.map((branch, branchIndex) => (
                 <tr key={`${key}-${branchIndex}`} className={ROW} data-testid="other-provision-branch-row">
-                  <td className={`${TD} pl-8 font-ui text-[16px] text-inkMid`} data-testid="other-provision-branch-term">{branch.term || ''}</td>
-                  <td className={`${TD} pl-8`}>
-                    <button type="button" data-testid="other-provision-branch" onClick={() => select(branch.fact_id)} className="text-left font-body text-[16px] leading-relaxed text-inkMid underline-offset-2 hover:underline">{branch.text}</button>
+                  <td className={`${TD} pl-[18.5px] font-ui text-[9.5px] text-inkMid`} data-testid="other-provision-branch-term">{branch.term || ''}</td>
+                  <td className={`${TD} pl-[18.5px]`}>
+                    <button type="button" data-testid="other-provision-branch" onClick={() => select(branch.fact_id)} className="text-left font-body text-[9.5px] leading-relaxed text-inkMid underline-offset-2 hover:underline">{branch.text}</button>
                   </td>
                 </tr>
               ))];
@@ -323,12 +329,12 @@ function OtherProvisions({ groups, tableKey, onSelect }) {
 function FactsWithoutReadout({ entries, sectionKey, onSelect }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="mt-4 text-[13px] font-ui text-[#6b6b6b]" data-testid="facts-without-readout">
+    <div className="mt-[9.5px] text-[7.5px] font-ui text-[#6b6b6b]" data-testid="facts-without-readout">
       <button type="button" onClick={() => setOpen((current) => !current)} className={LINK}>
         {entries.length} fact{entries.length === 1 ? '' : 's'} without a coded readout · {open ? 'hide' : 'see provisions'}
       </button>
       {open ? (
-        <ul className="mt-1 space-y-0.5 pl-2">
+        <ul className="mt-[2.5px] space-y-[1px] pl-[4.5px]">
           {entries.map((entry, index) => (
             <li key={`${entry.fact_id}-${index}`}>
               <button type="button" data-testid="backing-fact" onClick={() => onSelect({ tableKey: `${sectionKey}:without-readout`, rowIndex: index, columnId: null, componentId: null, factId: entry.fact_id })} className="text-[#1f1f1f] underline-offset-2 hover:underline">
@@ -351,11 +357,11 @@ const DEFINED_TERMS_KEY = 'defined-terms';
 // the section (the chevron turns when it is collapsed).
 function SectionIcon({ tint }) {
   return tint === 'blue' ? (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z" /><path d="M4 20.5V5.5" /><path d="M8 7h8" /><path d="M8 11h6" />
     </svg>
   ) : (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" /><path d="M14 3v5h5" /><path d="M9 13h6" /><path d="M9 17h6" />
     </svg>
   );
@@ -363,10 +369,10 @@ function SectionIcon({ tint }) {
 
 function SectionHeading({ title, collapsed, onToggle, tint = 'green' }) {
   return (
-    <button type="button" onClick={onToggle} aria-expanded={!collapsed} className={`flex min-h-[52px] w-full items-center gap-3 px-6 text-left ${TINTS[tint].band}`} data-testid="section-heading">
+    <button type="button" onClick={onToggle} aria-expanded={!collapsed} className={`flex min-h-[30px] w-full items-center gap-[7px] px-[14px] text-left ${TINTS[tint].band}`} data-testid="section-heading">
       <SectionIcon tint={tint} />
-      <h3 className="flex-1 font-sans text-[19px] font-medium leading-snug">{title}</h3>
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={`shrink-0 transition-transform ${collapsed ? '-rotate-90' : ''}`}>
+      <h3 className="flex-1 font-sans text-[11px] font-medium leading-snug">{title}</h3>
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={`shrink-0 transition-transform ${collapsed ? '-rotate-90' : ''}`}>
         <path d="M6 9l6 6 6-6" />
       </svg>
     </button>
@@ -382,9 +388,9 @@ function DefinedTermRow({ term }) {
     <tr className={ROW} data-testid="defined-term-row" data-open={open || undefined}>
       <td className={TD}>
         <button type="button" onClick={() => setOpen((current) => !current)} aria-expanded={open} className={`text-left underline-offset-2 hover:underline ${SUBJECT}`} data-testid="defined-term-toggle">{term.term}</button>
-        {term.section_reference ? <span className={`ml-2 ${QUIET}`}>§ {term.section_reference}</span> : null}
+        {term.section_reference ? <span className={`ml-[4.5px] ${QUIET}`}>§ {term.section_reference}</span> : null}
       </td>
-      <td className={`${TD} font-body text-[16px] leading-relaxed text-inkMid`}>
+      <td className={`${TD} font-body text-[9.5px] leading-relaxed text-inkMid`}>
         {open ? (term.definition || <span className="text-inkFaint">Definition not in the closure</span>) : <button type="button" onClick={() => setOpen(true)} className={LINK}>Show</button>}
       </td>
     </tr>
@@ -431,7 +437,7 @@ function RowGroup({ table, row, rowIndex, selection, onSelect, initialOpen = fal
       className={`${ROW} ${rowSelected ? 'bg-accentDim' : ''}`}
     >
       {table.term_column ? (
-        <td className={`${TD} ${sub ? 'pl-8 text-inkMid' : ''}`}>
+        <td className={`${TD} ${sub ? 'pl-[18.5px] text-inkMid' : ''}`}>
           <TermCell row={entry} tableKey={table.table_key} rowIndex={rowIndex} subIndex={subIndex} onSelect={onSelect} detail={sub ? null : detail} />
         </td>
       ) : null}
@@ -482,7 +488,7 @@ function Table({ table, selection, onSelect, initialSubRowsOpen = false }) {
                   {table.term_column ? (
                     <td className={TD}><span className={SUBJECT}>{row.subject}</span></td>
                   ) : null}
-                  <td className={`${TD} font-ui text-[16px] text-[#6b6b6b]`} colSpan={table.columns.length} data-testid="table-absent">{table.absent_row_label}</td>
+                  <td className={`${TD} font-ui text-[9.5px] text-[#6b6b6b]`} colSpan={table.columns.length} data-testid="table-absent">{table.absent_row_label}</td>
                 </tr>
               );
             }
@@ -494,14 +500,14 @@ function Table({ table, selection, onSelect, initialSubRowsOpen = false }) {
             <tr data-testid="combined-definition">
               <td colSpan={table.columns.length + (table.term_column ? 1 : 0)} className={FOOT}>
                 <div className={FOOT_LABEL}>{table.combined_definition.label}</div>
-                <div className={`mt-1 font-body ${TEXT}`}>
+                <div className={`mt-[2.5px] font-body ${TEXT}`}>
                   <span className="font-medium">“{table.combined_definition.term}”</span>
                   {table.combined_definition.text ? <span className="text-inkMid"> · {table.combined_definition.text}</span> : null}
                   <button
                     type="button"
                     data-testid="backing-fact"
                     onClick={() => onSelect({ tableKey: table.table_key, rowIndex: null, columnId: null, componentId: (table.combined_definition.component_ids || [])[0] || null, factId: table.combined_definition.fact_id })}
-                    className={`ml-2 ${QUIET}`}
+                    className={`ml-[4.5px] ${QUIET}`}
                   >
                     {table.combined_definition.section_reference ? `§ ${table.combined_definition.section_reference}` : 'See provision'}
                   </button>
@@ -516,13 +522,13 @@ function Table({ table, selection, onSelect, initialSubRowsOpen = false }) {
               <td colSpan={table.columns.length + (table.term_column ? 1 : 0)} className={FOOT}>
                 <div className={FOOT_LABEL}>{table.footer.label}</div>
                 {table.footer.entries.map((entry, index) => (
-                  <div key={`${entry.fact_id}-${index}`} className={`mt-1 font-body ${TEXT}`}>
+                  <div key={`${entry.fact_id}-${index}`} className={`mt-[2.5px] font-body ${TEXT}`}>
                     <span>{entry.text}</span>
                     <button
                       type="button"
                       data-testid="backing-fact"
                       onClick={() => onSelect({ tableKey: table.table_key, rowIndex: null, columnId: null, componentId: (entry.component_ids || [])[0] || null, factId: entry.fact_id })}
-                      className={`ml-2 ${QUIET}`}
+                      className={`ml-[4.5px] ${QUIET}`}
                     >
                       {entry.section_reference ? `§ ${entry.section_reference}` : 'See provision'}
                     </button>
@@ -629,12 +635,12 @@ export default function ProvisionTables({
   // closed) on a light grey block with a 1px border, the other plain; the
   // right side, the reference's search box, stays empty. The sections
   // follow as cards 28px apart.
-  const TAB = 'rounded border px-5 py-3 text-[17px] font-ui leading-none transition-colors';
+  const TAB = 'rounded-[2px] border px-[12px] py-[7px] text-[10px] font-ui leading-none transition-colors';
   const tabClass = (current) => `${TAB} ${current ? 'border-[#dcdcdc] bg-[#f3f3f3] text-[#1f1f1f]' : 'border-transparent text-[#6b6b6b] hover:text-[#1f1f1f]'}`;
   return (
-    <div className="flex flex-wrap gap-8 lg:flex-nowrap" data-testid="provision-tables">
-      <div className="min-w-0 flex-1 space-y-7">
-        <div className="flex items-center gap-2" data-testid="section-toggles">
+    <div className="flex flex-wrap gap-[18.5px] lg:flex-nowrap" data-testid="provision-tables">
+      <div className="min-w-0 flex-1 space-y-[16px]">
+        <div className="flex items-center gap-[4.5px]" data-testid="section-toggles">
           <button type="button" onClick={() => setAll(false)} disabled={collapsed.size === 0} className={tabClass(collapsed.size === 0)}>Expand all</button>
           <button type="button" onClick={() => setAll(true)} disabled={allCollapsed} className={tabClass(allCollapsed)}>Collapse all</button>
         </div>
@@ -645,7 +651,7 @@ export default function ProvisionTables({
               <SectionHeading title={section.title} collapsed={isCollapsed} onToggle={() => toggleSection(section.section_key)} />
               {isCollapsed ? null : (
                 <div className={CARD_BODY}>
-                  <div className="space-y-8">
+                  <div className="space-y-[18.5px]">
                     {section.tables.map((table) => (
                       <div key={table.table_key}>
                         <Table table={table} selection={selection} onSelect={setSelection} initialSubRowsOpen={initialSubRowsOpen} />

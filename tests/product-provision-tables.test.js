@@ -410,15 +410,17 @@ test('a one-per-agreement table renders its other provisions as a collapsed Term
 // shadow, a tinted header band (green; the definitions section blue) with
 // the title at 19px medium; header labels uppercase 12px grey; pills as
 // small rounded tinted chips of 12px uppercase text; the toggles as tabs.
+// Then, at the same browser zoom, "please fix relative sizes" ("zoom level
+// is the same"): every px scaled by 0.58.
 test('sections are Storylines cards with a tinted header band, pills are tinted chips, nothing casts a shadow', () => {
   const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView, facts }));
-  assert.match(html, /<section class="bg-white border border-\[#dcdcdc\] rounded overflow-hidden" data-testid="provision-section"/);
+  assert.match(html, /<section class="bg-white border border-\[#dcdcdc\] rounded-\[2px\] overflow-hidden" data-testid="provision-section"/);
   assert.match(html, /data-testid="section-heading"[^>]*>/);
   assert.match(html, /<button[^>]*class="[^"]*bg-\[#e8f3ee\][^"]*text-\[#2f7a5b\][^"]*"[^>]*data-testid="section-heading"/);
-  assert.match(html, /<h3 class="flex-1 font-sans text-\[19px\] font-medium leading-snug">/);
-  assert.match(html, /data-testid="table-pill"[^>]*class="inline-flex items-center rounded-full px-2\.5 py-0\.5 text-\[12px\] font-ui font-medium uppercase tracking-wide/);
-  assert.match(html, /<th class="border-b border-\[#ececec\] px-3 py-2 text-left text-\[12px\] font-ui font-medium uppercase tracking-\[0\.08em\] text-\[#6b6b6b\]">/);
-  assert.match(html, /data-testid="section-toggles"><button[^>]*class="rounded border px-5 py-3 text-\[17px\] font-ui/);
+  assert.match(html, /<h3 class="flex-1 font-sans text-\[11px\] font-medium leading-snug">/);
+  assert.match(html, /data-testid="table-pill"[^>]*class="inline-flex items-center rounded-full px-\[6px\] py-\[1px\] text-\[7px\] font-ui font-medium uppercase tracking-wide/);
+  assert.match(html, /<th class="border-b border-\[#ececec\] px-\[7px\] py-\[4.5px\] text-left text-\[7.5px\] font-ui font-medium uppercase tracking-\[0\.08em\] text-\[#6b6b6b\]">/);
+  assert.match(html, /data-testid="section-toggles"><button[^>]*class="rounded-\[2px\] border px-\[12px\] py-\[7px\] text-\[10px\] font-ui/);
   assert.doesNotMatch(html, /shadow/);
   assert.doesNotMatch(html, /font-mono/);
   assert.doesNotMatch(html, /font-display/);
@@ -433,7 +435,7 @@ test('"See provision" and the § links are quiet controls: small, faint, no capi
   const controls = html.match(/<button[^>]*data-testid="see-provision"[^>]*>/g) || [];
   assert.ok(controls.length > 0);
   for (const control of controls) {
-    assert.match(control, /text-\[11px\]/);
+    assert.match(control, /text-\[6.5px\]/);
     assert.match(control, /font-ui/);
     assert.match(control, /text-inkFaint/);
     assert.match(control, /hover:underline/);
