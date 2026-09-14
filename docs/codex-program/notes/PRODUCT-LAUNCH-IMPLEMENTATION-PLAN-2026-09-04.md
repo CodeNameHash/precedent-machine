@@ -2420,7 +2420,27 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       13:12 UTC: the identity needed two more passes (the part number
       sits in the provider request's message content, at its top level);
       2.02's part 1 was admitted at 13:12, the first split-section call
-      ever recorded in the hosted worker. Ben's afternoon decisions,
+      ever recorded in the hosted worker.
+      (20) 15:15 UTC, reading 6.03 on the page: no Efforts standard row
+      and no Remedy commitment row, though 6.03(a) is the reasonable best
+      efforts covenant and the no-divestiture proviso. The model calls
+      show three parts covering (b), (c) to (f) and (g); (a) was in none.
+      When limb (a) runs on from the heading line the structure keeps it
+      as the section's own text and only (b) onwards are children, so the
+      split put (a) in the chapeau span, sent it to every part as context
+      and told each part to answer for its listed limbs only. All ten
+      split sections of generation 6 lost their (a) this way (5.02(a) the
+      no-shop covenant itself, 5.01's "shall not" chapeau, 2.02(a) the
+      paying agent, 3.13(a) the material contracts list, 6.05(a) the
+      charter indemnification continuation, 3.09(a), 3.11(a), 3.17(a),
+      3.19(a)); no fact of any of them has an OWN component in the
+      chapeau range. Fix in `longSectionGroups`: the section's own chapeau
+      span leads the first group (its own part when it is long, as
+      6.03(a)'s 4.1k bytes is), the part that carries it says so
+      (`extraction_part.covers_chapeau`, "treat those words as a limb of
+      this part") and the LONG_SECTION_SPLIT issue records
+      `chapeau_in_part`. Generation 6 stands as extracted; generation 7
+      carries the fix. Ben's afternoon decisions,
       2026-09-14, each in code: "by miscoded I meant oyu currentl have it
       messed up and you need to move it over to what we had in the old
       vesrion...." (the reps table opens with General Exceptions: SEC

@@ -39,7 +39,13 @@ test('longSectionGroups splits a long section with children into source-ordered 
   assert.deepEqual(longSectionGroups(buildSourceClosure({ sourceDocument, agreementStructure, nodeId: short.node_id })), [], `${short.reference} (${sized(short)} bytes) stays whole`);
   const groups = longSectionGroups(closure, { min_section_bytes: 1000, min_children: 3, group_bytes: 6000 });
   assert.ok(groups.length > 1, `groups: ${groups.length}`);
-  assert.deepEqual(groups.flat(), closure.operative_span_ids, 'every operative limb is in exactly one group, in order');
+  // The section's own opening words (limb (a) when it runs on from the
+  // heading) lead the first group: Metsera generation 6 lost every split
+  // section's (a) when the chapeau was context only.
+  const localChapeau = closure.spans.find((span) => closure.chapeau_span_ids.includes(span.span_id) && span.structure_node_id === closure.structure_node_id);
+  assert.ok(localChapeau, 'Concho 6.3 has its own opening words');
+  assert.deepEqual(groups.flat(), [localChapeau.span_id, ...closure.operative_span_ids], 'the opening words and every operative limb are in exactly one group, in order');
+  assert.equal(groups[0][0], localChapeau.span_id);
   assert.deepEqual(longSectionGroups(closure, { min_section_bytes: 1000, min_children: 8, group_bytes: 6000 }), [], 'too few children: no split');
   assert.deepEqual(LONG_SECTION_SPLIT, { min_section_bytes: 5000, min_children: 3, group_bytes: 3500 });
 });
@@ -105,6 +111,15 @@ test('a long section is extracted in parts, each part carrying only its limbs wi
   assert.ok(parts > 1, `parts: ${parts}`);
   const closure = buildSourceClosure({ sourceDocument, agreementStructure, nodeId: node.node_id });
   assert.deepEqual(model.extractionRequests.flatMap((request) => request.source_closure.operative.map((span) => span.span_id)), closure.operative_span_ids);
+  const first = model.extractionRequests[0];
+  assert.equal(first.source_closure.extraction_part.covers_chapeau, true, 'the first part covers the opening words');
+  assert.match(first.part_instruction, /also covers the section's own opening words, the source_closure.chapeau span [0-9a-f]{64}/);
+  for (const request of model.extractionRequests.slice(1)) {
+    assert.equal(request.source_closure.extraction_part.covers_chapeau, false);
+    assert.doesNotMatch(request.part_instruction, /opening words/);
+  }
+  const splitIssue = section.issues.find((issue) => issue.code === 'LONG_SECTION_SPLIT');
+  assert.match(splitIssue.message, /"chapeau_in_part":1/);
   for (const request of model.extractionRequests) {
     assert.equal(request.source_closure.full_section.exact_text, '', 'the whole section is not resent with each part');
     assert.ok(request.source_closure.full_section.span_id, 'the span identity stays');
