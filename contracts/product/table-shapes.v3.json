@@ -2194,6 +2194,10 @@
         {
           "key": "INTERIM_OPERATING",
           "confidence": "high"
+        },
+        {
+          "key": "DIVIDENDS",
+          "confidence": "high"
         }
       ],
       "tables": [
@@ -2289,6 +2293,13 @@
                   "tone": "neutral",
                   "addition": true,
                   "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
+                },
+                {
+                  "code": "SPECIFIC_RESTRICTIONS_GOVERN_GENERAL_COVENANT",
+                  "label": "Action addressed by a specific restriction is not a breach of the general covenant",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
                 }
               ],
               "vocabulary_by_row": {
@@ -2308,6 +2319,9 @@
                   "ORDINARY_COURSE_CONSISTENT_WITH_PAST_PRACTICE",
                   "ORDINARY_COURSE",
                   "COMMERCIALLY_REASONABLE_EFFORTS_ORDINARY_COURSE"
+                ],
+                "Specific restrictions govern": [
+                  "SPECIFIC_RESTRICTIONS_GOVERN_GENERAL_COVENANT"
                 ]
               },
               "fill_from": [
@@ -2359,13 +2373,19 @@
           "fixed_row_labels": [
             "Consent standard",
             "General exceptions",
-            "Ordinary course standard"
+            "Ordinary course standard",
+            "Specific restrictions govern"
           ],
           "subtype_keys": [
             "CONSENT_STANDARD",
             "EXCEPTION"
           ],
-          "guidance": "The covenant introductions, from the section's opening words (the chapeau, limb (a) when it runs on from the heading): the affirmative introduction (\"shall conduct its business in the ordinary course\") gives the Ordinary course standard; the negative introduction (\"shall not, without Parent's consent, ... \") gives the Consent standard (CONSENT_STANDARD) and the exceptions that apply to every restriction (an EXCEPTION fact from the chapeau, one cell per exception) as General exceptions."
+          "guidance": "The covenant introductions, from the section's opening words (the chapeau, limb (a) when it runs on from the heading): the affirmative introduction (\"shall conduct its business in the ordinary course\") gives the Ordinary course standard; the negative introduction (\"shall not, without Parent's consent, ... \") gives the Consent standard (CONSENT_STANDARD) and the exceptions that apply to every restriction (an EXCEPTION fact from the chapeau, one cell per exception) as General exceptions.",
+          "fact_type_rows": {
+            "IOC_RESTRICTION_PRESENT:EXCEPTION": "Specific restrictions govern",
+            "IOC_RESTRICTION_PRESENT:CONSENT_STANDARD": "Consent standard"
+          },
+          "statement_words": "\\bthe Company\\b"
         },
         {
           "table_key": "ioc-exceptions-affirmative-covenants",
@@ -2724,7 +2744,11 @@
             "EXCEPTION"
           ],
           "collapsible_rows": true,
-          "guidance": "One row per restriction category the covenant names (row_label from fixed_row_labels, a new category only when none fits, never the clause's own words): each lettered restriction is a RESTRICTIVE_COVENANT fact on its category's row, as drafted; a dollar basket is the threshold; each carve-out from the restriction is one exceptions code (several cells when the clause has several); the consent standard is a general term, never a cell of a restriction. Two restrictions of one category (5.01(d) acquisitions and 5.01(g) dispositions) are two facts on the same row, each a sub-item (row_detail: Acquisitions; Dispositions)."
+          "guidance": "One row per restriction category the covenant names (row_label from fixed_row_labels, a new category only when none fits, never the clause's own words): each lettered restriction is a RESTRICTIVE_COVENANT fact on its category's row, as drafted; a dollar basket is the threshold; each carve-out from the restriction is one exceptions code (several cells when the clause has several); the consent standard is a general term, never a cell of a restriction. Two restrictions of one category (5.01(d) acquisitions and 5.01(g) dispositions) are two facts on the same row, each a sub-item (row_detail: Acquisitions; Dispositions).",
+          "fact_type_rows": {
+            "DIVIDEND_COORDINATION_COVENANT": "Dividends and Distributions"
+          },
+          "statement_words": "\\bthe Company\\b"
         }
       ],
       "print_pages": [
@@ -2841,6 +2865,13 @@
                   "tone": "neutral",
                   "addition": true,
                   "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
+                },
+                {
+                  "code": "SPECIFIC_RESTRICTIONS_GOVERN_GENERAL_COVENANT",
+                  "label": "Action addressed by a specific restriction is not a breach of the general covenant",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
                 }
               ],
               "vocabulary_by_row": {
@@ -2860,6 +2891,9 @@
                   "ORDINARY_COURSE_CONSISTENT_WITH_PAST_PRACTICE",
                   "ORDINARY_COURSE",
                   "COMMERCIALLY_REASONABLE_EFFORTS_ORDINARY_COURSE"
+                ],
+                "Specific restrictions govern": [
+                  "SPECIFIC_RESTRICTIONS_GOVERN_GENERAL_COVENANT"
                 ]
               },
               "fill_from": [
@@ -2911,13 +2945,19 @@
           "fixed_row_labels": [
             "Consent standard",
             "General exceptions",
-            "Ordinary course standard"
+            "Ordinary course standard",
+            "Specific restrictions govern"
           ],
           "subtype_keys": [
             "CONSENT_STANDARD",
             "EXCEPTION"
           ],
-          "guidance": "The covenant introductions, from the section's opening words (the chapeau, limb (a) when it runs on from the heading): the affirmative introduction (\"shall conduct its business in the ordinary course\") gives the Ordinary course standard; the negative introduction (\"shall not, without Parent's consent, ... \") gives the Consent standard (CONSENT_STANDARD) and the exceptions that apply to every restriction (an EXCEPTION fact from the chapeau, one cell per exception) as General exceptions."
+          "guidance": "The covenant introductions, from the section's opening words (the chapeau, limb (a) when it runs on from the heading): the affirmative introduction (\"shall conduct its business in the ordinary course\") gives the Ordinary course standard; the negative introduction (\"shall not, without Parent's consent, ... \") gives the Consent standard (CONSENT_STANDARD) and the exceptions that apply to every restriction (an EXCEPTION fact from the chapeau, one cell per exception) as General exceptions.",
+          "fact_type_rows": {
+            "IOC_RESTRICTION_PRESENT:EXCEPTION": "Specific restrictions govern",
+            "IOC_RESTRICTION_PRESENT:CONSENT_STANDARD": "Consent standard"
+          },
+          "statement_words": "\\bParent\\b(?![^.]*\\bthe Company\\b)"
         },
         {
           "table_key": "parent-ioc-exceptions-affirmative-covenants",
@@ -3196,7 +3236,11 @@
             "EXCEPTION"
           ],
           "collapsible_rows": true,
-          "guidance": "One row per restriction category the covenant names (row_label from fixed_row_labels, a new category only when none fits, never the clause's own words): each lettered restriction is a RESTRICTIVE_COVENANT fact on its category's row, as drafted; a dollar basket is the threshold; each carve-out from the restriction is one exceptions code (several cells when the clause has several); the consent standard is a general term, never a cell of a restriction. Two restrictions of one category (5.01(d) acquisitions and 5.01(g) dispositions) are two facts on the same row, each a sub-item (row_detail: Acquisitions; Dispositions)."
+          "guidance": "One row per restriction category the covenant names (row_label from fixed_row_labels, a new category only when none fits, never the clause's own words): each lettered restriction is a RESTRICTIVE_COVENANT fact on its category's row, as drafted; a dollar basket is the threshold; each carve-out from the restriction is one exceptions code (several cells when the clause has several); the consent standard is a general term, never a cell of a restriction. Two restrictions of one category (5.01(d) acquisitions and 5.01(g) dispositions) are two facts on the same row, each a sub-item (row_detail: Acquisitions; Dispositions).",
+          "fact_type_rows": {
+            "DIVIDEND_COORDINATION_COVENANT": "Dividends and Distributions"
+          },
+          "statement_words": "\\bParent\\b(?![^.]*\\bthe Company\\b)"
         }
       ],
       "print_pages": [

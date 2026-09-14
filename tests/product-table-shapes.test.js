@@ -372,7 +372,7 @@ test('Decision 34 (was 7): Interim covenants are one row per restriction categor
     assert.equal(section.tables[0].table_key, `${sectionKey}-general-terms`);
     assert.equal(negative.columns[0].display, 'fact_text');
     const general = findTableV3(section, `${sectionKey}-general-terms`);
-    assert.deepEqual(general.fixed_row_labels, ['Consent standard', 'General exceptions', 'Ordinary course standard']);
+    assert.deepEqual(general.fixed_row_labels, ['Consent standard', 'General exceptions', 'Ordinary course standard', 'Specific restrictions govern']);
     assert.equal(section.tables.some((t) => t.table_key === `${sectionKey}-exceptions` || t.table_key === `${sectionKey}-other-restrictions`), false);
   }
 });

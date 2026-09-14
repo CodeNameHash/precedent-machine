@@ -2592,7 +2592,26 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       come through as OTHER_DEFINED_TERM facts, which had no table: they
       are entries of the Defined Terms section, the quoted name the term
       and the summary the definition. 3.14, 3.15, 3.19 to 3.22 read
-      correctly on their rows. Ben's afternoon decisions,
+      correctly on their rows.
+      (33) 19:30 UTC, generation 7's 5.01 read: the covenant
+      introductions Ben asked for are there, from the opening words the
+      split now extracts. The general-terms table opens the section
+      with the consent standard (not to be unreasonably withheld), the
+      general exceptions (disclosure letter, the Agreement, applicable
+      Law, Parent's consent) and the ordinary course standard; the
+      affirmative covenants (preserve the business organisation with
+      commercially reasonable efforts; maintain material assets) and 33
+      restriction rows with their thresholds ($2,000,000 acquisitions
+      and capex, $500,000 indebtedness), exceptions and sub-items. Three
+      facts had no home: the "specific restrictions govern the general
+      covenant" carve-out (a fourth general-terms row, Specific
+      restrictions govern) and two DIVIDENDS-family coordination facts
+      (the family joins the section; the Dividends and Distributions
+      row takes them by fact type), the Company's or Parent's table
+      chosen by the statement's subject; a defaulted readout cites the
+      fact's own words for the as-drafted column so its summary shows.
+      Article IV read correctly with Merger Sub's 1,000 shares on their
+      own capitalization row. Ben's afternoon decisions,
       2026-09-14, each in code: "by miscoded I meant oyu currentl have it
       messed up and you need to move it over to what we had in the old
       vesrion...." (the reps table opens with General Exceptions: SEC

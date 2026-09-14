@@ -539,12 +539,31 @@ function applyInterimCovenants(doc) {
           code('Ordinary course', why, { code: 'ORDINARY_COURSE' }),
           code('Commercially reasonable efforts to conduct in the ordinary course', why, { code: 'COMMERCIALLY_REASONABLE_EFFORTS_ORDINARY_COURSE' }),
         ]],
+        // Metsera generation 7, 5.01 (2026-09-14): "no action with respect
+        // to matters specifically addressed by Section 5.01(a) through (r)
+        // shall be deemed a breach of the ordinary course covenant" had no
+        // row and fell off the page.
+        ['Specific restrictions govern', [
+          code('Action addressed by a specific restriction is not a breach of the general covenant', why, { code: 'SPECIFIC_RESTRICTIONS_GOVERN_GENERAL_COVENANT' }),
+        ]],
       ],
       numberColumns: [periodColumn('Period', `${why} The deemed-consent period.`)],
       reason: why,
       subtypeKeys: ['CONSENT_STANDARD', 'EXCEPTION'],
       guidance: 'The covenant introductions, from the section\'s opening words (the chapeau, limb (a) when it runs on from the heading): the affirmative introduction ("shall conduct its business in the ordinary course") gives the Ordinary course standard; the negative introduction ("shall not, without Parent\'s consent, ... ") gives the Consent standard (CONSENT_STANDARD) and the exceptions that apply to every restriction (an EXCEPTION fact from the chapeau, one cell per exception) as General exceptions.',
     });
+    // A fact of these types returned without a readout takes its row
+    // (generation 7, 5.01: the dividend coordination covenant and the
+    // specific-restrictions carve-out had none).
+    general.fact_type_rows = { 'IOC_RESTRICTION_PRESENT:EXCEPTION': 'Specific restrictions govern', 'IOC_RESTRICTION_PRESENT:CONSENT_STANDARD': 'Consent standard' };
+    negative.fact_type_rows = { DIVIDEND_COORDINATION_COVENANT: 'Dividends and Distributions' };
+    // The Company's covenant or Parent's, by the statement's subject.
+    const words = sectionKey === 'ioc-exceptions' ? '\\bthe Company\\b' : '\\bParent\\b(?![^.]*\\bthe Company\\b)';
+    general.statement_words = words;
+    negative.statement_words = words;
+    // The dividend coordination facts (DIVIDENDS family) are interim
+    // restrictions on the Company's distributions and belong here.
+    if (sectionKey === 'ioc-exceptions') ensureFamily(section, 'DIVIDENDS');
     // Ben, 2026-09-14: "we do need the general affirmative and negative
     // covenant intros in the IOCs which I don't see (look at prior
     // version)". The introductions open the section, before the
