@@ -229,7 +229,7 @@ test('renderConclusionCells renders a pill label per vocabulary cell, a formatte
 
   const salaryRendered = renderConclusionCells(baseSalaryFact(), tableShapes);
   const period = salaryRendered.find((cell) => cell.column_id === 'period');
-  assert.equal(period.value_text, '12 month');
+  assert.equal(period.value_text, '12 months');
 
   const missingCell = baseSalaryFact();
   missingCell.conclusions.cells = missingCell.conclusions.cells.filter((cell) => cell.column_id !== 'period');
@@ -491,4 +491,14 @@ test('a REPRESENTATION_QUALIFICATION readout on the General Exceptions row valid
   };
   assert.deepEqual(validateFactConclusions(knowledge, { tableShapes }), [], 'the knowledge definition belongs on the Knowledge row');
   assert.equal(tableForFact({ family_key: 'REPRESENTATIONS', conclusions: { table_key: 'representations-general-qualifications' } }, tableShapes), null, 'the separate table is gone');
+});
+
+
+// Generation 6: the benefit-plan look-back read "6 year". A period's unit
+// is a word, plural past one.
+test('formatValue writes a period unit as a word, plural past one', () => {
+  const { formatValue } = require('../lib/product/fact-conclusions');
+  assert.equal(formatValue({ canonical: 6, unit: 'YEAR' }, 'PERIOD'), '6 years');
+  assert.equal(formatValue({ canonical: 1, unit: 'BUSINESS_DAY' }, 'PERIOD'), '1 business day');
+  assert.equal(formatValue({ canonical: 2, unit: 'BUSINESS_DAY' }, 'PERIOD'), '2 business days');
 });
