@@ -784,7 +784,8 @@
             "Unvested, not vesting by its terms",
             "Out of the money (exercise price at or above the deal price)"
           ],
-          "guidance": "One row per instrument class (row_label from fixed_row_labels, a new class name only when none fits). Each class of that instrument treated differently is a sub-item: row_detail from detail_labels (Vested; Unvested, vesting by its terms at the Effective Time; Unvested, not vesting by its terms; Out of the money), a new detail only when none fits, never the agreement's own words as the row. A fact about the instrument as a whole carries no row_detail and gives the overview. A cell states only what its own fact says about its own class: an out-of-the-money option cancelled for no consideration never fills the in-the-money class's cells."
+          "guidance": "One row per instrument class (row_label from fixed_row_labels, a new class name only when none fits). Each class of that instrument treated differently is a sub-item: row_detail from detail_labels (Vested; Unvested, vesting by its terms at the Effective Time; Unvested, not vesting by its terms; Out of the money), a new detail only when none fits, never the agreement's own words as the row. A fact about the instrument as a whole carries no row_detail and gives the overview. A cell states only what its own fact says about its own class: an out-of-the-money option cancelled for no consideration never fills the in-the-money class's cells. The treatment of an award class in the general case (a vested or vesting, in-the-money option) is the row itself, with no row_detail; each exception (unvested awards, out-of-the-money options, awards held by a named group) is a sub-item with row_detail naming the exception.",
+          "sub_rows_label": "Exceptions"
         }
       ],
       "print_pages": [

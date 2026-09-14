@@ -742,6 +742,17 @@ function applyTerminationFees(doc) {
 // protections as drafted.
 // ==========================================================================
 
+// Ben, 2026-09-14, on the option row: "it doesn't show what happens to
+// options that are vested or vest by their terms and are in the money.
+// Consider showing those as the main row (don't change name) and then say
+// 'Exceptions' and show the sub rows?" The row's line is the general case;
+// its sub-items are labelled Exceptions.
+function applyEquityAwards(doc) {
+  const table = findTable(findSection(doc, 'equity-awards'), 'equity-awards-table');
+  table.sub_rows_label = 'Exceptions';
+  table.guidance = `${table.guidance} The treatment of an award class in the general case (a vested or vesting, in-the-money option) is the row itself, with no row_detail; each exception (unvested awards, out-of-the-money options, awards held by a named group) is a sub-item with row_detail naming the exception.`;
+}
+
 function applyEmployeeBenefits(doc) {
   const section = findSection(doc, 'employee-benefits');
   const why = `${BEN}: the benefit standards the corpus states, and the other protections as drafted.`;
@@ -1070,6 +1081,7 @@ function applyVotesAndCovenants(doc) {
 
 function applyDecision34(doc) {
   applyAntitrust(doc);
+  applyEquityAwards(doc);
   applyNoShop(doc);
   applyInterimCovenants(doc);
   applyConditions(doc);

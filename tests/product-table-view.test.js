@@ -242,7 +242,7 @@ test('a representation limb is a sub-item under its rep, whose line gives the ov
   assert.equal(row.sub_rows.length, 1);
   assert.equal(row.sub_rows[0].subject, 'Company Subsidiaries: organization and good standing');
   const materiality = row.cells.find((cell) => cell.column_id === 'materiality');
-  assert.equal(materiality.values.length, 2, 'the overview keeps both readings');
+  assert.equal((materiality.values || [materiality]).length, 1, 'the row line is the general-case fact, not a merge with its limb (Ben, 2026-09-14)');
   const bringdown = row.cells.find((cell) => cell.column_id === 'bringdown');
   assert.equal(bringdown.kind, 'pill');
   assert.equal(bringdown.code, 'TRUE_IN_ALL_MATERIAL_RESPECTS');
@@ -574,7 +574,15 @@ test('equity award treatment classes nest under the instrument row in detail_lab
   assert.equal(table.rows.length, 1);
   assert.equal(table.rows[0].subject, 'Company Stock Option');
   assert.deepEqual(table.rows[0].sub_rows.map((row) => row.subject), ['Vested', 'Out of the money (exercise price at or above the deal price)']);
-  assert.equal(table.rows[0].cells.find((cell) => cell.column_id === 'cvrEntitlement').values.length, 2, 'the overview keeps both readings');
+  // Ben, 2026-09-14: the row's line is the general case (the fact with no
+  // sub-item), never a merge of its exceptions.
+  const line = table.rows[0].cells.find((cell) => cell.column_id === 'cvrEntitlement');
+  assert.equal((line.values || [line]).length, 1, 'the row line shows the general case only');
+  assert.deepEqual(line.fact_ids, ['eq-all']);
+  assert.equal(table.sub_rows_label, 'Exceptions');
+  // Without a general-case fact the line falls back to the merged overview.
+  const withoutGeneral = buildTableView({ facts: facts.slice(0, 2), tableShapes, legalSchema }).sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'equity-awards-table');
+  assert.equal(withoutGeneral.rows[0].cells.find((cell) => cell.column_id === 'cvrEntitlement').values.length, 2);
 });
 
 test('per-share consideration rows are named from the form code, so two facts about cash share the Cash row', () => {
