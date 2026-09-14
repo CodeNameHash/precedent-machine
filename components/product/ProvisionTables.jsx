@@ -3,6 +3,9 @@ import EvidenceSidebar from './EvidenceSidebar';
 import { factIdOf, factSummaryText } from '../../lib/product/table-view';
 import { walk } from '../../lib/product/fact-components';
 
+// Ben, 2026-09-14, on the scaled page: "sidebar width now good but font
+// size not good". Every width, padding, gap, band height and the page
+// title stay; each font size scaled above is raised by 1.3.
 // Ben, 2026-09-14, comparing the deployed page with Deal Storylines at the
 // same browser zoom ("zoom level is the same"): every dimension was about
 // 1.7x the reference, so "please fix relative sizes". Every px below is the
@@ -43,27 +46,27 @@ const TINTS = {
   green: { band: 'bg-[#e8f3ee] border-b border-[#cfe3d8] text-[#2f7a5b]', box: 'bg-[#e8f3ee] text-[#2f7a5b]' },
   blue: { band: 'bg-[#e9effa] border-b border-[#d0dbf3] text-[#2f56b8]', box: 'bg-[#e9effa] text-[#2f56b8]' },
 };
-const TH = 'border-b border-[#ececec] px-[7px] py-[4.5px] text-left text-[7.5px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b]';
+const TH = 'border-b border-[#ececec] px-[7px] py-[4.5px] text-left text-[9.5px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b]';
 const TD = 'px-[7px] py-[7px] align-top';
 const ROW = 'border-b border-[#ececec] last:border-0';
-const TEXT = 'text-[9.5px] leading-relaxed text-[#1f1f1f]';
-const SUBJECT = 'font-ui text-[9.5px] font-medium text-[#1f1f1f]';
-const LINK = 'text-[7.5px] font-ui text-[#1f1f1f] underline-offset-2 hover:underline';
+const TEXT = 'text-[12.5px] leading-relaxed text-[#1f1f1f]';
+const SUBJECT = 'font-ui text-[12.5px] font-medium text-[#1f1f1f]';
+const LINK = 'text-[9.5px] font-ui text-[#1f1f1f] underline-offset-2 hover:underline';
 const FOOT = 'border-t border-[#ececec] bg-[#fafafa] px-[7px] py-[7px] align-top';
-const FOOT_LABEL = 'text-[7.5px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b]';
+const FOOT_LABEL = 'text-[9.5px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b]';
 // Ben, 2026-09-14: "UI point, 'see provision' has too much visual hierarchy
 // and color which distracts readability." Every "See provision" control and
 // the § reference links used the same way (backing-fact lists, Other
 // provisions, footers, the combined definition) are quiet: small, faint,
 // no capitals, no weight, an underline only under the pointer, placed after
 // the subject so they never compete with it.
-const QUIET = 'text-[6.5px] font-ui font-normal normal-case tracking-normal text-inkFaint hover:underline hover:text-inkLight';
+const QUIET = 'text-[8.5px] font-ui font-normal normal-case tracking-normal text-inkFaint hover:underline hover:text-inkLight';
 // Ben, 2026-09-14: "make the elements below the top level reps (e.g.
 // Organization) collapsable and hide them initially but have a clear 'more
 // detail' button or similar". The control under a row's subject.
-const DETAIL = 'mt-[2.5px] block text-[7.5px] font-ui font-medium text-accent hover:underline';
+const DETAIL = 'mt-[2.5px] block text-[9.5px] font-ui font-medium text-accent hover:underline';
 // A pill: a small rounded-[2px] tinted chip, 12px uppercase text, no border.
-const BADGE = 'inline-flex items-center rounded-full px-[6px] py-[1px] text-[7px] font-ui font-medium uppercase tracking-wide';
+const BADGE = 'inline-flex items-center rounded-full px-[6px] py-[1px] text-[9px] font-ui font-medium uppercase tracking-wide';
 
 // Tones as soft tints with the tint's darker colour for the text (the
 // Storylines green and blue, grey for the neutral readings).
@@ -149,14 +152,14 @@ function TermCell({ row, tableKey, rowIndex, subIndex = null, onSelect, detail =
   // the subject does; no list of section references.
   const openFirst = () => onSelect({ tableKey, rowIndex, subIndex, columnId: null, componentId: null, componentIds: [], factId: first.fact_id });
   return (
-    <div className="font-ui text-[9.5px]">
+    <div className="font-ui text-[12.5px]">
       {first ? (
         <button type="button" data-testid="term-open" onClick={openFirst} className={`text-left underline-offset-2 hover:underline ${SUBJECT}`}>{row.subject}</button>
       ) : <span className={SUBJECT}>{row.subject}</span>}
       {first ? (
         <button type="button" onClick={openFirst} className={`ml-[4.5px] ${QUIET}`} data-testid="see-provision">See provision</button>
       ) : null}
-      {row.subject_note ? <div className="mt-[1px] font-body text-[7.5px] text-[#6b6b6b]" data-testid="subject-note">{row.subject_note}</div> : null}
+      {row.subject_note ? <div className="mt-[1px] font-body text-[9.5px] text-[#6b6b6b]" data-testid="subject-note">{row.subject_note}</div> : null}
       {detail ? <DetailControl {...detail} /> : null}
     </div>
   );
@@ -203,7 +206,7 @@ function attributeLines(table, row) {
 function GroupHeader({ table }) {
   if (!table.group_header) return null;
   return (
-    <caption className="pb-[4.5px] text-left text-[7.5px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b]" data-testid="table-group-header">{table.group_header}</caption>
+    <caption className="pb-[4.5px] text-left text-[9.5px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b]" data-testid="table-group-header">{table.group_header}</caption>
   );
 }
 
@@ -280,7 +283,7 @@ function OtherProvisions({ groups, tableKey, onSelect }) {
   // it, each with its own term, the way a row's sub-items are.
   return (
     <div className="mt-[9.5px] rounded-[2px] border border-[#dcdcdc]" data-testid="other-provisions" data-open={open || undefined}>
-      <button type="button" onClick={() => setOpen((current) => !current)} aria-expanded={open} className={`flex w-full items-center justify-between px-[7px] py-[4.5px] text-left text-[7.5px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b] ${open ? 'border-b border-[#ececec]' : ''}`} data-testid="other-provisions-toggle">
+      <button type="button" onClick={() => setOpen((current) => !current)} aria-expanded={open} className={`flex w-full items-center justify-between px-[7px] py-[4.5px] text-left text-[9.5px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b] ${open ? 'border-b border-[#ececec]' : ''}`} data-testid="other-provisions-toggle">
         <span>Other provisions ({count})</span>
         <span className="text-inkFaint">{open ? '▾' : '▸'}</span>
       </button>
@@ -310,9 +313,9 @@ function OtherProvisions({ groups, tableKey, onSelect }) {
               if (group.branches.length === 1) return [line];
               return [line, ...group.branches.map((branch, branchIndex) => (
                 <tr key={`${key}-${branchIndex}`} className={ROW} data-testid="other-provision-branch-row">
-                  <td className={`${TD} pl-[18.5px] font-ui text-[9.5px] text-inkMid`} data-testid="other-provision-branch-term">{branch.term || ''}</td>
+                  <td className={`${TD} pl-[18.5px] font-ui text-[12.5px] text-inkMid`} data-testid="other-provision-branch-term">{branch.term || ''}</td>
                   <td className={`${TD} pl-[18.5px]`}>
-                    <button type="button" data-testid="other-provision-branch" onClick={() => select(branch.fact_id)} className="text-left font-body text-[9.5px] leading-relaxed text-inkMid underline-offset-2 hover:underline">{branch.text}</button>
+                    <button type="button" data-testid="other-provision-branch" onClick={() => select(branch.fact_id)} className="text-left font-body text-[12.5px] leading-relaxed text-inkMid underline-offset-2 hover:underline">{branch.text}</button>
                   </td>
                 </tr>
               ))];
@@ -329,7 +332,7 @@ function OtherProvisions({ groups, tableKey, onSelect }) {
 function FactsWithoutReadout({ entries, sectionKey, onSelect }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="mt-[9.5px] text-[7.5px] font-ui text-[#6b6b6b]" data-testid="facts-without-readout">
+    <div className="mt-[9.5px] text-[9.5px] font-ui text-[#6b6b6b]" data-testid="facts-without-readout">
       <button type="button" onClick={() => setOpen((current) => !current)} className={LINK}>
         {entries.length} fact{entries.length === 1 ? '' : 's'} without a coded readout · {open ? 'hide' : 'see provisions'}
       </button>
@@ -371,7 +374,7 @@ function SectionHeading({ title, collapsed, onToggle, tint = 'green' }) {
   return (
     <button type="button" onClick={onToggle} aria-expanded={!collapsed} className={`flex min-h-[30px] w-full items-center gap-[7px] px-[14px] text-left ${TINTS[tint].band}`} data-testid="section-heading">
       <SectionIcon tint={tint} />
-      <h3 className="flex-1 font-sans text-[11px] font-medium leading-snug">{title}</h3>
+      <h3 className="flex-1 font-sans text-[14px] font-medium leading-snug">{title}</h3>
       <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={`shrink-0 transition-transform ${collapsed ? '-rotate-90' : ''}`}>
         <path d="M6 9l6 6 6-6" />
       </svg>
@@ -390,7 +393,7 @@ function DefinedTermRow({ term }) {
         <button type="button" onClick={() => setOpen((current) => !current)} aria-expanded={open} className={`text-left underline-offset-2 hover:underline ${SUBJECT}`} data-testid="defined-term-toggle">{term.term}</button>
         {term.section_reference ? <span className={`ml-[4.5px] ${QUIET}`}>§ {term.section_reference}</span> : null}
       </td>
-      <td className={`${TD} font-body text-[9.5px] leading-relaxed text-inkMid`}>
+      <td className={`${TD} font-body text-[12.5px] leading-relaxed text-inkMid`}>
         {open ? (term.definition || <span className="text-inkFaint">Definition not in the closure</span>) : <button type="button" onClick={() => setOpen(true)} className={LINK}>Show</button>}
       </td>
     </tr>
@@ -488,7 +491,7 @@ function Table({ table, selection, onSelect, initialSubRowsOpen = false }) {
                   {table.term_column ? (
                     <td className={TD}><span className={SUBJECT}>{row.subject}</span></td>
                   ) : null}
-                  <td className={`${TD} font-ui text-[9.5px] text-[#6b6b6b]`} colSpan={table.columns.length} data-testid="table-absent">{table.absent_row_label}</td>
+                  <td className={`${TD} font-ui text-[12.5px] text-[#6b6b6b]`} colSpan={table.columns.length} data-testid="table-absent">{table.absent_row_label}</td>
                 </tr>
               );
             }
@@ -635,7 +638,7 @@ export default function ProvisionTables({
   // closed) on a light grey block with a 1px border, the other plain; the
   // right side, the reference's search box, stays empty. The sections
   // follow as cards 28px apart.
-  const TAB = 'rounded-[2px] border px-[12px] py-[7px] text-[10px] font-ui leading-none transition-colors';
+  const TAB = 'rounded-[2px] border px-[12px] py-[7px] text-[13px] font-ui leading-none transition-colors';
   const tabClass = (current) => `${TAB} ${current ? 'border-[#dcdcdc] bg-[#f3f3f3] text-[#1f1f1f]' : 'border-transparent text-[#6b6b6b] hover:text-[#1f1f1f]'}`;
   return (
     <div className="flex flex-wrap gap-[18.5px] lg:flex-nowrap" data-testid="provision-tables">

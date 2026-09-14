@@ -1,5 +1,8 @@
 import { useState } from 'react';
 
+// Ben, 2026-09-14, on the scaled page: "sidebar width now good but font
+// size not good". Every width, padding, gap, band height and the page
+// title stay; each font size scaled above is raised by 1.3.
 // Ben, 2026-09-14, comparing the deployed page with Deal Storylines at the
 // same browser zoom ("zoom level is the same"): the rail was 590 device px
 // against the reference's 340, so "please fix relative sizes". Every px
@@ -48,7 +51,7 @@ export default function ProvisionRail({ sections, title = null }) {
         onClick={() => setActive(sectionKey)}
         data-testid="provision-rail-item"
         data-active={isActive || undefined}
-        className={`block rounded-[2px] font-sans leading-snug ${sub ? 'text-[9px]' : 'text-[10.5px]'} ${isActive ? 'bg-white font-bold text-black' : 'font-normal text-white/90 hover:bg-white/10 hover:text-white'}`}
+        className={`block rounded-[2px] font-sans leading-snug ${sub ? 'text-[11.5px]' : 'text-[13.5px]'} ${isActive ? 'bg-white font-bold text-black' : 'font-normal text-white/90 hover:bg-white/10 hover:text-white'}`}
         style={{ padding: sub ? '4.5px 10px' : '8px 10px', marginLeft: sub ? 8 : 0 }}
       >
         {label}
@@ -63,7 +66,7 @@ export default function ProvisionRail({ sections, title = null }) {
       data-testid="provision-rail"
     >
       {title ? (
-        <p className="mb-[18.5px] font-sans text-[20px] font-bold leading-[1.1] tracking-tight text-white" data-testid="provision-rail-title">{title}</p>
+        <p className="mb-[18.5px] font-sans text-[26px] font-bold leading-[1.1] tracking-tight text-white" data-testid="provision-rail-title">{title}</p>
       ) : null}
       <div className="flex flex-col" style={{ gap: 6 }}>
         {groups.map((group) => (

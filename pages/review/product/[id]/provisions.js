@@ -8,6 +8,9 @@ import { previewFactsFromWorkspace } from '../../../../lib/product/provisions-pr
 import legalSchemaV2 from '../../../../contracts/product/legal-schema.v2.json';
 import tableShapesV3 from '../../../../contracts/product/table-shapes.v3.json';
 
+// Ben, 2026-09-14, on the scaled page: "sidebar width now good but font
+// size not good". Every width, padding, gap, band height and the page
+// title stay; each font size scaled above is raised by 1.3.
 // Ben, 2026-09-14, comparing the deployed page with Deal Storylines at the
 // same browser zoom ("zoom level is the same"): every dimension of ours was
 // about 1.7x the reference, so "please fix relative sizes". Every px size
@@ -102,11 +105,11 @@ export function ProvisionsPreviewBody({ workspace, runId }) {
           <div className="min-w-0 flex-1 px-[9px] py-[18.5px] md:px-[18.5px] lg:pb-[56px] lg:pl-[37px] lg:pr-[56px] lg:pt-[37px]">
             <header className="mb-[16px]" data-testid="preview-header">
               <div className="flex flex-wrap items-center gap-[7px]">
-                <p className="font-ui text-[8px] uppercase tracking-[0.12em] text-[#6b6b6b]">Lawyer preview</p>
-                <span className={`inline-flex items-center rounded-full px-[6px] py-[1px] text-[7px] font-ui font-medium uppercase tracking-wide ${badge.className}`} data-testid="preview-badge">{badge.label}</span>
+                <p className="font-ui text-[10px] uppercase tracking-[0.12em] text-[#6b6b6b]">Lawyer preview</p>
+                <span className={`inline-flex items-center rounded-full px-[6px] py-[1px] text-[9px] font-ui font-medium uppercase tracking-wide ${badge.className}`} data-testid="preview-badge">{badge.label}</span>
               </div>
               <h1 className="mt-[7px] font-sans text-[23px] font-semibold leading-[1.05] tracking-tight text-[#1f1f1f] md:text-[30px]">{title}</h1>
-              <div className="mt-[9.5px] flex flex-wrap gap-x-[11.5px] gap-y-[2.5px] text-[9px] font-ui text-[#6b6b6b]" data-testid="preview-state">
+              <div className="mt-[9.5px] flex flex-wrap gap-x-[11.5px] gap-y-[2.5px] text-[11.5px] font-ui text-[#6b6b6b]" data-testid="preview-state">
                 <span>State: <span className="text-inkMid">{stateLabel}</span></span>
                 {agreementDate ? <span>Date: <span className="text-inkMid">{agreementDate}</span></span> : null}
                 {secLabel ? (
@@ -116,10 +119,10 @@ export function ProvisionsPreviewBody({ workspace, runId }) {
                 ) : null}
                 {generation !== null ? <span>Generation: <span className="text-inkMid">{generation}</span></span> : null}
               </div>
-              <p className="mt-[4.5px] text-[9px] font-ui text-[#6b6b6b]" data-testid="preview-counts">
+              <p className="mt-[4.5px] text-[11.5px] font-ui text-[#6b6b6b]" data-testid="preview-counts">
                 {preview.facts.length} layered facts across {preview.section_count} sections{preview.held_count ? ` · ${preview.held_count} held by validation, not shown` : ''}. Click a row or a pill for the words behind it.
               </p>
-              {live && progress.status !== 'FAILED' ? <p className="mt-[7px] rounded-[2px] bg-amber-50 px-[7px] py-[4.5px] text-[7.5px] font-ui text-amber-700" data-testid="preview-live">Filling in as sections complete. This page refreshes itself every minute.</p> : null}
+              {live && progress.status !== 'FAILED' ? <p className="mt-[7px] rounded-[2px] bg-amber-50 px-[7px] py-[4.5px] text-[9.5px] font-ui text-amber-700" data-testid="preview-live">Filling in as sections complete. This page refreshes itself every minute.</p> : null}
               <div className="mt-[16px] h-[2px] w-full bg-black" data-testid="preview-rule" aria-hidden="true" />
             </header>
             <PublishedSummary

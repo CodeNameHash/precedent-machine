@@ -122,9 +122,10 @@ test('a fact with an explicit conclusions.table_key and row_label lands exactly 
   assert.equal(byColumn.qualifier.tone, 'buyer');
   assert.equal(byColumn.threshold.kind, 'value');
   assert.equal(byColumn.threshold.label, '$1,000,000');
-  // provision was not supplied by the conclusion, so it stays a dash
-  // rather than falling back to component rendering.
-  assert.equal(byColumn.provision.kind, 'dash');
+  // provision (a detail column) was not supplied by the conclusion and no
+  // row carries a summary, so the column is dropped from the table (Ben,
+  // 2026-09-14: "can we kill 'as drafted' columns throughout").
+  assert.equal(byColumn.provision, undefined);
   assert.deepEqual(row.backing_facts, [{ fact_id: 'f-material-contracts-2', section_reference: '3.14(b)', structure_node_id: null }]);
 });
 
@@ -187,7 +188,7 @@ test('a contract-shaped vocabulary cell renders its vocabulary label and keeps i
   assert.equal(cell.label, 'DGCL');
   assert.deepEqual(cell.component_ids, ['aaf01d341b5c8926bdace0f8685ee73523f250d183dd4a7020a81d4054903367']);
   assert.deepEqual(cell.fact_ids, [structureFact.proposal_id]);
-  assert.equal(table.rows[0].cells.find((candidate) => candidate.column_id === 'closingTiming').kind, 'dash');
+  assert.equal(table.rows[0].cells.find((candidate) => candidate.column_id === 'closingTiming'), undefined, 'the detail column without a summary is dropped');
 });
 
 test('a one-per-agreement table gathers every fact of the family into one row', () => {
@@ -201,10 +202,11 @@ test('a one-per-agreement table gathers every fact of the family into one row', 
   assert.equal(table.rows.length, 1);
   assert.equal(table.rows[0].subject, 'The deal');
   assert.equal(table.rows[0].backing_facts.length, 2);
-  const timing = table.rows[0].cells.find((candidate) => candidate.column_id === 'closingTiming');
-  assert.equal(timing.kind, 'text');
-  assert.equal(timing.label, 'on the third Business Day');
-  assert.deepEqual(timing.fact_ids, ['p-closing']);
+  // Ben, 2026-09-14: "can we kill 'as drafted' columns throughout - the
+  // whole point is to only summarize the key parts!!": a detail column
+  // with no summary in any row is dropped from the table.
+  assert.equal(table.rows[0].cells.find((candidate) => candidate.column_id === 'closingTiming'), undefined);
+  assert.ok(!table.columns.some((column) => column.column_id === 'closingTiming'));
 });
 
 // Ben, 2026-09-13: two facts in one cell keep both readings; a representation
@@ -374,10 +376,13 @@ test('a fact_text detail column shows the fact\'s operative words, not the cited
     ],
     conclusions: { table_key: 'conditions-table', row_label: 'No Legal Restraint', cells: [{ column_id: 'detail', text: 'shall be in effect', component_ids: ['nlr-3'] }] },
   };
+  fact.headline.summary = 'No court order or law blocks the Merger';
   const view = buildTableView({ facts: [fact], tableShapes, legalSchema });
   const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'conditions-table');
   const cell = table.rows[0].cells.find((candidate) => candidate.column_id === 'detail');
-  assert.equal(cell.label, 'No Judgment issued by any court of competent jurisdiction or Law enacted by any Governmental Entity preventing or prohibiting the consummation of the Merger shall be in effect');
+  // Ben, 2026-09-14: "kill 'as drafted' columns throughout ... only
+  // summarize the key parts": the detail column shows the fact's summary.
+  assert.equal(cell.label, 'No court order or law blocks the Merger');
   assert.deepEqual(cell.component_ids, ['nlr-3'], 'the cited words stay the click target');
 });
 
@@ -402,16 +407,18 @@ test('an as-drafted cell shows the operative core plus the distinguishing compon
     ],
     conclusions: { table_key: 'structure-mechanics-table', row_label: 'The deal', cells: [{ column_id: 'closingTiming', text: 'on the third (3rd) business day', component_ids: ['time', 'period', 'trigger'] }] },
   };
+  fact.headline.summary = 'Closing on the third business day after the conditions are satisfied';
   const view = buildTableView({ facts: [fact], tableShapes, legalSchema });
   const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'structure-mechanics-table');
   const cell = table.rows[0].cells.find((candidate) => candidate.column_id === 'closingTiming');
-  assert.equal(cell.label, 'the closing (the “Closing”) of the Merger shall take place at 8:00 a.m., New York City time on the third (3rd) business day');
+  // The cell shows the summary; factSummaryText stays the sidebar's and the
+  // footer's operative-core text (asserted below on the function).
+  assert.equal(cell.label, 'Closing on the third business day after the conditions are satisfied');
+  assert.equal(factSummaryText(fact), 'the closing (the “Closing”) of the Merger shall take place at 8:00 a.m., New York City time on the third (3rd) business day');
   assert.deepEqual(cell.component_ids, ['time', 'period', 'trigger'], 'the cited words stay the click target');
   // A distinguishing component after skipped words is joined with an ellipsis.
   fact.headline.distinguishing_component_ids = ['exc'];
-  const again = buildTableView({ facts: [fact], tableShapes, legalSchema }).sections.flatMap((section) => section.tables)
-    .find((candidate) => candidate.table_key === 'structure-mechanics-table').rows[0].cells.find((candidate) => candidate.column_id === 'closingTiming');
-  assert.equal(again.label, 'the closing (the “Closing”) of the Merger shall take place … other than those conditions that by their nature are to be satisfied at the Closing');
+  assert.equal(factSummaryText(fact), 'the closing (the “Closing”) of the Merger shall take place … other than those conditions that by their nature are to be satisfied at the Closing');
 });
 
 // Ben, 2026-09-14: "this portion is stated to be a fact without a coded
@@ -696,7 +703,7 @@ test('capitalisation facts without a readout fill the capitalization table by se
   assert.equal(section.rail.group, 'Representations');
   const table = section.tables[0];
   assert.equal(table.table_key, 'capitalization-table');
-  assert.deepEqual(table.columns.map((column) => column.column_id), ['authorised', 'issued', 'reserved', 'asOf', 'validIssuance', 'asDrafted']);
+  assert.deepEqual(table.columns.map((column) => column.column_id), ['authorised', 'issued', 'reserved', 'asOf', 'validIssuance']);
   const cellOf = (row, columnId) => row.cells.find((cell) => cell.column_id === columnId);
   const rowOf = (subject) => table.rows.find((row) => row.subject === subject);
   assert.deepEqual(table.rows.map((row) => row.subject), ['Common Stock', 'Company Stock Options', 'ESPP']);
@@ -748,14 +755,16 @@ test('two readings in one cell come out in source order, and a fact_text line sh
   });
   const other = closing('cl-other', 120, 'such other place, time and date as Parent and the Company may agree in writing', 'such other place, time and date');
   const offices = closing('cl-offices', 20, 'at the offices of Wachtell, Lipton, Rosen & Katz', 'at the offices of Wachtell, Lipton, Rosen & Katz');
+  other.headline.summary = 'Or another place and time the parties agree in writing';
+  offices.headline.summary = 'Closing at the offices of Wachtell Lipton';
   const view = buildTableView({ facts: [other, offices], tableShapes, legalSchema });
   const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'structure-mechanics-table');
   const cell = table.rows[0].cells.find((candidate) => candidate.column_id === 'closingLocation');
   assert.deepEqual(cell.values.map((value) => value.label), [
-    'at the offices of Wachtell, Lipton, Rosen & Katz',
-    'such other place, time and date as Parent and the Company may agree in writing',
+    'Closing at the offices of Wachtell Lipton',
+    'Or another place and time the parties agree in writing',
   ]);
-  assert.equal(cell.label, 'at the offices of Wachtell, Lipton, Rosen & Katz');
+  assert.equal(cell.label, 'Closing at the offices of Wachtell Lipton');
 });
 
 test('equity award treatment classes nest under the instrument row in detail_labels order, the instrument row giving the overview', () => {

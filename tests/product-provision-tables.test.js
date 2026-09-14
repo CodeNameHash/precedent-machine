@@ -81,7 +81,11 @@ test('pills carry fact and component ids as data-testid="table-pill" buttons', (
 });
 
 test('a cell with no matching data renders a dash', () => {
-  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView, facts }));
+  // A coded column left empty on one row still shows its dash; a detail
+  // ("as drafted") column with no summary anywhere is dropped instead
+  // (Ben, 2026-09-14: "can we kill 'as drafted' columns throughout").
+  const withGap = { ...tableView, sections: tableView.sections.map((section) => ({ ...section, tables: section.tables.map((table) => ({ ...table, rows: table.rows.map((row) => (!row.absent && row.cells?.length ? { ...row, cells: row.cells.map((cell, cellIndex) => (cellIndex === 0 ? { column_id: cell.column_id, kind: 'dash', label: null, tone: null, component_ids: [], fact_ids: [] } : cell)) } : row)) })) })) };
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: withGap, facts }));
   assert.match(html, /data-testid="table-dash"/);
 });
 
@@ -163,7 +167,11 @@ test('a one-per-agreement table renders as an attribute grid, one line per colum
   assert.match(html, /data-column-id="effectsOfMerger"/);
   assert.match(html, />DGCL</);
   assert.doesNotMatch(html, /data-testid="table-row"/);
-  assert.equal((html.match(/data-testid="attribute-row"/g) || []).length, 7, 'the legacy Merger Form line is gone (decision 28); step-2 lines are hidden until the deal is coded as a double merger');
+  // Four lines: the detail ("as drafted") columns with no summary are dropped
+  // (Ben, 2026-09-14: "can we kill 'as drafted' columns throughout"), the
+  // legacy Merger Form line is gone (decision 28), step-2 lines are hidden
+  // until the deal is coded as a double merger.
+  assert.equal((html.match(/data-testid="attribute-row"/g) || []).length, 4);
 });
 
 test('the attribute grid shows step-2 lines only for a double merger', () => {
@@ -411,16 +419,17 @@ test('a one-per-agreement table renders its other provisions as a collapsed Term
 // the title at 19px medium; header labels uppercase 12px grey; pills as
 // small rounded tinted chips of 12px uppercase text; the toggles as tabs.
 // Then, at the same browser zoom, "please fix relative sizes" ("zoom level
-// is the same"): every px scaled by 0.58.
+// is the same"): every px scaled by 0.58. Then "sidebar width now good but
+// font size not good": font sizes raised by 1.3, layout unchanged.
 test('sections are Storylines cards with a tinted header band, pills are tinted chips, nothing casts a shadow', () => {
   const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView, facts }));
   assert.match(html, /<section class="bg-white border border-\[#dcdcdc\] rounded-\[2px\] overflow-hidden" data-testid="provision-section"/);
   assert.match(html, /data-testid="section-heading"[^>]*>/);
   assert.match(html, /<button[^>]*class="[^"]*bg-\[#e8f3ee\][^"]*text-\[#2f7a5b\][^"]*"[^>]*data-testid="section-heading"/);
-  assert.match(html, /<h3 class="flex-1 font-sans text-\[11px\] font-medium leading-snug">/);
-  assert.match(html, /data-testid="table-pill"[^>]*class="inline-flex items-center rounded-full px-\[6px\] py-\[1px\] text-\[7px\] font-ui font-medium uppercase tracking-wide/);
-  assert.match(html, /<th class="border-b border-\[#ececec\] px-\[7px\] py-\[4.5px\] text-left text-\[7.5px\] font-ui font-medium uppercase tracking-\[0\.08em\] text-\[#6b6b6b\]">/);
-  assert.match(html, /data-testid="section-toggles"><button[^>]*class="rounded-\[2px\] border px-\[12px\] py-\[7px\] text-\[10px\] font-ui/);
+  assert.match(html, /<h3 class="flex-1 font-sans text-\[14px\] font-medium leading-snug">/);
+  assert.match(html, /data-testid="table-pill"[^>]*class="inline-flex items-center rounded-full px-\[6px\] py-\[1px\] text-\[9px\] font-ui font-medium uppercase tracking-wide/);
+  assert.match(html, /<th class="border-b border-\[#ececec\] px-\[7px\] py-\[4.5px\] text-left text-\[9.5px\] font-ui font-medium uppercase tracking-\[0\.08em\] text-\[#6b6b6b\]">/);
+  assert.match(html, /data-testid="section-toggles"><button[^>]*class="rounded-\[2px\] border px-\[12px\] py-\[7px\] text-\[13px\] font-ui/);
   assert.doesNotMatch(html, /shadow/);
   assert.doesNotMatch(html, /font-mono/);
   assert.doesNotMatch(html, /font-display/);
@@ -435,7 +444,7 @@ test('"See provision" and the § links are quiet controls: small, faint, no capi
   const controls = html.match(/<button[^>]*data-testid="see-provision"[^>]*>/g) || [];
   assert.ok(controls.length > 0);
   for (const control of controls) {
-    assert.match(control, /text-\[6.5px\]/);
+    assert.match(control, /text-\[8.5px\]/);
     assert.match(control, /font-ui/);
     assert.match(control, /text-inkFaint/);
     assert.match(control, /hover:underline/);

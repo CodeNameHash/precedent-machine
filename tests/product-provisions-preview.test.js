@@ -115,12 +115,13 @@ test('ProvisionsPreviewBody renders the rail, the tables and no decision control
 // --font-sans / --font-serif variables and the white ground; the rail is
 // the black column. Then, at the same browser zoom, "please fix relative
 // sizes" ("zoom level is the same"): every px scaled by 0.58 (title 30,
-// rail 197 wide).
+// rail 197 wide). Then "sidebar width now good but font size not good":
+// font sizes raised by 1.3, the title and rail width unchanged.
 test('the page header is the Storylines header with the agreement date, SEC source and generation', () => {
   const html = renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: workspace(), runId: 'run-1' }));
   assert.match(html, /<div class="flex min-h-screen bg-white text-\[#1f1f1f\]" style="--font-sans:&#x27;Inter&#x27;[^"]*--font-serif:&#x27;Inter&#x27;[^"]*" data-testid="provisions-page"/);
   assert.match(html, /<header class="mb-\[16px\]" data-testid="preview-header"/);
-  assert.match(html, /<p class="font-ui text-\[8px\] uppercase tracking-\[0\.12em\] text-\[#6b6b6b\]">Lawyer preview<\/p>/);
+  assert.match(html, /<p class="font-ui text-\[10px\] uppercase tracking-\[0\.12em\] text-\[#6b6b6b\]">Lawyer preview<\/p>/);
   assert.match(html, /<h1 class="mt-\[7px\] font-sans text-\[23px\] font-semibold leading-\[1\.05\] tracking-tight text-\[#1f1f1f\] md:text-\[30px\]">Parent Inc\. \/ Target Corp\.<\/h1>/);
   assert.match(html, /data-testid="preview-badge"[^>]*>Draft</);
   assert.match(html, /Date: <span class="text-inkMid">September 18, 2025</);

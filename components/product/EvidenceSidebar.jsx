@@ -4,6 +4,9 @@ import { walk, validateFactComponents } from '../../lib/product/fact-components'
 import { displaySectionReference } from '../../lib/product/section-reference-display';
 import { byteRangesToLayeredParts } from '../../lib/product/section-highlight';
 
+// Ben, 2026-09-14, on the scaled page: "sidebar width now good but font
+// size not good". Every width, padding, gap, band height and the page
+// title stay; each font size scaled above is raised by 1.3.
 // Ben, 2026-09-14, comparing the deployed page with Deal Storylines at the
 // same browser zoom ("zoom level is the same"): every dimension was about
 // 1.7x the reference, so "please fix relative sizes". Every px below is the
@@ -29,12 +32,12 @@ import { byteRangesToLayeredParts } from '../../lib/product/section-highlight';
 // border); labels uppercase 12px grey; body 16px near-black; the blue as
 // the one accent, for buttons; links near-black, underlined under the
 // pointer; badges as small rounded-[2px] tinted chips.
-const BADGE = 'inline-flex items-center rounded-full px-[6px] py-[1px] text-[7px] font-ui font-medium uppercase tracking-wide';
-const LABEL = 'text-[7px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b]';
-const BODY = 'font-body text-[9.5px] leading-relaxed text-[#1f1f1f]';
-const NOTE = 'text-[7.5px] font-ui text-[#6b6b6b]';
-const BUTTON = 'rounded-[2px] border border-accent px-[7px] py-[3.5px] text-[7.5px] font-ui font-medium text-accent hover:bg-accent/10 disabled:opacity-40 transition-colors';
-const TEXT_LINK = 'text-[7.5px] font-ui text-[#1f1f1f] underline-offset-2 hover:underline';
+const BADGE = 'inline-flex items-center rounded-full px-[6px] py-[1px] text-[9px] font-ui font-medium uppercase tracking-wide';
+const LABEL = 'text-[9px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b]';
+const BODY = 'font-body text-[12.5px] leading-relaxed text-[#1f1f1f]';
+const NOTE = 'text-[9.5px] font-ui text-[#6b6b6b]';
+const BUTTON = 'rounded-[2px] border border-accent px-[7px] py-[3.5px] text-[9.5px] font-ui font-medium text-accent hover:bg-accent/10 disabled:opacity-40 transition-colors';
+const TEXT_LINK = 'text-[9.5px] font-ui text-[#1f1f1f] underline-offset-2 hover:underline';
 const DECISION_BADGE = {
   PENDING: 'bg-amber-50 text-amber-700', ACCEPTED: 'bg-[#e8f3ee] text-[#2f7a5b]',
   EDITED: 'bg-[#e9effa] text-[#2f56b8]', REJECTED: 'bg-[#f3f3f3] text-[#555555]', UNRESOLVED: 'bg-seller/10 text-seller',
@@ -59,14 +62,14 @@ function ReviewTrail({ reviewItem, onDecision, onComment, onReset, busy }) {
     <span className={`${BADGE} ${DECISION_BADGE[decision]}`}>{DECISION_WORD[decision] || decision}</span>
     {reviewItem?.reviewed_at ? <p className={`mt-[2.5px] ${NOTE}`}>Decided {new Date(reviewItem.reviewed_at).toLocaleString()}</p> : null}
     {decision === 'EDITED' && reviewItem?.edited_headline ? <p className={`mt-[2.5px] ${NOTE}`}>This fact was edited before it was accepted.</p> : null}
-    {reviewItem?.comment ? <p className="mt-[4.5px] rounded-[2px] border border-[#dcdcdc] bg-[#fafafa] p-[7px] text-[8px] font-body text-inkMid" data-testid="evidence-saved-comment"><span className="font-ui font-medium text-[#1f1f1f]">Comment:</span> {reviewItem.comment}</p> : null}
-    {onDecision && reviewItem ? <div className="mt-[7px] flex flex-wrap items-center gap-[4.5px] text-[7.5px] font-ui" data-testid="evidence-decision-controls">
+    {reviewItem?.comment ? <p className="mt-[4.5px] rounded-[2px] border border-[#dcdcdc] bg-[#fafafa] p-[7px] text-[10.5px] font-body text-inkMid" data-testid="evidence-saved-comment"><span className="font-ui font-medium text-[#1f1f1f]">Comment:</span> {reviewItem.comment}</p> : null}
+    {onDecision && reviewItem ? <div className="mt-[7px] flex flex-wrap items-center gap-[4.5px] text-[9.5px] font-ui" data-testid="evidence-decision-controls">
       <button type="button" disabled={busy} onClick={() => onDecision(reviewItem.item_id, 'ACCEPTED')} className={BUTTON}>Accept</button>
       <button type="button" disabled={busy} onClick={() => onDecision(reviewItem.item_id, 'REJECTED')} className={BUTTON}>Reject</button>
-      {decision !== 'PENDING' && onReset ? <button type="button" disabled={busy} onClick={() => onReset(reviewItem.item_id)} className="rounded-[2px] border border-[#dcdcdc] px-[7px] py-[3.5px] text-[7.5px] font-ui text-inkMid hover:text-[#1f1f1f] disabled:opacity-40 transition-colors">Revert to pending</button> : null}
+      {decision !== 'PENDING' && onReset ? <button type="button" disabled={busy} onClick={() => onReset(reviewItem.item_id)} className="rounded-[2px] border border-[#dcdcdc] px-[7px] py-[3.5px] text-[9.5px] font-ui text-inkMid hover:text-[#1f1f1f] disabled:opacity-40 transition-colors">Revert to pending</button> : null}
       {onComment ? (commentOpen ? <span className="flex basis-full flex-wrap items-center gap-[4.5px]">
-        <textarea aria-label="Comment" value={commentDraft} onChange={(event) => setCommentDraft(event.target.value)} rows={2} className="w-full rounded-[2px] border border-[#dcdcdc] px-[7px] py-[4.5px] text-[8px] font-ui focus:outline-none focus:ring-1 focus:ring-accent" />
-        <button type="button" disabled={busy} onClick={() => { onComment(reviewItem.item_id, commentDraft); setCommentOpen(false); }} className="rounded-[2px] bg-accent px-[7px] py-[3.5px] text-[7.5px] font-ui font-medium text-white hover:bg-accent/90 disabled:opacity-40">Save comment</button>
+        <textarea aria-label="Comment" value={commentDraft} onChange={(event) => setCommentDraft(event.target.value)} rows={2} className="w-full rounded-[2px] border border-[#dcdcdc] px-[7px] py-[4.5px] text-[10.5px] font-ui focus:outline-none focus:ring-1 focus:ring-accent" />
+        <button type="button" disabled={busy} onClick={() => { onComment(reviewItem.item_id, commentDraft); setCommentOpen(false); }} className="rounded-[2px] bg-accent px-[7px] py-[3.5px] text-[9.5px] font-ui font-medium text-white hover:bg-accent/90 disabled:opacity-40">Save comment</button>
         <button type="button" onClick={() => setCommentOpen(false)} className={TEXT_LINK}>Cancel</button>
       </span> : <button type="button" onClick={() => setCommentOpen(true)} className={TEXT_LINK}>{reviewItem.comment ? 'Edit comment' : 'Add comment'}</button>) : null}
     </div> : null}
@@ -155,16 +158,16 @@ export default function EvidenceSidebar({
   const [tab, setTab] = useState('detail');
   const tabButton = (key, label, testId) => (
     <button type="button" onClick={() => setTab(key)} data-testid={testId} aria-selected={tab === key} role="tab"
-      className={`rounded-[2px] border px-[9.5px] py-[4.5px] text-[9px] font-ui leading-none transition-colors ${tab === key ? 'border-[#dcdcdc] bg-[#f3f3f3] text-[#1f1f1f]' : 'border-transparent text-[#6b6b6b] hover:text-[#1f1f1f]'}`}>{label}</button>
+      className={`rounded-[2px] border px-[9.5px] py-[4.5px] text-[11.5px] font-ui leading-none transition-colors ${tab === key ? 'border-[#dcdcdc] bg-[#f3f3f3] text-[#1f1f1f]' : 'border-transparent text-[#6b6b6b] hover:text-[#1f1f1f]'}`}>{label}</button>
   );
-  return <aside ref={asideRef} className="sticky top-0 max-h-screen w-full shrink-0 self-start overflow-y-auto border-l border-[#dcdcdc] bg-white text-[9.5px] text-[#1f1f1f] lg:w-[232px]" data-testid="evidence-sidebar" aria-label="Evidence">
+  return <aside ref={asideRef} className="sticky top-0 max-h-screen w-full shrink-0 self-start overflow-y-auto border-l border-[#dcdcdc] bg-white text-[12.5px] text-[#1f1f1f] lg:w-[232px]" data-testid="evidence-sidebar" aria-label="Evidence">
     <div className="border-b border-[#ececec] px-[14px] pt-[14px] pb-[9.5px]">
       <div className="flex items-start justify-between gap-[7px]">
         <div className="min-w-0">
-          {fact.section_reference ? <p className="text-[7px] font-ui uppercase tracking-[0.12em] text-[#6b6b6b]" data-testid="evidence-eyebrow">{displaySectionReference(fact.section_reference)}</p> : null}
-          <p className="mt-[4.5px] font-sans text-[14px] font-semibold leading-tight tracking-tight text-[#1f1f1f]">{fact.headline?.label || 'Evidence'}</p>
+          {fact.section_reference ? <p className="text-[9px] font-ui uppercase tracking-[0.12em] text-[#6b6b6b]" data-testid="evidence-eyebrow">{displaySectionReference(fact.section_reference)}</p> : null}
+          <p className="mt-[4.5px] font-sans text-[18px] font-semibold leading-tight tracking-tight text-[#1f1f1f]">{fact.headline?.label || 'Evidence'}</p>
         </div>
-        {onClose ? <button type="button" onClick={onClose} aria-label="Close evidence" className="text-[14px] leading-none text-[#6b6b6b] hover:text-[#1f1f1f]">×</button> : null}
+        {onClose ? <button type="button" onClick={onClose} aria-label="Close evidence" className="text-[18px] leading-none text-[#6b6b6b] hover:text-[#1f1f1f]">×</button> : null}
       </div>
       <div className="mt-[11.5px] flex gap-[2.5px]" role="tablist" data-testid="evidence-tabs">
         {tabButton('detail', 'Detail', 'evidence-tab-detail')}
@@ -222,13 +225,13 @@ export default function EvidenceSidebar({
     <section data-testid="evidence-checks">
       <p className={LABEL}>Checks the code ran</p>
       {checks.length === 0
-        ? <p className="mt-[2.5px] text-[8px] font-ui text-[#2f7a5b]">All structural checks passed.</p>
-        : <ul className="mt-[2.5px] list-disc space-y-[1px] pl-[9.5px] text-[8px] font-ui text-seller">{checks.map((problem, index) => <li key={index}>{problem}</li>)}</ul>}
+        ? <p className="mt-[2.5px] text-[10.5px] font-ui text-[#2f7a5b]">All structural checks passed.</p>
+        : <ul className="mt-[2.5px] list-disc space-y-[1px] pl-[9.5px] text-[10.5px] font-ui text-seller">{checks.map((problem, index) => <li key={index}>{problem}</li>)}</ul>}
     </section>
 
     <section data-testid="evidence-provenance">
       <p className={LABEL}>Provenance</p>
-      {provenance ? <dl className="mt-[2.5px] space-y-[1px] text-[8px] font-ui text-inkMid">
+      {provenance ? <dl className="mt-[2.5px] space-y-[1px] text-[10.5px] font-ui text-inkMid">
         {provenance.run_id ? <div><dt className="inline font-medium text-[#6b6b6b]">Run: </dt><dd className="inline">{provenance.run_id}{provenance.generation ? ` (generation ${provenance.generation})` : ''}</dd></div> : null}
         {provenance.schema_version ? <div><dt className="inline font-medium text-[#6b6b6b]">Schema: </dt><dd className="inline">{provenance.schema_version}</dd></div> : null}
         {provenance.prompt_bundle ? <div><dt className="inline font-medium text-[#6b6b6b]">Prompt bundle: </dt><dd className="inline">{provenance.prompt_bundle}</dd></div> : null}
