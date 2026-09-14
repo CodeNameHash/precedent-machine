@@ -4,7 +4,6 @@ import { useUser } from '../../../../lib/useUser';
 import { Breadcrumbs, ErrorState, SkeletonCard, EmptyState } from '../../../../components/UI';
 import PublishedSummary from '../../../../components/product/PublishedSummary.jsx';
 import ProvisionRail from '../../../../components/product/ProvisionRail.jsx';
-import { displayIdentityParties } from '../../../../lib/product/identity-display';
 import { previewFactsFromWorkspace } from '../../../../lib/product/provisions-preview';
 import legalSchemaV2 from '../../../../contracts/product/legal-schema.v2.json';
 import tableShapesV3 from '../../../../contracts/product/table-shapes.v3.json';
@@ -19,6 +18,24 @@ import tableShapesV3 from '../../../../contracts/product/table-shapes.v3.json';
 // font-display, a small uppercase badge beside it, and one font-ui metadata
 // line of "Label: value" pairs in ink-light / ink-mid, with what the run
 // knows: agreement date, SEC source, generation and state.
+// Compared rendered against the deal page on 2026-09-14: the deal page's
+// title is "Acquirer / Target", two names and nothing else, so the title
+// here is the parent's and the company's names (no role suffixes, no merger
+// sub, no caption "among"); the badge then sits on the title line as it
+// does there; the counts sentence is set like the metadata line; and the
+// deal page has no "Published summary" heading between the header card and
+// the first section, so this page shows none either.
+function dealTitle(parties, fallback) {
+  if (!Array.isArray(parties) || parties.length === 0) return fallback;
+  const nameOf = (party) => (typeof party === 'string' ? party : (party && typeof party.name === 'string' ? party.name : ''))
+    .trim().replace(/^(?:by\s+and\s+)?(?:among|between)\s+/i, '');
+  const roleOf = (party) => (party && typeof party === 'object' && typeof party.role === 'string' ? party.role.toUpperCase() : '');
+  const parent = parties.find((party) => ['PARENT', 'BUYER', 'ACQUIRER'].includes(roleOf(party)));
+  const company = parties.find((party) => ['COMPANY', 'TARGET'].includes(roleOf(party)));
+  const picked = parent && company ? [parent, company] : parties.filter((party) => roleOf(party) !== 'MERGER_SUB');
+  const names = picked.map(nameOf).filter(Boolean);
+  return names.length ? names.join(' / ') : fallback;
+}
 function formatAgreementDate(value) {
   if (!value) return null;
   const date = new Date(`${value}T00:00:00Z`);
@@ -35,7 +52,7 @@ function stateBadge(progress, published) {
 export function ProvisionsPreviewBody({ workspace, runId }) {
   const preview = useMemo(() => previewFactsFromWorkspace(workspace), [workspace]);
   const source = workspace.analysis.source_document || {};
-  const title = displayIdentityParties(source.display_parties || source.parties, 'Agreement analysis');
+  const title = dealTitle(source.display_parties || source.parties, 'Agreement analysis');
   const published = workspace.review?.state?.status && workspace.review.state.status !== 'DRAFT';
   const progress = workspace.progress || null;
   const live = !!progress && progress.status !== 'READY';
@@ -76,7 +93,7 @@ export function ProvisionsPreviewBody({ workspace, runId }) {
                 ) : null}
                 {generation !== null ? <span>Generation: <span className="text-inkMid">{generation}</span></span> : null}
               </div>
-              <p className="mt-3 text-xs font-ui text-inkLight" data-testid="preview-counts">
+              <p className="mt-3 text-sm font-ui text-inkLight" data-testid="preview-counts">
                 {preview.facts.length} layered facts across {preview.section_count} sections{preview.held_count ? ` · ${preview.held_count} held by validation, not shown` : ''}. Click a row or a pill for the words behind it.
               </p>
               {live && progress.status !== 'FAILED' ? <p className="mt-3 rounded border border-amber-200 bg-amber-50 p-2 text-xs font-ui text-amber-700" data-testid="preview-live">Filling in as sections complete. This page refreshes itself every minute.</p> : null}
@@ -84,6 +101,7 @@ export function ProvisionsPreviewBody({ workspace, runId }) {
             <PublishedSummary
               groups={[{ family_key: 'ALL', collapsed: false, facts: preview.facts }]}
               view="tables"
+              heading={null}
               tableShapes={tableShapesV3}
               legalSchema={legalSchemaV2}
               sectionTextByFactId={preview.sectionTextByFactId}

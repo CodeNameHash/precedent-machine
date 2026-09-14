@@ -101,6 +101,7 @@ export default function PublishedSummary({
   tableShapes = null, legalSchema = null, reviewItemsByFactId = null,
   provenanceByFactId = null, sectionTextByFactId = null,
   onDecision = null, onComment = null, onReset = null,
+  heading = 'Published summary',
 }) {
   const flatFacts = useMemo(() => (groups || []).flatMap((group) => group.facts), [groups]);
   const tableView = useMemo(
@@ -110,9 +111,14 @@ export default function PublishedSummary({
   const hasTables = !!(tableView && tableView.sections.some((section) => section.tables.some((table) => table.rows.length > 0)));
   const resolvedView = view || (hasTables ? 'tables' : 'layers');
 
+  // `heading` null drops the section title: the lawyer preview follows the
+  // deal page (pages/deals/[id].js), whose header card is followed directly
+  // by the first section heading (Ben, 2026-09-14: "completely copy the
+  // visual style - including the page header").
+  const labelled = heading ? { 'aria-labelledby': 'published-summary-heading' } : { 'aria-label': 'Published summary' };
   if (resolvedView === 'tables' && tableView) {
-    return <section aria-labelledby="published-summary-heading" className="space-y-6" data-testid="published-summary">
-      <h2 id="published-summary-heading" className="font-display text-2xl text-ink">Published summary</h2>
+    return <section {...labelled} className="space-y-6" data-testid="published-summary">
+      {heading ? <h2 id="published-summary-heading" className="font-display text-2xl text-ink">{heading}</h2> : null}
       <ProvisionTables
         tableView={tableView}
         facts={flatFacts}
@@ -126,8 +132,8 @@ export default function PublishedSummary({
     </section>;
   }
 
-  return <section aria-labelledby="published-summary-heading" className="space-y-6" data-testid="published-summary">
-    <h2 id="published-summary-heading" className="font-display text-2xl text-ink">Published summary</h2>
+  return <section {...labelled} className="space-y-6" data-testid="published-summary">
+    {heading ? <h2 id="published-summary-heading" className="font-display text-2xl text-ink">{heading}</h2> : null}
     {(groups || []).map((group) => group.collapsed
       ? <details key={group.family_key} data-testid="published-family" data-collapsed="true">
         <summary className="cursor-pointer font-display text-lg text-ink border-b border-border pb-1">{displayReviewLabel(group.family_key)} <span className="text-sm text-inkLight">({group.facts.length} boilerplate {group.facts.length === 1 ? 'rule' : 'rules'}, click to expand)</span></summary>

@@ -256,8 +256,11 @@ test('the provision rail groups sections the old app\'s way, one anchor per sect
   const ProvisionRail = require('../components/product/ProvisionRail.jsx').default;
   const html = renderToStaticMarkup(React.createElement(ProvisionRail, { sections: tableShapes.sections }));
   // The rail is a deal-page card (Ben, 2026-09-14: "completely copy the visual style").
-  assert.match(html, /<nav[^>]*class="[^"]*bg-white border border-border rounded-lg shadow-sm[^"]*"[^>]*data-testid="provision-rail"/);
-  assert.doesNotMatch(html, /bg-black/);
+  // The rail keeps the black Deal Storylines column Ben asked for on
+  // 2026-09-13 ("shift the page design to match this ... mainly thinking of
+  // the left hand side bar"); the 2026-09-14 parity pass with the deal page
+  // covers the header, headings, tables and sidebar.
+  assert.match(html, /<nav[^>]*class="[^"]*bg-black[^"]*"[^>]*data-testid="provision-rail"/);
   const groups = html.match(/data-testid="provision-rail-group"/g) || [];
   assert.equal(groups.length, 17);
   assert.match(html, /href="#provision-section-structure-mechanics"/);
