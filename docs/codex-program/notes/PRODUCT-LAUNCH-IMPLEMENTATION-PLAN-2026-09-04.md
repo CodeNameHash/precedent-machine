@@ -2444,6 +2444,30 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       page; the header title is the two parties with the badge on the
       title line, no "Published summary" heading, the sidebar in the deal
       card style; the black rail of 2026-09-13 kept pending Ben's word.
+      Later on 2026-09-14, each in code: "also font etc doesn't match the
+      deal storylines page. Also their pages are 'cleaner' in style" (the
+      page restyled from Ben's Deal Storylines screenshot: Inter, the
+      black rail with the parties as title, eyebrow and large title over a
+      black rule, sections as cards with tinted header bands, chips, no
+      shadows); "on UI - I still see this at the top and the left hand
+      side bar is not flush to the side of the page?" (no Corpus shell,
+      the rail the page's left edge); "please fix relative sizes" /
+      "zoom level is the same" (every size scaled by 0.58) then "sidebar
+      width now good but font size not good" (fonts raised by 1.3);
+      "can we kill 'as drafted' columns throughout - the whole point is
+      to only ummarize the key parts!! ... Also same comment on
+      'provision' columns" (a detail column shows headline.summary only
+      and is dropped when no row has one). Reading the second half of
+      the run: 3.09's tax-asset disclaimer had filled the No Other Reps
+      table (a subject-limited disclaimer is the representation's
+      exclusion: held at extraction by the section heading, and on the
+      page by its words); IV-INTRO had fallen into the Company table (a
+      readout naming a retired table is none); Merger Sub's capital had
+      merged into Common Stock as "0.01" (its own row; a count column
+      never reads a money amount; counts print with separators);
+      "forty-eight (48) hours" read as 8 (parenthetical digits win,
+      compound number words add up); "6 year" (period units plural);
+      overlapping components repeated words in summaries (written once).
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
