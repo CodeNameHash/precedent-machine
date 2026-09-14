@@ -1148,3 +1148,19 @@ test('the MAE summary counts the party\'s prongs and sorts them by their words',
   const alone = buildTableView({ facts: [facts[0]], tableShapes, legalSchema });
   assert.equal(alone.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'mae-definitions-table').rows.find((row) => row.subject === 'Company').cells.find((cell) => cell.column_id === 'limbSummary').code, 'ONE_LIMB_EFFECT_ON_THE_BUSINESS_CONDITION_OR_RESULTS_OF_OPERATIONS');
 });
+
+// Metsera generation 7, 3.11 and 3.14: a definition fact of its own (ERISA,
+// Proceeding) has no table; it is a Defined Terms entry, the quoted name its
+// term and its summary the definition.
+test('an OTHER_DEFINED_TERM fact joins the Defined Terms section', () => {
+  const fact = {
+    fact_id: 'def-erisa', proposal_id: 'def-erisa', family_key: 'KEY_DEFINED_TERMS', subtype_key: 'OTHER_DEFINED_TERM', fact_type: 'OTHER_DEFINED_TERM_RECORDED', section_reference: '3.11',
+    headline: { label: 'Other defined term', summary: 'ERISA means the Employee Retirement Income Security Act of 1974, as amended', distinguishing_component_ids: ['def-erisa-t'] },
+    components: [{ component_id: 'def-erisa-t', kind: 'DEFINED_TERM', label: 'ERISA', text: 'the Employee Retirement Income Security Act of 1974, as amended (“ERISA”)', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 70, gap_before: false, children: [] }],
+  };
+  const view = buildTableView({ facts: [fact], tableShapes, legalSchema });
+  const entry = view.defined_terms.find((candidate) => candidate.fact_id === 'def-erisa');
+  assert.ok(entry);
+  assert.equal(entry.term, 'ERISA');
+  assert.equal(entry.definition, 'ERISA means the Employee Retirement Income Security Act of 1974, as amended');
+});

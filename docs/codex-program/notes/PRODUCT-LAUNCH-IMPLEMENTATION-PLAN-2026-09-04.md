@@ -2585,7 +2585,14 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       liabilities). 3.16's two definition cells were dropped as
       non-verbatim and the rows kept (the cell rule of (29) at work).
       3.18 had one fact INVALID on two LIST_ELEMENTs outside a LIST: such
-      an element is now built as a TERM. Ben's afternoon decisions,
+      an element is now built as a TERM.
+      (32) 18:40 UTC: 3.11 completed at its third attempt on the fixed
+      worker; with the schema of (29) its definitions (ERISA, ERISA
+      Affiliate, Non-U.S. Benefit Plan) and 3.14's (Proceeding, Judgment)
+      come through as OTHER_DEFINED_TERM facts, which had no table: they
+      are entries of the Defined Terms section, the quoted name the term
+      and the summary the definition. 3.14, 3.15, 3.19 to 3.22 read
+      correctly on their rows. Ben's afternoon decisions,
       2026-09-14, each in code: "by miscoded I meant oyu currentl have it
       messed up and you need to move it over to what we had in the old
       vesrion...." (the reps table opens with General Exceptions: SEC
