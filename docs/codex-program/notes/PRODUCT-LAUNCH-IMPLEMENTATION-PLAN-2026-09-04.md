@@ -2641,7 +2641,22 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       information permission, the once-only reaffirmation, three
       definitions the model typed OTHER_DEFINED_TERM) stay under
       "without a readout" or the Defined Terms; the model's readouts,
-      not new page rules, are the fix for those. Ben's afternoon decisions,
+      not new page rules, are the fix for those.
+      (36) 21:30 UTC, generation 7's Article VI and 7.01, 7.02 read.
+      6.03 is the proof of finding (20): its limb (a) yields fifteen
+      facts, the Efforts standard row (Reasonable best efforts, with the
+      additional-instruments and ordinary-course carve-out sub-items)
+      and the Remedy commitment row (No remedy required, each of
+      clauses (A) to (F) a sub-item, the Company's conditioned-on-Closing
+      undertaking as Remedy only if conditioned on Closing), plus the
+      takeover-statute covenant on the Other Covenants table. 6.05's
+      limb (a) fills the Charter and contract continuation row
+      (assumption, survival, six years, no adverse amendment). 7.01's
+      Stockholder Approval condition is on the mutual conditions table
+      (finding (21)'s unknown-span rule). 6.04's benefit rows, 6.10 and
+      6.11's proxy timetable with the adjournment reason coded
+      Insufficient votes, 6.06's five publicity sub-items, 6.12 to 6.14
+      read correctly; 6.15 stays UNRESOLVED_UNUSUAL_PROVISION. Ben's afternoon decisions,
       2026-09-14, each in code: "by miscoded I meant oyu currentl have it
       messed up and you need to move it over to what we had in the old
       vesrion...." (the reps table opens with General Exceptions: SEC
