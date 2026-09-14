@@ -1040,7 +1040,7 @@ test('a party column cell that cites the entity and the term reads as entity (te
 // the provision on the right etc - like in the normal course. Not just a
 // sec ref...!"; "1. for now - yes"); the label-built term stays for older
 // generations without one.
-test('provisionTerm prefers headline.summary and falls back to the label-built term', () => {
+test('provisionTerm is the label-built term; headline.summary is the row\'s Summary text', () => {
   const { provisionTerm } = require('../lib/product/table-view');
   const components = [
     { component_id: 'pt-actor', kind: 'ACTOR', label: 'Company', text: 'the Company', origin: 'OWN', children: [] },
@@ -1049,7 +1049,13 @@ test('provisionTerm prefers headline.summary and falls back to the label-built t
   const older = { fact_id: 'pt-1', headline: { label: 'Certificate of merger filing', distinguishing_component_ids: ['pt-op'] }, components };
   assert.equal(provisionTerm(older, components), 'Company · files');
   const summarised = { ...older, headline: { ...older.headline, summary: 'Company files the Certificate of Merger with the Delaware Secretary of State' } };
-  assert.equal(provisionTerm(summarised, components), 'Company files the Certificate of Merger with the Delaware Secretary of State');
+  // Ben, 2026-09-14, on the Summary column: the term stays short; the
+  // summary is the Summary cell of the Other provisions row.
+  assert.equal(provisionTerm(summarised, components), 'Company · files');
+  const { groupOtherProvisions } = require('../lib/product/table-view');
+  const [group] = groupOtherProvisions([{ ...summarised, family_key: 'MERGER_STRUCTURE_CLOSING', components: components.map((c) => ({ ...c, source_span_id: 's', start_byte: 0, end_byte: 5 })) }]);
+  assert.equal(group.term, 'Company · files');
+  assert.equal(group.common_text, 'Company files the Certificate of Merger with the Delaware Secretary of State');
   const blank = { ...older, headline: { ...older.headline, summary: '   ' } };
   assert.equal(provisionTerm(blank, components), 'Company · files', 'a blank summary is no summary');
 });
