@@ -2382,6 +2382,32 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       worker's log, and the lease functions raise P0001 (migration
       `20260914123000_product_section_stale_errcode`). Worker updated and
       the run retried.
+      (18) 12:20 UTC: on the updated worker, split sections (2.02, 3.09,
+      3.11, 3.13, 3.17) ended about five minutes into extraction with no
+      model call and no failure on their rows while the worker moved on:
+      the phase-3 advance swallowed a section error whose failure record
+      was itself refused. In code: the section error and a refused record
+      are logged, the record is retried without model calls, and the
+      phase-2 fail function raises P0001 too. Worker updated to 8fa3b9be
+      and woken; the cause reads from the log at the next occurrence.
+      Ben, 2026-09-14: "we didn't have this issue with codex, right?
+      Maybe flip back over?" (the output-cap truncation is Claude's, the
+      lease loss was seen on Codex too in generation 5; staying on Claude
+      for this run, one deployment variable flips back) and "do you have
+      an agent looking at all of our tweaks and seeing if they should be
+      made systematically/throguhout the. code base back to extraction? I
+      don't want to make surface lvel/one deal level fixes": every
+      render-side rule since 2026-09-13 audited; the ones compensating
+      for the extractor now have upstream counterparts (party columns'
+      guidance and display sent in the request; DEFINED_TERM resolves_to
+      = the definition words; article introductions held to
+      REPRESENTATION_QUALIFICATION with INTRO_NOT_QUALIFICATION; an
+      omitted value column completed from the fact's parsable fill_from
+      component at extraction; C15 drops a vocabulary code whose
+      contradicted_by words the fact carries, FULLY_VESTED_ACCELERATED
+      against continued service; plain component labels). Left for Ben:
+      a `headline.summary` field on the fact contract for the
+      other-provisions Term (a contract and store change).
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
