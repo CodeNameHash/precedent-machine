@@ -2495,7 +2495,13 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       decision. The section-by-section reading is
       `docs/codex-program/notes/METSERA-GENERATION-6-AUDIT-2026-09-14.md`.
       Generation 7 starts on the worker at the head of this branch and
-      is read the same way. Ben's afternoon decisions,
+      is read the same way.
+      (24) 16:35 UTC: generation 6's page frozen as a static copy
+      (every section open, no sidebar) at
+      https://claude.ai/code/artifact/502d2ef5-634b-4fe0-8440-192a10c342df,
+      the live run page staying at its run URL. Generation 7 submitted
+      as run `8c53fb92-06c9-40f1-b6b3-f9da5cdf7b3d` (stored generation
+      7) on the worker at e7d675d, woken 16:35 UTC. Ben's afternoon decisions,
       2026-09-14, each in code: "by miscoded I meant oyu currentl have it
       messed up and you need to move it over to what we had in the old
       vesrion...." (the reps table opens with General Exceptions: SEC
