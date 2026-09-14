@@ -65,13 +65,16 @@ const OVERLAY = {
   },
   KEY_DEFINED_TERMS: {
     layers: 'Each definition is one fact. Layer 1: the defined term, the operation ("means"), the object, thresholds and deeming rules. Lists inside a definition are LISTs with LIST_ELEMENTs. A definition that is none of the named subtypes (Tax, Tax Return, Law, Person) is OTHER_DEFINED_TERM, never forced into a named one (Metsera generation 5, 3.09).',
-    add: [
-      { subtype_key: 'OTHER_DEFINED_TERM', label: 'Other defined term', required_roles: ['defined_term', 'definition'], optional_roles: ['threshold', 'exclusions'], relationships: ['DEFINES'] },
-    ],
     headline: { distinguishing: ['DEFINED_TERM', 'THRESHOLD', 'PERCENTAGE'], note: 'the term and its threshold' },
+    // One add list: a second `add` key silently replaced the first, so
+    // OTHER_DEFINED_TERM never reached the contract and every other
+    // definition was refused as UNSUPPORTED_SUBTYPE (Metsera generation 7,
+    // 3.09, 2026-09-14).
     add: [
+      { subtype_key: 'OTHER_DEFINED_TERM', label: 'Other defined term', required_roles: ['LEGAL_ACTOR_OR_SUBJECT', 'LEGAL_OPERATION', 'OPERATIVE_OBJECT'], optional_roles: ['TEMPORAL_OR_TRIGGER_SCOPE', 'QUALIFICATIONS', 'FORUM'], relationships: ['QUALIFIES', 'EXCEPTS', 'DEFINED_BY'] },
       { subtype_key: 'ACCEPTABLE_CONFIDENTIALITY_AGREEMENT', label: 'Acceptable Confidentiality Agreement', required_roles: ['LEGAL_ACTOR_OR_SUBJECT', 'LEGAL_OPERATION', 'OPERATIVE_OBJECT'], optional_roles: ['TEMPORAL_OR_TRIGGER_SCOPE', 'QUALIFICATIONS', 'FORUM'], relationships: ['QUALIFIES', 'EXCEPTS', 'DEFINED_BY'] },
     ],
+    add_fact_types: ['OTHER_DEFINED_TERM_RECORDED'],
   },
   ANTITRUST_REGULATORY: {
     layers: 'ANTITRUST_REGULATORY facts come only from the regulatory efforts covenant (the covenant to obtain antitrust and other governmental clearances: filings, efforts, remedies, litigation, control, consultation). The representation that lists the governmental filings and consents the transaction requires (the no-conflicts and consents representation) is a REPRESENTATIONS fact of that representation, never a filing obligation, and no timing is coded for it (Metsera generation 5, 3.05). Every covenant fact carries an EFFORTS_STANDARD component (a flat "agrees to take" is recorded as such) and a MATERIALITY_QUALIFIER when present. Remedy limitations are one LIST with one LIST_ELEMENT per action (sale, divestiture, licence, other disposition; restriction, limitation, condition; commence, participate in, defend). Deadlines are PERIOD components. Present every obligation as its own fact; the pre-product key-provisions page is the guide to the cut (Ben, 2026-09-12).',
@@ -186,7 +189,7 @@ function build() {
       family_key: family.family_key,
       state: family.state,
       coverage_only: overlay.coverage_only === true,
-      required_fact_types: family.required_fact_types,
+      required_fact_types: [...family.required_fact_types, ...(overlay.add_fact_types || []).filter((type) => !family.required_fact_types.includes(type))].sort(),
       materiality_rules: overlay.coverage_only
         ? ['Coverage only. Categorise every rule for later comparison; do not show to the reader.']
         : ['Every independently operative unit is captured as one fact with its components. Reader-facing headline: ' + (overlay.headline?.note || 'the operative term and what distinguishes it from other deals') + '.'],

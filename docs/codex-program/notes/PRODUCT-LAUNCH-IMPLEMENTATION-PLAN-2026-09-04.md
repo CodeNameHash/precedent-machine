@@ -2543,7 +2543,27 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       sections · 18 held by validation, not shown. Click a row or a pill
       for the words behind it.'" The header is the eyebrow with the
       state chip, the title and the rule; the metadata line and the
-      count line are gone from every run's page. Ben's afternoon decisions,
+      count line are gone from every run's page.
+      (29) 17:40 UTC, generation 7's 3.06 to 3.10 read. 3.09's limb (a)
+      (the tax filings, payments and returns) is extracted and its
+      tax-asset disclaimer stays off the No Other Reps table; 3.06, 3.08
+      and 3.10 read correctly with their look-backs. Two defects found
+      in the run's issues: the KEY_DEFINED_TERMS overlay in the schema
+      builder had two `add` keys, the second silently replacing the
+      first, so OTHER_DEFINED_TERM (added after generation 5) never
+      reached the contract and every other definition was refused as
+      UNSUPPORTED_SUBTYPE (3.09's Tax definitions in generation 7); one
+      list now, the subtype with the family's roles and relationships
+      and a fact type of its own (OTHER_DEFINED_TERM_RECORDED), the
+      contract regenerated. And 3.08's "conducted business in the
+      ordinary course" and "no action that would have breached the
+      interim covenants" lost their readouts whole on one value cell the
+      model wrote without { canonical, unit }: the cells a problem names
+      are dropped and the readout revalidated, so the row survives (note
+      CONCLUSIONS_CELLS_DROPPED); a readout with a problem beyond its
+      cells is still dropped as before. The worker is updated to this
+      head mid-run so the definitions sections ahead (5.02(h), 9.03)
+      take the schema. Ben's afternoon decisions,
       2026-09-14, each in code: "by miscoded I meant oyu currentl have it
       messed up and you need to move it over to what we had in the old
       vesrion...." (the reps table opens with General Exceptions: SEC

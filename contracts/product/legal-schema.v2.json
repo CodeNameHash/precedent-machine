@@ -36,10 +36,10 @@
       "state": "DEFINED",
       "coverage_only": false,
       "required_fact_types": [
-        "TERMINATION_RIGHT",
-        "OUTSIDE_DATE",
         "CURE_OR_NOTICE_PERIOD",
-        "TERMINATION_EFFECT"
+        "OUTSIDE_DATE",
+        "TERMINATION_EFFECT",
+        "TERMINATION_RIGHT"
       ],
       "materiality_rules": [
         "Every independently operative unit is captured as one fact with its components. Reader-facing headline: trigger, terminating party, cure right, and any condition or exception to exercise (Ben, 2026-09-12: e.g. no termination where the terminator primarily caused the outside date to be missed)."
@@ -395,11 +395,11 @@
       "state": "DEFINED",
       "coverage_only": false,
       "required_fact_types": [
+        "EXPENSE_REIMBURSEMENT",
         "FEE_AMOUNT",
         "FEE_TRIGGER",
-        "TAIL_PERIOD",
-        "EXPENSE_REIMBURSEMENT",
-        "LATE_INTEREST"
+        "LATE_INTEREST",
+        "TAIL_PERIOD"
       ],
       "materiality_rules": [
         "Every independently operative unit is captured as one fact with its components. Reader-facing headline: amount, payer and trigger; a tail headline names its deeming mechanism when one exists (Ben, 2026-09-12: unusual, so flag it)."
@@ -547,13 +547,13 @@
       "state": "DEFINED",
       "coverage_only": false,
       "required_fact_types": [
-        "PROHIBITED_ACTION",
         "EXCEPTION_PREREQUISITE",
+        "INITIAL_MATCH_PERIOD",
         "NOTICE_PERIOD",
         "NOTICE_UPDATE_OBLIGATION",
-        "INITIAL_MATCH_PERIOD",
-        "SUBSEQUENT_MATCH_PERIOD",
-        "RECOMMENDATION_CHANGE"
+        "PROHIBITED_ACTION",
+        "RECOMMENDATION_CHANGE",
+        "SUBSEQUENT_MATCH_PERIOD"
       ],
       "materiality_rules": [
         "Every independently operative unit is captured as one fact with its components. Reader-facing headline: the duty or permission and its period."
@@ -1918,6 +1918,7 @@
         "KNOWLEDGE_PERSON_SOURCE",
         "KNOWLEDGE_STANDARD",
         "ORDINARY_COURSE_DEFINITION_RECORDED",
+        "OTHER_DEFINED_TERM_RECORDED",
         "SUPERIOR_PROPOSAL_QUALIFIER",
         "SUPERIOR_PROPOSAL_THRESHOLD_PERCENT",
         "TAX_DEFINITION_RECORDED",
@@ -2123,6 +2124,26 @@
             "EXTENDS",
             "REQUIRES"
           ]
+        },
+        {
+          "subtype_key": "OTHER_DEFINED_TERM",
+          "label": "Other defined term",
+          "required_roles": [
+            "LEGAL_ACTOR_OR_SUBJECT",
+            "LEGAL_OPERATION",
+            "OPERATIVE_OBJECT"
+          ],
+          "optional_roles": [
+            "TEMPORAL_OR_TRIGGER_SCOPE",
+            "QUALIFICATIONS",
+            "FORUM"
+          ],
+          "relationships": [
+            "QUALIFIES",
+            "EXCEPTS",
+            "DEFINED_BY"
+          ],
+          "added_in": "V2"
         },
         {
           "subtype_key": "ACCEPTABLE_CONFIDENTIALITY_AGREEMENT",
@@ -3840,11 +3861,11 @@
       "coverage_only": false,
       "required_fact_types": [
         "CAPITALISATION_AUTHORISED_CAPITAL",
-        "CAPITALISATION_ISSUED_AND_OUTSTANDING",
-        "CAPITALISATION_RESERVED_OR_ISSUABLE_SECURITIES",
-        "CAPITALISATION_EQUITY_AWARD_INVENTORY",
-        "CAPITALISATION_PARTNERSHIP_OR_SUBSIDIARY_EQUITY",
         "CAPITALISATION_CAPITALISATION_ABSENCE",
+        "CAPITALISATION_EQUITY_AWARD_INVENTORY",
+        "CAPITALISATION_ISSUED_AND_OUTSTANDING",
+        "CAPITALISATION_PARTNERSHIP_OR_SUBSIDIARY_EQUITY",
+        "CAPITALISATION_RESERVED_OR_ISSUABLE_SECURITIES",
         "CAPITALISATION_VALID_ISSUANCE_STATUS"
       ],
       "materiality_rules": [

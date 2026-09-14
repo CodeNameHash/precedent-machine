@@ -206,7 +206,9 @@ test('V9: a proposal in a family with a table shape gets a validated conclusions
   assert.equal(compiled.issues.filter((issue) => issue.code === 'CONCLUSIONS_MISSING').length, 0);
 });
 
-test('V9: conclusions with an unknown vocabulary code are dropped with a CONCLUSIONS_DROPPED note; the fact stays VALID', () => {
+test('V9: a cell with an unknown vocabulary code is dropped with a CONCLUSIONS_CELLS_DROPPED note; the readout keeps its row and the fact stays VALID', () => {
+  // Metsera generation 7, 3.08: a readout used to be dropped whole on one
+  // malformed cell, and the fact lost its row.
   const badConclusions = {
     ...validConclusions,
     cells: [{ column_id: 'consideration', code: 'NOT_A_REAL_CODE', component_refs: ['consid'] }],
@@ -215,12 +217,13 @@ test('V9: conclusions with an unknown vocabulary code are dropped with a CONCLUS
     components: equityComponents(), headline: equityHeadline, conclusions: badConclusions,
   }));
   assert.equal(compiled.proposals[0].validation_status, 'VALID');
-  const issue = compiled.issues.find((candidate) => candidate.code === 'CONCLUSIONS_DROPPED');
-  assert.ok(issue);
+  const issue = compiled.issues.find((candidate) => candidate.code === 'CONCLUSIONS_CELLS_DROPPED');
+  assert.ok(issue, JSON.stringify(compiled.issues.map((candidate) => candidate.code)));
   assert.equal(issue.kind, 'NOTE');
   assert.match(issue.message, /unknown code/);
-  assert.equal(Object.hasOwn(compiled.proposals[0], 'conclusions'), false);
-  assert.equal(compiled.issues.some((candidate) => candidate.code === 'INVALID_FACT_CONCLUSIONS'), false);
+  assert.equal(compiled.proposals[0].conclusions.row_label, validConclusions.row_label);
+  assert.deepEqual(compiled.proposals[0].conclusions.cells, []);
+  assert.equal(compiled.issues.some((candidate) => candidate.code === 'CONCLUSIONS_DROPPED' || candidate.code === 'INVALID_FACT_CONCLUSIONS'), false);
 });
 
 test('V9: valid components with no conclusions from the model stay VALID with a CONCLUSIONS_MISSING note issue', () => {
