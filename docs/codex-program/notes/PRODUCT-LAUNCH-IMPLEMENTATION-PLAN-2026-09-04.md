@@ -2228,7 +2228,14 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       back twice, as a GENERAL_COVENANTS Merger Sub obligation and again
       as a MERGER_STRUCTURE_CLOSING transaction step with an empty row:
       the overlay now says a covenant in the additional agreements
-      article is never a transaction step.
+      article is never a transaction step. (14) 04:48 UTC: 5.01 (the
+      interim operating covenants, extracted in parts) was recorded
+      FAILED with SECTION_LEASE_EXPIRED while its worker was still on it:
+      one failed lease renewal stopped the heartbeat for good. A renewal
+      the store refuses as stale still loses the section at once; any
+      other failure is retried while the lease has time
+      (`withSectionLeaseHeartbeat`). The claim order picks the failed
+      section up again while attempts remain, so the run continues.
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
