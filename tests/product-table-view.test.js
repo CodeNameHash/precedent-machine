@@ -762,3 +762,27 @@ test('a fully-vested cell with a continued service condition reads as conditiona
   assert.ok(labels.includes('Fully vested (conditional upon service)'), JSON.stringify(labels));
   assert.ok(labels.includes('Fully vested (accelerated)'), JSON.stringify(labels));
 });
+
+// Metsera generation 6, 3.08: the fact cites "Since January 1, 2025" as a
+// DATE and the extractor left the Lookback cell out. A value column with no
+// cell is filled from the fact's own fill_from component when its words
+// parse; the cell carries that component as evidence.
+test('a value column the extractor left empty is filled from the fact\'s own parsable component', () => {
+  const fact = {
+    fact_id: 'r-3-08', proposal_id: 'r-3-08', family_key: 'REPRESENTATIONS', subtype_key: 'NEGATIVE_REPRESENTATION', section_reference: '3.08', structure_node_id: 'n-3-08',
+    headline: { label: 'Negative representation', distinguishing_component_ids: [] },
+    conclusions: { table_key: 'representations-qualifiers-table', row_label: 'Absence of Certain Changes or Events', cells: [{ column_id: 'materiality', code: 'MAE_AGGREGATE', component_ids: ['r-3-08-m'] }] },
+    components: [
+      { component_id: 'r-3-08-d', kind: 'DATE', label: 'Look-back start date', text: 'Since January 1, 2025', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 21, gap_before: false, children: [] },
+      { component_id: 'r-3-08-o', kind: 'OPERATION', label: 'Absence statement', text: 'there has not been', origin: 'OWN', source_span_id: 's', start_byte: 22, end_byte: 40, gap_before: false, children: [] },
+      { component_id: 'r-3-08-m', kind: 'DEFINED_TERM', label: 'Company Material Adverse Effect', text: 'any Company Material Adverse Effect', origin: 'OWN', source_span_id: 's', start_byte: 41, end_byte: 76, gap_before: false, children: [] },
+    ],
+  };
+  const view = buildTableView({ facts: [fact], tableShapes, legalSchema });
+  const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'representations-qualifiers-table');
+  const row = table.rows.find((candidate) => candidate.subject === 'Absence of Certain Changes or Events');
+  const cell = row.cells.find((candidate) => candidate.column_id === 'lookback');
+  assert.equal(cell.label, 'January 1, 2025');
+  assert.deepEqual(cell.component_ids, ['r-3-08-d']);
+  assert.equal(cell.derived, true);
+});

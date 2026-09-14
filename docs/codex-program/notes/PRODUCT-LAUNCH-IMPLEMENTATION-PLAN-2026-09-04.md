@@ -2356,7 +2356,14 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       correctly on the page: the Organization, Capitalization,
       Authority and No Conflict rows carry their sub-items, the excepted
       filings of 3.05 sit under the row as exceptions, one 3.03 fact is
-      INVALID (a LITANY with children, the model's error).
+      INVALID (a LITANY with children, the model's error). 3.02
+      completed at the first attempt on the updated worker (26 facts, all
+      VALID); 3.07, 3.08 and 3.10 read correctly, except that 3.08 cited
+      "Since January 1, 2025" as a DATE with no Lookback cell: a value
+      column the extractor leaves empty is now filled from the fact's own
+      fill_from component when its words parse (`derivedValueCell`), so
+      the Absence of Changes row shows January 1, 2025 and Labor Matters
+      January 1, 2023.
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
