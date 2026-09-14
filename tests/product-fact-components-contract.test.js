@@ -37,7 +37,9 @@ test('rules reject invented text, ellipses, loose list elements, forced values a
   fact.components.push(stamp({ component_id: 'bad-0', kind: 'TERM', label: '', text: 'unlabelled', origin: 'OWN', children: [] }));
   fact.components.push(stamp({ component_id: 'bad-1', kind: 'QUALIFIER', label: 'q', text: 'none', origin: 'OWN', children: [] }));
   fact.components.push(stamp({ component_id: 'bad-2', kind: 'TERM', label: 't', text: 'the parties ... agree', origin: 'OWN', children: [] }));
-  fact.components.push(stamp({ component_id: 'bad-3', kind: 'LIST_ELEMENT', label: 'e', text: 'stray', origin: 'OWN', children: [] }));
+  // A loose element is one under a non-list parent; a LIST_ELEMENT at the
+  // root of a fact is that fact being one element of a list in the source.
+  fact.components.push(stamp({ component_id: 'bad-3p', kind: 'OPERATION', label: 'op', text: 'holds', origin: 'OWN', children: [stamp({ component_id: 'bad-3', kind: 'LIST_ELEMENT', label: 'e', text: 'stray', origin: 'OWN', children: [] })] }));
   fact.components.push(stamp({ component_id: 'bad-4', kind: 'AMOUNT', label: 'th', text: 'a fee', origin: 'OWN', children: [] }));
   fact.components.push(stamp({ component_id: 'bad-5', kind: 'CROSS_REFERENCE', label: 'x', text: 'Section 6.1', origin: 'OWN', children: [] }));
   fact.components.push(stamp({ component_id: 'bad-6', kind: 'TERM', label: 'i', text: 'inherited', origin: 'INTRO', children: [] }));

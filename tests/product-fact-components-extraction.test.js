@@ -91,7 +91,9 @@ test('V2 extraction holds a proposal whose component quote is not in the source 
   const compiled = compile(none);
   assert.equal(compiled.proposals[0].validation_status, 'INVALID');
   assert.ok(compiled.issues.some((candidate) => candidate.code === 'INVENTED_ROLE_TEXT'));
-  assert.ok(compiled.issues.some((candidate) => candidate.code === 'INVALID_FACT_COMPONENTS' && /LIST_ELEMENT outside a LIST/.test(candidate.message)));
+  // A carve-out fact may start with a LIST_ELEMENT: it is one element of the
+  // definition's exclusion list, so the tree itself is valid.
+  assert.ok(!compiled.issues.some((candidate) => candidate.code === 'INVALID_FACT_COMPONENTS' && /LIST_ELEMENT outside a LIST/.test(candidate.message)));
 });
 
 test('V1 schema extraction is unchanged: no headline or components keys', () => {
