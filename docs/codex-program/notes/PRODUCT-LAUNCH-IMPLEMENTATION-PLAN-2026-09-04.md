@@ -2514,7 +2514,14 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       section numbers stay refused); the cash amount read "$47.5" (cents
       kept); the six appraisal mechanics of 2.01 had no section at all
       and fell off the page (APPRAISAL_DISSENTERS_RIGHTS joins the
-      consideration section: they are the grid's Other provisions). Ben's afternoon decisions,
+      consideration section: they are the grid's Other provisions).
+      (26) 17:05 UTC, Ben: "can you make the deploy not have a reference
+      to codex or claude etc?" The branch preview now has the project
+      domain `deal-corpus-preview.vercel.app`, assigned to the branch
+      `codex/product-implementation-plan-20260904` on the Vercel project
+      (it follows every push to the branch; Vercel Authentication still
+      guards it). The generated alias with the branch name in it keeps
+      working but is no longer the link given out. Ben's afternoon decisions,
       2026-09-14, each in code: "by miscoded I meant oyu currentl have it
       messed up and you need to move it over to what we had in the old
       vesrion...." (the reps table opens with General Exceptions: SEC
