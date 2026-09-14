@@ -704,7 +704,7 @@ test('the capitalization table counts each security class, the numbers parsed fr
   assert.equal(table.rows_are, 'fixed list');
   assert.equal(table.open_rows, true);
   assert.equal(table.row_from_security_class, true);
-  assert.deepEqual(table.fixed_row_labels, ['Common Stock', 'Preferred Stock', 'Company Stock Options', 'Company RSUs', 'Company PSUs', 'Company Restricted Stock Awards', 'ESPP', 'Warrants', 'Subsidiary equity']);
+  assert.deepEqual(table.fixed_row_labels, ['Common Stock', 'Preferred Stock', 'Company Stock Options', 'Company RSUs', 'Company PSUs', 'Company Restricted Stock Awards', 'ESPP', 'Warrants', 'Merger Sub capital stock', 'Subsidiary equity']);
   const byId = Object.fromEntries(table.columns.map((column) => [column.column_id, column]));
   for (const [columnId, subtypes] of [['authorised', ['AUTHORISED_CAPITAL']], ['issued', ['ISSUED_AND_OUTSTANDING', 'EQUITY_AWARD_INVENTORY']], ['reserved', ['RESERVED_OR_ISSUABLE_SECURITIES']]]) {
     assert.equal(byId[columnId].render, 'value');

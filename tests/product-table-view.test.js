@@ -701,18 +701,18 @@ test('capitalisation facts without a readout fill the capitalization table by se
   const rowOf = (subject) => table.rows.find((row) => row.subject === subject);
   assert.deepEqual(table.rows.map((row) => row.subject), ['Common Stock', 'Company Stock Options', 'ESPP']);
   const common = rowOf('Common Stock');
-  assert.equal(cellOf(common, 'authorised').label, '800000000', 'the first count names the common stock');
+  assert.equal(cellOf(common, 'authorised').label, '800,000,000', 'the first count names the common stock');
   assert.deepEqual(cellOf(common, 'authorised').component_ids, ['a-common']);
-  assert.equal(cellOf(common, 'issued').label, '105278627');
-  assert.equal(cellOf(common, 'reserved').label, '6331920', 'the plan reserve, its ESPP exception not naming the row');
+  assert.equal(cellOf(common, 'issued').label, '105,278,627');
+  assert.equal(cellOf(common, 'reserved').label, '6,331,920', 'the plan reserve, its ESPP exception not naming the row');
   assert.equal(cellOf(common, 'asOf').label, 'September 18, 2025', 'the Measurement Date inherited from the chapeau');
   assert.equal(cellOf(common, 'validIssuance').label, 'Present');
   assert.deepEqual(common.backing_facts.map((entry) => entry.fact_id), ['cap-auth', 'cap-issued', 'cap-plans', 'cap-valid']);
   // A column filled only by named subtypes is never completed from another
   // subtype's number: the issued count does not become an authorised count.
   assert.equal(cellOf(rowOf('Company Stock Options'), 'authorised').kind, 'dash');
-  assert.equal(cellOf(rowOf('Company Stock Options'), 'issued').label, '12262280');
-  assert.equal(cellOf(rowOf('ESPP'), 'reserved').label, '1263830');
+  assert.equal(cellOf(rowOf('Company Stock Options'), 'issued').label, '12,262,280');
+  assert.equal(cellOf(rowOf('ESPP'), 'reserved').label, '1,263,830');
   assert.equal(table.footer.label, 'No other securities');
   assert.deepEqual(table.footer.entries.map((entry) => entry.fact_id), ['cap-absence']);
   assert.equal(table.footer.entries[0].text, 'no shares of Company Preferred Stock were issued or outstanding');
@@ -736,7 +736,7 @@ test('a capitalisation readout coded by the extractor keeps the representations 
   assert.equal(reps.rows[0].sub_rows[0].subject, 'Subsidiary equity interests');
   const cap = view.sections.find((candidate) => candidate.section_key === 'capitalization').tables[0];
   assert.equal(cap.rows[0].subject, 'Common Stock');
-  assert.equal(cap.rows[0].cells.find((cell) => cell.column_id === 'issued').label, '105278627');
+  assert.equal(cap.rows[0].cells.find((cell) => cell.column_id === 'issued').label, '105,278,627');
 });
 
 test('two readings in one cell come out in source order, and a fact_text line shows each alternative in full', () => {

@@ -1713,6 +1713,7 @@
             "Company Restricted Stock Awards",
             "ESPP",
             "Warrants",
+            "Merger Sub capital stock",
             "Subsidiary equity"
           ],
           "open_rows": true,
@@ -1730,7 +1731,7 @@
             "subtype_key": "CAPITALISATION_ABSENCE",
             "label": "No other securities"
           },
-          "guidance": "One row per security class as the precedent names it (fixed_row_labels; a new class label only when none fits, in the same style). The extractor cuts one fact per class and count: an AUTHORISED_CAPITAL fact goes to the class's row with its authorised count, an ISSUED_AND_OUTSTANDING fact with its issued count, a RESERVED_OR_ISSUABLE_SECURITIES fact with its reserved count (the ESPP reserve on the ESPP row), an EQUITY_AWARD_INVENTORY fact to the award class's row (Company Stock Options, Company RSUs, Company PSUs, Company Restricted Stock Awards) with the shares subject to outstanding awards in the issued column; a sentence that counts two classes is two facts. Every count is parsed by code from the cited words (never written by the model); asOf is the date the count speaks to. A VALID_ISSUANCE_STATUS fact marks its class Validly issued. A CAPITALISATION_ABSENCE fact (no other securities, options, voting agreements or voting debt; no rights plan) is never a row: it carries row_label \"No other securities\" and no cells, and the page shows it as drafted under the table. A PARTNERSHIP_OR_SUBSIDIARY_EQUITY fact is the Subsidiary equity row, or the Subsidiary equity interests limb of Capitalization; Subsidiaries on the representations table."
+          "guidance": "One row per security class as the precedent names it (fixed_row_labels; a new class label only when none fits, in the same style). The extractor cuts one fact per class and count: an AUTHORISED_CAPITAL fact goes to the class's row with its authorised count, an ISSUED_AND_OUTSTANDING fact with its issued count, a RESERVED_OR_ISSUABLE_SECURITIES fact with its reserved count (the ESPP reserve on the ESPP row), an EQUITY_AWARD_INVENTORY fact to the award class's row (Company Stock Options, Company RSUs, Company PSUs, Company Restricted Stock Awards) with the shares subject to outstanding awards in the issued column; a sentence that counts two classes is two facts. Every count is parsed by code from the cited words (never written by the model); asOf is the date the count speaks to. A VALID_ISSUANCE_STATUS fact marks its class Validly issued. A CAPITALISATION_ABSENCE fact (no other securities, options, voting agreements or voting debt; no rights plan) is never a row: it carries row_label \"No other securities\" and no cells, and the page shows it as drafted under the table. A PARTNERSHIP_OR_SUBSIDIARY_EQUITY fact is the Subsidiary equity row, or the Subsidiary equity interests limb of Capitalization; Subsidiaries on the representations table. Merger Sub's own capital stock (Article IV) is the \"Merger Sub capital stock\" row, never the Company's Common Stock."
         }
       ],
       "rail": {

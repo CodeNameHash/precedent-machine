@@ -456,7 +456,7 @@ test('a COUNT value cell on the capitalization table takes the code-parsed count
   const normalised = { ...fact, conclusions: normaliseConclusionValues(fact, tableShapes) };
   assert.deepEqual(normalised.conclusions.cells[0].value, { canonical: 10000000, unit: 'COUNT' });
   assert.deepEqual(validateFactConclusions(normalised, { tableShapes }), []);
-  assert.equal(formatValue(normalised.conclusions.cells[0].value, 'COUNT'), '10000000');
+  assert.equal(formatValue(normalised.conclusions.cells[0].value, 'COUNT'), '10,000,000');
   // The issued count never fills the authorised column (C12), and an
   // absence fact is the footer, never a row with cells.
   const issued = { ...fact, subtype_key: 'ISSUED_AND_OUTSTANDING', conclusions: { ...normalised.conclusions, row_label: 'Common Stock' } };
