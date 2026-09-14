@@ -2187,7 +2187,25 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       facts, never an invalid one. (8) The Article III introduction got a
       readout row: guidance excludes it. Model-side errors left as they
       are: one 2.01 fact citing an unknown span, one LIST without
-      elements, one PERCENTAGE with no number. Then every section of the output is read
+      elements, one PERCENTAGE with no number. 04:15 UTC, 3.02 to 3.16
+      read at 26 of 85: (9) the 3.05 consents limb had become an
+      ANTITRUST_REGULATORY filing with an invented code and Tax
+      definitions were forced into ACQUISITION_PROPOSAL: the overlay
+      keeps the consents limb a representation and adds
+      OTHER_DEFINED_TERM (d957b8e3). (10) Thirteen of the twenty-seven
+      3.13 Material Contract categories lost their readout
+      (CONCLUSIONS_DROPPED) because the provision cell quoted the clause
+      across its category and its nested exception and the space-joined
+      component texts lost the comma between them: a verbatim cell is
+      now compared word by word over the cited components in source
+      order, whole words only, never an added word. (11) The two limbs of
+      the 3.13 no-default representation, and the valid-and-binding and
+      full-force limbs of 3.13(b), were held as DUPLICATE_FACT_OCCURRENCE
+      because both quote one sentence: under V2 a collision whose
+      candidates have distinct component footprints re-keys them and
+      keeps them valid; identical footprints are still held. Model-side
+      and left: a 3.16 component with no byte range, a 3.12 lease limb
+      with LIST_ELEMENTs outside a LIST. Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
       4.06, 4.08, 4.09, 6.15) and the all-INVALID ones (3.03, 3.05,

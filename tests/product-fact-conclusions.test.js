@@ -253,6 +253,25 @@ test('C4: a verbatim run may span adjacent cited components read in order', () =
   assert.deepEqual(validateFactConclusions(fact, { tableShapes }), []);
 });
 
+// Metsera generation 5 (3.13): a category clause quoted with its nested
+// exception, "... Intellectual Property, except for Standard Contracts",
+// is a run of the cited components in source order; the comma between
+// them is not an added word. Words that are not in the components still are.
+test('C4: a run over several cited components tolerates the punctuation between them, never added words', () => {
+  const clause = 'each Contract under which the Company grants any material license under or with respect to Intellectual Property, except for Standard Contracts';
+  const fact = survivorFact(clause);
+  fact.components = [
+    { component_id: 'closing-when', kind: 'OBJECT', label: 'category', text: 'each Contract under which the Company grants any material license under or with respect to Intellectual Property', origin: 'OWN', source_span_id: 's-1', start_byte: 0, end_byte: 114, gap_before: false, children: [
+      { component_id: 'mat', kind: 'MATERIALITY_QUALIFIER', label: 'material', text: 'material', origin: 'OWN', source_span_id: 's-1', start_byte: 48, end_byte: 56, gap_before: false, children: [] },
+    ] },
+    { component_id: 'exc', kind: 'EXCEPTION', label: 'exception', text: 'except for Standard Contracts', origin: 'OWN', source_span_id: 's-1', start_byte: 116, end_byte: 145, gap_before: false, children: [] },
+  ];
+  fact.conclusions.cells[0].component_ids = ['exc', 'mat', 'closing-when'];
+  assert.deepEqual(validateFactConclusions(fact, { tableShapes }), []);
+  fact.conclusions.cells[0].text = clause.replace('except for', 'other than');
+  assert.match(validateFactConclusions(fact, { tableShapes })[0], /not the verbatim text/);
+});
+
 // C10 (decision 29, Ben 2026-09-13): a merger form cites the merging party,
 // the operation, the party merged into and the survivor together.
 const structureFact = () => ({
