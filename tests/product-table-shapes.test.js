@@ -350,7 +350,8 @@ test('Decision 32: Material Contracts rows are the canonical categories, absent 
   const table = findTableV3(findSectionV3('material-contracts'), 'material-contracts-table');
   assert.equal(table.rows_are, 'fixed list');
   assert.equal(table.open_rows, true);
-  assert.equal(table.absent_row_label, 'Not covered');
+  // Ben, 2026-09-14: "don't show any 'not covered' material contract categories".
+  assert.equal(table.absent_row_label, undefined);
   assert.equal(table.fixed_row_labels.filter((label) => label === 'Contracts above an aggregate-payments threshold').length, 1);
   assert.ok(table.fixed_row_labels.includes('Manufacturing agreements'));
   assert.deepEqual(table.columns.map((column) => column.column_id), ['provision', 'threshold', 'qualifier']);
@@ -365,7 +366,10 @@ test('Decision 34 (was 7): Interim covenants are one row per restriction categor
     assert.equal(negative.rows_are, 'fixed list');
     assert.ok(negative.fixed_row_labels.includes('Indebtedness') && negative.fixed_row_labels.includes('Capital Expenditures'));
     assert.equal(negative.open_rows, true);
-    assert.deepEqual(negative.columns.map((c) => c.column_id), ['asDrafted', 'threshold', 'exceptions', 'consent']);
+    // Ben, 2026-09-14: no consent cell per restriction; the list folds; the introductions open the section.
+    assert.deepEqual(negative.columns.map((c) => c.column_id), ['asDrafted', 'threshold', 'exceptions']);
+    assert.equal(negative.collapsible_rows, true);
+    assert.equal(section.tables[0].table_key, `${sectionKey}-general-terms`);
     assert.equal(negative.columns[0].display, 'fact_text');
     const general = findTableV3(section, `${sectionKey}-general-terms`);
     assert.deepEqual(general.fixed_row_labels, ['Consent standard', 'General exceptions', 'Ordinary course standard']);
@@ -716,7 +720,7 @@ test('the capitalization table counts each security class, the numbers parsed fr
   assert.equal(byId.validIssuance.render, 'boolean');
   assert.deepEqual(byId.validIssuance.from_subtype_keys, ['VALID_ISSUANCE_STATUS']);
   assert.equal(byId.asDrafted.display, 'fact_text');
-  assert.deepEqual(table.footer_from_subtype, { subtype_key: 'CAPITALISATION_ABSENCE', label: 'No other securities' });
+  assert.deepEqual(table.footer_from_subtype, { subtype_key: 'CAPITALISATION_ABSENCE', label: 'No other securities', style: 'other_provisions' });
   assert.deepEqual(table.only_subtype_keys, ['AUTHORISED_CAPITAL', 'ISSUED_AND_OUTSTANDING', 'RESERVED_OR_ISSUABLE_SECURITIES', 'EQUITY_AWARD_INVENTORY', 'VALID_ISSUANCE_STATUS', 'CAPITALISATION_ABSENCE', 'PARTNERSHIP_OR_SUBSIDIARY_EQUITY']);
   assert.match(table.guidance, /one fact per class and count/);
   const broken = structuredClone(tableShapesV3);

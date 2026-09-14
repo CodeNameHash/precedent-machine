@@ -510,21 +510,13 @@ function applyInterimCovenants(doc) {
       asDrafted(why, ['OPERATION', 'OBJECT', 'LIST', 'LITANY', 'CONDITION']),
       { column_id: 'threshold', header: 'Threshold', render: 'value', value_kind: 'AMOUNT', fill_from: ['AMOUNT', 'THRESHOLD'], addition: true, reason: `${why} The dollar floor of the restriction (a capex or indebtedness basket).` },
       exceptions,
-      {
-        column_id: 'consent',
-        header: 'Consent',
-        render: 'vocabulary',
-        vocabulary: [
-          code('Consent not to be unreasonably withheld, conditioned or delayed', why, { code: 'CONSENT_NOT_UNREASONABLY_WITHHELD' }),
-          code('Consent in Parent\'s sole discretion', why, { code: 'CONSENT_SOLE_DISCRETION' }),
-          code('No consent exception', why, { code: 'NO_CONSENT_EXCEPTION' }),
-        ],
-        fill_from: ['CONDITION', 'STANDARD', 'QUALIFIER'],
-        addition: true,
-        reason: `${why} A consent standard stated on the restriction itself (the chapeau's standard goes to the general-terms table).`,
-      },
     ];
-    negative.guidance = 'One row per restriction category the covenant names (row_label from fixed_row_labels, a new category only when none fits, never the clause\'s own words): each lettered restriction is a RESTRICTIVE_COVENANT fact on its category\'s row, as drafted; a dollar basket is the threshold; each carve-out from the restriction is one exceptions code (several cells when the clause has several); a consent standard stated on that restriction is the consent code. Two restrictions of one category (5.01(d) acquisitions and 5.01(g) dispositions) are two facts on the same row, each a sub-item (row_detail: Acquisitions; Dispositions).';
+    // Ben, 2026-09-14: "we don't need to show 'consent' for each row of the
+    // negative covenant" (the chapeau's consent standard is a general term)
+    // and "make negative covenant list collapsable (if it is within the
+    // covenant section)": the restriction rows fold behind a toggle.
+    negative.collapsible_rows = true;
+    negative.guidance = 'One row per restriction category the covenant names (row_label from fixed_row_labels, a new category only when none fits, never the clause\'s own words): each lettered restriction is a RESTRICTIVE_COVENANT fact on its category\'s row, as drafted; a dollar basket is the threshold; each carve-out from the restriction is one exceptions code (several cells when the clause has several); the consent standard is a general term, never a cell of a restriction. Two restrictions of one category (5.01(d) acquisitions and 5.01(g) dispositions) are two facts on the same row, each a sub-item (row_detail: Acquisitions; Dispositions).';
 
     const general = provisionTable({
       tableKey: `${sectionKey}-general-terms`,
@@ -551,9 +543,13 @@ function applyInterimCovenants(doc) {
       numberColumns: [periodColumn('Period', `${why} The deemed-consent period.`)],
       reason: why,
       subtypeKeys: ['CONSENT_STANDARD', 'EXCEPTION'],
-      guidance: 'The chapeau\'s general terms: the consent standard (CONSENT_STANDARD), the exceptions that apply to every restriction (an EXCEPTION fact from the chapeau, one cell per exception), and the ordinary-course standard of the affirmative covenant.',
+      guidance: 'The covenant introductions, from the section\'s opening words (the chapeau, limb (a) when it runs on from the heading): the affirmative introduction ("shall conduct its business in the ordinary course") gives the Ordinary course standard; the negative introduction ("shall not, without Parent\'s consent, ... ") gives the Consent standard (CONSENT_STANDARD) and the exceptions that apply to every restriction (an EXCEPTION fact from the chapeau, one cell per exception) as General exceptions.',
     });
-    section.tables = [affirmative, negative, general];
+    // Ben, 2026-09-14: "we do need the general affirmative and negative
+    // covenant intros in the IOCs which I don't see (look at prior
+    // version)". The introductions open the section, before the
+    // affirmative covenants and the restriction list.
+    section.tables = [general, affirmative, negative];
   }
 }
 
@@ -1174,7 +1170,11 @@ function applyCapitalization(doc) {
     // Stored generations' facts without a readout are placed by the page
     // by the security class their words name (lib/product/table-view.js).
     row_from_security_class: true,
-    footer_from_subtype: { subtype_key: 'CAPITALISATION_ABSENCE', label: 'No other securities' },
+    // Ben, 2026-09-14, on the "No other securities" lines under the table:
+    // "can we tidy up this no other securities other provisions like in the
+    // other sections?" The absence facts are the table's Other provisions
+    // (a Term / Summary table with branch rows), titled No other securities.
+    footer_from_subtype: { subtype_key: 'CAPITALISATION_ABSENCE', label: 'No other securities', style: 'other_provisions' },
     guidance: `One row per security class as the precedent names it (fixed_row_labels; a new class label only when none fits, in the same style). The extractor cuts one fact per class and count: an AUTHORISED_CAPITAL fact goes to the class's row with its authorised count, an ISSUED_AND_OUTSTANDING fact with its issued count, a RESERVED_OR_ISSUABLE_SECURITIES fact with its reserved count (the ESPP reserve on the ESPP row), an EQUITY_AWARD_INVENTORY fact to the award class's row (Company Stock Options, Company RSUs, Company PSUs, Company Restricted Stock Awards) with the shares subject to outstanding awards in the issued column; a sentence that counts two classes is two facts. Every count is parsed by code from the cited words (never written by the model); asOf is the date the count speaks to. A VALID_ISSUANCE_STATUS fact marks its class Validly issued. A CAPITALISATION_ABSENCE fact (no other securities, options, voting agreements or voting debt; no rights plan) is never a row: it carries row_label "No other securities" and no cells, and the page shows it as drafted under the table. A PARTNERSHIP_OR_SUBSIDIARY_EQUITY fact is the Subsidiary equity row, or the Subsidiary equity interests limb of Capitalization; Subsidiaries on the representations table. Merger Sub's own capital stock (Article IV) is the "Merger Sub capital stock" row, never the Company's Common Stock.`,
   };
   const section = {

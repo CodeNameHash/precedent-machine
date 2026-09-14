@@ -270,7 +270,7 @@ function AttributeTerm({ header, backing, tableKey, onSelect }) {
 // group (table-view groupOtherProvisions): the words the group shares, then
 // its branches indented, one per fact. Every line opens its own fact in the
 // evidence sidebar the way a backing fact does.
-function OtherProvisions({ groups, tableKey, onSelect }) {
+function OtherProvisions({ groups, tableKey, onSelect, label = 'Other provisions' }) {
   const [open, setOpen] = useState(false);
   const count = groups.reduce((total, group) => total + group.branches.length, 0);
   const select = (factId) => onSelect({ tableKey, rowIndex: 0, columnId: null, componentId: null, componentIds: [], factId });
@@ -286,7 +286,7 @@ function OtherProvisions({ groups, tableKey, onSelect }) {
   return (
     <div className="mt-[9.5px] rounded-[2px] border border-[#dcdcdc]" data-testid="other-provisions" data-open={open || undefined}>
       <button type="button" onClick={() => setOpen((current) => !current)} aria-expanded={open} className={`flex w-full items-center justify-between px-[7px] py-[4.5px] text-left text-[9.5px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b] ${open ? 'border-b border-[#ececec]' : ''}`} data-testid="other-provisions-toggle">
-        <span>Other provisions ({count})</span>
+        <span>{label} ({count})</span>
         <span className="text-inkFaint">{open ? '▾' : '▸'}</span>
       </button>
       {(
@@ -470,12 +470,29 @@ function RowGroup({ table, row, rowIndex, selection, onSelect, initialOpen = fal
 }
 
 function Table({ table, selection, onSelect, initialSubRowsOpen = false }) {
+  // Ben, 2026-09-14: "make negative covenant list collapsable (if it is
+  // within the covenant section)". A table marked collapsible_rows folds its
+  // rows behind a toggle above the header row; open to start.
+  const [rowsOpen, setRowsOpen] = useState(true);
   if (table.layout === 'attribute grid') return <AttributeGrid table={table} selection={selection} onSelect={onSelect} />;
+  const span = table.columns.length + (table.term_column ? 1 : 0);
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse text-left" data-testid="provision-table" data-table-key={table.table_key}>
         <GroupHeader table={table} />
-        <thead>
+        {table.collapsible_rows ? (
+          <thead>
+            <tr>
+              <td colSpan={span} className="pb-[4.5px]">
+                <button type="button" onClick={() => setRowsOpen((current) => !current)} aria-expanded={rowsOpen} className={`flex w-full items-center justify-between text-left text-[9.5px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b]`} data-testid="rows-toggle">
+                  <span>{rowsOpen ? 'Hide' : 'Show'} {table.rows.length} {table.rows.length === 1 ? 'row' : 'rows'}</span>
+                  <span className="text-inkFaint">{rowsOpen ? '▾' : '▸'}</span>
+                </button>
+              </td>
+            </tr>
+          </thead>
+        ) : null}
+        <thead hidden={table.collapsible_rows ? !rowsOpen : undefined}>
           <tr>
             {table.term_column ? (
               <th className={TH}>{table.term_column.header}</th>
@@ -485,7 +502,7 @@ function Table({ table, selection, onSelect, initialSubRowsOpen = false }) {
             ))}
           </tr>
         </thead>
-        <tbody>
+        <tbody hidden={table.collapsible_rows ? !rowsOpen : undefined}>
           {table.rows.map((row, rowIndex) => {
             if (row.absent) {
               return (
@@ -665,7 +682,7 @@ export default function ProvisionTables({
                       <div key={table.table_key}>
                         <Table table={table} selection={selection} onSelect={setSelection} initialSubRowsOpen={initialSubRowsOpen} />
                         {table.other_provisions?.length ? (
-                          <OtherProvisions groups={table.other_provisions} tableKey={table.table_key} onSelect={setSelection} />
+                          <OtherProvisions groups={table.other_provisions} tableKey={table.table_key} onSelect={setSelection} label={table.other_provisions_label || 'Other provisions'} />
                         ) : null}
                       </div>
                     ))}

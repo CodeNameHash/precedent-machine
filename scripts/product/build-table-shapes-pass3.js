@@ -903,7 +903,8 @@ function applyDecision32MaterialContracts(doc) {
   table.fixed_row_labels = labels;
   table.fixed_row_labels_source = 'TopBuild print Material Contracts buckets (covered and not-covered checklists), decision 32';
   table.open_rows = true;
-  table.absent_row_label = 'Not covered';
+  // Ben, 2026-09-14: "don't show any 'not covered' material contract
+  // categories": a category the definition does not name has no row.
   table.term_column = { header: 'Contract category', source: 'subject', fill_from: ['TERM'] };
   const threshold = findColumn(table, 'threshold');
   threshold.guidance = 'The dollar floor the category carries, parsed from the cited words; blank when the category has none.';

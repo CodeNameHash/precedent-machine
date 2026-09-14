@@ -732,9 +732,11 @@ test('capitalisation facts without a readout fill the capitalization table by se
   assert.equal(cellOf(rowOf('Company Stock Options'), 'authorised').kind, 'dash');
   assert.equal(cellOf(rowOf('Company Stock Options'), 'issued').label, '12,262,280');
   assert.equal(cellOf(rowOf('ESPP'), 'reserved').label, '1,263,830');
-  assert.equal(table.footer.label, 'No other securities');
-  assert.deepEqual(table.footer.entries.map((entry) => entry.fact_id), ['cap-absence']);
-  assert.equal(table.footer.entries[0].text, 'no shares of Company Preferred Stock were issued or outstanding');
+  // Ben, 2026-09-14: the absence facts are the table's Other provisions,
+  // titled No other securities, not a footer of drafted lines.
+  assert.equal(table.footer, undefined);
+  assert.equal(table.other_provisions_label, 'No other securities');
+  assert.deepEqual(table.other_provisions.flatMap((group) => group.branches.map((branch) => branch.fact_id)), ['cap-absence']);
   // A counted fact without a count stays without a readout.
   const reps = view.sections.find((candidate) => candidate.section_key === 'representations-qualifiers');
   assert.deepEqual((reps?.facts_without_readout || []).map((entry) => entry.fact_id), ['cap-list']);

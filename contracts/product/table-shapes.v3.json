@@ -1729,7 +1729,8 @@
           "row_from_security_class": true,
           "footer_from_subtype": {
             "subtype_key": "CAPITALISATION_ABSENCE",
-            "label": "No other securities"
+            "label": "No other securities",
+            "style": "other_provisions"
           },
           "guidance": "One row per security class as the precedent names it (fixed_row_labels; a new class label only when none fits, in the same style). The extractor cuts one fact per class and count: an AUTHORISED_CAPITAL fact goes to the class's row with its authorised count, an ISSUED_AND_OUTSTANDING fact with its issued count, a RESERVED_OR_ISSUABLE_SECURITIES fact with its reserved count (the ESPP reserve on the ESPP row), an EQUITY_AWARD_INVENTORY fact to the award class's row (Company Stock Options, Company RSUs, Company PSUs, Company Restricted Stock Awards) with the shares subject to outstanding awards in the issued column; a sentence that counts two classes is two facts. Every count is parsed by code from the cited words (never written by the model); asOf is the date the count speaks to. A VALID_ISSUANCE_STATUS fact marks its class Validly issued. A CAPITALISATION_ABSENCE fact (no other securities, options, voting agreements or voting debt; no rights plan) is never a row: it carries row_label \"No other securities\" and no cells, and the page shows it as drafted under the table. A PARTNERSHIP_OR_SUBSIDIARY_EQUITY fact is the Subsidiary equity row, or the Subsidiary equity interests limb of Capitalization; Subsidiaries on the representations table. Merger Sub's own capital stock (Article IV) is the \"Merger Sub capital stock\" row, never the Company's Common Stock."
         }
@@ -1865,7 +1866,6 @@
           ],
           "fixed_row_labels_source": "TopBuild print Material Contracts buckets (covered and not-covered checklists), decision 32",
           "open_rows": true,
-          "absent_row_label": "Not covered",
           "guidance": "One row per contract category the Material Contract definition names: row_label is the canonical category from fixed_row_labels that the clause describes (a new category name only when none fits, never the clause's own words); the clause's words go in the provision column; threshold is the dollar floor from the cited words and qualifier the materiality standard, each omitted when the clause states none. A category the definition does not name has no fact; the page shows it as Not covered. Two clauses that fit one category (an annual and an aggregate payments threshold) are two facts on the same row."
         }
       ],
@@ -2194,6 +2194,176 @@
       ],
       "tables": [
         {
+          "table_key": "ioc-exceptions-general-terms",
+          "group_header": "GENERAL TERMS",
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "provision",
+              "header": "Summary",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "NOT_UNREASONABLY_WITHHELD_CONDITIONED_OR_DELAYED",
+                  "label": "Not to be unreasonably withheld, conditioned or delayed",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
+                },
+                {
+                  "code": "SOLE_DISCRETION",
+                  "label": "Sole discretion",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
+                },
+                {
+                  "code": "DEEMED_GIVEN_AFTER_STATED_PERIOD",
+                  "label": "Deemed given after a stated period",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
+                },
+                {
+                  "code": "DISCLOSURE_LETTER",
+                  "label": "Disclosure letter",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
+                },
+                {
+                  "code": "REQUIRED_BY_LAW",
+                  "label": "Required by applicable law",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
+                },
+                {
+                  "code": "REQUIRED_BY_AGREEMENT",
+                  "label": "Required or contemplated by the agreement",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
+                },
+                {
+                  "code": "PARENT_CONSENT",
+                  "label": "With Parent's consent",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
+                },
+                {
+                  "code": "PANDEMIC_MEASURES",
+                  "label": "Pandemic or emergency measures",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
+                },
+                {
+                  "code": "ORDINARY_COURSE_CONSISTENT_WITH_PAST_PRACTICE",
+                  "label": "Ordinary course consistent with past practice",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
+                },
+                {
+                  "code": "ORDINARY_COURSE",
+                  "label": "Ordinary course",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
+                },
+                {
+                  "code": "COMMERCIALLY_REASONABLE_EFFORTS_ORDINARY_COURSE",
+                  "label": "Commercially reasonable efforts to conduct in the ordinary course",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
+                }
+              ],
+              "vocabulary_by_row": {
+                "Consent standard": [
+                  "NOT_UNREASONABLY_WITHHELD_CONDITIONED_OR_DELAYED",
+                  "SOLE_DISCRETION",
+                  "DEEMED_GIVEN_AFTER_STATED_PERIOD"
+                ],
+                "General exceptions": [
+                  "DISCLOSURE_LETTER",
+                  "REQUIRED_BY_LAW",
+                  "REQUIRED_BY_AGREEMENT",
+                  "PARENT_CONSENT",
+                  "PANDEMIC_MEASURES"
+                ],
+                "Ordinary course standard": [
+                  "ORDINARY_COURSE_CONSISTENT_WITH_PAST_PRACTICE",
+                  "ORDINARY_COURSE",
+                  "COMMERCIALLY_REASONABLE_EFFORTS_ORDINARY_COURSE"
+                ]
+              },
+              "fill_from": [
+                "STANDARD",
+                "EFFORTS_STANDARD",
+                "OPERATION",
+                "CONDITION",
+                "EXCEPTION",
+                "QUALIFIER",
+                "ACTOR",
+                "FORUM"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard.",
+              "guidance": "One code from this row's own list (vocabulary_by_row); several cells with distinct codes when the clause states several of them (the acts a no-shop prohibits, the events an intervening-event definition excludes); never a code from another row's list."
+            },
+            {
+              "column_id": "period",
+              "header": "Period",
+              "render": "value",
+              "value_kind": "PERIOD",
+              "fill_from": [
+                "PERIOD",
+                "TRIGGER",
+                "DATE"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard. The deemed-consent period."
+            },
+            {
+              "column_id": "asDrafted",
+              "header": "As drafted",
+              "render": "verbatim",
+              "display": "fact_text",
+              "fill_from": [
+                "OPERATION",
+                "OBJECT",
+                "CONDITION",
+                "STANDARD",
+                "EXCEPTION",
+                "QUALIFIER"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard.",
+              "guidance": "Shown as the fact's own words as drafted (every component in source order); cite the operative words."
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Consent standard",
+            "General exceptions",
+            "Ordinary course standard"
+          ],
+          "subtype_keys": [
+            "CONSENT_STANDARD",
+            "EXCEPTION"
+          ],
+          "guidance": "The covenant introductions, from the section's opening words (the chapeau, limb (a) when it runs on from the heading): the affirmative introduction (\"shall conduct its business in the ordinary course\") gives the Ordinary course standard; the negative introduction (\"shall not, without Parent's consent, ... \") gives the Consent standard (CONSENT_STANDARD) and the exceptions that apply to every restriction (an EXCEPTION fact from the chapeau, one cell per exception) as General exceptions."
+        },
+        {
           "table_key": "ioc-exceptions-affirmative-covenants",
           "group_header": "AFFIRMATIVE COVENANTS",
           "term_column": {
@@ -2506,41 +2676,6 @@
               "fill_from": [
                 "EXCEPTION"
               ]
-            },
-            {
-              "column_id": "consent",
-              "header": "Consent",
-              "render": "vocabulary",
-              "vocabulary": [
-                {
-                  "code": "CONSENT_NOT_UNREASONABLY_WITHHELD",
-                  "label": "Consent not to be unreasonably withheld, conditioned or delayed",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
-                },
-                {
-                  "code": "CONSENT_SOLE_DISCRETION",
-                  "label": "Consent in Parent's sole discretion",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
-                },
-                {
-                  "code": "NO_CONSENT_EXCEPTION",
-                  "label": "No consent exception",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
-                }
-              ],
-              "fill_from": [
-                "CONDITION",
-                "STANDARD",
-                "QUALIFIER"
-              ],
-              "addition": true,
-              "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard. A consent standard stated on the restriction itself (the chapeau's standard goes to the general-terms table)."
             }
           ],
           "rows_are": "fixed list",
@@ -2584,10 +2719,34 @@
             "THRESHOLD",
             "EXCEPTION"
           ],
-          "guidance": "One row per restriction category the covenant names (row_label from fixed_row_labels, a new category only when none fits, never the clause's own words): each lettered restriction is a RESTRICTIVE_COVENANT fact on its category's row, as drafted; a dollar basket is the threshold; each carve-out from the restriction is one exceptions code (several cells when the clause has several); a consent standard stated on that restriction is the consent code. Two restrictions of one category (5.01(d) acquisitions and 5.01(g) dispositions) are two facts on the same row, each a sub-item (row_detail: Acquisitions; Dispositions)."
-        },
+          "collapsible_rows": true,
+          "guidance": "One row per restriction category the covenant names (row_label from fixed_row_labels, a new category only when none fits, never the clause's own words): each lettered restriction is a RESTRICTIVE_COVENANT fact on its category's row, as drafted; a dollar basket is the threshold; each carve-out from the restriction is one exceptions code (several cells when the clause has several); the consent standard is a general term, never a cell of a restriction. Two restrictions of one category (5.01(d) acquisitions and 5.01(g) dispositions) are two facts on the same row, each a sub-item (row_detail: Acquisitions; Dispositions)."
+        }
+      ],
+      "print_pages": [
+        86,
+        87,
+        88
+      ],
+      "rail": {
+        "group": "Interim Operating Covenants",
+        "label": "Company / Target",
+        "hex": "#B5862E"
+      }
+    },
+    {
+      "section_key": "parent-ioc-exceptions",
+      "title": "Interim Operating Covenants — Parent",
+      "legacy_config": "components/review/table-configs/ioc-exceptions.config.js",
+      "v2_family_keys": [
         {
-          "table_key": "ioc-exceptions-general-terms",
+          "key": "INTERIM_OPERATING",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "parent-ioc-exceptions-general-terms",
           "group_header": "GENERAL TERMS",
           "term_column": {
             "header": "Term",
@@ -2754,31 +2913,8 @@
             "CONSENT_STANDARD",
             "EXCEPTION"
           ],
-          "guidance": "The chapeau's general terms: the consent standard (CONSENT_STANDARD), the exceptions that apply to every restriction (an EXCEPTION fact from the chapeau, one cell per exception), and the ordinary-course standard of the affirmative covenant."
-        }
-      ],
-      "print_pages": [
-        86,
-        87,
-        88
-      ],
-      "rail": {
-        "group": "Interim Operating Covenants",
-        "label": "Company / Target",
-        "hex": "#B5862E"
-      }
-    },
-    {
-      "section_key": "parent-ioc-exceptions",
-      "title": "Interim Operating Covenants — Parent",
-      "legacy_config": "components/review/table-configs/ioc-exceptions.config.js",
-      "v2_family_keys": [
-        {
-          "key": "INTERIM_OPERATING",
-          "confidence": "high"
-        }
-      ],
-      "tables": [
+          "guidance": "The covenant introductions, from the section's opening words (the chapeau, limb (a) when it runs on from the heading): the affirmative introduction (\"shall conduct its business in the ordinary course\") gives the Ordinary course standard; the negative introduction (\"shall not, without Parent's consent, ... \") gives the Consent standard (CONSENT_STANDARD) and the exceptions that apply to every restriction (an EXCEPTION fact from the chapeau, one cell per exception) as General exceptions."
+        },
         {
           "table_key": "parent-ioc-exceptions-affirmative-covenants",
           "group_header": "AFFIRMATIVE COVENANTS",
@@ -3012,41 +3148,6 @@
               "fill_from": [
                 "EXCEPTION"
               ]
-            },
-            {
-              "column_id": "consent",
-              "header": "Consent",
-              "render": "vocabulary",
-              "vocabulary": [
-                {
-                  "code": "CONSENT_NOT_UNREASONABLY_WITHHELD",
-                  "label": "Consent not to be unreasonably withheld, conditioned or delayed",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
-                },
-                {
-                  "code": "CONSENT_SOLE_DISCRETION",
-                  "label": "Consent in Parent's sole discretion",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
-                },
-                {
-                  "code": "NO_CONSENT_EXCEPTION",
-                  "label": "No consent exception",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
-                }
-              ],
-              "fill_from": [
-                "CONDITION",
-                "STANDARD",
-                "QUALIFIER"
-              ],
-              "addition": true,
-              "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard. A consent standard stated on the restriction itself (the chapeau's standard goes to the general-terms table)."
             }
           ],
           "rows_are": "fixed list",
@@ -3090,177 +3191,8 @@
             "THRESHOLD",
             "EXCEPTION"
           ],
-          "guidance": "One row per restriction category the covenant names (row_label from fixed_row_labels, a new category only when none fits, never the clause's own words): each lettered restriction is a RESTRICTIVE_COVENANT fact on its category's row, as drafted; a dollar basket is the threshold; each carve-out from the restriction is one exceptions code (several cells when the clause has several); a consent standard stated on that restriction is the consent code. Two restrictions of one category (5.01(d) acquisitions and 5.01(g) dispositions) are two facts on the same row, each a sub-item (row_detail: Acquisitions; Dispositions)."
-        },
-        {
-          "table_key": "parent-ioc-exceptions-general-terms",
-          "group_header": "GENERAL TERMS",
-          "term_column": {
-            "header": "Term",
-            "source": "subject",
-            "fill_from": [
-              "TERM"
-            ]
-          },
-          "columns": [
-            {
-              "column_id": "provision",
-              "header": "Summary",
-              "render": "vocabulary",
-              "vocabulary": [
-                {
-                  "code": "NOT_UNREASONABLY_WITHHELD_CONDITIONED_OR_DELAYED",
-                  "label": "Not to be unreasonably withheld, conditioned or delayed",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
-                },
-                {
-                  "code": "SOLE_DISCRETION",
-                  "label": "Sole discretion",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
-                },
-                {
-                  "code": "DEEMED_GIVEN_AFTER_STATED_PERIOD",
-                  "label": "Deemed given after a stated period",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
-                },
-                {
-                  "code": "DISCLOSURE_LETTER",
-                  "label": "Disclosure letter",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
-                },
-                {
-                  "code": "REQUIRED_BY_LAW",
-                  "label": "Required by applicable law",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
-                },
-                {
-                  "code": "REQUIRED_BY_AGREEMENT",
-                  "label": "Required or contemplated by the agreement",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
-                },
-                {
-                  "code": "PARENT_CONSENT",
-                  "label": "With Parent's consent",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
-                },
-                {
-                  "code": "PANDEMIC_MEASURES",
-                  "label": "Pandemic or emergency measures",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
-                },
-                {
-                  "code": "ORDINARY_COURSE_CONSISTENT_WITH_PAST_PRACTICE",
-                  "label": "Ordinary course consistent with past practice",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
-                },
-                {
-                  "code": "ORDINARY_COURSE",
-                  "label": "Ordinary course",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
-                },
-                {
-                  "code": "COMMERCIALLY_REASONABLE_EFFORTS_ORDINARY_COURSE",
-                  "label": "Commercially reasonable efforts to conduct in the ordinary course",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard."
-                }
-              ],
-              "vocabulary_by_row": {
-                "Consent standard": [
-                  "NOT_UNREASONABLY_WITHHELD_CONDITIONED_OR_DELAYED",
-                  "SOLE_DISCRETION",
-                  "DEEMED_GIVEN_AFTER_STATED_PERIOD"
-                ],
-                "General exceptions": [
-                  "DISCLOSURE_LETTER",
-                  "REQUIRED_BY_LAW",
-                  "REQUIRED_BY_AGREEMENT",
-                  "PARENT_CONSENT",
-                  "PANDEMIC_MEASURES"
-                ],
-                "Ordinary course standard": [
-                  "ORDINARY_COURSE_CONSISTENT_WITH_PAST_PRACTICE",
-                  "ORDINARY_COURSE",
-                  "COMMERCIALLY_REASONABLE_EFFORTS_ORDINARY_COURSE"
-                ]
-              },
-              "fill_from": [
-                "STANDARD",
-                "EFFORTS_STANDARD",
-                "OPERATION",
-                "CONDITION",
-                "EXCEPTION",
-                "QUALIFIER",
-                "ACTOR",
-                "FORUM"
-              ],
-              "addition": true,
-              "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard.",
-              "guidance": "One code from this row's own list (vocabulary_by_row); several cells with distinct codes when the clause states several of them (the acts a no-shop prohibits, the events an intervening-event definition excludes); never a code from another row's list."
-            },
-            {
-              "column_id": "period",
-              "header": "Period",
-              "render": "value",
-              "value_kind": "PERIOD",
-              "fill_from": [
-                "PERIOD",
-                "TRIGGER",
-                "DATE"
-              ],
-              "addition": true,
-              "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard. The deemed-consent period."
-            },
-            {
-              "column_id": "asDrafted",
-              "header": "As drafted",
-              "render": "verbatim",
-              "display": "fact_text",
-              "fill_from": [
-                "OPERATION",
-                "OBJECT",
-                "CONDITION",
-                "STANDARD",
-                "EXCEPTION",
-                "QUALIFIER"
-              ],
-              "addition": true,
-              "reason": "Ben's decision 2026-09-14 (decision 34): an interim operating covenant reads as its category, the restriction as drafted, its threshold, its coded exceptions and the consent standard.",
-              "guidance": "Shown as the fact's own words as drafted (every component in source order); cite the operative words."
-            }
-          ],
-          "rows_are": "fixed list",
-          "fixed_row_labels": [
-            "Consent standard",
-            "General exceptions",
-            "Ordinary course standard"
-          ],
-          "subtype_keys": [
-            "CONSENT_STANDARD",
-            "EXCEPTION"
-          ],
-          "guidance": "The chapeau's general terms: the consent standard (CONSENT_STANDARD), the exceptions that apply to every restriction (an EXCEPTION fact from the chapeau, one cell per exception), and the ordinary-course standard of the affirmative covenant."
+          "collapsible_rows": true,
+          "guidance": "One row per restriction category the covenant names (row_label from fixed_row_labels, a new category only when none fits, never the clause's own words): each lettered restriction is a RESTRICTIVE_COVENANT fact on its category's row, as drafted; a dollar basket is the threshold; each carve-out from the restriction is one exceptions code (several cells when the clause has several); the consent standard is a general term, never a cell of a restriction. Two restrictions of one category (5.01(d) acquisitions and 5.01(g) dispositions) are two facts on the same row, each a sub-item (row_detail: Acquisitions; Dispositions)."
         }
       ],
       "print_pages": [

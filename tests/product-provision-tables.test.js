@@ -614,3 +614,20 @@ test('the General Exceptions row renders first with its categories hidden until 
   assert.match(closed, /No other securities/);
   assert.match(closed, /no shares of Company Preferred Stock were issued or outstanding/);
 });
+
+// Ben, 2026-09-14: "make negative covenant list collapsable" and "tidy up
+// this no other securities other provisions like in the other sections".
+test('a collapsible_rows table folds its rows behind a toggle, and an other-provisions label names the block', () => {
+  const view = {
+    defined_terms: [],
+    sections: [{ section_key: 'ioc-exceptions', title: 'Interim Operating Covenants', tables: [
+      { table_key: 'ioc-exceptions-negative-covenants', group_header: 'NEGATIVE COVENANTS', layout: 'rows', collapsible_rows: true, term_column: { header: 'Restriction', source: 'subject' }, columns: [{ column_id: 'threshold', header: 'Threshold' }],
+        rows: [{ subject: 'Indebtedness', cells: [{ column_id: 'threshold', kind: 'value', label: '$1,000,000', component_ids: ['c1'], fact_ids: ['f1'] }], backing_facts: [{ fact_id: 'f1', section_reference: '5.01' }] }],
+        other_provisions: [{ subtype_key: 'X', span_id: 's', common_text: 'no shares of Company Preferred Stock were issued', term: 'Preferred Stock', branches: [{ fact_id: 'f2', section_reference: '3.02', text: 'no shares of Company Preferred Stock were issued', term: 'Preferred Stock' }] }],
+        other_provisions_label: 'No other securities' },
+    ] }],
+  };
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts: [] }));
+  assert.match(html, /<button[^>]*aria-expanded="true"[^>]*data-testid="rows-toggle"[^>]*><span>Hide 1 row</);
+  assert.match(html, /data-testid="other-provisions-toggle"[^>]*><span>No other securities \(1\)</);
+});

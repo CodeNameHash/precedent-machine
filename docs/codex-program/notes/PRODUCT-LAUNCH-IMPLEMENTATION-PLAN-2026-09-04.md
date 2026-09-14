@@ -2558,7 +2558,24 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       jumps down to the actual language" (the panel opens at its top with
       the tree first, the section reference and a Jump to text button
       beneath it that centres the marked words; the Provision words and
-      the Clause follow). Reading the second half of
+      the Clause follow); on the capitalization table, "can we tidy up
+      this no other securities other provisions like in the other
+      sections?" (the absence facts are the table's Other provisions
+      block, titled No other securities); "don't show any 'not covered'
+      material contract categories" (no absent rows on that table); "we
+      don't need to show 'consent' for each row of the negative covenant
+      but we do need the general affirmative and negative covenant intros
+      in the IOCs which I don't see (look at prior version). Also make
+      negative covenant list collapsable (if it is within the covenant
+      section)" (the consent column is gone; the general-terms table,
+      the covenant introductions, opens the section; the restriction
+      list folds behind a toggle. The introductions are missing from
+      generation 6 because 5.01's opening words were never extracted,
+      finding (20); generation 7 carries them); "I will have intervening
+      event / no shop comments but will wait for the next turn"; "(1)
+      save a version of this page that will work even after the next
+      generation some how so I can see it - and send me a link and (2)
+      then run the next generation". Reading the second half of
       the run: 3.09's tax-asset disclaimer had filled the No Other Reps
       table (a subject-limited disclaimer is the representation's
       exclusion: held at extraction by the section heading, and on the
