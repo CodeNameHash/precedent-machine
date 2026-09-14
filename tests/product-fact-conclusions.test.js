@@ -189,13 +189,22 @@ function closingTimingFact(text) {
   };
 }
 
+// The term column (survivingEntityStep1) is verbatim-checked; closingTiming
+// is an as-drafted column since decision 34, so only the citation matters there.
+function survivorFact(text) {
+  const fact = closingTimingFact(text);
+  fact.conclusions.cells = [{ column_id: 'survivingEntityStep1', text, component_ids: ['closing-when'] }];
+  return fact;
+}
+
 test('C4: a verbatim cell may carry a run of words cut from the cited component, never added words', () => {
-  assert.deepEqual(validateFactConclusions(closingTimingFact('on the third Business Day after the satisfaction or waiver of the conditions set forth in Article VII'), { tableShapes }), []);
-  assert.deepEqual(validateFactConclusions(closingTimingFact('third Business Day after the satisfaction or waiver of the conditions'), { tableShapes }), []);
-  const cut = validateFactConclusions(closingTimingFact('hird Business Day'), { tableShapes });
+  assert.deepEqual(validateFactConclusions(survivorFact('on the third Business Day after the satisfaction or waiver of the conditions set forth in Article VII'), { tableShapes }), []);
+  assert.deepEqual(validateFactConclusions(survivorFact('third Business Day after the satisfaction or waiver of the conditions'), { tableShapes }), []);
+  const cut = validateFactConclusions(survivorFact('hird Business Day'), { tableShapes });
   assert.ok(cut.some((p) => /run of words/.test(p)), cut.join('; '));
-  const added = validateFactConclusions(closingTimingFact('on the third Business Day after closing'), { tableShapes });
+  const added = validateFactConclusions(survivorFact('on the third Business Day after closing'), { tableShapes });
   assert.ok(added.some((p) => /run of words/.test(p)), added.join('; '));
+  assert.deepEqual(validateFactConclusions(closingTimingFact('on the third Business Day after closing'), { tableShapes }), [], 'an as-drafted cell is not verbatim-checked');
 });
 
 test('row_label must be one of the resolved fixed-list table\'s row labels, unless the table is open to new rows', () => {
@@ -308,7 +317,7 @@ test('C11 / C14: an exchange-mechanics fact gets no per-share row, and appraisal
     components: [{ component_id: 'ex-1-c', kind: 'OPERATION', label: 'no consideration', text: 'no consideration shall be delivered or deliverable in exchange therefor', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 70, gap_before: false, children: [] }],
     conclusions: { table_key: 'consideration-structure', row_label: 'The deal', cells: [{ column_id: 'appraisalRights', text: 'no consideration shall be delivered or deliverable in exchange therefor', component_ids: ['ex-1-c'] }] },
   };
-  assert.ok(validateFactConclusions(exclusion, { tableShapes }).some((p) => /derived by the page from APPRAISAL_DISSENTERS_RIGHTS facts/.test(p)));
+  assert.ok(validateFactConclusions(exclusion, { tableShapes }).some((p) => /derived by the page from CONSIDERATION facts/.test(p)));
 });
 
 test('a vocabulary column accepts two distinct codes on one fact (knowledge and materiality qualifiers), not the same code twice', () => {
@@ -339,4 +348,10 @@ test('C13: a vocabulary_by_row column rejects a code from another row\'s list an
   assert.deepEqual(validateFactConclusions(fact('Efforts standard', 'REASONABLE_BEST_EFFORTS'), { tableShapes }), []);
   const problems = validateFactConclusions(fact('Efforts standard', 'PARENT_CONTROLS'), { tableShapes });
   assert.ok(problems.some((p) => /is not one of the provision codes for row "Efforts standard"/.test(p)), problems.join('; '));
+});
+
+test('an as-drafted (fact_text) cell needs cited components, not verbatim text: the page shows the fact\'s own words', () => {
+  const fact = closingTimingFact('third Business Day after the satisfaction or waiver of the conditions set forth in Article VII');
+  fact.conclusions.cells = [{ column_id: 'closingTiming', text: 'the third business day after the conditions are met', component_ids: fact.conclusions.cells[0].component_ids }];
+  assert.deepEqual(validateFactConclusions(fact, { tableShapes }), []);
 });

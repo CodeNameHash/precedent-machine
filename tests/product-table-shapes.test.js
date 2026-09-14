@@ -568,7 +568,9 @@ test('Decision 33: consideration shapes name their sources', () => {
   assert.equal(appraisal.display, 'fact_text');
   // Decision 34: derived by the page from the appraisal provision's own family.
   assert.equal(appraisal.from_subtype_keys, undefined);
-  assert.deepEqual(appraisal.derived, { from_family: 'APPRAISAL_DISSENTERS_RIGHTS', from_subtype: 'APPRAISAL_STATUS', join: 'presence' });
+  assert.equal(appraisal.derived.join, 'presence');
+  assert.deepEqual([appraisal.derived.from_family, appraisal.derived.from_subtype], ['CONSIDERATION', 'APPRAISAL_LINK']);
+  assert.deepEqual(appraisal.derived.alternatives.map((alt) => alt.from_subtype), ['APPRAISAL_STATUS', 'APPRAISAL_ENTITLEMENT']);
   const components = findTableV3(section, 'consideration-components');
   assert.equal(components.row_from_column, 'form');
   assert.deepEqual(components.only_subtype_keys, ['CASH_COMPONENT', 'STOCK_COMPONENT', 'CVR_COMPONENT', 'CONSIDERATION_PACKAGE']);

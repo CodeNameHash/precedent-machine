@@ -357,11 +357,21 @@
               "addition": true,
               "reason": "Ben's decision 2026-09-13 #18 (Metsera, cash plus CVR): the consideration axis must describe any deal, not only an election deal. The legacy \"Appraisal rights\" row, as one line of the grid.",
               "display": "fact_text",
-              "guidance": "Derived by the page from the APPRAISAL_DISSENTERS_RIGHTS/APPRAISAL_STATUS fact (the appraisal provision itself), shown as drafted. Never filled by a consideration fact.",
+              "guidance": "Derived by the page from the appraisal provision itself (the CONSIDERATION/APPRAISAL_LINK fact, else the APPRAISAL_DISSENTERS_RIGHTS facts), shown as drafted. Never filled from a readout.",
               "derived": {
-                "from_family": "APPRAISAL_DISSENTERS_RIGHTS",
-                "from_subtype": "APPRAISAL_STATUS",
-                "join": "presence"
+                "from_family": "CONSIDERATION",
+                "from_subtype": "APPRAISAL_LINK",
+                "join": "presence",
+                "alternatives": [
+                  {
+                    "from_family": "APPRAISAL_DISSENTERS_RIGHTS",
+                    "from_subtype": "APPRAISAL_STATUS"
+                  },
+                  {
+                    "from_family": "APPRAISAL_DISSENTERS_RIGHTS",
+                    "from_subtype": "APPRAISAL_ENTITLEMENT"
+                  }
+                ]
               }
             },
             {
@@ -400,7 +410,7 @@
             "WITHHOLDING",
             "EXCLUSION"
           ],
-          "guidance": "One row for the whole agreement. The consideration-type code describes the package as a whole (cash, stock, cash plus CVR, an election)."
+          "guidance": "One row for the whole agreement. The consideration-type code describes the package as a whole (cash, stock, cash plus CVR, an election). An APPRAISAL_LINK fact carries no cells at all (its line is derived); the consideration type is coded from the CONSIDERATION_PACKAGE fact (the Merger Consideration definition or conversion clause), never from an appraisal, exclusion or Merger Sub share fact."
         },
         {
           "table_key": "consideration-components",
@@ -552,7 +562,7 @@
             "CVR_COMPONENT",
             "CONSIDERATION_PACKAGE"
           ],
-          "guidance": "One row per form of per-share consideration, named by the form code (Cash, Parent stock, CVR, each side of an election), from the conversion clause and the Merger Consideration definition only: what each share is converted into the right to receive, the amount or ratio, the \"per\" basis, any contingency and the defined term. Exchange-fund, deposit, payment, surrender and certificate mechanics are EXCHANGE_MECHANICS and never a row here, whatever cash or CVR words they contain.",
+          "guidance": "One row per form of per-share consideration, named by the form code (Cash, Parent stock, CVR, each side of an election), from the conversion clause and the Merger Consideration definition only: what each share is converted into the right to receive, the amount or ratio, the \"per\" basis, any contingency and the defined term. Exchange-fund, deposit, payment, surrender and certificate mechanics are EXCHANGE_MECHANICS and never a row here, whatever cash or CVR words they contain. The conversion of Merger Sub's shares into shares of the Surviving Corporation is a MERGER_STRUCTURE_CLOSING/LEGAL_EFFECT fact, never a row here.",
           "fixed_row_labels": [
             "Cash",
             "Parent stock",
@@ -995,7 +1005,7 @@
               "Valid issuance, fully paid and nonassessable"
             ]
           },
-          "guidance": "row_label is the representation as the precedent names it (one of fixed_row_labels); add a new row label only for a representation none of them covers (for example a regulatory or FDA representation). Each limb of a representation is a sub-item: row_detail is the canonical limb name from detail_labels_by_row for that row (a new limb name only when none fits, in the same style, never the agreement's own words); a fact about the representation as a whole carries no row_detail and gives the overview. The bringdown column is never filled from a representation: it comes from the closing conditions. A CAPITALISATION fact (authorized capital, issued and outstanding shares, reserved securities, the award inventory, subsidiary equity) is a limb of Capitalization; Subsidiaries: row_label that representation, row_detail the limb from its list."
+          "guidance": "row_label is the representation as the precedent names it (one of fixed_row_labels); add a new row label only for a representation none of them covers (for example a regulatory or FDA representation). Each limb of a representation is a sub-item: row_detail is the canonical limb name from detail_labels_by_row for that row (a new limb name only when none fits, in the same style, never the agreement's own words); a fact about the representation as a whole carries no row_detail and gives the overview. The bringdown column is never filled from a representation: it comes from the closing conditions. A CAPITALISATION fact (authorized capital, issued and outstanding shares, reserved securities, the award inventory, subsidiary equity) is a limb of Capitalization; Subsidiaries: row_label that representation, row_detail the limb from its list. The article's introductory sentence (the representing party, the disclosure-letter and SEC-document exceptions) is never a row: omit conclusions for it."
         }
       ],
       "print_pages": [
@@ -1209,7 +1219,7 @@
               "Valid issuance, fully paid and nonassessable"
             ]
           },
-          "guidance": "row_label is the representation as the precedent names it (one of fixed_row_labels); add a new row label only for a representation none of them covers (for example a regulatory or FDA representation). Each limb of a representation is a sub-item: row_detail is the canonical limb name from detail_labels_by_row for that row (a new limb name only when none fits, in the same style, never the agreement's own words); a fact about the representation as a whole carries no row_detail and gives the overview. The bringdown column is never filled from a representation: it comes from the closing conditions. A CAPITALISATION fact (authorized capital, issued and outstanding shares, reserved securities, the award inventory, subsidiary equity) is a limb of Capitalization; Subsidiaries: row_label that representation, row_detail the limb from its list."
+          "guidance": "row_label is the representation as the precedent names it (one of fixed_row_labels); add a new row label only for a representation none of them covers (for example a regulatory or FDA representation). Each limb of a representation is a sub-item: row_detail is the canonical limb name from detail_labels_by_row for that row (a new limb name only when none fits, in the same style, never the agreement's own words); a fact about the representation as a whole carries no row_detail and gives the overview. The bringdown column is never filled from a representation: it comes from the closing conditions. A CAPITALISATION fact (authorized capital, issued and outstanding shares, reserved securities, the award inventory, subsidiary equity) is a limb of Capitalization; Subsidiaries: row_label that representation, row_detail the limb from its list. The article's introductory sentence (the representing party, the disclosure-letter and SEC-document exceptions) is never a row: omit conclusions for it."
         }
       ],
       "print_pages": [

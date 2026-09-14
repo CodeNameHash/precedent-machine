@@ -66,3 +66,14 @@ test('byte ranges are checked against the canonical text and the source span', (
   fact.components[0].text = quote;
   assert.deepEqual(uncoveredRanges(fact, 0, bytes(text)), [[0, start], [start + bytes(quote), bytes(text)]]);
 });
+
+test('a CROSS_REFERENCE to a statute outside the agreement needs no resolution; one into the agreement still does', () => {
+  const fact = example();
+  fact.components.forEach((component) => { if (component.origin === 'CHAPEAU') component.origin_structure_node_id = 'n31'; });
+  const stamp = (component) => ({ start_byte: 0, end_byte: 1, source_span_id: 's', ...component });
+  fact.components.push(stamp({ component_id: 'ext-1', kind: 'CROSS_REFERENCE', label: 'statute', text: 'Section 259 of the DGCL', origin: 'OWN', children: [] }));
+  fact.components.push(stamp({ component_id: 'ext-2', kind: 'CROSS_REFERENCE', label: 'rule', text: 'Rule 16b-3 under the Exchange Act', origin: 'OWN', children: [] }));
+  assert.deepEqual(validateFactComponents(fact).filter((problem) => problem.includes('must resolve')), []);
+  fact.components.push(stamp({ component_id: 'int-1', kind: 'CROSS_REFERENCE', label: 'internal', text: 'Section 8.02', origin: 'OWN', children: [] }));
+  assert.equal(validateFactComponents(fact).filter((problem) => problem.includes('must resolve')).length, 1);
+});

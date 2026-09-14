@@ -899,9 +899,14 @@ function applyConsideration(doc) {
   const structure = findTable(section, 'consideration-structure');
   const appraisal = findColumn(structure, 'appraisalRights');
   delete appraisal.from_subtype_keys;
-  appraisal.derived = { from_family: 'APPRAISAL_DISSENTERS_RIGHTS', from_subtype: 'APPRAISAL_STATUS', join: 'presence' };
-  appraisal.guidance = 'Derived by the page from the APPRAISAL_DISSENTERS_RIGHTS/APPRAISAL_STATUS fact (the appraisal provision itself), shown as drafted. Never filled by a consideration fact.';
+  // The appraisal provision arrives as CONSIDERATION/APPRAISAL_LINK when the
+  // extractor reads it that way and as APPRAISAL_DISSENTERS_RIGHTS otherwise
+  // (Metsera generation 5 had both, the second one invalid).
+  appraisal.derived = { from_family: 'CONSIDERATION', from_subtype: 'APPRAISAL_LINK', join: 'presence', alternatives: [{ from_family: 'APPRAISAL_DISSENTERS_RIGHTS', from_subtype: 'APPRAISAL_STATUS' }, { from_family: 'APPRAISAL_DISSENTERS_RIGHTS', from_subtype: 'APPRAISAL_ENTITLEMENT' }] };
+  appraisal.guidance = 'Derived by the page from the appraisal provision itself (the CONSIDERATION/APPRAISAL_LINK fact, else the APPRAISAL_DISSENTERS_RIGHTS facts), shown as drafted. Never filled from a readout.';
+  structure.guidance = `${structure.guidance} An APPRAISAL_LINK fact carries no cells at all (its line is derived); the consideration type is coded from the CONSIDERATION_PACKAGE fact (the Merger Consideration definition or conversion clause), never from an appraisal, exclusion or Merger Sub share fact.`;
   const components = findTable(section, 'consideration-components');
+  components.guidance = `${components.guidance} The conversion of Merger Sub's shares into shares of the Surviving Corporation is a MERGER_STRUCTURE_CLOSING/LEGAL_EFFECT fact, never a row here.`;
   const per = findColumn(components, 'per');
   per.render = 'vocabulary';
   per.vocabulary = [
@@ -948,7 +953,7 @@ function applyRepresentations(doc) {
     for (const label of EXTRA_REP_ROWS) if (!table.fixed_row_labels.includes(label)) table.fixed_row_labels.push(label);
     table.fixed_row_labels_source = `${table.fixed_row_labels_source}; lib/rubric.js REP-T-* labels (decision 34)`;
     table.detail_labels_by_row = { ...(table.detail_labels_by_row || {}), 'Capitalization; Subsidiaries': [...CAPITALISATION_LIMBS] };
-    table.guidance = `${table.guidance} A CAPITALISATION fact (authorized capital, issued and outstanding shares, reserved securities, the award inventory, subsidiary equity) is a limb of Capitalization; Subsidiaries: row_label that representation, row_detail the limb from its list.`;
+    table.guidance = `${table.guidance} A CAPITALISATION fact (authorized capital, issued and outstanding shares, reserved securities, the award inventory, subsidiary equity) is a limb of Capitalization; Subsidiaries: row_label that representation, row_detail the limb from its list. The article's introductory sentence (the representing party, the disclosure-letter and SEC-document exceptions) is never a row: omit conclusions for it.`;
   }
 }
 

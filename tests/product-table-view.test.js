@@ -484,3 +484,16 @@ test('a presence-derived line of the consideration grid shows the appraisal prov
   assert.equal(cell.kind, 'text');
   assert.equal(cell.label, 'shall not be converted into the right to receive the Merger Consideration');
 });
+
+test('the appraisal line takes the CONSIDERATION/APPRAISAL_LINK fact first, an APPRAISAL_DISSENTERS_RIGHTS fact otherwise, and never an invalid one', () => {
+  const link = { fact_id: 'link-1', family_key: 'CONSIDERATION', subtype_key: 'APPRAISAL_LINK', validation_status: 'VALID', section_reference: '2.01(d)', headline: { label: 'Appraisal link', distinguishing_component_ids: ['link-1-c'] },
+    components: [{ component_id: 'link-1-c', kind: 'OPERATION', label: 'not converted', text: 'shall not be converted into the Merger Consideration', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 52, children: [] }] };
+  const status = { fact_id: 'st-1', family_key: 'APPRAISAL_DISSENTERS_RIGHTS', subtype_key: 'APPRAISAL_STATUS', validation_status: 'INVALID', section_reference: '2.01(d)', headline: { label: 'Appraisal', distinguishing_component_ids: ['st-1-c'] },
+    components: [{ component_id: 'st-1-c', kind: 'OPERATION', label: 'x', text: 'invalid words', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 13, children: [] }] };
+  const entitlement = { fact_id: 'en-1', family_key: 'APPRAISAL_DISSENTERS_RIGHTS', subtype_key: 'APPRAISAL_ENTITLEMENT', validation_status: 'VALID', section_reference: '2.01(d)', headline: { label: 'Entitlement', distinguishing_component_ids: ['en-1-c'] },
+    components: [{ component_id: 'en-1-c', kind: 'OPERATION', label: 'entitled', text: 'shall be entitled only to receive such consideration as is determined to be due', origin: 'OWN', source_span_id: 's', start_byte: 100, end_byte: 180, children: [] }] };
+  const cellFor = (facts) => buildTableView({ facts, tableShapes, legalSchema }).sections.flatMap((section) => section.tables)
+    .find((candidate) => candidate.table_key === 'consideration-structure').rows[0].cells.find((cell) => cell.column_id === 'appraisalRights');
+  assert.equal(cellFor([link, status, entitlement]).label, 'shall not be converted into the Merger Consideration');
+  assert.equal(cellFor([status, entitlement]).label, 'shall be entitled only to receive such consideration as is determined to be due', 'the invalid status fact is skipped, the entitlement fact serves');
+});

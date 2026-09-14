@@ -2160,7 +2160,34 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       `42a597b2-0f9e-4405-8ac5-e0535a51dc1a` submitted (explicit
       generation 4, stored as source generation 5: the run read as
       generation 3 is stored as 4) and woken (HOSTED, command
-      cmd_d4d1e6c4d2c54252af26be0f383c). Then every section of the output is read
+      cmd_d4d1e6c4d2c54252af26be0f383c). 03:30 UTC, read while the run
+      was at 13 of 85 (Articles I and II, 3.01, 3.03): the merger form
+      cites all three basis components; cash, CVR and the package code
+      correctly; the appraisal provision is extracted; the fixed rows
+      hold. Defects found and fixed in code for the next generation
+      (`lib/product/agreement-draft.js`, `fact-components.js`,
+      `fact-conclusions.js`, the overlay, decision 34): (1) sixteen
+      facts INVALID because the model cited a verbatim quote on a
+      sibling limb's span or with an occurrence index past the last
+      occurrence (1.06 "the directors of the Surviving Corporation",
+      occurrence 1 of a phrase that appears once); the resolver now looks
+      for the quote across the section and clamps the occurrence,
+      recording both on the evidence context. (2) 1.04 INVALID on
+      "CROSS_REFERENCE must resolve" for "Section 259 of the DGCL": a
+      statutory reference needs no resolution. (3) Eight readouts dropped
+      on as-drafted cells whose text the model paraphrased: an as-drafted
+      cell now needs only its citation. (4) 2.02 (8.9k bytes, seven
+      limbs) took one 13-minute call and yielded one fact: the split
+      threshold is 8k bytes. (5) 2.03 award treatment came back as
+      EMPLOYEE_MATTERS with invented rows; the overlay names it
+      CONSIDERATION/EQUITY_AWARD. (6) Merger Sub's share conversion coded
+      as a per-share "Other" row: overlay and guidance exclude it. (7) The
+      appraisal line's source was invalid: the line now takes
+      CONSIDERATION/APPRAISAL_LINK, else the APPRAISAL_DISSENTERS_RIGHTS
+      facts, never an invalid one. (8) The Article III introduction got a
+      readout row: guidance excludes it. Model-side errors left as they
+      are: one 2.01 fact citing an unknown span, one LIST without
+      elements, one PERCENTAGE with no number. Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
       4.06, 4.08, 4.09, 6.15) and the all-INVALID ones (3.03, 3.05,
