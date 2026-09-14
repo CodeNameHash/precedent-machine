@@ -255,7 +255,9 @@ test('an absent fixed row renders its label and a table footer renders the carve
 test('the provision rail groups sections the old app\'s way, one anchor per section', () => {
   const ProvisionRail = require('../components/product/ProvisionRail.jsx').default;
   const html = renderToStaticMarkup(React.createElement(ProvisionRail, { sections: tableShapes.sections }));
-  assert.match(html, /bg-black/);
+  // The rail is a deal-page card (Ben, 2026-09-14: "completely copy the visual style").
+  assert.match(html, /<nav[^>]*class="[^"]*bg-white border border-border rounded-lg shadow-sm[^"]*"[^>]*data-testid="provision-rail"/);
+  assert.doesNotMatch(html, /bg-black/);
   const groups = html.match(/data-testid="provision-rail-group"/g) || [];
   assert.equal(groups.length, 17);
   assert.match(html, /href="#provision-section-structure-mechanics"/);
@@ -275,11 +277,17 @@ test('EvidenceSidebar quotes, marks and lights every cited component when a cell
     ],
   };
   const clause = 'Merger Sub shall be merged with and into the Company, and the Company shall continue as the surviving corporation.';
-  const html = renderToStaticMarkup(React.createElement(EvidenceSidebar, { fact, componentId: 'st-actor', componentIds: ['st-actor', 'st-op', 'st-term'], sectionText: { exact_text: clause, start_byte: 0 } }));
+  const html = renderToStaticMarkup(React.createElement(EvidenceSidebar, { fact, componentId: 'st-actor', componentIds: ['st-actor', 'st-op', 'st-term'], sectionText: { exact_text: clause, start_byte: 0 }, initialTreeOpen: true }));
   assert.match(html, /Read together, 3 components/);
   assert.match(html, /shall be merged with and into/);
   assert.equal((html.match(/data-level="strong"/g) || []).length, 3);
   assert.equal((html.match(/data-selected="true"/g) || []).length, 3);
+  // Ben, 2026-09-14: "hide detail under the full layer tree as the default.
+  // Also call it Interpretation Tree ... Can't we just do the bit in
+  // highlight and below?" Closed to start, named so, own components only.
+  assert.match(html, /data-testid="interpretation-tree-toggle"[^>]*><span>Interpretation Tree</);
+  assert.doesNotMatch(html, /Full layer tree/);
+  assert.doesNotMatch(html, /data-testid="evidence-layers"[^]*?data-origin="INHERITED"/);
 });
 
 test('a selected pill lights only its own line, not the same column on every sub-item of the row', () => {
@@ -521,4 +529,46 @@ test('the equity awards table calls its sub-rows "Exceptions"', () => {
   const open = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts: [], initialSubRowsOpen: true }));
   assert.equal((open.match(/data-testid="table-sub-row"/g) || []).length, 2);
   assert.match(open, /Out of the money/);
+});
+
+// Ben, 2026-09-14: "we should be able to show the reader the general
+// categories of the exceptions (SEC filings) and as they click into deeper
+// levels show more detail (last X days) etc". The General Exceptions row
+// opens the table; its categories sit behind "More detail".
+test('the General Exceptions row renders first with its categories hidden until More detail, and the capitalization table renders its counts, Present and the footer', () => {
+  const pill = (id, label, code) => ({ column_id: 'materiality', kind: 'pill', label, code, tone: 'standard', component_ids: [`${id}-c`], fact_ids: [id] });
+  const value = (id, columnId, label) => ({ column_id: columnId, kind: 'value', label, tone: 'value', component_ids: [`${id}-v`], fact_ids: [id] });
+  const dash = (columnId) => ({ column_id: columnId, kind: 'dash', label: null, tone: null, component_ids: [], fact_ids: [] });
+  const view = { defined_terms: [], sections: [
+    { section_key: 'representations-qualifiers', title: 'Reps', facts_without_readout: [], tables: [{
+      table_key: 'representations-qualifiers-table', group_header: null, layout: 'rows', term_column: { header: 'Term', source: 'subject' }, columns: [{ column_id: 'materiality', header: 'Qualifiers' }, { column_id: 'lookback', header: 'Lookback' }],
+      rows: [
+        { subject: 'General Exceptions', cells: [pill('sec', 'Risk Factors excluded', 'EXCLUDES_RISK_FACTORS'), value('sec', 'lookback', '1 business day')], backing_facts: [{ fact_id: 'sec' }, { fact_id: 'letter' }], sub_rows: [
+          { subject: 'SEC Filings', cells: [pill('sec', 'Risk Factors excluded', 'EXCLUDES_RISK_FACTORS'), value('sec', 'lookback', '1 business day')], backing_facts: [{ fact_id: 'sec' }] },
+          { subject: 'Disclosure Letter', cells: [pill('letter', 'Arranged by section', 'ARRANGED_BY_SECTION'), dash('lookback')], backing_facts: [{ fact_id: 'letter' }] },
+        ] },
+        { subject: 'Organization; Qualification; Standing', cells: [pill('org', 'MAE (aggregate)', 'MAE_AGGREGATE'), dash('lookback')], backing_facts: [{ fact_id: 'org' }] },
+      ],
+    }] },
+    { section_key: 'capitalization', title: 'Capitalization', facts_without_readout: [], tables: [{
+      table_key: 'capitalization-table', group_header: null, layout: 'rows', term_column: { header: 'Security class', source: 'subject' }, columns: [{ column_id: 'authorised', header: 'Authorised' }, { column_id: 'issued', header: 'Issued and outstanding' }, { column_id: 'validIssuance', header: 'Validly issued' }],
+      footer: { label: 'No other securities', entries: [{ fact_id: 'abs', section_reference: '3.02', structure_node_id: null, text: 'no shares of Company Preferred Stock were issued or outstanding', component_ids: ['abs-c'] }] },
+      rows: [{ subject: 'Common Stock', cells: [value('auth', 'authorised', '800000000'), value('iss', 'issued', '105278627'), { column_id: 'validIssuance', kind: 'pill', label: 'Present', code: 'PRESENT', tone: 'condition', component_ids: ['v-c'], fact_ids: ['v'] }], backing_facts: [{ fact_id: 'auth' }, { fact_id: 'iss' }, { fact_id: 'v' }] }],
+    }] },
+  ] };
+  const closed = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts: [] }));
+  assert.ok(closed.indexOf('>General Exceptions<') < closed.indexOf('>Organization; Qualification; Standing<'), 'General Exceptions is the first row');
+  assert.doesNotMatch(closed, /data-testid="table-sub-row"/, 'the categories are hidden to start');
+  assert.match(closed, /<button[^>]*data-testid="more-detail"[^>]*>[^<]*More detail \(2\)</);
+  const open = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts: [], initialSubRowsOpen: true }));
+  assert.equal((open.match(/data-testid="table-sub-row"/g) || []).length, 2);
+  assert.ok(open.indexOf('>SEC Filings<') < open.indexOf('>Disclosure Letter<'));
+  assert.match(open, /Risk Factors excluded/);
+  assert.match(open, /1 business day/);
+  assert.match(closed, /Security class/);
+  assert.match(closed, /800000000/);
+  assert.match(closed, /Present/);
+  assert.match(closed, /data-testid="table-footer"/);
+  assert.match(closed, /No other securities/);
+  assert.match(closed, /no shares of Company Preferred Stock were issued or outstanding/);
 });

@@ -12,9 +12,20 @@ import { byteRangesToLayeredParts } from '../../lib/product/section-highlight';
 // prompt bundle, model). Not a modal -- a caller renders this in a
 // persistent side column (see ProvisionTables.jsx).
 
+// Visual style, Ben, 2026-09-14: "the background summary app lives on deal
+// corpus - I want you to completely copy the visual style - including the
+// page header." The sidebar is one of the deal page's white cards
+// (pages/deals/[id].js): hairline border, soft shadow, `font-display`
+// title, `font-ui` labels in ink-light, `font-body` text in ink, the small
+// uppercase tracked badge with a rounded border, and its `text-accent`
+// rounded buttons.
+const BADGE = 'inline-flex items-center text-[10px] font-ui font-medium px-2 py-1 rounded border uppercase tracking-wider';
+const LABEL = 'text-[10px] font-ui font-medium uppercase tracking-wider text-inkLight';
+const BODY = 'font-body text-sm leading-relaxed text-ink';
+const BUTTON = 'px-2 py-0.5 text-xs font-ui rounded border border-accent/30 text-accent hover:bg-accent/5 disabled:opacity-40 transition-colors';
 const DECISION_BADGE = {
-  PENDING: 'bg-amber-100 text-amber-900', ACCEPTED: 'bg-green-100 text-green-900',
-  EDITED: 'bg-blue-100 text-blue-900', REJECTED: 'bg-slate-200 text-slate-700', UNRESOLVED: 'bg-red-100 text-red-800',
+  PENDING: 'bg-amber-50 text-amber-700 border-amber-200', ACCEPTED: 'bg-green-50 text-green-700 border-green-200',
+  EDITED: 'bg-sky-50 text-sky-700 border-sky-200', REJECTED: 'bg-gray-100 text-inkLight border-border', UNRESOLVED: 'bg-seller/10 text-seller border-seller/20',
 };
 
 const DECISION_WORD = {
@@ -33,19 +44,19 @@ function ReviewTrail({ reviewItem, onDecision, onComment, onReset, busy }) {
   const [commentDraft, setCommentDraft] = useState(reviewItem?.comment || '');
   const [commentOpen, setCommentOpen] = useState(false);
   return <div data-testid="evidence-review-trail">
-    <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${DECISION_BADGE[decision]}`}>{DECISION_WORD[decision] || decision}</span>
-    {reviewItem?.reviewed_at ? <p className="mt-1 text-[10px] text-inkLight">Decided {new Date(reviewItem.reviewed_at).toLocaleString()}</p> : null}
-    {decision === 'EDITED' && reviewItem?.edited_headline ? <p className="mt-1 text-[11px] text-blue-900">This fact was edited before it was accepted.</p> : null}
-    {reviewItem?.comment ? <p className="mt-1 rounded border border-green-200 bg-white/80 p-1 text-[11px] text-ink" data-testid="evidence-saved-comment"><span className="font-semibold text-green-800">Comment:</span> {reviewItem.comment}</p> : null}
-    {onDecision && reviewItem ? <div className="mt-2 flex flex-wrap gap-2 text-[11px]" data-testid="evidence-decision-controls">
-      <button type="button" disabled={busy} onClick={() => onDecision(reviewItem.item_id, 'ACCEPTED')} className="rounded-none border border-green-700 px-2 py-0.5 text-green-800 disabled:opacity-40">Accept</button>
-      <button type="button" disabled={busy} onClick={() => onDecision(reviewItem.item_id, 'REJECTED')} className="rounded-none border border-slate-500 px-2 py-0.5">Reject</button>
-      {decision !== 'PENDING' && onReset ? <button type="button" disabled={busy} onClick={() => onReset(reviewItem.item_id)} className="rounded-none border border-border px-2 py-0.5 text-inkMid">Revert to pending</button> : null}
+    <span className={`${BADGE} ${DECISION_BADGE[decision]}`}>{DECISION_WORD[decision] || decision}</span>
+    {reviewItem?.reviewed_at ? <p className="mt-1 text-xs font-ui text-inkLight">Decided {new Date(reviewItem.reviewed_at).toLocaleString()}</p> : null}
+    {decision === 'EDITED' && reviewItem?.edited_headline ? <p className="mt-1 text-xs font-ui text-inkMid">This fact was edited before it was accepted.</p> : null}
+    {reviewItem?.comment ? <p className="mt-1 rounded border border-border bg-bg/50 p-2 text-xs font-body text-inkMid" data-testid="evidence-saved-comment"><span className="font-ui font-medium text-ink">Comment:</span> {reviewItem.comment}</p> : null}
+    {onDecision && reviewItem ? <div className="mt-2 flex flex-wrap gap-2 text-xs font-ui" data-testid="evidence-decision-controls">
+      <button type="button" disabled={busy} onClick={() => onDecision(reviewItem.item_id, 'ACCEPTED')} className={BUTTON}>Accept</button>
+      <button type="button" disabled={busy} onClick={() => onDecision(reviewItem.item_id, 'REJECTED')} className={BUTTON}>Reject</button>
+      {decision !== 'PENDING' && onReset ? <button type="button" disabled={busy} onClick={() => onReset(reviewItem.item_id)} className="px-2 py-0.5 text-xs font-ui rounded border border-border text-inkMid hover:text-ink disabled:opacity-40 transition-colors">Revert to pending</button> : null}
       {onComment ? (commentOpen ? <span className="flex basis-full flex-wrap items-center gap-2">
-        <textarea aria-label="Comment" value={commentDraft} onChange={(event) => setCommentDraft(event.target.value)} rows={2} className="w-full rounded-none border border-border p-1 text-xs font-normal" />
-        <button type="button" disabled={busy} onClick={() => { onComment(reviewItem.item_id, commentDraft); setCommentOpen(false); }} className="rounded-none bg-ink px-2 py-0.5 text-white disabled:opacity-40">Save comment</button>
-        <button type="button" onClick={() => setCommentOpen(false)} className="text-inkLight">Cancel</button>
-      </span> : <button type="button" onClick={() => setCommentOpen(true)} className="font-semibold text-accent">{reviewItem.comment ? 'Edit comment' : 'Add comment'}</button>) : null}
+        <textarea aria-label="Comment" value={commentDraft} onChange={(event) => setCommentDraft(event.target.value)} rows={2} className="w-full rounded border border-border px-2 py-1 text-xs font-ui focus:outline-none focus:ring-1 focus:ring-accent" />
+        <button type="button" disabled={busy} onClick={() => { onComment(reviewItem.item_id, commentDraft); setCommentOpen(false); }} className="px-2 py-1 text-xs font-ui bg-accent text-white rounded hover:bg-accent/90 disabled:opacity-40">Save comment</button>
+        <button type="button" onClick={() => setCommentOpen(false)} className="text-xs font-ui text-inkLight hover:text-ink">Cancel</button>
+      </span> : <button type="button" onClick={() => setCommentOpen(true)} className="text-xs font-ui text-accent hover:underline">{reviewItem.comment ? 'Edit comment' : 'Add comment'}</button>) : null}
     </div> : null}
   </div>;
 }
@@ -61,13 +72,13 @@ function ReviewTrail({ reviewItem, onDecision, onComment, onReset, busy }) {
 // and "Full definition", which jumps to the section's anchor and opens the
 // definition fact in this sidebar.
 function LinkedDefinition({ definition, onOpen }) {
-  return <div className="sticky bottom-0 border-t border-border bg-white px-5 py-3" data-testid="linked-definition" data-section={definition.section_key}>
-    <p className="text-[10px] font-bold uppercase tracking-wide text-inkLight">{definition.title}{definition.party && definition.exact ? <span className="ml-1 font-normal normal-case tracking-normal text-inkFaint">· {definition.party}</span> : null}</p>
+  return <div className="sticky bottom-0 border-t border-border bg-white px-6 py-3" data-testid="linked-definition" data-section={definition.section_key}>
+    <p className={LABEL}>{definition.title}{definition.party && definition.exact ? <span className="ml-1 font-normal normal-case tracking-normal text-inkFaint">· {definition.party}</span> : null}</p>
     {definition.lines.length
-      ? <ul className="mt-1 space-y-0.5" data-testid="linked-definition-summary">{definition.lines.map((line, index) => <li key={index} className="truncate font-serif text-[12px] leading-5 text-ink" title={line}>{line}</li>)}</ul>
-      : <p className="mt-1 text-[11px] text-inkLight" data-testid="linked-definition-summary">No definition of that party's Material Adverse Effect among the facts.</p>}
+      ? <ul className="mt-1 space-y-0.5" data-testid="linked-definition-summary">{definition.lines.map((line, index) => <li key={index} className="truncate font-body text-sm leading-relaxed text-ink" title={line}>{line}</li>)}</ul>
+      : <p className="mt-1 text-xs font-ui text-inkLight" data-testid="linked-definition-summary">No definition of that party's Material Adverse Effect among the facts.</p>}
     {definition.fact_id
-      ? <a href={`#provision-section-${definition.section_key}`} onClick={() => { if (onOpen) onOpen(definition); }} className="mt-2 inline-block rounded border border-border px-2 py-0.5 text-[11px] font-ui font-medium text-ink hover:border-ink" data-testid="full-definition">Full definition</a>
+      ? <a href={`#provision-section-${definition.section_key}`} onClick={() => { if (onOpen) onOpen(definition); }} className={`mt-2 inline-block ${BUTTON}`} data-testid="full-definition">Full definition</a>
       : null}
   </div>;
 }
@@ -75,7 +86,7 @@ function LinkedDefinition({ definition, onOpen }) {
 export default function EvidenceSidebar({
   fact, componentId = null, componentIds = null, reviewItem = null, provenance = null, sectionText = null,
   onDecision = null, onComment = null, onReset = null, onClose = null, busy = false,
-  linkedDefinition = null, onOpenDefinition = null,
+  linkedDefinition = null, onOpenDefinition = null, initialTreeOpen = false,
 }) {
   if (!fact) return null;
   // A coded cell may rest on several components read together (a merger
@@ -119,6 +130,8 @@ export default function EvidenceSidebar({
     else aside.scrollTop = Math.max(0, target);
   }, [fact, citedIds.join(','), clauseParts]);
   const checks = useMemo(() => validateFactComponents(fact), [fact]);
+  const [treeOpen, setTreeOpen] = useState(!!initialTreeOpen);
+  const ownComponents = useMemo(() => (fact.components || []).filter((item) => item && (item.origin === 'OWN' || !item.origin)), [fact]);
 
   // Sticky: the sidebar's top follows the viewport, so a pill clicked half-way
   // down a long page opens its evidence beside it, not at the page top (Ben,
@@ -130,14 +143,14 @@ export default function EvidenceSidebar({
   const [tab, setTab] = useState('detail');
   const tabButton = (key, label, testId) => (
     <button type="button" onClick={() => setTab(key)} data-testid={testId} aria-selected={tab === key} role="tab"
-      className={`-mb-px border-b-2 px-1 pb-2 text-[13px] ${tab === key ? 'border-accent font-semibold text-ink' : 'border-transparent text-inkLight hover:text-ink'}`}>{label}</button>
+      className={`-mb-px border-b-2 px-1 pb-2 text-sm font-ui transition-colors ${tab === key ? 'border-accent font-medium text-ink' : 'border-transparent text-inkLight hover:text-ink'}`}>{label}</button>
   );
-  return <aside ref={asideRef} className="sticky top-0 max-h-screen w-full max-w-sm shrink-0 self-start overflow-y-auto border-l border-border bg-white text-sm" data-testid="evidence-sidebar" aria-label="Evidence">
-    <div className="border-b border-border px-5 pt-5">
+  return <aside ref={asideRef} className="sticky top-0 max-h-screen w-full max-w-sm shrink-0 self-start overflow-y-auto bg-white border border-border rounded-lg shadow-sm text-sm" data-testid="evidence-sidebar" aria-label="Evidence">
+    <div className="border-b border-border px-6 pt-6">
       <div className="flex items-start justify-between gap-2">
         <div>
-          {fact.section_reference ? <p className="text-[12px] text-inkLight" data-testid="evidence-eyebrow">{displaySectionReference(fact.section_reference)}</p> : null}
-          <p className="mt-1 font-sans text-2xl font-semibold tracking-tight text-ink">{fact.headline?.label || 'Evidence'}</p>
+          {fact.section_reference ? <p className="text-xs font-ui text-inkLight" data-testid="evidence-eyebrow">{displaySectionReference(fact.section_reference)}</p> : null}
+          <p className="mt-1 font-display text-2xl text-ink">{fact.headline?.label || 'Evidence'}</p>
         </div>
         {onClose ? <button type="button" onClick={onClose} aria-label="Close evidence" className="text-xl leading-none text-inkLight hover:text-ink">×</button> : null}
       </div>
@@ -147,17 +160,17 @@ export default function EvidenceSidebar({
         {tabButton('comments', 'Comments', 'evidence-tab-comments')}
       </div>
     </div>
-    <div className="space-y-4 px-5 py-4">
+    <div className="space-y-4 px-6 py-4">
     {tab !== 'detail' ? null : <>
     <section data-testid="evidence-words">
-      <p className="text-[10px] font-bold uppercase tracking-wide text-inkLight">Exact words</p>
-      {components.length > 1 ? <p className="mt-1 text-[10px] text-inkLight" data-testid="evidence-basis-count">Read together, {components.length} components</p> : null}
-      {component ? components.map((item) => <p key={item.component_id} className="mt-1 font-serif text-[13px] leading-6 text-ink">&ldquo;{item.text}&rdquo;</p>) : <p className="mt-1 text-xs text-inkLight">The whole fact is marked in the clause below; select a pill for the words behind one reading.</p>}
+      <p className={LABEL}>Exact words</p>
+      {components.length > 1 ? <p className="mt-1 text-xs font-ui text-inkLight" data-testid="evidence-basis-count">Read together, {components.length} components</p> : null}
+      {component ? components.map((item) => <p key={item.component_id} className={`mt-1 ${BODY}`}>&ldquo;{item.text}&rdquo;</p>) : <p className="mt-1 text-xs font-ui text-inkLight">The whole fact is marked in the clause below; select a pill for the words behind one reading.</p>}
     </section>
 
     {clauseParts ? <section data-testid="evidence-clause">
-      <p className="text-[10px] font-bold uppercase tracking-wide text-inkLight">Clause</p>
-      <pre className="mt-1 whitespace-pre-wrap font-serif text-[13px] leading-6 text-ink">{(() => {
+      <p className={LABEL}>Clause</p>
+      <pre className={`mt-1 whitespace-pre-wrap ${BODY}`}>{(() => {
         let anchored = false;
         return clauseParts.map((part, index) => {
           if (part.level === 'strong') {
@@ -174,33 +187,43 @@ export default function EvidenceSidebar({
     </section> : null}
 
     <section data-testid="evidence-layers">
-      <p className="text-[10px] font-bold uppercase tracking-wide text-inkLight">Full layer tree</p>
-      <ComponentLayer components={fact.components} initiallyExpanded selectedComponentId={componentId} selectedComponentIds={citedIds} />
+      {/* Ben, 2026-09-14: "in right hand side bar - hide detail under the
+          full layer tree as the default. Also call it Interpretation Tree
+          and also why do we show the greyed out text and the rest? Can't we
+          just do the bit in highlight and below?" The tree is closed to
+          start, its nodes' detail closed too, and it shows the fact's own
+          components only (the inherited chapeau and the representing
+          words that precede them are context, not this fact). */}
+      <button type="button" onClick={() => setTreeOpen((current) => !current)} aria-expanded={treeOpen} className={`${LABEL} flex w-full items-center justify-between text-left`} data-testid="interpretation-tree-toggle">
+        <span>Interpretation Tree</span>
+        <span className="font-normal normal-case tracking-normal text-inkFaint">{treeOpen ? 'hide' : 'show'}</span>
+      </button>
+      {treeOpen ? <ComponentLayer components={ownComponents} initiallyExpanded={false} selectedComponentId={componentId} selectedComponentIds={citedIds} /> : null}
     </section>
     </>}
 
     {tab !== 'source' ? null : <>
     <section data-testid="evidence-checks">
-      <p className="text-[10px] font-bold uppercase tracking-wide text-inkLight">Checks the code ran</p>
+      <p className={LABEL}>Checks the code ran</p>
       {checks.length === 0
-        ? <p className="mt-1 text-[11px] text-green-800">All structural checks passed.</p>
-        : <ul className="mt-1 list-disc space-y-0.5 pl-4 text-[11px] text-red-700">{checks.map((problem, index) => <li key={index}>{problem}</li>)}</ul>}
+        ? <p className="mt-1 text-xs font-ui text-green-700">All structural checks passed.</p>
+        : <ul className="mt-1 list-disc space-y-0.5 pl-4 text-xs font-ui text-seller">{checks.map((problem, index) => <li key={index}>{problem}</li>)}</ul>}
     </section>
 
     <section data-testid="evidence-provenance">
-      <p className="text-[10px] font-bold uppercase tracking-wide text-inkLight">Provenance</p>
-      {provenance ? <dl className="mt-1 space-y-0.5 text-[11px] text-inkMid">
-        {provenance.run_id ? <div><dt className="inline font-semibold text-inkLight">Run: </dt><dd className="inline">{provenance.run_id}{provenance.generation ? ` (generation ${provenance.generation})` : ''}</dd></div> : null}
-        {provenance.schema_version ? <div><dt className="inline font-semibold text-inkLight">Schema: </dt><dd className="inline">{provenance.schema_version}</dd></div> : null}
-        {provenance.prompt_bundle ? <div><dt className="inline font-semibold text-inkLight">Prompt bundle: </dt><dd className="inline">{provenance.prompt_bundle}</dd></div> : null}
-        {provenance.model ? <div><dt className="inline font-semibold text-inkLight">Model: </dt><dd className="inline">{provenance.model}</dd></div> : null}
-      </dl> : <p className="mt-1 text-[11px] text-inkLight">Provenance unavailable.</p>}
+      <p className={LABEL}>Provenance</p>
+      {provenance ? <dl className="mt-1 space-y-0.5 text-xs font-ui text-inkMid">
+        {provenance.run_id ? <div><dt className="inline font-medium text-inkLight">Run: </dt><dd className="inline">{provenance.run_id}{provenance.generation ? ` (generation ${provenance.generation})` : ''}</dd></div> : null}
+        {provenance.schema_version ? <div><dt className="inline font-medium text-inkLight">Schema: </dt><dd className="inline">{provenance.schema_version}</dd></div> : null}
+        {provenance.prompt_bundle ? <div><dt className="inline font-medium text-inkLight">Prompt bundle: </dt><dd className="inline">{provenance.prompt_bundle}</dd></div> : null}
+        {provenance.model ? <div><dt className="inline font-medium text-inkLight">Model: </dt><dd className="inline">{provenance.model}</dd></div> : null}
+      </dl> : <p className="mt-1 text-xs font-ui text-inkLight">Provenance unavailable.</p>}
     </section>
     </>}
 
     {tab !== 'comments' ? null : (
     <section data-testid="evidence-review-trail-section">
-      <p className="text-[10px] font-bold uppercase tracking-wide text-inkLight">Review trail</p>
+      <p className={LABEL}>Review trail</p>
       <div className="mt-1">
         <ReviewTrail reviewItem={reviewItem} onDecision={onDecision} onComment={onComment} onReset={onReset} busy={busy} />
       </div>

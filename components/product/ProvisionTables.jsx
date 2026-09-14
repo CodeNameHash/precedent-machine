@@ -550,6 +550,7 @@ export default function ProvisionTables({
   onReset = null,
   busy = false,
   initialSubRowsOpen = false,
+  initialTreeOpen = false,
 }) {
   const factsById = useMemo(() => new Map((facts || []).map((fact) => [factIdOf(fact), fact])), [facts]);
   const [selection, setSelection] = useState(null);
@@ -632,6 +633,7 @@ export default function ProvisionTables({
           busy={busy}
           linkedDefinition={linkedDefinition}
           onOpenDefinition={openDefinition}
+          initialTreeOpen={initialTreeOpen}
         />
       ) : null}
     </div>
