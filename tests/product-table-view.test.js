@@ -1030,3 +1030,44 @@ test('provisionTerm prefers headline.summary and falls back to the label-built t
   const blank = { ...older, headline: { ...older.headline, summary: '   ' } };
   assert.equal(provisionTerm(blank, components), 'Company · files', 'a blank summary is no summary');
 });
+
+// Generation 6, 2.03: "The Company shall treat shall treat any shares" and
+// "the Closing Amount the Closing Amount". Components covering the same
+// bytes are one run of words in a summary; the overlap is written once and
+// a component wholly inside the previous one adds nothing.
+test('a summary writes overlapping components once', () => {
+  const fact = {
+    fact_id: 'ov-1', proposal_id: 'ov-1', family_key: 'CONSIDERATION', subtype_key: 'EQUITY_AWARD', section_reference: '2.03',
+    headline: { label: 'Equity award', distinguishing_component_ids: [] },
+    components: [
+      { component_id: 'a', kind: 'ACTOR', label: 'Company', text: 'The Company shall treat', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 23, gap_before: false, children: [] },
+      { component_id: 'o', kind: 'OPERATION', label: 'treat', text: 'shall treat any shares as outstanding', origin: 'OWN', source_span_id: 's', start_byte: 12, end_byte: 49, gap_before: false, children: [] },
+      { component_id: 'q', kind: 'QUALIFIER', label: 'inside', text: 'any shares', origin: 'OWN', source_span_id: 's', start_byte: 24, end_byte: 34, gap_before: false, children: [] },
+      { component_id: 'b', kind: 'OBJECT', label: 'purpose', text: 'for purposes of Section 2.01(c)', origin: 'OWN', source_span_id: 's', start_byte: 50, end_byte: 81, gap_before: false, children: [] },
+    ],
+  };
+  assert.equal(factSummaryText(fact), 'The Company shall treat any shares as outstanding for purposes of Section 2.01(c)');
+});
+
+// Metsera generation 6, 3.09: "No representation or warranty is made in
+// this Agreement with respect to the amount, sufficiency or availability
+// of any Tax asset" was coded NO_OTHER_REPS_FRAUD and filled the No Other
+// Reps table. A disclaimer limited to one subject is the representation's
+// exclusion: it keeps no readout; the agreement's clause does.
+test('a subject-limited disclaimer keeps no readout in the No Other Reps table', () => {
+  const { isSubjectLimitedDisclaimer } = require('../lib/product/table-view');
+  const disclaimer = (id, text) => ({
+    fact_id: id, proposal_id: id, family_key: 'NO_OTHER_REPS_FRAUD', subtype_key: 'NO_OTHER_REPRESENTATIONS_DISCLAIMER', section_reference: '3.09', structure_node_id: 'n',
+    headline: { label: 'No other representations', distinguishing_component_ids: [] },
+    conclusions: { table_key: 'no-other-reps-fraud-table', row_label: 'Seller no-other-reps', cells: [{ column_id: 'status', code: 'YES', component_ids: [`${id}-o`] }] },
+    components: [{ component_id: `${id}-o`, kind: 'OPERATION', label: 'disclaimer', text, origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: text.length, gap_before: false, children: [] }],
+  });
+  const limited = disclaimer('d-tax', 'No representation or warranty is made in this Agreement with respect to the amount, sufficiency or availability of any Tax asset');
+  const general = disclaimer('d-gen', 'except for the representations and warranties contained in this Article III, neither the Company nor any other Person makes any other express or implied representation or warranty with respect to the Company');
+  assert.equal(isSubjectLimitedDisclaimer(limited), true);
+  assert.equal(isSubjectLimitedDisclaimer(general), false);
+  const view = buildTableView({ facts: [limited, general], tableShapes, legalSchema });
+  const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'no-other-reps-fraud-table');
+  const rows = table.rows.filter((row) => !row.absent);
+  assert.deepEqual(rows.flatMap((row) => row.backing_facts.map((entry) => entry.fact_id)), ['d-gen']);
+});

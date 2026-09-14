@@ -537,3 +537,15 @@ test('a proposal\'s headline.summary reaches the fact; a missing one is a VALIDA
   assert.match(dropped.message, /Section 8\.3/);
   assert.equal(bad.issues.some((issue) => issue.code === 'HEADLINE_SUMMARY_MISSING'), false);
 });
+
+// Metsera generation 6, 3.09 (Taxes): a no-representation statement limited
+// to Tax assets was coded NO_OTHER_REPS_FRAUD. Only the section headed as
+// the no-other-representations clause carries that readout; elsewhere the
+// readout is dropped with a note and the request says so.
+test('isNoOtherRepsSection reads the section heading', () => {
+  const { isNoOtherRepsSection } = require('../lib/product/agreement-draft');
+  const closure = (text) => ({ full_section_span_id: 'full', spans: [{ span_id: 'full', exact_text: text }] });
+  assert.equal(isNoOtherRepsSection(closure('SECTION 3.24. No Other Representations or Warranties. Except for the representations…')), true);
+  assert.equal(isNoOtherRepsSection(closure('SECTION 4.06. Non-Reliance on Estimates. Parent acknowledges…')), true);
+  assert.equal(isNoOtherRepsSection(closure('SECTION 3.09. Taxes. (a) The Company has filed…\nNo other representations are made')), false);
+});
