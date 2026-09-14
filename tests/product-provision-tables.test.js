@@ -403,16 +403,27 @@ test('a one-per-agreement table renders its other provisions as a collapsed Term
   assert.doesNotMatch(html, /data-testid="facts-without-readout"/);
 });
 
-// Ben, 2026-09-14: "completely copy the visual style" of the legacy deal
-// summary (pages/deals/[id].js): white cards with a hairline border and soft
-// shadow, font-display headings, font-ui metadata, small uppercase badges.
-test('tables and pills carry the legacy deal summary\'s card and badge style', () => {
+// Ben, 2026-09-14: "completely copy the visual style", then, comparing the
+// result with his Deal Storylines app: "also font etc doesn't match the
+// deal storylines page. Also their pages are 'cleaner' in style". Each
+// section is one Storylines card: a 1px #dcdcdc border, 4px radius, no
+// shadow, a tinted header band (green; the definitions section blue) with
+// the title at 19px medium; header labels uppercase 12px grey; pills as
+// small rounded tinted chips of 12px uppercase text; the toggles as tabs.
+test('sections are Storylines cards with a tinted header band, pills are tinted chips, nothing casts a shadow', () => {
   const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView, facts }));
-  assert.match(html, /class="bg-white border border-border rounded-lg shadow-sm overflow-hidden"><table/);
-  assert.match(html, /data-testid="table-pill"[^>]*class="inline-flex items-center text-\[10px\] font-ui font-medium px-2 py-1 rounded border uppercase tracking-wider/);
-  assert.match(html, /<h3 class="font-display text-lg text-ink">/);
+  assert.match(html, /<section class="bg-white border border-\[#dcdcdc\] rounded overflow-hidden" data-testid="provision-section"/);
+  assert.match(html, /data-testid="section-heading"[^>]*>/);
+  assert.match(html, /<button[^>]*class="[^"]*bg-\[#e8f3ee\][^"]*text-\[#2f7a5b\][^"]*"[^>]*data-testid="section-heading"/);
+  assert.match(html, /<h3 class="flex-1 font-sans text-\[19px\] font-medium leading-snug">/);
+  assert.match(html, /data-testid="table-pill"[^>]*class="inline-flex items-center rounded-full px-2\.5 py-0\.5 text-\[12px\] font-ui font-medium uppercase tracking-wide/);
+  assert.match(html, /<th class="border-b border-\[#ececec\] px-3 py-2 text-left text-\[12px\] font-ui font-medium uppercase tracking-\[0\.08em\] text-\[#6b6b6b\]">/);
+  assert.match(html, /data-testid="section-toggles"><button[^>]*class="rounded border px-5 py-3 text-\[17px\] font-ui/);
+  assert.doesNotMatch(html, /shadow/);
   assert.doesNotMatch(html, /font-mono/);
+  assert.doesNotMatch(html, /font-display/);
   assert.doesNotMatch(html, /rounded-none/);
+  assert.doesNotMatch(html, /rounded-lg/);
 });
 
 // Ben, 2026-09-14: "UI point, 'see provision' has too much visual hierarchy

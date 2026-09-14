@@ -13,18 +13,17 @@ import tableShapesV3 from '../../../../contracts/product/table-shapes.v3.json';
 // stays the place to decide; this page shows what a reader would see.
 // Ben, 2026-09-14: "the background summary app lives on deal corpus - I
 // want you to completely copy the visual style - including the page
-// header." The header is the legacy deal page's header card
-// (pages/deals/[id].js): a white card, the "Acquirer / Target" title in
-// font-display, a small uppercase badge beside it, and one font-ui metadata
-// line of "Label: value" pairs in ink-light / ink-mid, with what the run
-// knows: agreement date, SEC source, generation and state.
-// Compared rendered against the deal page on 2026-09-14: the deal page's
-// title is "Acquirer / Target", two names and nothing else, so the title
-// here is the parent's and the company's names (no role suffixes, no merger
-// sub, no caption "among"); the badge then sits on the title line as it
-// does there; the counts sentence is set like the metadata line; and the
-// deal page has no "Published summary" heading between the header card and
-// the first section, so this page shows none either.
+// header." First read as the legacy deal page's header card
+// (pages/deals/[id].js); the same day, comparing the result with his Deal
+// Storylines app: "also font etc doesn't match the deal storylines page.
+// Also their pages are 'cleaner' in style", so the header is now that
+// app's page header (eyebrow, large title, one metadata line, a black
+// rule; no card). What the deal page comparison settled still holds: the
+// title is "Acquirer / Target", the parent's and the company's names and
+// nothing else (no role suffixes, no merger sub, no caption "among"); the
+// state badge sits beside the eyebrow; the counts sentence is set like the
+// metadata line; and there is no "Published summary" heading between the
+// header and the first section.
 function dealTitle(parties, fallback) {
   if (!Array.isArray(parties) || parties.length === 0) return fallback;
   const nameOf = (party) => (typeof party === 'string' ? party : (party && typeof party.name === 'string' ? party.name : ''))
@@ -42,11 +41,23 @@ function formatAgreementDate(value) {
   return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
 }
 
+// Ben, 2026-09-14, comparing this page with Deal Storylines: "also font
+// etc doesn't match the deal storylines page. Also their pages are
+// 'cleaner' in style". The page adopts that app's type and surfaces: Inter
+// (already self-hosted in styles/mtx-fonts.css as 'Inter', weights 400 to
+// 700; the page root overrides --font-sans and --font-serif so everything
+// under it, rail and sidebar included, sets in Inter without touching
+// other pages), a white page with no page-level cards or shadows, and the
+// Storylines blue as the one accent (--accent-rgb overridden on the root so
+// the Tailwind accent tokens under the page resolve to it).
+const INTER = "'Inter', ui-sans-serif, -apple-system, 'Segoe UI', Roboto, sans-serif";
+const PAGE_STYLE = { '--font-sans': INTER, '--font-serif': INTER, '--accent-rgb': '47 86 184', '--accent-soft': '#e9effa', fontFamily: INTER };
+// The state badge as a small rounded chip in a soft tint, no border.
 function stateBadge(progress, published) {
-  if (progress && progress.status === 'FAILED') return { label: 'Run failed', className: 'bg-amber-50 text-amber-700 border-amber-200' };
-  if (progress && progress.status !== 'READY') return { label: 'In progress', className: 'bg-amber-50 text-amber-700 border-amber-200' };
-  if (published) return { label: 'Finalised review', className: 'bg-sky-50 text-sky-700 border-sky-200' };
-  return { label: 'Draft', className: 'bg-gray-100 text-inkLight border-border' };
+  if (progress && progress.status === 'FAILED') return { label: 'Run failed', className: 'bg-amber-50 text-amber-700' };
+  if (progress && progress.status !== 'READY') return { label: 'In progress', className: 'bg-amber-50 text-amber-700' };
+  if (published) return { label: 'Finalised review', className: 'bg-[#e9effa] text-[#2f56b8]' };
+  return { label: 'Draft', className: 'bg-[#f3f3f3] text-[#555]' };
 }
 
 export function ProvisionsPreviewBody({ workspace, runId }) {
@@ -68,35 +79,42 @@ export function ProvisionsPreviewBody({ workspace, runId }) {
   // flush to the side of the page?" The page renders without the Corpus
   // shell (no header, no breadcrumbs: ProvisionsPreviewPage.noLayout); the
   // rail is the page's left edge, full height, and the content sits beside
-  // it with the deal page's padding.
+  // it.
+  // Ben, 2026-09-14: "also font etc doesn't match the deal storylines page.
+  // Also their pages are 'cleaner' in style". The content column is the
+  // Storylines one: white, 64px top and left padding, 96px right; an
+  // uppercase letter-spaced grey eyebrow, the title at 52px semibold in
+  // near-black on a tight leading, the run's facts as one grey metadata
+  // line, then a 3px black rule across the content width. No header card.
   return (
-    <div className="flex min-h-screen bg-paper" data-testid="provisions-page">
+    <div className="flex min-h-screen bg-white text-[#1f1f1f]" style={PAGE_STYLE} data-testid="provisions-page">
       {preview.facts.length === 0 ? (
         <div className="p-4 md:p-8"><EmptyState icon="" title={live ? 'No sections in yet' : 'No layered facts'} description={live ? 'The first completed section appears here within a few minutes.' : 'This run has no valid layered (V2) facts to show.'} /></div>
       ) : (
         <>
-          <ProvisionRail sections={tableShapesV3.sections} title={title} subtitle="Lawyer preview" />
-          <div className="min-w-0 flex-1 space-y-6 p-4 md:p-8">
-            {/* Deal header card, the legacy deal page's (pages/deals/[id].js). */}
-            <header className="bg-white border border-border rounded-lg shadow-sm p-6" data-testid="preview-header">
-              <div className="flex flex-wrap items-center gap-2">
-                <h1 className="font-display text-2xl text-ink">{title}</h1>
-                <span className={`inline-flex items-center text-[10px] font-ui font-medium px-2 py-1 rounded border uppercase tracking-wider ${badge.className}`} data-testid="preview-badge">{badge.label}</span>
+          <ProvisionRail sections={tableShapesV3.sections} title={title} />
+          <div className="min-w-0 flex-1 px-4 py-8 md:px-8 lg:pb-24 lg:pl-16 lg:pr-24 lg:pt-16">
+            <header className="mb-7" data-testid="preview-header">
+              <div className="flex flex-wrap items-center gap-3">
+                <p className="font-ui text-[13px] uppercase tracking-[0.12em] text-[#6b6b6b]">Lawyer preview</p>
+                <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[12px] font-ui font-medium uppercase tracking-wide ${badge.className}`} data-testid="preview-badge">{badge.label}</span>
               </div>
-              <div className="flex flex-wrap gap-4 mt-3 text-sm font-ui text-inkLight" data-testid="preview-state">
-                <span>Lawyer preview: <span className="text-inkMid">{stateLabel}</span></span>
+              <h1 className="mt-3 font-sans text-[40px] font-semibold leading-[1.05] tracking-tight text-[#1f1f1f] md:text-[52px]">{title}</h1>
+              <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-[15px] font-ui text-[#6b6b6b]" data-testid="preview-state">
+                <span>State: <span className="text-inkMid">{stateLabel}</span></span>
                 {agreementDate ? <span>Date: <span className="text-inkMid">{agreementDate}</span></span> : null}
                 {secLabel ? (
                   <span>Source: {source.retrieval_url
-                    ? <a href={source.retrieval_url} target="_blank" rel="noreferrer" className="text-inkMid hover:text-accent hover:underline" data-testid="preview-source-link">{secLabel}</a>
+                    ? <a href={source.retrieval_url} target="_blank" rel="noreferrer" className="text-inkMid underline-offset-2 hover:underline" data-testid="preview-source-link">{secLabel}</a>
                     : <span className="text-inkMid">{secLabel}</span>}</span>
                 ) : null}
                 {generation !== null ? <span>Generation: <span className="text-inkMid">{generation}</span></span> : null}
               </div>
-              <p className="mt-3 text-sm font-ui text-inkLight" data-testid="preview-counts">
+              <p className="mt-2 text-[15px] font-ui text-[#6b6b6b]" data-testid="preview-counts">
                 {preview.facts.length} layered facts across {preview.section_count} sections{preview.held_count ? ` · ${preview.held_count} held by validation, not shown` : ''}. Click a row or a pill for the words behind it.
               </p>
-              {live && progress.status !== 'FAILED' ? <p className="mt-3 rounded border border-amber-200 bg-amber-50 p-2 text-xs font-ui text-amber-700" data-testid="preview-live">Filling in as sections complete. This page refreshes itself every minute.</p> : null}
+              {live && progress.status !== 'FAILED' ? <p className="mt-3 rounded bg-amber-50 px-3 py-2 text-[13px] font-ui text-amber-700" data-testid="preview-live">Filling in as sections complete. This page refreshes itself every minute.</p> : null}
+              <div className="mt-7 h-[3px] w-full bg-black" data-testid="preview-rule" aria-hidden="true" />
             </header>
             <PublishedSummary
               groups={[{ family_key: 'ALL', collapsed: false, facts: preview.facts }]}
