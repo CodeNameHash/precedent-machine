@@ -53,7 +53,7 @@ export default function ProvisionRail({ sections, title = null }) {
   return (
     <nav
       aria-label="Provision sections"
-      className="sticky top-0 hidden h-screen max-h-screen shrink-0 self-start overflow-y-auto bg-black lg:block"
+      className="sticky top-0 hidden h-screen max-h-screen shrink-0 self-start overflow-y-auto bg-black lg:block [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       style={{ width: 340, padding: 28 }}
       data-testid="provision-rail"
     >
