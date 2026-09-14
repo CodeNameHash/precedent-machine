@@ -2563,7 +2563,15 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       CONCLUSIONS_CELLS_DROPPED); a readout with a problem beyond its
       cells is still dropped as before. The worker is updated to this
       head mid-run so the definitions sections ahead (5.02(h), 9.03)
-      take the schema. Ben's afternoon decisions,
+      take the schema.
+      (30) 17:44 UTC: 3.11 failed on the old worker with FACT_LINK_SPAN
+      (a QUALIFIES link citing a span in no closure was a hard section
+      failure, five model calls lost). A link on an unknown span is now
+      dropped with UNSUPPORTED_FACT_LINK and the facts stay. The worker
+      was updated twice in a quarter of an hour (f5c00f4, then c616f56)
+      and its process killed each time; the leases those kills left
+      behind expire on their own and the sections retry under their
+      attempts. Ben's afternoon decisions,
       2026-09-14, each in code: "by miscoded I meant oyu currentl have it
       messed up and you need to move it over to what we had in the old
       vesrion...." (the reps table opens with General Exceptions: SEC
