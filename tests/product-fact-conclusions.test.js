@@ -543,3 +543,19 @@ test('defaultConclusions gives a fact with no readout the row its fact type name
   assert.equal(defaultConclusions({ family_key: 'CLOSING_CONDITIONS', subtype_key: 'OFFICER_CERTIFICATE', fact_type: 'OFFICER_CERTIFICATE_REQUIRED', statement: 'A certificate is delivered.' }, tableShapes), null, 'no words, no table');
   assert.deepEqual(validateFactConclusions({ ...{ family_key: 'CLOSING_CONDITIONS', subtype_key: 'OFFICER_CERTIFICATE', components: [] }, conclusions: buyer }, { tableShapes }), []);
 });
+
+// Metsera generation 7, 3.01: "Except as disclosed in SEC filings" coded on
+// the Organization row. The intro row's own codes are dropped elsewhere.
+test('stripIntroRowCodes drops the General Exceptions codes from a representation row and keeps them on the intro row', () => {
+  const { stripIntroRowCodes, tableForFact } = require('../lib/product/fact-conclusions');
+  const { table } = tableForFact({ family_key: 'REPRESENTATIONS', conclusions: { table_key: 'representations-qualifiers-table' } }, tableShapes);
+  const rep = { table_key: 'representations-qualifiers-table', row_label: 'Organization; Qualification; Standing', cells: [
+    { column_id: 'materiality', code: 'EXCEPT_AS_DISCLOSED_IN_SEC_FILINGS', component_ids: ['a'] },
+    { column_id: 'materiality', code: 'MAE_AGGREGATE', component_ids: ['b'] },
+  ] };
+  const stripped = stripIntroRowCodes(rep, table);
+  assert.deepEqual(stripped.dropped, [{ column_id: 'materiality', code: 'EXCEPT_AS_DISCLOSED_IN_SEC_FILINGS' }]);
+  assert.deepEqual(stripped.conclusions.cells.map((cell) => cell.code), ['MAE_AGGREGATE']);
+  const intro = { ...rep, row_label: 'General Exceptions', row_detail: 'SEC Filings' };
+  assert.deepEqual(stripIntroRowCodes(intro, table).dropped, []);
+});

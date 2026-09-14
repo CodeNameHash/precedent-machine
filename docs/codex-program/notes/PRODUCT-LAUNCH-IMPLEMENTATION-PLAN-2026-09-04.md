@@ -2521,7 +2521,22 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       `codex/product-implementation-plan-20260904` on the Vercel project
       (it follows every push to the branch; Vercel Authentication still
       guards it). The generated alias with the branch name in it keeps
-      working but is no longer the link given out. Ben's afternoon decisions,
+      working but is no longer the link given out.
+      (27) 17:15 UTC, generation 7's 2.02 and 3.01 to 3.04 read. The
+      split fix holds: 2.02's limb (a) (the paying agent's selection,
+      the agreement, the Closing Amount deposit, the CVR-funds
+      carve-out) is extracted, the chapeau in part 1 of 4. The
+      capitalization table fills from 3.02 and 3.03 (800,000,000
+      authorised, 105,278,627 outstanding, 6,331,920 reserved, the
+      option, RSA and ESPP counts, the subsidiary equity row) with the
+      absences as its Other provisions. 3.01 coded "Except as disclosed
+      in SEC filings" on the Organization row though the article
+      introduction's exceptions are the General Exceptions row's: the
+      intro row's own codes are dropped from every other row, at
+      admission (note CONCLUSIONS_CELLS_DROPPED) and on the page for
+      stored facts. Summaries naming "Code Section 409A" or "DGCL
+      Section 203" were dropped by the worker's rule of that hour; the
+      relaxed rule (25) keeps them from the next worker update. Ben's afternoon decisions,
       2026-09-14, each in code: "by miscoded I meant oyu currentl have it
       messed up and you need to move it over to what we had in the old
       vesrion...." (the reps table opens with General Exceptions: SEC
