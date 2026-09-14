@@ -2483,7 +2483,19 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       extractor. The carve-back footer, the carve-out rows with their
       disproportionality answers, the no-other-reps table and the
       boilerplate rows read correctly; 9.03's "underlying cause counts"
-      parenthetical sits under "without a readout" by decision 25. Ben's afternoon decisions,
+      parenthetical sits under "without a readout" by decision 25.
+      (23) 15:55 UTC: generation 6 READY, 85 of 85, none failed, 817
+      proposals (799 VALID, 18 INVALID). The run's issues: three facts
+      INVALID on a LITANY built with children and no members (3.03,
+      3.15, 4.04; the children are now its members) and two on
+      "twenty percent (20)% or more" (5.02; parenthesised and spelled
+      percentages parse); 27 capitalisation readouts dropped for naming
+      the representations table (the page's security-class rule places
+      them); 62 readouts missing, 21 of them exchange mechanics by
+      decision. The section-by-section reading is
+      `docs/codex-program/notes/METSERA-GENERATION-6-AUDIT-2026-09-14.md`.
+      Generation 7 starts on the worker at the head of this branch and
+      is read the same way. Ben's afternoon decisions,
       2026-09-14, each in code: "by miscoded I meant oyu currentl have it
       messed up and you need to move it over to what we had in the old
       vesrion...." (the reps table opens with General Exceptions: SEC

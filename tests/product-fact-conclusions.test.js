@@ -518,6 +518,10 @@ test('a period written in words with parenthetical digits parses to the digits',
   assert.deepEqual(parseComponentValue('PERIOD', 'no later than forty-eight (48) hours after'), { canonical: 48, unit: 'HOUR' });
   assert.deepEqual(parseComponentValue('PERIOD', 'within twenty-four hours'), { canonical: 24, unit: 'HOUR' });
   assert.deepEqual(parseComponentValue('PERIOD', 'within five (5) Business Days'), { canonical: 5, unit: 'BUSINESS_DAY' });
+  // Generation 6, 5.02: "twenty percent (20)% or more" was held.
+  assert.deepEqual(parseComponentValue('PERCENTAGE', 'twenty percent (20)% or more'), { canonical: 20, unit: 'PERCENT' });
+  assert.deepEqual(parseComponentValue('PERCENTAGE', 'fifty percent (50%)'), { canonical: 50, unit: 'PERCENT' });
+  assert.deepEqual(parseComponentValue('PERCENTAGE', 'seventy-five percent'), { canonical: 75, unit: 'PERCENT' });
   assert.deepEqual(parseComponentValue('PERIOD', 'at least two (2) Business Days prior'), { canonical: 2, unit: 'BUSINESS_DAY' });
 });
 

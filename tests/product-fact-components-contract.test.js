@@ -111,3 +111,21 @@ test('headline.summary is optional; headlineSummaryProblems checks it without ho
   fact.headline.summary = 'Parent pays the fee under Section 8.3.';
   assert.deepEqual(validateFactComponents(fact), []);
 });
+
+// Generation 6 (3.03, 3.15, 4.04): the model built a LITANY with children
+// and no members; its children's words are its members.
+test('a LITANY built with children and no members takes the children as members', () => {
+  const { buildComponentTree } = require('../lib/product/fact-components');
+  const resolve = (raw) => ({ span: { source_span_id: 's', start_byte: 0, end_byte: raw.quote.length }, context: {} });
+  const tree = buildComponentTree({
+    modelComponents: [{ ref: 'l', kind: 'LITANY', label: 'matters', quote: 'any event, change or effect', source_span_id: 's', occurrence: 0, origin: 'OWN', gap_before: false, children: [
+      { ref: 'l1', kind: 'LIST_ELEMENT', label: 'event', quote: 'event', source_span_id: 's', occurrence: 0, origin: 'OWN', gap_before: false, children: [] },
+      { ref: 'l2', kind: 'LIST_ELEMENT', label: 'change', quote: 'change', source_span_id: 's', occurrence: 0, origin: 'OWN', gap_before: false, children: [] },
+      { ref: 'l3', kind: 'LIST_ELEMENT', label: 'effect', quote: 'effect', source_span_id: 's', occurrence: 0, origin: 'OWN', gap_before: false, children: [] },
+    ] }],
+    resolve, factId: 'f', contentId: (domain, body) => `${domain}:${JSON.stringify(body).length}`,
+  });
+  assert.deepEqual(tree.problems, []);
+  assert.deepEqual(tree.components[0].members, ['event', 'change', 'effect']);
+  assert.deepEqual(tree.components[0].children, []);
+});
