@@ -23,7 +23,7 @@ const { createProductRunHandler } = require('../lib/product/run-handler');
 function completed(text = '{"ok":true}') {
   return {
     content: [{ type: 'text', text }],
-    usage: { input_tokens: 12, output_tokens: 3, cache_read_input_tokens: 0, cache_creation_input_tokens: 0 },
+    usage: { input_tokens: 2, output_tokens: 3, cache_read_input_tokens: 4, cache_creation_input_tokens: 6 },
     claude_completion: { status: 'COMPLETE', subtype: 'success', stop_reason: 'end_turn' },
     total_cost_usd: 0.01,
   };
