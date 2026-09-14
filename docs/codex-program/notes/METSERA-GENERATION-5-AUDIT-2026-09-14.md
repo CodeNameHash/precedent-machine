@@ -2,6 +2,8 @@
 
 Ben, 2026-09-14: "look at all of the output yourself and analyze if you think it is right or wrong and if not, interate to improve it"; "What terrifies me atm is that you actually don't know what the fuck you have extracted".
 
+Status 05:05 UTC: the run stopped at 49 of 85 sections when the Codex login hit its ChatGPT usage limit ("try again at Sep 20th, 2026 11:53 AM", or purchase credits). Articles V (5.01, 5.02), VI from 6.03, VII, VIII and IX are not extracted in this generation; the sections already read are below.
+
 This note is the reading of run `42a597b2-0f9e-4405-8ac5-e0535a51dc1a` (submitted as generation 4, stored as source generation 5; the worker at codex head 2d0cd85, so it carries decision 34 and the Q6 long-section split but none of the code fixes made while it ran). Sections were read as they completed, against the agreement text, from the per-fact dump (components, headline, readout) and the run's issues and model calls. Every defect found is fixed in code for generation 6 and recorded in the plan's Q8 entry as findings (1) to (13). Sections not yet read are marked.
 
 ## Verdict so far
@@ -52,4 +54,5 @@ Not yet read.
 | Two facts on one sentence held as duplicates | 3.13, 3.03, 3.06, 3.09, 3.16, 3.18, 3.26, 6.02 | A collision whose candidates have distinct component footprints is re-keyed and stays valid |
 | Representation routed IMMATERIAL or to a covenant family alone | 3.04, 3.08, 3.22, 3.23, IV-INTRO, 4.03, 4.06, 4.08, 4.09 | Routing widened by the article heading and the residual pass, never narrowed |
 | One sentence under two families | 6.01 | Overlay: a covenant in the additional agreements article is never a transaction step |
+| Codex usage limit recorded as "codex exited 1: " and three burnt attempts | 6.06 | A non-zero exit with an empty stderr reports the last JSON error event; the worker stops with PRODUCT_HOSTED_CODEX_USAGE_LIMIT |
 | Section lost on one failed lease renewal | 5.01 | The heartbeat retries a transient renewal failure while the lease has time; a stale renewal still loses the section at once |

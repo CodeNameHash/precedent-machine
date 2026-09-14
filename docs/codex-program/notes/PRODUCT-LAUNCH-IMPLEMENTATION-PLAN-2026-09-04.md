@@ -2236,6 +2236,19 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       other failure is retried while the lease has time
       (`withSectionLeaseHeartbeat`). The claim order picks the failed
       section up again while attempts remain, so the run continues.
+      (15) 04:59 UTC, at 49 of 85: the run went FAILED on 6.06 with
+      "codex exited 1: " three times in three seconds. Reproduced in
+      the sandbox: the Codex CLI on the ChatGPT login answers "You've
+      hit your usage limit. Visit https://chatgpt.com/codex/settings/usage
+      to purchase more credits or try again at Sep 20th, 2026 11:53 AM".
+      No more model calls are possible until Ben buys credits or the
+      limit resets; the four sections in flight (3.19, 5.01, 5.02, 6.03)
+      will expire too. In code: a non-zero Codex exit with nothing on
+      stderr now reports the last JSON error event from stdout, and the
+      hosted worker stops with PRODUCT_HOSTED_CODEX_USAGE_LIMIT instead
+      of burning three attempts per section. Generation 5 resumes with
+      "Retry failed sections" once the account has credits; generation
+      6 (every fix above, worker updated to the codex head) follows.
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,

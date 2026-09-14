@@ -385,3 +385,18 @@ for (const [name, raw, pattern] of [
     assert.throws(() => codexJsonlResponse(raw), pattern);
   });
 }
+
+test('a non-zero exit with an empty stderr reports the last JSON error event from stdout', () => {
+  const { lastStdoutErrorMessage, isUsageLimitError } = require('../lib/llm-cli-client');
+  const out = [
+    '{"type":"thread.started","thread_id":"t"}',
+    '{"type":"turn.started"}',
+    '{"type":"error","message":"You\'ve hit your usage limit. Visit https://chatgpt.com/codex/settings/usage"}',
+    '{"type":"turn.failed","error":{"message":"You\'ve hit your usage limit. Visit https://chatgpt.com/codex/settings/usage"}}',
+    'not json',
+  ].join('\n');
+  assert.match(lastStdoutErrorMessage(out), /^You've hit your usage limit/);
+  assert.equal(lastStdoutErrorMessage(''), '');
+  assert.equal(isUsageLimitError(new Error('codex exited 1: ' + lastStdoutErrorMessage(out))), true);
+  assert.equal(isUsageLimitError(new Error('codex exited 1: ')), false);
+});

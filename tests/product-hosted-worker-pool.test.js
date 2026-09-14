@@ -183,6 +183,15 @@ test('failure stops new claims while an in-flight section is saved before reject
   }
 });
 
+// Metsera generation 5, 2026-09-14 04:59 UTC: the ChatGPT login hit its
+// usage limit; three attempts in three seconds were recorded as "codex
+// exited 1: " and the run FAILED with no reason. The worker stops and
+// names the limit.
+test('a usage limit stops the worker with its own reason', async () => {
+  const deps = dependencies(async () => { throw new Error("codex exited 1: You've hit your usage limit. Visit https://chatgpt.com/codex/settings/usage"); });
+  await assert.rejects(runHostedWorker(options, output, deps), /PRODUCT_HOSTED_CODEX_USAGE_LIMIT: codex exited 1: You've hit your usage limit/);
+});
+
 test('unchanged progress waits instead of repeatedly querying the database', async () => {
   const times = [];
   const deps = dependencies(async () => {

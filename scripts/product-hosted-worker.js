@@ -9,6 +9,7 @@ const {
   CODEX_MODEL_CONFIG, assertConfiguredRunModelConfig,
 } = require('../lib/product/product-model-config');
 const { assertDisposableDatabaseUrl } = require('../lib/product/sandbox-wake');
+const { isUsageLimitError } = require('../lib/llm-cli-client');
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const IDLE_WAIT_MS = 1000;
@@ -95,6 +96,10 @@ async function runHostedWorker(options, output = process.stdout, dependencies = 
       return null;
     } catch (error) {
       stopped = true;
+      // A usage limit on the Codex login is not a section failure: the
+      // worker stops with the reason so the run can be retried once the
+      // account has credits (Metsera generation 5, 2026-09-14).
+      if (isUsageLimitError(error)) throw new Error(`PRODUCT_HOSTED_CODEX_USAGE_LIMIT: ${error.message}`);
       throw error;
     }
   };
