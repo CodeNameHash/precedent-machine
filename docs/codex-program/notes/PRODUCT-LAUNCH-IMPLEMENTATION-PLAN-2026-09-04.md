@@ -2256,8 +2256,14 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       same hosted worker, wake and run identity rules as the Codex path;
       the branch's PRODUCT_MODEL_PROVIDER is flipped. Outstanding, Ben's:
       the login token from `claude setup-token`, set on the deployment as
-      PRODUCT_CLAUDE_CODE_OAUTH_TOKEN. Then the worker is updated and
-      generation 6 starts on Claude.
+      PRODUCT_CLAUDE_CODE_OAUTH_TOKEN. 10:29 UTC: Ben supplied the token
+      ("or is it better to use Codex CLI? Codex has usage again"); set on
+      the deployment, redeployed, verified with one Claude Opus 5 call
+      from the sandbox, worker updated to 8a0017c, generation 6 submitted
+      (run `0764b437-baa0-4a8d-b714-1975a1bb60f0`, stored generation 6)
+      and woken on Claude. Codex stays available by flipping
+      PRODUCT_MODEL_PROVIDER back; Claude was chosen because the Codex
+      account ran dry mid-run and Claude Opus 5 is the stronger reader.
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
