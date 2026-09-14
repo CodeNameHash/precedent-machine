@@ -8,6 +8,7 @@ const test = require('node:test');
 
 const { buildAgreementStructure } = require('../lib/product/agreement-structure');
 const {
+  assembleAgreementDraft,
   buildAgreementDraft,
   buildAgreementSectionDraft,
   canonicalLinkSourceSpanIds,
@@ -989,6 +990,69 @@ test('real Concho SEC source reaches a reproducible, coherent draft with all-fam
   assert.equal(new Set(draft.model_calls.map((item) => item.model_call_id)).size, draft.model_calls.length);
   assert.equal(sourceDocument.raw_sha256, '3c1c08272e7a742ee1ded0d5e2563213a1a44fadeaad55b18c427cac86bed8f6');
   assert.equal(sourceDocument.canonical_text_sha256, '30d929c76ab9cd2bddecf3f2df2f2ec107146c2ae31b241110c9923ef03e3be5');
+});
+
+// Metsera generation 7, 2026-09-14: OTHER_DEFINED_TERM_RECORDED joined
+// KEY_DEFINED_TERMS' required fact types while the run was in progress.
+// Sections extracted before the change carry no FACT_TYPE assertion for it
+// and finalisation failed after every section had completed. A fact type
+// the section's stored extraction requests never name is schema drift: the
+// draft records it as an issue and finalises; a fact type the model was
+// asked about and has no assertion for is still a completeness failure.
+test('a required fact type the schema gained after a section was extracted is recorded as drift, not a coverage failure', async () => {
+  const sourceDocument = await conchoSource();
+  const agreementStructure = buildAgreementStructure({
+    agreement_id: sourceDocument.source_document_id,
+    canonical_text: sourceDocument.canonical_text,
+    canonical_text_sha256: sourceDocument.canonical_text_sha256,
+  });
+  const results = [];
+  await buildAgreementDraft({
+    sourceDocument, agreementStructure, legalSchema: schema, model: createSyntheticConchoModel(),
+    onSectionComplete: async (result) => results.push(result),
+  });
+  const grown = JSON.parse(JSON.stringify(schema));
+  const fee = grown.families.find((family) => family.family_key === 'TERMINATION_FEE');
+  fee.required_fact_types.push('FEE_PAYMENT_MECHANICS');
+  fee.subtypes.push({ subtype_key: 'FEE_PAYMENT_MECHANICS', required_roles: ['payer'], optional_roles: [], relationships: [] });
+
+  const draft = assembleAgreementDraft({ sourceDocument, agreementStructure, legalSchema: grown, results });
+  validateAgreementDraft(draft, { sourceDocument, agreementStructure, legalSchema: grown });
+  const feeSections = results.filter((result) => result.routing.families.includes('TERMINATION_FEE'));
+  assert.ok(feeSections.length > 0);
+  const drift = draft.issues.filter((issue) => issue.code === 'SCHEMA_DRIFT_FACT_TYPE');
+  assert.equal(drift.length, feeSections.length);
+  for (const issue of drift) {
+    assert.equal(issue.kind, 'COVERAGE');
+    assert.equal(issue.family_key, 'TERMINATION_FEE');
+    assert.equal(issue.structure_node_id, null, 'a drift issue is draft-level so finalisation stores it');
+    const message = JSON.parse(issue.message);
+    assert.equal(message.fact_type, 'FEE_PAYMENT_MECHANICS');
+    assert.ok(feeSections.some((result) => result.node_id === message.structure_node_id && result.section_reference === message.section_reference));
+  }
+  const familyCoverage = draft.coverage_assertions.find((item) => item.subject_kind === 'FAMILY' && item.family_key === 'TERMINATION_FEE');
+  assert.equal(familyCoverage.state, 'UNRESOLVED');
+  assert.ok(draft.issues.some((issue) => issue.code === 'REQUIRED_FACT_TYPE_UNRESOLVED' && issue.message === 'FEE_PAYMENT_MECHANICS'));
+
+  // The same schema, but the section was asked about the fact type: a
+  // missing assertion is a completeness failure, never drift.
+  const stripped = results.map((result) => (result.section_reference !== '8.3' ? result : {
+    ...result,
+    coverage: result.coverage.filter((item) => !(item.subject_kind === 'FACT_TYPE' && item.reason === 'FACT_TYPE:TAIL_PERIOD')),
+  }));
+  const strippedDraft = assembleAgreementDraft({ sourceDocument, agreementStructure, legalSchema: schema, results: stripped });
+  assert.equal(strippedDraft.issues.filter((issue) => issue.code === 'SCHEMA_DRIFT_FACT_TYPE').length, 0);
+  assert.throws(
+    () => validateAgreementDraft(strippedDraft, { sourceDocument, agreementStructure, legalSchema: schema }),
+    (error) => error.code === 'DRAFT_COVERAGE_COMPLETENESS' && /8\.3:TERMINATION_FEE:TAIL_PERIOD/.test(error.message),
+  );
+
+  // Drift that the draft does not record is a completeness failure too.
+  const unrecorded = { ...draft, issues: draft.issues.filter((issue) => issue.code !== 'SCHEMA_DRIFT_FACT_TYPE') };
+  assert.throws(
+    () => validateAgreementDraft(unrecorded, { sourceDocument, agreementStructure, legalSchema: grown }),
+    (error) => error.code === 'DRAFT_COVERAGE_COMPLETENESS',
+  );
 });
 
 test('invalid evidence is retained for review without becoming a supporting citation', async () => {
