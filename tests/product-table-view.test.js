@@ -1071,3 +1071,27 @@ test('a subject-limited disclaimer keeps no readout in the No Other Reps table',
   const rows = table.rows.filter((row) => !row.absent);
   assert.deepEqual(rows.flatMap((row) => row.backing_facts.map((entry) => entry.fact_id)), ['d-gen']);
 });
+
+// Generation 6, IV-INTRO: the extractor coded Parent's introduction to the
+// retired "parent-representations-general-qualifications" table, and the
+// fact fell into the Company table. A readout naming a table the shapes no
+// longer carry is no readout; the intro rule places it on Parent's General
+// Exceptions row.
+test('a readout naming a retired table is placed by the page rules', () => {
+  const fact = {
+    fact_id: 'iv-intro', proposal_id: 'iv-intro', family_key: 'REPRESENTATIONS', subtype_key: 'REPRESENTATION_QUALIFICATION', section_reference: 'IV-INTRO', structure_node_id: 'n-iv',
+    headline: { label: 'General qualification', distinguishing_component_ids: [] },
+    conclusions: { table_key: 'parent-representations-general-qualifications', row_label: 'Other general qualification', cells: [] },
+    components: [
+      { component_id: 'iv-a', kind: 'ACTOR', label: 'Representing parties', text: 'Parent and Merger Sub, jointly and severally', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 44, gap_before: false, children: [] },
+      { component_id: 'iv-o', kind: 'OPERATION', label: 'represent', text: 'represent and warrant to the Company', origin: 'OWN', source_span_id: 's', start_byte: 45, end_byte: 81, gap_before: false, children: [] },
+    ],
+  };
+  const view = buildTableView({ facts: [fact], tableShapes, legalSchema });
+  const tables = view.sections.flatMap((section) => section.tables);
+  const parent = tables.find((candidate) => candidate.table_key === 'parent-representations-qualifiers-table');
+  const company = tables.find((candidate) => candidate.table_key === 'representations-qualifiers-table');
+  const rowIds = (table) => (table ? table.rows.filter((row) => !row.absent).flatMap((row) => row.backing_facts.map((entry) => entry.fact_id)) : []);
+  assert.deepEqual(rowIds(parent), ['iv-intro']);
+  assert.deepEqual(rowIds(company), []);
+});
