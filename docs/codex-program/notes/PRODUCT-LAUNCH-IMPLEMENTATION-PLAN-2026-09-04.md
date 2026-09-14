@@ -2304,7 +2304,44 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       as other provisions meanwhile). "I'm surprised I haven't seen an
       employee equity section yet?": 2.03 completed at 10:52 UTC and the
       Equity Awards section filled (options and restricted stock rows,
-      consideration, vesting and CVR entitlement coded).
+      consideration, vesting and CVR entitlement coded). Later readings
+      the same day: "So, right now this is confusing as the Company Stock
+      Option rows shows conflicting treatment ... Consider showing those
+      as the main row (don't change name) and then say 'Exceptions' and
+      show the sub rows?" (a row's own line is the general case, its
+      sub-items the exceptions, `sub_rows_label`); "'see provision' has
+      too much visual hierachy and color which distracts readability"
+      (a quiet control after the subject); "for the definition, take out
+      of table but when you click the MAE box and the side bar opens,
+      there is a fixed visual element at the bottom of the side bar that
+      has the MAE definition summary which you can click through to get
+      the full definition" (pinned to the sidebar's foot, "Full
+      definition" jumps to the section); "make the elements below the top
+      level reps (e.g. Organizzation) collapsable and hide them initiall
+      but have a clear 'more detail' button" ("More detail (N)" /
+      "Exceptions (N)" under the subject).
+      (16) 11:25 UTC, at 13 of 85: generation 6 went FAILED on 3.02
+      (Capitalization) after three attempts. Claude Code's `result`
+      field is the last text block of the answer; at high effort the
+      model emitted its JSON in several text blocks with thinking
+      between them, so the client saw the tail alone (attempt 2:
+      CLAUDE_PRODUCT_JSON, the text beginning mid-object; attempt 3:
+      MODEL_RESPONSE_SHAPE). The CLI now runs with
+      `--output-format stream-json` and the client joins every assistant
+      text block in order (`claudeJsonResult`). Two blind spots fixed
+      alongside: the claim of the next attempt erased the failed
+      attempt's error, so `product_phase1_fail_section` now appends each
+      failure to `product_section_work.error_history` (migration
+      `20260914120000_product_section_attempt_history`), and the hosted
+      worker's stdout was unreachable once the wake command's id was
+      gone, so `launch.sh` tees it to `/vercel/sandbox/pm-worker-<run>.log`.
+      Worker updated to a8aa63ca; the run retried through
+      "Retry failed sections" at 11:28 UTC. The sections already stored
+      (Article I, 2.01, 2.03, III-INTRO, 3.01, 3.03 to 3.05) read
+      correctly on the page: the Organization, Capitalization,
+      Authority and No Conflict rows carry their sub-items, the excepted
+      filings of 3.05 sit under the row as exceptions, one 3.03 fact is
+      INVALID (a LITANY with children, the model's error).
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
