@@ -104,6 +104,10 @@ test('headline.summary is optional; headlineSummaryProblems checks it without ho
   assert.ok(headlineSummaryProblems(' Parent pays the fee ').some((problem) => problem.includes('leading or trailing whitespace')));
   assert.ok(headlineSummaryProblems('one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen').some((problem) => problem.includes('over 15 words')));
   assert.ok(headlineSummaryProblems('Parent pays the fee under Section 8.3').some((problem) => problem.includes('section reference')));
+  // A statutory section or an Article of the agreement is content (generation 7, 1.02 and 1.04).
+  assert.deepEqual(headlineSummaryProblems('The Merger has the effects set forth in Section 259 of the DGCL'), []);
+  assert.deepEqual(headlineSummaryProblems('Company exempts dispositions under Section 16 of the Exchange Act'), []);
+  assert.deepEqual(headlineSummaryProblems('Closing occurs third business day after Article VII conditions satisfied or waived'), []);
   assert.ok(headlineSummaryProblems('Parent pays the "Termination Fee"').some((problem) => problem.includes('quotation mark')));
   assert.ok(headlineSummaryProblems('Parent pays the fee.').some((problem) => problem.includes('ends with a period')));
   assert.deepEqual(headlineSummaryProblems("Parent's obligation survives the Closing"), [], 'a possessive apostrophe is not a quotation mark');
