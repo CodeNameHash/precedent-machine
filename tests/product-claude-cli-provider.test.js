@@ -83,6 +83,11 @@ test('the CLI result object is the one accepted shape', () => {
   assert.throws(() => claudeJsonResult('{"type":"system"}\n{"type":"assistant","message":{"content":[]}}'), /CLAUDE_CLI_JSON/);
   assert.equal(unfenced('```json\n{"ok":true}\n```'), '{"ok":true}');
   assert.equal(isUsageLimitError(new Error("claude -p error: You've hit your usage limit")), true);
+  // Generation 7, 19:29 UTC: the session limit arrives as a stream-json result event with is_error.
+  const { lastStdoutErrorMessage } = require('../lib/llm-cli-client');
+  const limitStream = '{"type":"system","subtype":"init"}\n{"is_error":true,"type":"result","subtype":"success","api_error_status":429,"result":"You\'ve hit your session limit · resets 8:40pm (UTC)"}\n';
+  assert.equal(lastStdoutErrorMessage(limitStream), "You've hit your session limit · resets 8:40pm (UTC)");
+  assert.equal(isUsageLimitError(new Error(`claude exited 1: ${lastStdoutErrorMessage(limitStream)}`)), true);
 });
 
 test('the product model selects model and effort per call kind and records the CLI usage', async () => {

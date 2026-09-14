@@ -2611,7 +2611,17 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       chosen by the statement's subject; a defaulted readout cites the
       fact's own words for the as-drafted column so its summary shows.
       Article IV read correctly with Merger Sub's 1,000 shares on their
-      own capitalization row. Ben's afternoon decisions,
+      own capitalization row.
+      (34) 19:29 UTC: the run went FAILED at 50 of 85 with two sections
+      failed in twenty seconds, five attempts recorded as "claude exited
+      1: " and no reason. The reason was in the stream: Claude Code ends
+      a refused turn with a result event carrying is_error and "You've
+      hit your session limit · resets 8:40pm (UTC)" (Ben's account,
+      429). The client now reports that text (the Codex fix of (15)
+      extended to the Claude stream), "session limit" counts as a usage
+      limit, and the worker stops with PRODUCT_HOSTED_CODEX_USAGE_LIMIT
+      instead of burning attempts. 20:44 UTC, the limit reset: the two
+      sections retried and the run is RUNNING again. Ben's afternoon decisions,
       2026-09-14, each in code: "by miscoded I meant oyu currentl have it
       messed up and you need to move it over to what we had in the old
       vesrion...." (the reps table opens with General Exceptions: SEC

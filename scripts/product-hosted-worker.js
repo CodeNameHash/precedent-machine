@@ -108,9 +108,10 @@ async function runHostedWorker(options, output = process.stdout, dependencies = 
       return null;
     } catch (error) {
       stopped = true;
-      // A usage limit on the Codex login is not a section failure: the
-      // worker stops with the reason so the run can be retried once the
-      // account has credits (Metsera generation 5, 2026-09-14).
+      // A usage limit on the Codex or Claude login is not a section failure:
+      // the worker stops with the reason so the run can be retried once the
+      // account has credits (Metsera generation 5, 2026-09-14; generation 7
+      // at 19:29 UTC, the Claude session limit). The code keeps its name.
       if (isUsageLimitError(error)) throw new Error(`PRODUCT_HOSTED_CODEX_USAGE_LIMIT: ${error.message}`);
       throw error;
     }
