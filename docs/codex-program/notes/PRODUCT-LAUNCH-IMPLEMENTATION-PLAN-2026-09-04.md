@@ -2536,7 +2536,14 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       admission (note CONCLUSIONS_CELLS_DROPPED) and on the page for
       stored facts. Summaries naming "Code Section 409A" or "DGCL
       Section 203" were dropped by the worker's rule of that hour; the
-      relaxed rule (25) keeps them from the next worker update. Ben's afternoon decisions,
+      relaxed rule (25) keeps them from the next worker update.
+      (28) 17:30 UTC, Ben: "from gen 6 please remove 'State: draft, not
+      published / Date: September 21, 2025 / Source: EX-2.1 ·
+      0001193125-25-210030 / Generation: 6 / 799 layered facts across 85
+      sections · 18 held by validation, not shown. Click a row or a pill
+      for the words behind it.'" The header is the eyebrow with the
+      state chip, the title and the rule; the metadata line and the
+      count line are gone from every run's page. Ben's afternoon decisions,
       2026-09-14, each in code: "by miscoded I meant oyu currentl have it
       messed up and you need to move it over to what we had in the old
       vesrion...." (the reps table opens with General Exceptions: SEC

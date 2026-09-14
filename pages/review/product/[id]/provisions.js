@@ -45,11 +45,6 @@ function dealTitle(parties, fallback) {
   const names = picked.map(nameOf).filter(Boolean);
   return names.length ? names.join(' / ') : fallback;
 }
-function formatAgreementDate(value) {
-  if (!value) return null;
-  const date = new Date(`${value}T00:00:00Z`);
-  return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
-}
 
 // Ben, 2026-09-14, comparing this page with Deal Storylines: "also font
 // etc doesn't match the deal storylines page. Also their pages are
@@ -77,13 +72,7 @@ export function ProvisionsPreviewBody({ workspace, runId }) {
   const published = workspace.review?.state?.status && workspace.review.state.status !== 'DRAFT';
   const progress = workspace.progress || null;
   const live = !!progress && progress.status !== 'READY';
-  const stateLabel = live
-    ? `${progress.status === 'FAILED' ? 'run failed' : 'analysis in progress'}, ${progress.completed} of ${progress.total} sections in`
-    : (published ? 'finalised review' : 'draft, not published');
   const badge = stateBadge(progress, published);
-  const agreementDate = formatAgreementDate(source.agreement_date);
-  const secLabel = [source.exhibit_type, source.filing_accession].filter(Boolean).join(' · ') || (source.retrieval_url ? 'SEC EDGAR' : null);
-  const generation = progress && Number.isFinite(progress.generation) ? progress.generation : null;
   // Ben, 2026-09-14, on the Corpus top bar and breadcrumbs above the page:
   // "on UI - I still see this at the top and the left hand side bar is not
   // flush to the side of the page?" The page renders without the Corpus
@@ -114,19 +103,10 @@ export function ProvisionsPreviewBody({ workspace, runId }) {
                 <span className={`inline-flex items-center rounded-full px-[6px] py-[1px] text-[9px] font-ui font-medium uppercase tracking-wide ${badge.className}`} data-testid="preview-badge">{badge.label}</span>
               </div>
               <h1 className="mt-[7px] font-sans text-[23px] font-semibold leading-[1.05] tracking-tight text-[#1f1f1f] md:text-[30px]">{title}</h1>
-              <div className="mt-[9.5px] flex flex-wrap gap-x-[11.5px] gap-y-[2.5px] text-[11.5px] font-ui text-[#6b6b6b]" data-testid="preview-state">
-                <span>State: <span className="text-inkMid">{stateLabel}</span></span>
-                {agreementDate ? <span>Date: <span className="text-inkMid">{agreementDate}</span></span> : null}
-                {secLabel ? (
-                  <span>Source: {source.retrieval_url
-                    ? <a href={source.retrieval_url} target="_blank" rel="noreferrer" className="text-inkMid underline-offset-2 hover:underline" data-testid="preview-source-link">{secLabel}</a>
-                    : <span className="text-inkMid">{secLabel}</span>}</span>
-                ) : null}
-                {generation !== null ? <span>Generation: <span className="text-inkMid">{generation}</span></span> : null}
-              </div>
-              <p className="mt-[4.5px] text-[11.5px] font-ui text-[#6b6b6b]" data-testid="preview-counts">
-                {preview.facts.length} layered facts across {preview.section_count} sections{preview.held_count ? ` · ${preview.held_count} held by validation, not shown` : ''}. Click a row or a pill for the words behind it.
-              </p>
+              {/* Ben, 2026-09-14: "please remove 'State: draft, not published /
+                  Date / Source / Generation' and the facts count line". The
+                  header is the eyebrow, the state badge, the title and the
+                  rule. */}
               {live && progress.status !== 'FAILED' ? <p className="mt-[7px] rounded-[2px] bg-amber-50 px-[7px] py-[4.5px] text-[9.5px] font-ui text-amber-700" data-testid="preview-live">Filling in as sections complete. This page refreshes itself every minute.</p> : null}
               <div className="mt-[16px] h-[2px] w-full bg-black" data-testid="preview-rule" aria-hidden="true" />
             </header>
