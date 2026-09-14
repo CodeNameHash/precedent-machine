@@ -2417,6 +2417,33 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       `20260914125500_product_model_call_part_identity`: the expected
       identity follows the part number the call's request carries. No
       worker change; the failed sections retry under attempts remaining.
+      13:12 UTC: the identity needed two more passes (the part number
+      sits in the provider request's message content, at its top level);
+      2.02's part 1 was admitted at 13:12, the first split-section call
+      ever recorded in the hosted worker. Ben's afternoon decisions,
+      2026-09-14, each in code: "by miscoded I meant oyu currentl have it
+      messed up and you need to move it over to what we had in the old
+      vesrion...." (the reps table opens with General Exceptions: SEC
+      Filings, Disclosure Letter, Other, the cut-off in Lookback and the
+      excluded portions as qualifier pills; and Knowledge: Standard,
+      Persons; the separate general-qualifications table retired;
+      generation 6's intro facts placed by their words); "sure add a
+      table" (Capitalization: rows per security class, authorised /
+      issued / reserved / as-of counts parsed from the cited words,
+      absence facts as the footer); "1. for now - yes" to an
+      extractor-written summary on every fact (headline.summary, at most
+      15 words, validated, stored on the headline row, the Other
+      provisions Term; a malformed one is dropped with a note, never
+      holds the fact); "4. I don't cte" (provider stays Claude). Sidebar:
+      "hide detail under the full layer tree as the default. Also call it
+      Interpretation Tree and also why do we show the greyed out text and
+      the rest? Can't we just do the bit in highlight and below?" (closed
+      to start, own components only). "the background summary app lives
+      on deal corpus - I want you to completely copy the visual style -
+      including the page header": rendered side by side with the deal
+      page; the header title is the two parties with the badge on the
+      title line, no "Published summary" heading, the sidebar in the deal
+      card style; the black rail of 2026-09-13 kept pending Ben's word.
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
