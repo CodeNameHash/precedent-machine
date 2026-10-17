@@ -2935,6 +2935,19 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       published prices and generation 7's 9.85m input and 3.15m output
       tokens. Generation 8 goes on whichever path is ready first, Ben
       choosing by the estimate.
+      (47) 2026-10-18 00:05 UTC, Ben, on the 2.01 Consideration package
+      tree in the sidebar: "hitting 'show detail' doesn't add much...just
+      smae stuff again? Also, we should better indent the (i) and (ii)
+      for the right to receive that is shown". The parent component's
+      words are the join of its children, so the toggle repeats them;
+      and the defined-term line "(clauses (i) and (ii), collectively,
+      the 'Merger Consideration')" sits centred and underlined. Added to
+      work package 2 (A.5): a parent whose children together cover its
+      words shows its children in its place, indented one level each,
+      with no toggle; a parent with words of its own shows them with its
+      children indented beneath, no toggle; list elements such as (i)
+      and (ii) are separate indented lines; every tree line uses one
+      text style, left-aligned.
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
