@@ -289,6 +289,9 @@ function applyNoShop(doc) {
         code('Shall direct and use reasonable best efforts to cause', why, { code: 'SHALL_DIRECT_AND_USE_REASONABLE_BEST_EFFORTS' }),
         code('Shall not authorize or permit its Representatives to', why, { code: 'SHALL_NOT_AUTHORIZE_OR_PERMIT' }),
         code('Shall instruct its Representatives', why, { code: 'SHALL_INSTRUCT' }),
+        // Finding (44), Ben: "yes to both". The sub-item "Representative
+        // breach is Company breach" answers Yes / No on this row.
+        ...yesNo(why),
       ]],
       ['Standstill enforcement (don\'t ask, don\'t waive)', [
         code('Standstill waivable only on a fiduciary-duty determination', why, { code: 'STANDSTILL_WAIVABLE_ON_FIDUCIARY_DETERMINATION' }),
@@ -343,20 +346,25 @@ function applyNoShop(doc) {
         code('Company may ask that an oral proposal be made in writing', why, { code: 'MAY_REQUEST_WRITTEN_PROPOSAL' }),
         code('Not addressed', why, { code: 'SILENT' }),
       ]],
-      ['No agreement restricting information to Parent', [
-        code('Prohibited', why, { code: 'PROHIBITED' }),
-        code('Not addressed', why, { code: 'SILENT' }),
-      ]],
+      // Finding (44), Ben: "yes to both". Yes when the Company covenants not
+      // to enter into an agreement restricting what it may give Parent.
+      ['No agreement restricting information to Parent', yesNo(why)],
     ],
     numberColumns: [periodColumn('Period', `${why} The hours or business days a notice or update must be given within (48 hours; two business days).`)],
     reason: why,
     subtypeKeys: ['NOTICE_PERIOD', 'NOTICE_UPDATE_OBLIGATION', 'PROHIBITED_ACTION'],
-    guidance: 'Notice to Parent under the no-shop, one fact and one readout per row, each row\'s timing one code (never "Required within a stated period" beside "Required promptly": "promptly, and in any event within 48 hours" is REQUIRED_WITHIN_STATED_PERIOD with 48 hours in the period column and promptly in the summary). Initial notice: the NOTICE_PERIOD fact giving notice of a proposal, inquiry or request (its trigger, knowledge of receipt by an executive officer or director, as a second code; its period). Notice contents: the NOTICE_UPDATE_OBLIGATION or NOTICE_PERIOD fact listing what the notice carries, one cell per item (the identity of the person; a copy of a written proposal, inquiry or request; the material terms and conditions when oral; modifications). Ongoing updates: the NOTICE_UPDATE_OBLIGATION fact keeping Parent reasonably informed (its timing; status and developments and draft documentation as content cells). Notice of a decision to engage: the NOTICE_PERIOD fact giving notice that the Company will provide information or negotiate (its period). Oral proposals: the clause letting the Company ask that an oral proposal be made in writing. No agreement restricting information to Parent: the PROHIBITED_ACTION fact that the Company will not enter into an agreement that would prevent it from giving Parent this information (Ben, 2026-10-17: a row of this table). The notice and match periods of the superior-proposal path belong to the matching-rights table; those of the intervening-event path to the intervening-event table.',
+    guidance: 'Notice to Parent under the no-shop, one fact and one readout per row, each row\'s timing one code (never "Required within a stated period" beside "Required promptly": "promptly, and in any event within 48 hours" is REQUIRED_WITHIN_STATED_PERIOD with 48 hours in the period column and promptly in the summary). Initial notice: the NOTICE_PERIOD fact giving notice of a proposal, inquiry or request (its trigger, knowledge of receipt by an executive officer or director, as a second code; its period). Notice contents: the NOTICE_UPDATE_OBLIGATION or NOTICE_PERIOD fact listing what the notice carries, one cell per item (the identity of the person; a copy of a written proposal, inquiry or request; the material terms and conditions when oral; modifications). Ongoing updates: the NOTICE_UPDATE_OBLIGATION fact keeping Parent reasonably informed (its timing; status and developments and draft documentation as content cells). Notice of a decision to engage: the NOTICE_PERIOD fact giving notice that the Company will provide information or negotiate (its period). Oral proposals: the clause letting the Company ask that an oral proposal be made in writing. No agreement restricting information to Parent: YES for the PROHIBITED_ACTION fact that the Company "will not ... enter into any agreement with any Person subsequent to the date of this Agreement that would restrict the Company\'s ability to provide such information to Parent" (Ben, 2026-10-17: "yes to both"). The notice and match periods of the superior-proposal path belong to the matching-rights table; those of the intervening-event path to the intervening-event table.',
   });
   // Finding (44), Ben "yes to both": the sentence deeming a Representative's
   // breach a breach by the Company is a sub-item under the control standard.
   core.detail_labels_by_row = { 'Representative control standard': ['Representative breach is Company breach'] };
-  core.guidance += ' The sentence deeming a breach by a Representative a breach by the Company is a PROHIBITED_ACTION fact on the Representative control standard row with row_detail "Representative breach is Company breach" (Ben, 2026-10-17).';
+  core.guidance += ' The sentence deeming a breach by a Representative a breach by the Company ("any violation of the restrictions ... by any Representative of the Company ... acting in its authorized capacity on behalf of the Company ... shall be a breach of this Section 5.02(a) by the Company") is a PROHIBITED_ACTION fact on the Representative control standard row with row_detail "Representative breach is Company breach" and the code YES (Ben, 2026-10-17: "yes to both").';
+  // A stored readout-less PROHIBITED_ACTION fact whose words are that
+  // sentence takes the row by default (generation 7's, if any).
+  core.fact_type_rows = { PROHIBITED_ACTION: 'Representative control standard' };
+  core.fact_type_rows_when = '(?=[\\s\\S]*Representative)(?=[\\s\\S]*(?:shall be|constitute|deemed)[^.]{0,60}breach)';
+  notice.fact_type_rows = { PROHIBITED_ACTION: 'No agreement restricting information to Parent' };
+  notice.fact_type_rows_when = '(?=[\\s\\S]*agreement)(?=[\\s\\S]*restrict)(?=[\\s\\S]*Parent)';
   noShop.tables = [core, notice];
 
   // --- Fiduciary-out / engagement and change of recommendation ------------

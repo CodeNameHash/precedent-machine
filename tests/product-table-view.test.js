@@ -1297,3 +1297,24 @@ test('a readout-less intervening-event fiduciary standard defaults to the Board 
   const noShopSection = view.sections.find((section) => section.section_key === 'nosol-fiduciary') || view.sections.find((section) => section.facts_without_readout.some((entry) => entry.fact_id === 'sp'));
   assert.ok(noShopSection, 'the superior-proposal standard stays where its own rules put it');
 });
+
+// Finding (44), Ben: "yes to both". Generation 7's stored facts for the two
+// 5.02 sentences, if any, take their rows by default.
+test('readout-less facts for the deemed-breach and no-restricting-agreement sentences take their rows by default', () => {
+  const prohibited = (id, text, summary) => ({
+    fact_id: id, proposal_id: id, family_key: 'NO_SHOP', subtype_key: 'PROHIBITED_ACTION', fact_type: 'PROHIBITED_ACTION', section_reference: '5.02', structure_node_id: 'n-5-02',
+    statement: text, headline: { label: 'Prohibited action', distinguishing_component_ids: [`${id}-op`], summary },
+    components: [{ component_id: `${id}-op`, kind: 'OPERATION', label: 'operation', text, origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 40, gap_before: false, children: [] }],
+  });
+  const deemed = prohibited('deemed', 'any violation of the restrictions set forth in this Section 5.02(a) by any Representative of the Company acting in its authorized capacity on behalf of the Company shall be a breach of this Section 5.02(a) by the Company', 'A Representative breach is a Company breach');
+  const restricting = prohibited('restrict', 'the Company will not enter into any agreement with any Person subsequent to the date of this Agreement that would restrict the Company\'s ability to provide such information to Parent', 'Company may not agree to restrict information to Parent');
+  const other = prohibited('other', 'the Company shall not solicit, initiate or knowingly encourage any Takeover Proposal', 'Company may not solicit a Takeover Proposal');
+  const view = buildTableView({ facts: [deemed, restricting, other], tableShapes, legalSchema });
+  const tables = view.sections.flatMap((section) => section.tables);
+  const core = tables.find((candidate) => candidate.table_key === 'nosol-noshop-core-mechanics');
+  const notice = tables.find((candidate) => candidate.table_key === 'nosol-noshop-notice');
+  assert.ok(core.rows.find((row) => row.subject === 'Representative control standard' && row.backing_facts.some((entry) => entry.fact_id === 'deemed')));
+  assert.ok(notice.rows.find((row) => row.subject === 'No agreement restricting information to Parent' && row.backing_facts.some((entry) => entry.fact_id === 'restrict')));
+  const placed = tables.flatMap((table) => table.rows).some((row) => row.backing_facts.some((entry) => entry.fact_id === 'other'));
+  assert.equal(placed, false, 'a prohibited act whose words match neither sentence takes no default row');
+});

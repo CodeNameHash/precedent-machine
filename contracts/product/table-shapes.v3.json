@@ -3483,7 +3483,9 @@
                   "SHALL_CAUSE_REPRESENTATIVES",
                   "SHALL_DIRECT_AND_USE_REASONABLE_BEST_EFFORTS",
                   "SHALL_NOT_AUTHORIZE_OR_PERMIT",
-                  "SHALL_INSTRUCT"
+                  "SHALL_INSTRUCT",
+                  "YES",
+                  "NO"
                 ],
                 "Standstill enforcement (don't ask, don't waive)": [
                   "STANDSTILL_WAIVABLE_ON_FIDUCIARY_DETERMINATION",
@@ -3540,12 +3542,16 @@
             "RETURN_OR_DESTROY_REQUIREMENT",
             "SUBSEQUENT_VDR_REMOVAL"
           ],
-          "guidance": "The core no-shop mechanics, one row per question. Go-shop: YES only when the agreement grants a go-shop period. Cease existing discussions, Return or destruction of information and Data-room access terminated: from the cease-discussions clause (CEASE_DISCUSSIONS_REQUIREMENT, RETURN_OR_DESTROY_REQUIREMENT, SUBSEQUENT_VDR_REMOVAL). No-shop restriction (prohibited acts): the PROHIBITED_ACTION facts, one cell per act the clause prohibits (a clause that prohibits soliciting, initiating, knowingly encouraging and furnishing information yields four cells). Representative control standard: the words that bind the Company's Representatives (\"shall cause its Representatives not to\" is SHALL_CAUSE_REPRESENTATIVES; \"shall not authorize or permit\" is SHALL_NOT_AUTHORIZE_OR_PERMIT). Standstill enforcement: the clause on waiving or enforcing standstills. Omit a row the agreement does not address. The sentence deeming a breach by a Representative a breach by the Company is a PROHIBITED_ACTION fact on the Representative control standard row with row_detail \"Representative breach is Company breach\" (Ben, 2026-10-17).",
+          "guidance": "The core no-shop mechanics, one row per question. Go-shop: YES only when the agreement grants a go-shop period. Cease existing discussions, Return or destruction of information and Data-room access terminated: from the cease-discussions clause (CEASE_DISCUSSIONS_REQUIREMENT, RETURN_OR_DESTROY_REQUIREMENT, SUBSEQUENT_VDR_REMOVAL). No-shop restriction (prohibited acts): the PROHIBITED_ACTION facts, one cell per act the clause prohibits (a clause that prohibits soliciting, initiating, knowingly encouraging and furnishing information yields four cells). Representative control standard: the words that bind the Company's Representatives (\"shall cause its Representatives not to\" is SHALL_CAUSE_REPRESENTATIVES; \"shall not authorize or permit\" is SHALL_NOT_AUTHORIZE_OR_PERMIT). Standstill enforcement: the clause on waiving or enforcing standstills. Omit a row the agreement does not address. The sentence deeming a breach by a Representative a breach by the Company (\"any violation of the restrictions ... by any Representative of the Company ... acting in its authorized capacity on behalf of the Company ... shall be a breach of this Section 5.02(a) by the Company\") is a PROHIBITED_ACTION fact on the Representative control standard row with row_detail \"Representative breach is Company breach\" and the code YES (Ben, 2026-10-17: \"yes to both\").",
           "detail_labels_by_row": {
             "Representative control standard": [
               "Representative breach is Company breach"
             ]
-          }
+          },
+          "fact_type_rows": {
+            "PROHIBITED_ACTION": "Representative control standard"
+          },
+          "fact_type_rows_when": "(?=[\\s\\S]*Representative)(?=[\\s\\S]*(?:shall be|constitute|deemed)[^.]{0,60}breach)"
         },
         {
           "table_key": "nosol-noshop-notice",
@@ -3655,8 +3661,15 @@
                   "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
                 },
                 {
-                  "code": "PROHIBITED",
-                  "label": "Prohibited",
+                  "code": "YES",
+                  "label": "Yes",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
+                },
+                {
+                  "code": "NO",
+                  "label": "No",
                   "tone": "neutral",
                   "addition": true,
                   "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
@@ -3695,8 +3708,8 @@
                   "SILENT"
                 ],
                 "No agreement restricting information to Parent": [
-                  "PROHIBITED",
-                  "SILENT"
+                  "YES",
+                  "NO"
                 ]
               },
               "fill_from": [
@@ -3758,7 +3771,11 @@
             "NOTICE_UPDATE_OBLIGATION",
             "PROHIBITED_ACTION"
           ],
-          "guidance": "Notice to Parent under the no-shop, one fact and one readout per row, each row's timing one code (never \"Required within a stated period\" beside \"Required promptly\": \"promptly, and in any event within 48 hours\" is REQUIRED_WITHIN_STATED_PERIOD with 48 hours in the period column and promptly in the summary). Initial notice: the NOTICE_PERIOD fact giving notice of a proposal, inquiry or request (its trigger, knowledge of receipt by an executive officer or director, as a second code; its period). Notice contents: the NOTICE_UPDATE_OBLIGATION or NOTICE_PERIOD fact listing what the notice carries, one cell per item (the identity of the person; a copy of a written proposal, inquiry or request; the material terms and conditions when oral; modifications). Ongoing updates: the NOTICE_UPDATE_OBLIGATION fact keeping Parent reasonably informed (its timing; status and developments and draft documentation as content cells). Notice of a decision to engage: the NOTICE_PERIOD fact giving notice that the Company will provide information or negotiate (its period). Oral proposals: the clause letting the Company ask that an oral proposal be made in writing. No agreement restricting information to Parent: the PROHIBITED_ACTION fact that the Company will not enter into an agreement that would prevent it from giving Parent this information (Ben, 2026-10-17: a row of this table). The notice and match periods of the superior-proposal path belong to the matching-rights table; those of the intervening-event path to the intervening-event table."
+          "guidance": "Notice to Parent under the no-shop, one fact and one readout per row, each row's timing one code (never \"Required within a stated period\" beside \"Required promptly\": \"promptly, and in any event within 48 hours\" is REQUIRED_WITHIN_STATED_PERIOD with 48 hours in the period column and promptly in the summary). Initial notice: the NOTICE_PERIOD fact giving notice of a proposal, inquiry or request (its trigger, knowledge of receipt by an executive officer or director, as a second code; its period). Notice contents: the NOTICE_UPDATE_OBLIGATION or NOTICE_PERIOD fact listing what the notice carries, one cell per item (the identity of the person; a copy of a written proposal, inquiry or request; the material terms and conditions when oral; modifications). Ongoing updates: the NOTICE_UPDATE_OBLIGATION fact keeping Parent reasonably informed (its timing; status and developments and draft documentation as content cells). Notice of a decision to engage: the NOTICE_PERIOD fact giving notice that the Company will provide information or negotiate (its period). Oral proposals: the clause letting the Company ask that an oral proposal be made in writing. No agreement restricting information to Parent: YES for the PROHIBITED_ACTION fact that the Company \"will not ... enter into any agreement with any Person subsequent to the date of this Agreement that would restrict the Company's ability to provide such information to Parent\" (Ben, 2026-10-17: \"yes to both\"). The notice and match periods of the superior-proposal path belong to the matching-rights table; those of the intervening-event path to the intervening-event table.",
+          "fact_type_rows": {
+            "PROHIBITED_ACTION": "No agreement restricting information to Parent"
+          },
+          "fact_type_rows_when": "(?=[\\s\\S]*agreement)(?=[\\s\\S]*restrict)(?=[\\s\\S]*Parent)"
         }
       ],
       "print_pages": [

@@ -2983,14 +2983,19 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       that an oral proposal be made in writing; judged to belong here
       because it governs how a proposal is communicated), and, per Ben's
       "yes to both" (finding (44)), No agreement restricting information
-      to Parent (Prohibited; Not addressed); one timing code per row,
+      to Parent (Yes / No); one timing code per row,
       "promptly, and in any event within 48 hours" coded as the stated
       period with the summary saying promptly, the 48 hours in the
       Period column that folds under B4 when one row alone states it;
       the deemed-breach sentence is the sub-item "Representative breach
-      is Company breach" under Representative control standard. The
-      NO_SHOP layer rule names each notice duty as its own fact. Left
-      out, as asked: nothing else of 5.02 moved.
+      is Company breach" under Representative control standard, Yes / No
+      (the manager's addendum of 23:52 UTC, Ben's "yes to both" quoted
+      in the shape comments). Both sentences have page defaults for a
+      stored readout-less PROHIBITED_ACTION fact whose words are the
+      sentence (`fact_type_rows` with `fact_type_rows_when` on the core
+      and the notice table), so generation 7's facts for them, if any,
+      take the rows. The NO_SHOP layer rule names each notice duty as
+      its own fact. Left out, as asked: nothing else of 5.02 moved.
       A5 (finding (47)), in `components/product/PublishedSummary.jsx`
       (`childrenCoverParent`): a parent whose children together cover
       its words, with nothing but a list's connectives (and, or, plus,

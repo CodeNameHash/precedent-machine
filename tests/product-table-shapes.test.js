@@ -747,15 +747,22 @@ test('the no-shop notice table is 5.02(d)\'s own mechanics as fixed rows, one ti
   assert.deepEqual(provision.vocabulary_by_row['Ongoing updates'], ['REQUIRED_PROMPTLY', 'REQUIRED_WITHIN_STATED_PERIOD', 'NOT_REQUIRED', 'DRAFT_DOCUMENTATION', 'STATUS_AND_DEVELOPMENTS']);
   assert.deepEqual(provision.vocabulary_by_row['Notice of a decision to engage'], ['REQUIRED_PROMPTLY', 'REQUIRED_WITHIN_STATED_PERIOD', 'NOT_REQUIRED']);
   assert.deepEqual(provision.vocabulary_by_row['Oral proposals'], ['MAY_REQUEST_WRITTEN_PROPOSAL', 'SILENT']);
-  assert.deepEqual(provision.vocabulary_by_row['No agreement restricting information to Parent'], ['PROHIBITED', 'SILENT']);
+  assert.deepEqual(provision.vocabulary_by_row['No agreement restricting information to Parent'], ['YES', 'NO']);
+  assert.deepEqual(notice.fact_type_rows, { PROHIBITED_ACTION: 'No agreement restricting information to Parent' });
+  assert.ok(new RegExp(notice.fact_type_rows_when, 'i').test('The Company will not enter into any agreement with any Person that would restrict its ability to provide such information to Parent'));
+  assert.equal(new RegExp(notice.fact_type_rows_when, 'i').test('The Company shall not solicit any Takeover Proposal'), false);
   assert.deepEqual(notice.columns.map((column) => column.column_id), ['provision', 'period', 'asDrafted']);
   assert.deepEqual(notice.subtype_keys, ['NOTICE_PERIOD', 'NOTICE_UPDATE_OBLIGATION', 'PROHIBITED_ACTION']);
   assert.match(notice.guidance, /each row's timing one code \(never "Required within a stated period" beside "Required promptly"/);
   assert.match(notice.guidance, /48 hours in the period column and promptly in the summary/);
-  assert.match(notice.guidance, /No agreement restricting information to Parent: the PROHIBITED_ACTION fact/);
+  assert.match(notice.guidance, /No agreement restricting information to Parent: YES for the PROHIBITED_ACTION fact[\s\S]*?\(Ben, 2026-10-17: "yes to both"\)/);
   const core = findTableV3(section, 'nosol-noshop-core-mechanics');
   assert.deepEqual(core.detail_labels_by_row, { 'Representative control standard': ['Representative breach is Company breach'] });
-  assert.match(core.guidance, /row_detail "Representative breach is Company breach"/);
+  assert.match(core.guidance, /row_detail "Representative breach is Company breach" and the code YES \(Ben, 2026-10-17: "yes to both"\)/);
+  assert.deepEqual(core.columns[0].vocabulary_by_row['Representative control standard'].slice(-2), ['YES', 'NO']);
+  assert.deepEqual(core.fact_type_rows, { PROHIBITED_ACTION: 'Representative control standard' });
+  assert.ok(new RegExp(core.fact_type_rows_when, 'i').test('Any violation of the restrictions set forth in this Section 5.02(a) by any Representative of the Company acting in its authorized capacity shall be a breach of this Section 5.02(a) by the Company'));
+  assert.equal(new RegExp(core.fact_type_rows_when, 'i').test('The Company shall cause its Representatives not to solicit any Takeover Proposal'), false);
 });
 
 // Ben, 2026-10-17 (plan finding (42)): "you're missing the fiduciary
