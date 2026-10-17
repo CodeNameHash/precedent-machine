@@ -2938,6 +2938,50 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       the tables keep full width under the open panel; Concho's 6.3 with
       a cited run across "-45-" shows the words and the clause without
       the footer, limb (a) indented, the marks in place.
+      (44) 2026-10-17 23:45 UTC, Ben, on the two readout-less 5.02
+      clauses (the Representative deemed-breach sentence as a sub-item
+      "Representative breach is Company breach" under Representative
+      control standard; the no-restricting-agreement sentence as a row
+      "No agreement restricting information to Parent" on the rebuilt
+      notice table): "yes to both". And: "Agreed on all following it -
+      also you now have $200 of API tokens you can use if you want to
+      preseve subscription capcaity". Decisions: both rows join work
+      package 2; generation 8 runs when work package 2 lands; NCS, then
+      Olaplex and Apogee, follow it. The ANTHROPIC provider in the code
+      (lib/product/anthropic-model.js) runs only inside the web request
+      on Sonnet with a 12,000-token output cap, not on the hosted worker
+      with the split and the Opus tier the subscription runs use; work
+      package 3 brings the API provider to the hosted worker at the same
+      model tier, output cap and part splitting, the key read from the
+      preview environment like the OAuth token and never from the
+      repository, with a cost estimate from the published prices and
+      generation 7's token counts before any run is submitted on it.
+      (45) 2026-10-17 23:55 UTC, Ben: "done on the key, will be live on
+      your next redploy". ANTHROPIC_API_KEY is on the deal-corpus
+      project's preview environment (set by Ben in Vercel; its value was
+      never in this session). Work package 3 is queued to the
+      implementer for after work package 2: the ANTHROPIC provider on
+      the hosted worker (the wake passes the key to the sandbox as it
+      passes the OAuth token; same model tier, part splitting and output
+      cap as the Claude CLI path; usage limits and the 429 path handled;
+      the run's model_config names the provider so the run page shows
+      which account paid), with a per-run cost estimate from the
+      published prices and generation 7's 9.85m input and 3.15m output
+      tokens. Generation 8 goes on whichever path is ready first, Ben
+      choosing by the estimate.
+      (47) 2026-10-18 00:05 UTC, Ben, on the 2.01 Consideration package
+      tree in the sidebar: "hitting 'show detail' doesn't add much...just
+      smae stuff again? Also, we should better indent the (i) and (ii)
+      for the right to receive that is shown". The parent component's
+      words are the join of its children, so the toggle repeats them;
+      and the defined-term line "(clauses (i) and (ii), collectively,
+      the 'Merger Consideration')" sits centred and underlined. Added to
+      work package 2 (A.5): a parent whose children together cover its
+      words shows its children in its place, indented one level each,
+      with no toggle; a parent with words of its own shows them with its
+      children indented beneath, no toggle; list elements such as (i)
+      and (ii) are separate indented lines; every tree line uses one
+      text style, left-aligned.
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
