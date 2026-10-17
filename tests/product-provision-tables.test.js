@@ -733,3 +733,26 @@ test('the sidebar renders the clause as paragraphs with lettered limbs on their 
   assert.doesNotMatch(html, /<pre/);
   assert.doesNotMatch(html, /-40-/);
 });
+
+// A folded column renders as a quiet trailing detail after the subject
+// that opens the sidebar on its cell (Ben, 2026-10-17, finding (42)).
+test('a trailing detail renders after the subject and carries its cell to the selection', () => {
+  const view = {
+    sections: [{ section_key: 'nosol-noshop', title: 'No-Shop', tables: [{
+      table_key: 'nosol-noshop-notice', layout: 'rows', term_column: { header: 'Term' }, group_header: null,
+      columns: [{ column_id: 'provision', header: 'Summary' }],
+      rows: [
+        { subject: 'Notice of a proposal', cells: [{ column_id: 'provision', kind: 'pill', label: 'Required', code: 'REQUIRED', tone: 'neutral', component_ids: ['c-1'], fact_ids: ['f-1'] }], backing_facts: [{ fact_id: 'f-1' }] },
+        { subject: 'Notice period', cells: [{ column_id: 'provision', kind: 'dash', label: null, tone: null, component_ids: [], fact_ids: [] }], backing_facts: [{ fact_id: 'f-2' }],
+          trailing_details: [{ column_id: 'period', header: 'Period', label: '48 hours', cell: { column_id: 'period', kind: 'value', label: '48 hours', component_ids: ['c-2'], fact_ids: ['f-2'] } }] },
+      ],
+    }], facts_without_readout: [] }],
+    defined_terms: [],
+  };
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts: [] }));
+  const detail = /<button type="button" data-testid="trailing-detail" title="Period"[^>]*>· 48 hours<\/button>/.exec(html);
+  assert.ok(detail, html);
+  assert.ok(html.indexOf('>Notice period<') < detail.index, 'the detail follows its subject');
+  assert.equal((html.match(/data-testid="trailing-detail"/g) || []).length, 1);
+  assert.doesNotMatch(html, />Period</, 'the folded column has no header');
+});

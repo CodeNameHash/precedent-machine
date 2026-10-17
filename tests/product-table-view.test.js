@@ -731,13 +731,17 @@ test('capitalisation facts without a readout fill the capitalization table by se
   assert.equal(section.rail.group, 'Representations');
   const table = section.tables[0];
   assert.equal(table.table_key, 'capitalization-table');
-  assert.deepEqual(table.columns.map((column) => column.column_id), ['authorised', 'issued', 'reserved', 'asOf', 'validIssuance']);
+  // The authorised count is stated for the common stock alone, so the column
+  // folds into that row as a trailing detail (Ben, 2026-10-17, finding (42):
+  // "'period' as a column is wasteful as it only applies to one provision?
+  // Consider that point generally?"; applyColumnRules).
+  assert.deepEqual(table.columns.map((column) => column.column_id), ['issued', 'reserved', 'asOf', 'validIssuance']);
   const cellOf = (row, columnId) => row.cells.find((cell) => cell.column_id === columnId);
   const rowOf = (subject) => table.rows.find((row) => row.subject === subject);
   assert.deepEqual(table.rows.map((row) => row.subject), ['Common Stock', 'Company Stock Options', 'ESPP']);
   const common = rowOf('Common Stock');
-  assert.equal(cellOf(common, 'authorised').label, '800,000,000', 'the first count names the common stock');
-  assert.deepEqual(cellOf(common, 'authorised').component_ids, ['a-common']);
+  assert.deepEqual(common.trailing_details.map((detail) => [detail.column_id, detail.label]), [['authorised', 'Authorised 800,000,000']], 'the first count names the common stock');
+  assert.deepEqual(common.trailing_details[0].cell.component_ids, ['a-common']);
   assert.equal(cellOf(common, 'issued').label, '105,278,627');
   assert.equal(cellOf(common, 'reserved').label, '6,331,920', 'the plan reserve, its ESPP exception not naming the row');
   assert.equal(cellOf(common, 'asOf').label, 'September 18, 2025', 'the Measurement Date inherited from the chapeau');
@@ -745,7 +749,7 @@ test('capitalisation facts without a readout fill the capitalization table by se
   assert.deepEqual(common.backing_facts.map((entry) => entry.fact_id), ['cap-auth', 'cap-issued', 'cap-plans', 'cap-valid']);
   // A column filled only by named subtypes is never completed from another
   // subtype's number: the issued count does not become an authorised count.
-  assert.equal(cellOf(rowOf('Company Stock Options'), 'authorised').kind, 'dash');
+  assert.equal(rowOf('Company Stock Options').trailing_details, undefined);
   assert.equal(cellOf(rowOf('Company Stock Options'), 'issued').label, '12,262,280');
   assert.equal(cellOf(rowOf('ESPP'), 'reserved').label, '1,263,830');
   // Ben, 2026-09-14: the absence facts are the table's Other provisions,
@@ -1211,4 +1215,60 @@ test('page footers are hidden from the words the tables show and kept in the sto
   assert.equal(factWithoutPageFooters(fixture.facts[0]), fixture.facts[0], 'a fact without footers is the same object');
   const view = buildTableView({ facts: [fact], tableShapes, legalSchema });
   assert.doesNotMatch(JSON.stringify(view), /-38-/);
+});
+
+// Ben, 2026-10-17 (plan finding (42)): "why do we have a summary column
+// here? Also 'period' as a column is wasteful as it only applies to one
+// provision? Consider that point generally?" and "I know the pills are
+// likely helpful for background comparison work etc but do we need to show
+// them here? Consider this more generally on the UI pills etc". One rule
+// for every table (applyColumnRules; docs/core/CODEBASE-GUIDE.md).
+test('applyColumnRules folds a one-line column into a trailing detail, hides pills the summary states, and leaves a one-row table alone', () => {
+  const { applyColumnRules, pillStatedInSummary } = require('../lib/product/table-view');
+  const shapeColumns = [
+    { column_id: 'provision', render: 'vocabulary', header: 'Summary' },
+    { column_id: 'period', render: 'value', header: 'Period' },
+    { column_id: 'asDrafted', render: 'verbatim', header: 'Summary', display: 'fact_text' },
+  ];
+  const pill = (label, code) => ({ column_id: 'provision', kind: 'pill', label, code, tone: 'neutral', component_ids: ['c'], fact_ids: ['f'] });
+  const value = (label) => ({ column_id: 'period', kind: 'value', label, tone: 'neutral', component_ids: ['p'], fact_ids: ['f'] });
+  const text = (label) => ({ column_id: 'asDrafted', kind: 'text', label, tone: 'neutral', component_ids: ['s'], fact_ids: ['f'] });
+  const dash = (id) => ({ column_id: id, kind: 'dash', label: null, tone: null, component_ids: [], fact_ids: [] });
+  const table = {
+    table_key: 't', layout: 'rows', term_column: { header: 'Term' },
+    columns: shapeColumns.map(({ column_id, header, display }) => ({ column_id, header, ...(display ? { display } : {}) })),
+    rows: [
+      { subject: 'Notice of a proposal', cells: [pill('Required', 'REQUIRED'), dash('period'), text('Company must notify Parent of any proposal')], backing_facts: [{ fact_id: 'f' }] },
+      { subject: 'Notice period', cells: [{ column_id: 'provision', kind: 'pill', values: [pill('Required within a stated period', 'REQUIRED_WITHIN_STATED_PERIOD'), pill('Required promptly', 'REQUIRED_PROMPTLY')], component_ids: ['c'], fact_ids: ['f'] }, value('48 hours'), text('Notice is required promptly, within 48 hours')], backing_facts: [{ fact_id: 'f' }] },
+      { subject: 'Ongoing updates', cells: [pill('Required promptly', 'REQUIRED_PROMPTLY'), dash('period'), text('Updates to Parent are required promptly')], backing_facts: [{ fact_id: 'f' }] },
+    ],
+  };
+  const out = applyColumnRules(table, shapeColumns);
+  // (a) the period column, filled on one line of three, is that line's detail; the subject names the column, so the header is not repeated.
+  assert.deepEqual(out.columns.map((column) => column.column_id), ['provision', 'asDrafted']);
+  assert.deepEqual(out.rows[1].trailing_details.map((detail) => [detail.column_id, detail.header, detail.label]), [['period', 'Period', '48 hours']]);
+  assert.equal(out.rows[0].trailing_details, undefined);
+  // (b) "Required promptly" is stated by the summaries that carry it: the pill goes, its code stays on the cell.
+  const notice = out.rows[1].cells.find((cell) => cell.column_id === 'provision');
+  assert.equal(notice.label, 'Required within a stated period');
+  assert.deepEqual(notice.stated_in_summary, ['REQUIRED_PROMPTLY']);
+  const updates = out.rows[2].cells.find((cell) => cell.column_id === 'provision');
+  assert.equal(updates.kind, 'dash');
+  assert.deepEqual(updates.stated_in_summary, ['REQUIRED_PROMPTLY']);
+  assert.equal(out.rows[0].cells.find((cell) => cell.column_id === 'provision').label, 'Required', 'a pill the summary does not state stays');
+  // (c) the summary column stays.
+  assert.equal(out.rows[0].cells.find((cell) => cell.column_id === 'asDrafted').label, 'Company must notify Parent of any proposal');
+  // A one-row table keeps its columns; an absent row does not count as a row.
+  const one = applyColumnRules({ ...table, rows: [table.rows[1]] }, shapeColumns);
+  assert.deepEqual(one.columns.map((column) => column.column_id), ['provision', 'period', 'asDrafted']);
+  const withAbsent = applyColumnRules({ ...table, rows: [table.rows[1], { subject: 'Parent', absent: true, cells: [dash('provision'), dash('period'), dash('asDrafted')], backing_facts: [] }] }, shapeColumns);
+  assert.deepEqual(withAbsent.columns.map((column) => column.column_id), ['provision', 'period', 'asDrafted']);
+  // The detail names its column when the subject does not.
+  const counts = applyColumnRules({ ...table, columns: [{ column_id: 'period', header: 'Authorised' }, { column_id: 'asDrafted', header: 'Summary', display: 'fact_text' }], rows: [
+    { subject: 'Common Stock', cells: [value('800,000,000'), text('800,000,000 shares authorised')], backing_facts: [] },
+    { subject: 'Options', cells: [dash('period'), text('Options outstanding')], backing_facts: [] },
+  ] }, [{ column_id: 'period', render: 'value', header: 'Authorised' }, shapeColumns[2]]);
+  assert.equal(counts.rows[0].trailing_details[0].label, 'Authorised 800,000,000');
+  assert.equal(pillStatedInSummary('Yes', 'Yes, the board may change'), false, 'a label under four characters never matches');
+  assert.equal(pillStatedInSummary('Required promptly', 'Notice is required promptly, within 48 hours'), true);
 });

@@ -158,6 +158,23 @@ function TermCell({ row, tableKey, rowIndex, subIndex = null, onSelect, detail =
       {first ? (
         <button type="button" data-testid="term-open" onClick={openFirst} className={`text-left underline-offset-2 hover:underline ${SUBJECT}`}>{row.subject}</button>
       ) : <span className={SUBJECT}>{row.subject}</span>}
+      {/* A value or vocabulary column filled on this line alone folds in
+          here as a trailing detail ("Notice period · 4 business days"):
+          Ben, 2026-10-17, "'period' as a column is wasteful as it only
+          applies to one provision? Consider that point generally?"
+          (lib/product/table-view.js applyColumnRules). */}
+      {(row.trailing_details || []).map((detail) => (
+        <button
+          key={detail.column_id}
+          type="button"
+          data-testid="trailing-detail"
+          title={detail.header || undefined}
+          onClick={() => onSelect({ tableKey, rowIndex, subIndex, columnId: detail.column_id, componentId: (detail.cell.component_ids || [])[0] || null, componentIds: detail.cell.component_ids || [], factId: (detail.cell.fact_ids || [])[0] || first?.fact_id || null, linkSection: detail.cell.link_section || null })}
+          className={`ml-[4.5px] text-left font-ui ${TEXT} underline-offset-2 hover:underline`}
+        >
+          {`· ${detail.label}`}
+        </button>
+      ))}
       {first ? (
         <button type="button" onClick={openFirst} className={`ml-[4.5px] ${QUIET}`} data-testid="see-provision">See provision</button>
       ) : null}

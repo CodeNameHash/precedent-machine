@@ -2938,6 +2938,24 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       the tables keep full width under the open panel; Concho's 6.3 with
       a cited run across "-45-" shows the words and the clause without
       the footer, limb (a) indented, the marks in place.
+      B4, one column and pill rule for every table (`applyColumnRules`
+      in `lib/product/table-view.js`, written once in the codebase
+      guide's table bullet): (a) a value or vocabulary column filled on
+      only one line of a table with several rows (absent rows not
+      counted) folds into that line as a trailing detail after its
+      subject, a quiet control that opens the sidebar on its cell
+      ("Notice period · 48 hours"; the detail names its column unless
+      the subject already does, "Common Stock · Authorised
+      800,000,000"); (b) a vocabulary pill whose label the line's
+      summary already states is not shown, its code kept on the cell
+      under `stated_in_summary`, and a column that leaves empty is
+      dropped; (c) the summary column stays. Columns that change under
+      the rule depend on each run's rows; on the test fixtures the
+      capitalization table's Authorised column folds into the Common
+      Stock row, the notice table's Period column folds into its one
+      filled row, and "Required promptly" pills beside summaries that
+      say so are hidden. The live list for generation 7 is read from
+      the page once the branch deploys.
       (44) 2026-10-17 23:45 UTC, Ben, on the two readout-less 5.02
       clauses (the Representative deemed-breach sentence as a sub-item
       "Representative breach is Company breach" under Representative
