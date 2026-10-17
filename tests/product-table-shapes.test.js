@@ -337,6 +337,10 @@ test('Decision 25: MAE definitions say "None" for a party without one; carve-out
     assert.equal(carveback.absent_code, 'NO');
     assert.deepEqual(table.footer_from_subtype, { subtype_keys: ['DISPROPORTIONALITY_CARVEBACK', 'UNDERLYING_CAUSE_RESTORATION'], label: 'Carve-back provisos as drafted' });
     assert.match(table.guidance, /generic title/);
+    // A footer fact needs no readout (finding (39)); the guidance agrees with
+    // the section's no_conclusions_subtype_keys instead of asking for a row_label.
+    assert.match(table.guidance, /the UNDERLYING_CAUSE_RESTORATION fact \([^)]*\) carries no conclusions, as no_conclusions_subtype_keys says; the page shows both under the table, never as rows\./);
+    assert.doesNotMatch(table.guidance, /Underlying cause proviso/);
   }
   assert.ok(section.no_conclusions_subtype_keys.includes('UNDERLYING_CAUSE_RESTORATION'));
 });

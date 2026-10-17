@@ -453,3 +453,22 @@ test('every paged result table is read in a total order that ends in its own key
   }
   assert.deepEqual(RESULT_TABLE_ORDER.product_fact_components, ['proposal_id', 'ordinal', 'component_id']);
 });
+
+// Plan finding (38), Metsera generation 7, 2026-09-14: finalisation writes
+// SCHEMA_DRIFT_FACT_TYPE with no structure node. loadCompletedSectionResults
+// keys every issue by node and so never returns it; loadDraftIssues reads
+// the draft-level rows of this run alone, for the preview page's drift lines.
+test('loadDraftIssues returns the run\'s draft-level issue payloads and none of the sections\' own', async () => {
+  const base = createFakeClient();
+  const store = new ProductPhase2Store({ client: base });
+  const sectionIssue = { issue_id: 'a'.repeat(64), kind: 'VALIDATION', code: 'CONCLUSIONS_DROPPED', structure_node_id: NODE_ID, message: 'dropped', state: 'OPEN' };
+  const drift = { issue_id: 'b'.repeat(64), kind: 'COVERAGE', code: 'SCHEMA_DRIFT_FACT_TYPE', family_key: 'KEY_DEFINED_TERMS', structure_node_id: null, message: JSON.stringify({ fact_type: 'OTHER_DEFINED_TERM_RECORDED', section_reference: '1.1', structure_node_id: NODE_ID }), state: 'OPEN' };
+  const otherRunDrift = { ...drift, issue_id: 'c'.repeat(64) };
+  base.tables.product_issues.push(
+    { run_id: RUN_ID, issue_id: sectionIssue.issue_id, structure_node_id: NODE_ID, payload: sectionIssue },
+    { run_id: RUN_ID, issue_id: drift.issue_id, structure_node_id: null, payload: drift },
+    { run_id: '00000000-0000-4000-8000-0000000000bb', issue_id: otherRunDrift.issue_id, structure_node_id: null, payload: otherRunDrift },
+  );
+  assert.deepEqual(await store.loadDraftIssues(RUN_ID), [drift]);
+  assert.deepEqual(await store.loadDraftIssues('00000000-0000-4000-8000-0000000000cc'), []);
+});

@@ -107,6 +107,24 @@ export function ProvisionsPreviewBody({ workspace, runId }) {
                   Date / Source / Generation' and the facts count line". The
                   header is the eyebrow, the state badge, the title and the
                   rule. */}
+              {/* Draft-level schema drift (plan finding (38), 2026-09-14): a
+                  fact type the schema gained after a section was extracted.
+                  One line per entry, set like the metadata line was, only
+                  when the draft recorded any; the tables below are unchanged.
+                  Ben: "look at all of the output yourself and analyze if you
+                  think it is right or wrong and if not, iterate to improve
+                  it": the reader sees which sections this generation did not
+                  ask about a fact type, instead of reading their silence as
+                  coverage. */}
+              {preview.schema_drift.length > 0 ? (
+                <div className="mt-[7px] space-y-[2px]" data-testid="preview-schema-drift">
+                  {preview.schema_drift.map((entry) => (
+                    <p key={entry.issue_id} className="text-[9.5px] font-ui text-[#6b6b6b]" data-testid="preview-schema-drift-line">
+                      {`Section ${entry.section_reference}: ${entry.fact_type}${entry.family_key ? ` (${entry.family_key})` : ''} joined the schema after this section was extracted; not covered in this generation.`}
+                    </p>
+                  ))}
+                </div>
+              ) : null}
               {live && progress.status !== 'FAILED' ? <p className="mt-[7px] rounded-[2px] bg-amber-50 px-[7px] py-[4.5px] text-[9.5px] font-ui text-amber-700" data-testid="preview-live">Filling in as sections complete. This page refreshes itself every minute.</p> : null}
               <div className="mt-[16px] h-[2px] w-full bg-black" data-testid="preview-rule" aria-hidden="true" />
             </header>

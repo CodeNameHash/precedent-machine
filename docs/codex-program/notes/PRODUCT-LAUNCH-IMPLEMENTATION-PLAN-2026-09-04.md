@@ -2819,6 +2819,39 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       Open: the page does not yet show the draft-level drift issues;
       the six drift sections' definitions are generation 8's; Ben's
       intervening event and no-shop comments.
+      (40) 2026-10-17 23:00 UTC, work package 1 of the section 10 loop,
+      generation 8 readiness. The page shows finding (38)'s drift: the
+      preview read (`loadCompletedSectionResults`) keys every issue by
+      its section node, so a draft-level issue (structure_node_id null)
+      never reached the page; `loadDraftIssues` reads those rows, the
+      preview handler carries them in `analysis.issues` beside the
+      sections' own, and `previewFactsFromWorkspace` returns them as
+      `schema_drift` (section, family, fact type; section order, then
+      fact type). The page sets one line per entry under the title in
+      the grey the metadata line used ("Section 2.01:
+      OTHER_DEFINED_TERM_RECORDED (KEY_DEFINED_TERMS) joined the schema
+      after this section was extracted; not covered in this
+      generation."), only when the draft recorded any; the tables are
+      unchanged, so a reader sees which sections this generation never
+      asked about a fact type instead of reading their silence as
+      coverage. Checked, from the request builder and its tests, that
+      the extraction request carries finding (39): the MAE_DEFINITION
+      layer rule (one DEFINITION_PRONG per limb, never the consummation
+      limb alone) rides in `component_instruction` through
+      `layerRulesText`; the summary rule names a Disclosure Letter
+      section as content and `headlineSummaryProblems` accepts one; the
+      carve-out tables' footer did not reach the model: the request
+      read `footer_from_subtype.subtype_key` alone, so the two tables
+      that took `subtype_keys` in (39) were sent with no footer. The
+      request now sends `footer_subtype_keys` for either form and one
+      sentence of `conclusion_instruction` says what a footer is. The
+      carve-out guidance had also asked for row_label "Underlying cause
+      proviso" on the UNDERLYING_CAUSE_RESTORATION fact while the
+      section's no_conclusions_subtype_keys told the model to omit its
+      conclusions; a footer fact needs no readout (39), so the guidance
+      now says so and the contract is regenerated. Finding (38) is the
+      pipeline, not the prompt: nothing of it belongs in the request.
+      No run submitted; generation 8 waits on Ben's comments.
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,

@@ -802,9 +802,12 @@ function applyDecision25MaeSection(doc) {
     // Metsera generation 7, 2026-09-14: the underlying-cause proviso ("the
     // underlying facts giving rise to such failure may be taken into
     // account") had no readout and no place; it is the second proviso
-    // under the table, as drafted.
+    // under the table, as drafted. Generation 8 readiness, 2026-09-14: the
+    // guidance had asked for a row_label on that fact while the section's
+    // no_conclusions_subtype_keys told the extractor to omit its conclusions;
+    // a footer fact needs no readout, so the guidance now says so too.
     table.footer_from_subtype = { subtype_keys: ['DISPROPORTIONALITY_CARVEBACK', 'UNDERLYING_CAUSE_RESTORATION'], label: 'Carve-back provisos as drafted' };
-    table.guidance = `Carve-outs from ${party}'s Material Adverse Effect: one row per EXCLUSION fact, row_label the generic title from fixed_row_labels that names the carve-out's subject (a new generic title only when none fits, never the agreement's own words), the carve-out's words in the provision column, and disproportionateCarveback YES only when the disproportionality carve-back applies to this carve-out (cite the CROSS_REFERENCE that names it), otherwise NO. The DISPROPORTIONALITY_CARVEBACK fact goes to this table with row_label "Disproportionate carve-back" and its words in the provision column, and the UNDERLYING_CAUSE_RESTORATION fact (the underlying facts of an excluded failure or change may still count) with row_label "Underlying cause proviso"; the page shows both under the table, never as rows.`;
+    table.guidance = `Carve-outs from ${party}'s Material Adverse Effect: one row per EXCLUSION fact, row_label the generic title from fixed_row_labels that names the carve-out's subject (a new generic title only when none fits, never the agreement's own words), the carve-out's words in the provision column, and disproportionateCarveback YES only when the disproportionality carve-back applies to this carve-out (cite the CROSS_REFERENCE that names it), otherwise NO. The DISPROPORTIONALITY_CARVEBACK fact goes to this table with row_label "Disproportionate carve-back" and its words in the provision column, and the UNDERLYING_CAUSE_RESTORATION fact (the underlying facts of an excluded failure or change may still count) carries no conclusions, as no_conclusions_subtype_keys says; the page shows both under the table, never as rows.`;
   }
 }
 

@@ -57,12 +57,33 @@ test('a saved review state is applied when the run has one', () => {
   assert.equal(previewFactsFromWorkspace(workspace).facts.length, 0, 'the rejected fact is left out');
 });
 
-test('the handler reads access, context, completed sections and review through the store', async () => {
+// Plan finding (38), 2026-09-14: finalisation stores SCHEMA_DRIFT_FACT_TYPE
+// at draft level (no structure node). The section read never returns such a
+// row, so the handler reads the draft-level issues separately and the
+// workspace carries them beside the sections' own.
+const driftIssue = {
+  schema_version: 'PRODUCT_ISSUE/V1', issue_id: 'i-drift', kind: 'COVERAGE', code: 'SCHEMA_DRIFT_FACT_TYPE',
+  family_key: 'KEY_DEFINED_TERMS', structure_node_id: null, proposal_id: null,
+  message: JSON.stringify({ fact_type: 'OTHER_DEFINED_TERM_RECORDED', section_reference: '3.14', structure_node_id: NODE }), state: 'OPEN',
+};
+
+test('buildPreviewWorkspace carries draft-level issues beside the sections\' own, and none when the store has none', () => {
+  const sectionIssue = { issue_id: 'i-section', kind: 'VALIDATION', code: 'CONCLUSIONS_DROPPED', structure_node_id: NODE, message: 'x', state: 'OPEN' };
+  const withDrift = buildPreviewWorkspace({ ...context, sections: [{ ...section(), issues: [sectionIssue] }], draftIssues: [driftIssue] });
+  assert.deepEqual(withDrift.analysis.issues.map((issue) => issue.issue_id), ['i-section', 'i-drift']);
+  assert.deepEqual(previewFactsFromWorkspace(withDrift).schema_drift.map((entry) => [entry.section_reference, entry.fact_type]), [['3.14', 'OTHER_DEFINED_TERM_RECORDED']]);
+  const without = buildPreviewWorkspace({ ...context, sections: [section()] });
+  assert.deepEqual(without.analysis.issues, []);
+  assert.deepEqual(previewFactsFromWorkspace(without).schema_drift, []);
+});
+
+test('the handler reads access, context, completed sections, draft-level issues and review through the store', async () => {
   const calls = [];
   const store = {
     assertAccess: async (args) => { calls.push(['assertAccess', args.actor]); return 'OWNER'; },
     getRunContext: async () => context,
     loadCompletedSectionResults: async () => [section()],
+    loadDraftIssues: async (runId) => { calls.push(['loadDraftIssues', runId]); return [driftIssue]; },
     getReview: async () => null,
   };
   const handler = createProductPreviewHandler({ getClient: () => ({}), storeFactory: () => store, actorResolver: async () => 'ben' });
@@ -72,7 +93,21 @@ test('the handler reads access, context, completed sections and review through t
   assert.equal(res.body.schema_version, 'PRODUCT_PREVIEW_WORKSPACE/V1');
   assert.equal(res.body.analysis.proposals.length, 1);
   assert.equal(res.body.progress.completed, 1);
-  assert.deepEqual(calls, [['assertAccess', 'ben']]);
+  assert.deepEqual(res.body.analysis.issues.map((issue) => issue.issue_id), ['i-drift']);
+  assert.deepEqual(calls, [['assertAccess', 'ben'], ['loadDraftIssues', context.run.run_id]]);
+});
+
+test('a store without a draft-issue read still serves the preview', async () => {
+  const store = {
+    assertAccess: async () => 'OWNER',
+    getRunContext: async () => context,
+    loadCompletedSectionResults: async () => [section()],
+  };
+  const handler = createProductPreviewHandler({ getClient: () => ({}), storeFactory: () => store, actorResolver: async () => 'ben' });
+  const res = { setHeader() {}, status(code) { this.statusCode = code; return this; }, json(body) { this.body = body; return this; } };
+  await handler({ method: 'GET', query: { id: context.run.run_id }, headers: {} }, res);
+  assert.equal(res.statusCode, 200);
+  assert.deepEqual(res.body.analysis.issues, []);
 });
 
 test('the handler hides runs the actor cannot access', async () => {

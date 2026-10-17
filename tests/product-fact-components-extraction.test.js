@@ -484,6 +484,7 @@ test('the V9 request carries the value-column, party, label and DEFINED_TERM rul
   assert.ok(request);
   assert.match(request.conclusion_instruction, /A value column is never left empty when this proposal's own components include one of its fill_from kinds/);
   assert.match(request.conclusion_instruction, /A column with display party names an entity/);
+  assert.match(request.conclusion_instruction, /A table with footer_subtype_keys shows facts of those subtypes as drafted beneath it, never as rows: give such a fact the row_label the table's guidance names, or no conclusions when its subtype is in no_conclusions_subtype_keys\./);
   assert.match(request.component_instruction, /never a tag such as "Subject:", "Operation:" or "Actor:"/);
   assert.match(request.component_instruction, /resolves_to whose text is the definition's own words/);
   // headline.summary on every proposal (Ben, 2026-09-14: "it needs to be a
@@ -551,4 +552,59 @@ test('isNoOtherRepsSection reads the section heading', () => {
   assert.equal(isNoOtherRepsSection(closure('SECTION 3.24. No Other Representations or Warranties. Except for the representations…')), true);
   assert.equal(isNoOtherRepsSection(closure('SECTION 4.06. Non-Reliance on Estimates. Parent acknowledges…')), true);
   assert.equal(isNoOtherRepsSection(closure('SECTION 3.09. Taxes. (a) The Company has filed…\nNo other representations are made')), false);
+});
+
+// Plan finding (39), Metsera generation 7, 9.03: the carve-out tables' footer
+// took a list of subtypes (footer_from_subtype.subtype_keys) so the
+// underlying-cause proviso sits beside the disproportionality carve-back
+// under the table. The extraction request had read footer_from_subtype
+// .subtype_key alone, so those tables reached the model with no footer at
+// all; the capitalization table's single key still did. Both forms now reach
+// the extractor as footer_subtype_keys (generation 8 readiness).
+test('the extraction request carries every footer subtype, from a single subtype_key or a subtype_keys list', async () => {
+  const { sourceDoc, agreementStructure } = representationsSource();
+  const node = substantiveSections(agreementStructure).find((candidate) => candidate.reference === '3.02');
+  assert.ok(node, 'the capitalization section is a substantive node');
+  let extractionRequestSeen = null;
+  const families = ['CAPITALISATION', 'MAE_DEFINITION'];
+  await buildAgreementSectionDraft({
+    sourceDocument: sourceDoc, agreementStructure, node, legalSchema: legalSchemaV2, tableShapes,
+    model: {
+      async complete({ call_kind, request }) {
+        let modelResponse;
+        if (call_kind === 'ROUTING') {
+          modelResponse = { families, disposition: 'FAMILY_ASSIGNED', rationale: 'capital stock and the MAE term', deterministic_disagreements: [] };
+        } else if (call_kind === 'RESIDUAL') {
+          modelResponse = { paragraphs: request.paragraphs.map((p) => ({ source_span_id: p.source_span_id, disposition: 'KNOWN_FAMILY', family_keys: families, rationale: 'capital stock' })) };
+        } else {
+          extractionRequestSeen = request;
+          modelResponse = {
+            proposals: [], groups: [], links: [],
+            coverage: Object.fromEntries(request.family_contracts.map((contract) => [contract.family_key, 'NOT_FOUND'])),
+            fact_type_coverage: Object.fromEntries(request.family_contracts.map((contract) => [contract.family_key, Object.fromEntries(contract.required_fact_types.map((type) => [type, 'NOT_FOUND']))])),
+          };
+        }
+        return { provider_id: 'TEST', model_id: 'TEST', response: modelResponse, raw_request: request, raw_response: modelResponse, input_tokens: 1, output_tokens: 1, cost_microusd: 0, duration_ms: 1 };
+      },
+    },
+  });
+  assert.ok(extractionRequestSeen, 'the extraction call was made');
+  // The other two changes of finding (39) ride in component_instruction: the
+  // MAE layer rule (one DEFINITION_PRONG per limb, never the consummation
+  // limb alone) and the summary rule naming a Disclosure Letter section as
+  // content.
+  assert.match(extractionRequestSeen.component_instruction, /Layer rules for MAE_DEFINITION: [^]*two DEFINITION_PRONG facts, one per limb, each citing that limb's own words; the effect-on-the-business limb is never omitted in favour of the consummation limb/);
+  assert.match(extractionRequestSeen.component_instruction, /a statutory section such as Section 259 of the DGCL, a section of the Disclosure Letter, or an Article of the agreement may be named/);
+  const capitalization = extractionRequestSeen.table_shapes.CAPITALISATION.find((entry) => entry.table_key === 'capitalization-table');
+  assert.deepEqual(capitalization.footer_subtype_keys, ['CAPITALISATION_ABSENCE']);
+  for (const tableKey of ['mae-carveouts-parent', 'mae-carveouts-company']) {
+    const table = extractionRequestSeen.table_shapes.MAE_DEFINITION.find((entry) => entry.table_key === tableKey);
+    assert.ok(table, `${tableKey} reaches the extractor`);
+    assert.deepEqual(table.footer_subtype_keys, ['DISPROPORTIONALITY_CARVEBACK', 'UNDERLYING_CAUSE_RESTORATION']);
+    assert.equal('footer_subtype_key' in table, false);
+    assert.match(table.guidance, /carries no conclusions, as no_conclusions_subtype_keys says/);
+  }
+  assert.ok(extractionRequestSeen.no_conclusions_subtype_keys.MAE_DEFINITION.includes('UNDERLYING_CAUSE_RESTORATION'));
+  const definitions = extractionRequestSeen.table_shapes.MAE_DEFINITION.find((entry) => entry.table_key === 'mae-definitions-table');
+  assert.equal('footer_subtype_keys' in definitions, false, 'a table without a footer sends none');
 });
