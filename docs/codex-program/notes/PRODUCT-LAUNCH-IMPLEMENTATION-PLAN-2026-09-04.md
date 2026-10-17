@@ -2904,6 +2904,40 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       display, never removed from the text (spans and hashes stand).
       Generation 8 waits for work package 2 and Ben's answer on the two
       readout-less 5.02 clauses.
+      (43) 2026-10-17 23:45 UTC onward, implementer, work package 2 (the
+      manager's message of 23:38 UTC; items A1 to A3 first, then B4, C5,
+      C6). The page leapt because the tables' content column took 406px of right
+      padding while a fact was selected, so every table reflowed on a
+      click; the column now keeps one width and the fixed panel comes up
+      over the page, as the Storylines panel does (finding (37)).
+      `ProvisionTables` takes `initialSelection` so a static render can
+      show the open state. The page numbers are hidden at display and
+      never removed from the text: `lib/product/source-display.js`
+      (`hidePageFooters`, a footer on a line of its own between the words
+      of a sentence; `factWithoutPageFooters`, a display copy of a fact
+      with its bytes and ids untouched) is applied where words are shown:
+      the clause and source panes (`section-highlight` parts, after the
+      bytes are sliced, so the marks stand), the interpretation tree
+      (`renderLayer`), the sidebar's cited words, and every table word
+      (`buildTableView` maps its facts once; `factOwnText` and
+      `factSummaryText` too). A hyphenated word or an inline "-5-" is
+      left alone. A footer at a paragraph break keeps one break; a
+      front-matter roman numeral ("-ii-") is a footer too. The sidebar's
+      blocks are renamed (A2): "Provision" is "How Corpus read it" (the
+      summary and the cited words are Corpus's reading; "read" is the
+      plain verb for what it did, shorter than "How Corpus Interpreted"),
+      "Clause" is "Source text · Section 5.02" with the note "The full
+      section these words come from, as drafted; the cited words are
+      marked.", and the tab that holds the same text is "Source text";
+      "Interpretation Tree" stays. The section is set as one block per
+      line of the canonical text (which already puts each paragraph and
+      lettered limb on its own line), limbs indented by depth ("(a)" one
+      step, "(i)" two, "(A)" three; `partsToLines` in
+      `lib/product/section-highlight.js`), the marks riding inside their
+      lines, no preformatted run. Verified by hand in headless Chromium:
+      the tables keep full width under the open panel; Concho's 6.3 with
+      a cited run across "-45-" shows the words and the clause without
+      the footer, limb (a) indented, the marks in place.
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,

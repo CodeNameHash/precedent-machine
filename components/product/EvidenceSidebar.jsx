@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { ComponentLayer } from './PublishedSummary';
 import { walk, validateFactComponents } from '../../lib/product/fact-components';
 import { displaySectionReference } from '../../lib/product/section-reference-display';
-import { byteRangesToLayeredParts } from '../../lib/product/section-highlight';
+import { byteRangesToLayeredParts, partsToLines } from '../../lib/product/section-highlight';
+import { hidePageFooters } from '../../lib/product/source-display';
 
 // Ben, 2026-09-14, on the scaled page: "sidebar width now good but font
 // size not good". Every width, padding, gap, band height and the page
@@ -131,6 +132,9 @@ export default function EvidenceSidebar({
     if (!sectionText || !Number.isSafeInteger(sectionText.start_byte) || (highlightRanges.length === 0 && factExtent.length === 0)) return null;
     return byteRangesToLayeredParts(sectionText.exact_text, sectionText.start_byte, highlightRanges, factExtent);
   }, [sectionText, highlightRanges, factExtent]);
+  // One block per line of the section, lettered limbs indented by depth
+  // (section-highlight partsToLines); the marks ride inside the lines.
+  const clauseLines = useMemo(() => (clauseParts ? partsToLines(clauseParts) : []), [clauseParts]);
   // Ben, 2026-09-14, on clicking Cash plus CVR: "the side bar focuses to
   // the clause itself but I would prefer: the sidebar to show first the
   // interpretation tree with the clause x-ref added and then a 'jump to
@@ -179,6 +183,7 @@ export default function EvidenceSidebar({
       className={`-mb-px border-b-2 px-[2px] pb-[7px] text-[12px] font-ui leading-none transition-colors ${tab === key ? 'border-accent text-[#1f1f1f]' : 'border-transparent text-[#6b6b6b] hover:text-[#1f1f1f]'}`}>{label}</button>
   );
   const HEADING = 'font-sans text-[13px] font-semibold leading-tight text-[#1f1f1f]';
+  const LIMB_INDENT = { 1: 'pl-[14px]', 2: 'pl-[28px]', 3: 'pl-[42px]' };
   const SOURCE_CHIP = 'ml-[4.5px] inline-flex items-center rounded-[2px] border border-[#dcdcdc] bg-[#fafafa] px-[5px] py-[1px] align-middle text-[9px] font-ui leading-[14px] text-[#555555] hover:bg-[#f3f3f3]';
   const toSource = () => {
     const aside = asideRef.current;
@@ -202,7 +207,7 @@ export default function EvidenceSidebar({
       </div>
       <div className="mt-[14px] flex gap-[16px] border-b border-[#ececec]" role="tablist" data-testid="evidence-tabs">
         {tabButton('detail', 'Detail', 'evidence-tab-detail')}
-        {tabButton('source', 'Source', 'evidence-tab-source')}
+        {tabButton('source', 'Source text', 'evidence-tab-source')}
         {tabButton('comments', 'Comments', 'evidence-tab-comments')}
       </div>
     </div>
@@ -230,29 +235,43 @@ export default function EvidenceSidebar({
       </p>
     </section>
 
+    {/* Ben, 2026-10-17 (plan finding (42)): "'provision' - should that read
+        as How Corpus Interpreted (or sometihng better osunding!) and then
+        'clause' - what is that? The full section it comes from? Be
+        clearer?" The words block is "How Corpus read it" (the summary and
+        the cited words are the reading, not the provision itself; "read"
+        is the plain verb for what Corpus did). The clause block is
+        "Source text · Section 5.02(f)" with a one-line note that it is the
+        full section the words come from, the cited words marked; the tab
+        that holds the same text is "Source text". */}
     <section data-testid="evidence-words">
-      <p className={HEADING}>Provision</p>
+      <p className={HEADING}>How Corpus read it</p>
       {fact.headline?.summary ? <p className={`mt-[7px] ${BODY}`} data-testid="evidence-summary">{fact.headline.summary}{sourceChip('summary')}</p> : null}
       {components.length > 1 ? <p className={`mt-[4.5px] ${NOTE}`} data-testid="evidence-basis-count">Read together, {components.length} components</p> : null}
-      {component ? components.map((item) => <p key={item.component_id} className={`mt-[4.5px] ${BODY}`}>&ldquo;{item.text}&rdquo;{sourceChip(item.component_id)}</p>) : <p className={`mt-[4.5px] ${NOTE}`}>The whole fact is marked in the clause below; select a pill for the words behind one reading.</p>}
+      {component ? components.map((item) => <p key={item.component_id} className={`mt-[4.5px] ${BODY}`}>&ldquo;{hidePageFooters(item.text)}&rdquo;{sourceChip(item.component_id)}</p>) : <p className={`mt-[4.5px] ${NOTE}`}>The whole fact is marked in the clause below; select a pill for the words behind one reading.</p>}
     </section>
 
     {clauseParts ? <section data-testid="evidence-clause">
-      <p className={HEADING}>Clause</p>
-      <pre className={`mt-[7px] whitespace-pre-wrap ${BODY}`}>{(() => {
+      <p className={HEADING}>{fact.section_reference ? `Source text · ${displaySectionReference(fact.section_reference)}` : 'Source text'}</p>
+      <p className={`mt-[2.5px] ${NOTE}`} data-testid="evidence-clause-note">The full section these words come from, as drafted; the cited words are marked.</p>
+      <div className={`mt-[7px] ${BODY}`} data-testid="evidence-clause-text">{(() => {
         let anchored = false;
-        return clauseParts.map((part, index) => {
-          if (part.level === 'strong') {
-            const ref = anchored ? undefined : markRef; anchored = true;
-            return <mark key={index} ref={ref} className="bg-amber-200" data-level="strong">{part.text}</mark>;
-          }
-          if (part.level === 'light') {
-            const ref = anchored || highlightRanges.length ? undefined : markRef; if (!highlightRanges.length) anchored = true;
-            return <mark key={index} ref={ref} className="bg-amber-50 text-ink" data-level="light">{part.text}</mark>;
-          }
-          return <span key={index}>{part.text}</span>;
-        });
-      })()}</pre>
+        return clauseLines.map((line, lineIndex) => (
+          <p key={lineIndex} className={`${lineIndex ? 'mt-[7px]' : ''} ${LIMB_INDENT[line.depth] || ''}`.trim()} data-testid="clause-line" data-depth={line.depth || undefined}>
+            {line.fragments.map((part, index) => {
+              if (part.level === 'strong') {
+                const ref = anchored ? undefined : markRef; anchored = true;
+                return <mark key={index} ref={ref} className="bg-amber-200" data-level="strong">{part.text}</mark>;
+              }
+              if (part.level === 'light') {
+                const ref = anchored || highlightRanges.length ? undefined : markRef; if (!highlightRanges.length) anchored = true;
+                return <mark key={index} ref={ref} className="bg-amber-50 text-ink" data-level="light">{part.text}</mark>;
+              }
+              return <span key={index}>{part.text}</span>;
+            })}
+          </p>
+        ));
+      })()}</div>
     </section> : null}
 
     <details data-testid="supporting-record-detail">
@@ -266,10 +285,15 @@ export default function EvidenceSidebar({
 
     {tab !== 'source' ? null : <>
     {clauseParts ? <section data-testid="evidence-source-clause">
-      <p className={HEADING}>{fact.section_reference ? displaySectionReference(fact.section_reference) : 'Source'}</p>
-      <pre className={`mt-[7px] whitespace-pre-wrap ${BODY}`}>{clauseParts.map((part, index) => (part.level === 'strong'
-        ? <mark key={index} className="bg-amber-200" data-level="strong">{part.text}</mark>
-        : (part.level === 'light' ? <mark key={index} className="bg-amber-50 text-ink" data-level="light">{part.text}</mark> : <span key={index}>{part.text}</span>)))}</pre>
+      <p className={HEADING}>{fact.section_reference ? `Source text · ${displaySectionReference(fact.section_reference)}` : 'Source text'}</p>
+      <p className={`mt-[2.5px] ${NOTE}`}>The full section these words come from, as drafted; the cited words are marked.</p>
+      <div className={`mt-[7px] ${BODY}`}>{clauseLines.map((line, lineIndex) => (
+        <p key={lineIndex} className={`${lineIndex ? 'mt-[7px]' : ''} ${LIMB_INDENT[line.depth] || ''}`.trim()} data-testid="clause-line" data-depth={line.depth || undefined}>
+          {line.fragments.map((part, index) => (part.level === 'strong'
+            ? <mark key={index} className="bg-amber-200" data-level="strong">{part.text}</mark>
+            : (part.level === 'light' ? <mark key={index} className="bg-amber-50 text-ink" data-level="light">{part.text}</mark> : <span key={index}>{part.text}</span>)))}
+        </p>
+      ))}</div>
     </section> : <section><p className={`${NOTE}`}>The section text is not available for this fact.</p></section>}
     <section>{recordDetail}</section>
     </>}

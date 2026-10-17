@@ -620,9 +620,12 @@ export default function ProvisionTables({
   initialSubRowsOpen = false,
   // Ben, 2026-09-14: "have the top level interpretation tree items shown".
   initialTreeOpen = true,
+  // A selection to open with (static renders and tests; the page starts
+  // with none).
+  initialSelection = null,
 }) {
   const factsById = useMemo(() => new Map((facts || []).map((fact) => [factIdOf(fact), fact])), [facts]);
-  const [selection, setSelection] = useState(null);
+  const [selection, setSelection] = useState(initialSelection);
   // Each section collapses on its heading; the bar above offers collapse /
   // expand all (Ben, 2026-09-13). Collapsed keys live here so a republish of
   // the table view keeps the reader's choice.
@@ -663,9 +666,15 @@ export default function ProvisionTables({
   return (
     <div className="flex flex-wrap gap-[18.5px] lg:flex-nowrap" data-testid="provision-tables">
       {/* The sidebar is fixed to the viewport's right edge (Deal Storylines;
-          Ben, 2026-09-14), so the tables keep its width clear while it is
-          open. */}
-      <div className={`min-w-0 flex-1 space-y-[16px] ${selectedFact ? 'lg:pr-[406px]' : ''}`} data-sidebar-open={selectedFact ? 'true' : undefined}>
+          Ben, 2026-09-14) and the page keeps its width when it opens. The
+          tables used to take 406px of right padding while a fact was
+          selected, so every table reflowed on a click. Ben, 2026-10-17:
+          "when I clicked 'see provision' on 'definition' in 'intervening
+          event mechanics' the main body of the page leapt around, it should
+          stay static and the left hand side should just come up" (plan
+          finding (42)): the panel comes up over the page, as the Storylines
+          panel does ("the page scrolls under it", finding (37)). */}
+      <div className="min-w-0 flex-1 space-y-[16px]" data-sidebar-open={selectedFact ? 'true' : undefined}>
         <div className="flex items-center gap-[4.5px]" data-testid="section-toggles">
           <button type="button" onClick={() => setAll(false)} disabled={collapsed.size === 0} className={tabClass(collapsed.size === 0)}>Expand all</button>
           <button type="button" onClick={() => setAll(true)} disabled={allCollapsed} className={tabClass(allCollapsed)}>Collapse all</button>

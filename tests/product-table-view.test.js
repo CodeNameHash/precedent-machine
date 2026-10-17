@@ -1180,3 +1180,35 @@ test('an OTHER_DEFINED_TERM fact joins the Defined Terms section', () => {
   assert.equal(entry.term, 'ERISA');
   assert.equal(entry.definition, 'ERISA means the Employee Retirement Income Security Act of 1974, as amended');
 });
+
+// Ben, 2026-10-17 (plan finding (42)): "random page breaks and pagen
+// umbers...!" The SEC page footers in the canonical text are hidden at
+// display (lib/product/source-display.js) and never removed from the stored
+// words: the fact handed to the tables keeps its bytes and ids.
+test('page footers are hidden from the words the tables show and kept in the stored fact', () => {
+  const { hidePageFooters, factWithoutPageFooters } = require('../lib/product/source-display');
+  const { factOwnText } = require('../lib/product/table-view');
+  assert.equal(hidePageFooters('DOCUMENTS\n-85-\nREFERRED TO'), 'DOCUMENTS REFERRED TO');
+  assert.equal(hidePageFooters('the\n - 7 - \nTransactions'), 'the Transactions');
+  assert.equal(hidePageFooters('a 3-4 split and -5- inline stay'), 'a 3-4 split and -5- inline stay', 'only a footer on a line of its own is hidden');
+  assert.equal(hidePageFooters(null), null);
+  const fact = {
+    fact_id: 'pf-2', family_key: 'NO_SHOP', subtype_key: 'PROHIBITED_ACTION',
+    headline: { label: 'Prohibited action', distinguishing_component_ids: ['x-obj'] },
+    components: [
+      { component_id: 'x-actor', kind: 'ACTOR', label: 'obligor', text: 'The Company', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 11, gap_before: false, children: [] },
+      { component_id: 'x-op', kind: 'OPERATION', label: 'prohibition', text: 'shall not enter into any\n-38-\nagreement', origin: 'OWN', source_span_id: 's', start_byte: 12, end_byte: 50, gap_before: false, children: [
+        { component_id: 'x-obj', kind: 'OBJECT', label: 'agreement', text: 'any\n-38-\nagreement', origin: 'OWN', source_span_id: 's', start_byte: 33, end_byte: 50, gap_before: false, children: [] },
+      ] },
+    ],
+  };
+  assert.equal(factOwnText(fact), 'The Company shall not enter into any agreement');
+  const shown = factWithoutPageFooters(fact);
+  assert.equal(shown.components[1].text, 'shall not enter into any agreement');
+  assert.equal(shown.components[1].children[0].text, 'any agreement');
+  assert.equal(shown.components[1].start_byte, 12);
+  assert.equal(fact.components[1].text, 'shall not enter into any\n-38-\nagreement', 'the stored fact is untouched');
+  assert.equal(factWithoutPageFooters(fixture.facts[0]), fixture.facts[0], 'a fact without footers is the same object');
+  const view = buildTableView({ facts: [fact], tableShapes, legalSchema });
+  assert.doesNotMatch(JSON.stringify(view), /-38-/);
+});

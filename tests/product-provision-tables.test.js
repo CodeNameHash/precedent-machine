@@ -22,7 +22,7 @@ require.extensions['.jsx'] = function compileJsx(module, filename) {
   module._compile(transformed.code, filename);
 };
 
-const { buildTableView } = require('../lib/product/table-view');
+const { buildTableView, factSummaryText } = require('../lib/product/table-view');
 const tableShapes = require('../contracts/product/table-shapes.v3.json');
 const legalSchema = require('../contracts/product/legal-schema.v2.json');
 const ProvisionTables = require('../components/product/ProvisionTables.jsx').default;
@@ -630,4 +630,106 @@ test('a collapsible_rows table folds its rows behind a toggle, and an other-prov
   const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts: [] }));
   assert.match(html, /<button[^>]*aria-expanded="true"[^>]*data-testid="rows-toggle"[^>]*><span>Hide 1 row</);
   assert.match(html, /data-testid="other-provisions-toggle"[^>]*><span>No other securities \(1\)</);
+});
+
+// Ben, 2026-10-17 (plan finding (42)): "when I clicked 'see provision' on
+// 'definition' in 'intervening event mechanics' the main body of the page
+// leapt around, it should stay static and the left hand side should just
+// come up". The content column took 406px of right padding while a fact was
+// selected, so every table reflowed on the click; it now keeps one class
+// list whether or not the sidebar is open, and the fixed panel comes up
+// over the page.
+test('the content column keeps its width when a selection opens the sidebar', () => {
+  const closed = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView, facts }));
+  const firstTable = tableView.sections.flatMap((section) => section.tables).find((table) => (table.rows || []).some((row) => row.backing_facts.length));
+  const firstFact = firstTable.rows.find((row) => row.backing_facts.length).backing_facts[0];
+  const open = renderToStaticMarkup(React.createElement(ProvisionTables, {
+    tableView, facts, initialSelection: { tableKey: firstTable.table_key, rowIndex: 0, columnId: null, componentId: null, componentIds: [], factId: firstFact.fact_id },
+  }));
+  assert.match(open, /data-testid="evidence-sidebar"/);
+  assert.doesNotMatch(closed, /data-testid="evidence-sidebar"/);
+  const column = /<div class="([^"]*)" data-sidebar-open="true">/.exec(open);
+  assert.ok(column, 'the content column marks the open sidebar');
+  assert.equal(column[1], 'min-w-0 flex-1 space-y-[16px]');
+  assert.match(closed, /<div class="min-w-0 flex-1 space-y-\[16px\]">/);
+  assert.doesNotMatch(open, /pr-\[406px\]/);
+});
+
+// Ben, 2026-10-17 (plan finding (42)), on the sidebar: "not formatted very
+// prettily and also random page breaks and pagen umbers...!" The canonical
+// text keeps the SEC HTML's page footers ("-43-" between the words of a
+// sentence that crosses a page); they are hidden wherever the words are
+// shown and never removed from the text, so the spans still resolve.
+test('the SEC page footers in a cited run of words are hidden in the sidebar words and clause, with the marks still in place', () => {
+  const clause = 'The Company shall not enter into any agreement with respect to the\n-38-\nTransactions without the consent of Parent.';
+  const bytes = Buffer.from(clause, 'utf8');
+  const start = bytes.indexOf(Buffer.from('any agreement'));
+  const end = bytes.indexOf(Buffer.from('Transactions')) + Buffer.byteLength('Transactions');
+  const fact = {
+    fact_id: 'pf-1', family_key: 'NO_SHOP', subtype_key: 'PROHIBITED_ACTION', section_reference: '5.02',
+    headline: { label: 'Prohibited action', distinguishing_component_ids: ['pf-obj'] },
+    components: [
+      { component_id: 'pf-actor', kind: 'ACTOR', label: 'obligor', text: 'The Company', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 11, gap_before: false, children: [] },
+      { component_id: 'pf-obj', kind: 'OBJECT', label: 'agreement', text: clause.slice(Buffer.from(bytes.subarray(0, start)).toString('utf8').length, Buffer.from(bytes.subarray(0, end)).toString('utf8').length), origin: 'OWN', source_span_id: 's', start_byte: start, end_byte: end, gap_before: true, children: [] },
+    ],
+  };
+  assert.match(fact.components[1].text, /\n-38-\n/, 'the stored component text carries the footer');
+  const html = renderToStaticMarkup(React.createElement(EvidenceSidebar, { fact, componentId: 'pf-obj', sectionText: { exact_text: clause, start_byte: 0 }, initialTreeOpen: true }));
+  assert.doesNotMatch(html, /-38-/);
+  assert.match(html, /any agreement with respect to the Transactions/);
+  assert.equal((html.match(/data-level="strong"/g) || []).length, 1, 'the clause marks the cited words (the Source tab renders only when chosen)');
+  // The tables' words too: the fact's own text and summary text.
+  assert.doesNotMatch(factSummaryText(fact), /-38-/);
+});
+
+// Ben, 2026-10-17 (plan finding (42)): "'provision' - should that read as
+// How Corpus Interpreted (or sometihng better osunding!) and then 'clause'
+// - what is that? The full section it comes from? Be clearer?" The words
+// block is "How Corpus read it"; the clause block is "Source text ·
+// Section 5.02" with a one-line note; the tab holding the same text is
+// "Source text". "Interpretation Tree" stays.
+test('the sidebar names its blocks How Corpus read it and Source text · Section, with the note and the tab to match', () => {
+  const clause = 'The Company shall not enter into any agreement with respect to the Transactions without the consent of Parent.';
+  const fact = {
+    fact_id: 'lb-1', family_key: 'NO_SHOP', subtype_key: 'PROHIBITED_ACTION', section_reference: '5.02',
+    headline: { label: 'Prohibited action', distinguishing_component_ids: ['lb-obj'], summary: 'Company may not agree to the Transactions without Parent consent' },
+    components: [
+      { component_id: 'lb-obj', kind: 'OBJECT', label: 'agreement', text: 'any agreement with respect to the Transactions', origin: 'OWN', source_span_id: 's', start_byte: 34, end_byte: 81, gap_before: false, children: [] },
+    ],
+  };
+  const html = renderToStaticMarkup(React.createElement(EvidenceSidebar, { fact, componentId: 'lb-obj', sectionText: { exact_text: clause, start_byte: 0 } }));
+  assert.match(html, />Interpretation Tree</);
+  assert.match(html, /<p class="[^"]*">How Corpus read it<\/p>/);
+  assert.match(html, /<p class="[^"]*">Source text · Section 5\.02<\/p>/);
+  assert.match(html, /data-testid="evidence-clause-note">The full section these words come from, as drafted; the cited words are marked\.</);
+  assert.match(html, /data-testid="evidence-tab-source"[^>]*>Source text</);
+  assert.doesNotMatch(html, />Provision</);
+  assert.doesNotMatch(html, />Clause</);
+});
+
+// The sidebar sets the section as one block per line, limbs indented by
+// depth, the cited words marked inside their line (Ben, 2026-10-17, plan
+// finding (42): "not formatted very prettily and also random page breaks
+// and pagen umbers...!").
+test('the sidebar renders the clause as paragraphs with lettered limbs on their own indented lines', () => {
+  const clause = '5.02 No Solicitation.\n(a) The Company shall not solicit any proposal.\n(i) initiate or knowingly encourage\n-40-\nany inquiry;\n(ii) furnish information.';
+  const bytes = Buffer.from(clause, 'utf8');
+  const start = bytes.indexOf(Buffer.from('initiate'));
+  const end = bytes.indexOf(Buffer.from('inquiry')) + Buffer.byteLength('inquiry');
+  const fact = {
+    fact_id: 'pl-1', family_key: 'NO_SHOP', subtype_key: 'PROHIBITED_ACTION', section_reference: '5.02',
+    headline: { label: 'Prohibited action', distinguishing_component_ids: ['pl-op'] },
+    components: [{ component_id: 'pl-op', kind: 'OPERATION', label: 'prohibited act', text: 'initiate or knowingly encourage\n-40-\nany inquiry', origin: 'OWN', source_span_id: 's', start_byte: start, end_byte: end, gap_before: false, children: [] }],
+  };
+  const html = renderToStaticMarkup(React.createElement(EvidenceSidebar, { fact, componentId: 'pl-op', sectionText: { exact_text: clause, start_byte: 0 } }));
+  const lines = [...html.matchAll(/<p class="([^"]*)" data-testid="clause-line"(?: data-depth="(\d)")?>(.*?)<\/p>/g)].map((match) => [match[2] || '0', match[1], match[3].replace(/<[^>]+>/g, '')]);
+  assert.deepEqual(lines, [
+    ['0', '', '5.02 No Solicitation.'],
+    ['1', 'mt-[7px] pl-[14px]', '(a) The Company shall not solicit any proposal.'],
+    ['2', 'mt-[7px] pl-[28px]', '(i) initiate or knowingly encourage any inquiry;'],
+    ['2', 'mt-[7px] pl-[28px]', '(ii) furnish information.'],
+  ]);
+  assert.match(html, /<mark class="bg-amber-200" data-level="strong">initiate or knowingly encourage any inquiry<\/mark>/);
+  assert.doesNotMatch(html, /<pre/);
+  assert.doesNotMatch(html, /-40-/);
 });

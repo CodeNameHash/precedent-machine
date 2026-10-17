@@ -16,7 +16,7 @@ require.extensions['.jsx'] = function compileJsx(module, filename) {
   module._compile(transformed.code, filename);
 };
 
-const { byteRangesToParts, firstCitedByte, parseFocusSections } = require('../lib/product/section-highlight');
+const { byteRangesToParts, byteRangesToLayeredParts, partsToLines, firstCitedByte, parseFocusSections } = require('../lib/product/section-highlight');
 const { contract } = require('../lib/product/fact-components');
 const { buildEditedComponents, componentEditPayload } = require('../lib/product/component-edit');
 const focusedModule = require('../components/product/FocusedReview.jsx');
@@ -292,4 +292,41 @@ test('a component editor dispatches DECIDE_ITEM/EDITED with a components tree wh
   assert.equal(revised.origin, 'OWN');
   const untouched = dispatched.edit.components.find((component) => component.component_id === 'c-fee');
   assert.deepEqual(untouched, original[0]);
+});
+
+// The SEC page footers are hidden in each part after the bytes are sliced,
+// so the marks keep their places (Ben, 2026-10-17, plan finding (42)).
+test('byteRangesToParts hides a page footer inside a marked run without moving the marks', () => {
+  const text = 'with respect to the\n-38-\nTransactions without consent.';
+  const bytes = Buffer.from(text, 'utf8');
+  const start = bytes.indexOf(Buffer.from('the\n'));
+  const end = bytes.indexOf(Buffer.from('without'));
+  const parts = byteRangesToParts(text, 500, [{ start_byte: 500 + start, end_byte: 500 + end }]);
+  assert.deepEqual(parts, [
+    { text: 'with respect to ', marked: false },
+    { text: 'the Transactions ', marked: true },
+    { text: 'without consent.', marked: false },
+  ]);
+});
+
+// The clause as lines: each paragraph and lettered limb of the canonical
+// text is a line with its depth, and a mark that crosses a newline is split
+// across the lines it covers (Ben, 2026-10-17, plan finding (42)).
+test('partsToLines cuts the parts at newlines, keeps the marks and reads the limb depth', () => {
+  const text = '6.3 No Solicitation.\n(a) The Company will cease\n-45-\nall discussions.\n(i) initiate any proposal;\n(A) a sub-limb.';
+  const bytes = Buffer.from(text, 'utf8');
+  const start = bytes.indexOf(Buffer.from('will cease'));
+  const end = bytes.indexOf(Buffer.from('discussions')) + Buffer.byteLength('discussions');
+  const parts = byteRangesToLayeredParts(text, 0, [{ start_byte: start, end_byte: end }], []);
+  const lines = partsToLines(parts);
+  assert.deepEqual(lines.map((line) => [line.depth, line.fragments.map((fragment) => fragment.text).join('')]), [
+    [0, '6.3 No Solicitation.'],
+    [1, '(a) The Company will cease all discussions.'],
+    [2, '(i) initiate any proposal;'],
+    [3, '(A) a sub-limb.'],
+  ]);
+  assert.deepEqual(lines[1].fragments.map((fragment) => [fragment.level, fragment.text]), [[null, '(a) The Company '], ['strong', 'will cease all discussions'], [null, '.']]);
+  // A mark across a newline is one mark per line.
+  const across = partsToLines([{ text: 'one\ntwo', level: 'strong' }, { text: ' rest', level: null }]);
+  assert.deepEqual(across.map((line) => line.fragments), [[{ text: 'one', level: 'strong' }], [{ text: 'two', level: 'strong' }, { text: ' rest', level: null }]]);
 });

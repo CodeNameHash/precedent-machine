@@ -157,3 +157,11 @@ test('a LIST_ELEMENT outside a LIST is built as a TERM', () => {
   assert.equal(tree.components[0].kind, 'TERM');
   assert.equal(tree.components[1].children[0].kind, 'LIST_ELEMENT');
 });
+
+// A layer shows its words without the SEC page footers the canonical text
+// keeps (Ben, 2026-10-17, plan finding (42)); the component is unchanged.
+test('renderLayer hides a page footer in a component\'s words', () => {
+  const component = { component_id: 'c-x', kind: 'OBJECT', label: 'agreement', text: 'any\n-38-\nagreement', origin: 'OWN', gap_before: false, children: [] };
+  assert.equal(renderLayer([component])[0].text, 'any agreement');
+  assert.equal(component.text, 'any\n-38-\nagreement');
+});
