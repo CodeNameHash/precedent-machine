@@ -2869,6 +2869,36 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       now says so and the contract is regenerated. Finding (38) is the
       pipeline, not the prompt: nothing of it belongs in the request.
       No run submitted; generation 8 waits on Ben's comments.
+      (42) 2026-10-17 23:30 UTC. Work package 1 reviewed and accepted
+      (finding (41); the implementer also found that the extraction
+      request read footer_from_subtype.subtype_key alone, so after (39)
+      the MAE tables' footer reached no prompt: now footer_subtype_keys).
+      Ben's generation 7 comments, verbatim, each to code in work
+      package 2: "when I clicked 'see provision' on 'definition' in
+      'intervening event mechanics' the main body of the page leapt
+      around, it should stay static and the left hand side should just
+      come up. Also, in the the right hand side bar - I like
+      interpretation tree, 'provision' - should that read as How Corpus
+      Interpreted (or sometihng better osunding!) and then 'clause' -
+      what is that? The full section it comes from? Be clearer? Also
+      look at this one, not formatted very prettily and also random page
+      breaks and pagen umbers...!"; "another UI point - why do we have a
+      summary column here? Also 'period' as a column is wasteful as it
+      only applies to one provision? Consider that point generally?";
+      "On substance, you're missing the fiduciary standard required
+      (which we do have in the change of rec for superior proposal
+      section)"; on the no-shop: "odd under ongoing updates to have
+      required within a stated period and required promptly. Also weird
+      to have the 48 hours there. I know the pills are likely helpful
+      for background comparison work etc but do we need to show them
+      here? Consider this more generally on the UI pills etc"; "Also,
+      need ot include the detail of what info of what must be shared in
+      the no shop (i.e. just contracts, etc) and when and orally etc. A
+      lot more detail required". The page numbers ("-43-") are in the
+      canonical text from the SEC HTML page footers; they are hidden at
+      display, never removed from the text (spans and hashes stand).
+      Generation 8 waits for work package 2 and Ben's answer on the two
+      readout-less 5.02 clauses.
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
