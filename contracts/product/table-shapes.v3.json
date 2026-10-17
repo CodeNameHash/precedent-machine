@@ -3540,7 +3540,12 @@
             "RETURN_OR_DESTROY_REQUIREMENT",
             "SUBSEQUENT_VDR_REMOVAL"
           ],
-          "guidance": "The core no-shop mechanics, one row per question. Go-shop: YES only when the agreement grants a go-shop period. Cease existing discussions, Return or destruction of information and Data-room access terminated: from the cease-discussions clause (CEASE_DISCUSSIONS_REQUIREMENT, RETURN_OR_DESTROY_REQUIREMENT, SUBSEQUENT_VDR_REMOVAL). No-shop restriction (prohibited acts): the PROHIBITED_ACTION facts, one cell per act the clause prohibits (a clause that prohibits soliciting, initiating, knowingly encouraging and furnishing information yields four cells). Representative control standard: the words that bind the Company's Representatives (\"shall cause its Representatives not to\" is SHALL_CAUSE_REPRESENTATIVES; \"shall not authorize or permit\" is SHALL_NOT_AUTHORIZE_OR_PERMIT). Standstill enforcement: the clause on waiving or enforcing standstills. Omit a row the agreement does not address."
+          "guidance": "The core no-shop mechanics, one row per question. Go-shop: YES only when the agreement grants a go-shop period. Cease existing discussions, Return or destruction of information and Data-room access terminated: from the cease-discussions clause (CEASE_DISCUSSIONS_REQUIREMENT, RETURN_OR_DESTROY_REQUIREMENT, SUBSEQUENT_VDR_REMOVAL). No-shop restriction (prohibited acts): the PROHIBITED_ACTION facts, one cell per act the clause prohibits (a clause that prohibits soliciting, initiating, knowingly encouraging and furnishing information yields four cells). Representative control standard: the words that bind the Company's Representatives (\"shall cause its Representatives not to\" is SHALL_CAUSE_REPRESENTATIVES; \"shall not authorize or permit\" is SHALL_NOT_AUTHORIZE_OR_PERMIT). Standstill enforcement: the clause on waiving or enforcing standstills. Omit a row the agreement does not address. The sentence deeming a breach by a Representative a breach by the Company is a PROHIBITED_ACTION fact on the Representative control standard row with row_detail \"Representative breach is Company breach\" (Ben, 2026-10-17).",
+          "detail_labels_by_row": {
+            "Representative control standard": [
+              "Representative breach is Company breach"
+            ]
+          }
         },
         {
           "table_key": "nosol-noshop-notice",
@@ -3559,48 +3564,6 @@
               "render": "vocabulary",
               "vocabulary": [
                 {
-                  "code": "REQUIRED",
-                  "label": "Required",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
-                },
-                {
-                  "code": "NOT_REQUIRED",
-                  "label": "Not required",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
-                },
-                {
-                  "code": "IDENTITY_OF_BIDDER",
-                  "label": "Identity of the bidder",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
-                },
-                {
-                  "code": "MATERIAL_TERMS",
-                  "label": "Material terms and conditions",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
-                },
-                {
-                  "code": "COPIES_OF_PROPOSAL",
-                  "label": "Copies of the proposal and draft agreements",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
-                },
-                {
-                  "code": "STATUS_UPDATES",
-                  "label": "Status updates and amendments",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
-                },
-                {
                   "code": "REQUIRED_PROMPTLY",
                   "label": "Required promptly",
                   "tone": "neutral",
@@ -3613,23 +3576,127 @@
                   "tone": "neutral",
                   "addition": true,
                   "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
+                },
+                {
+                  "code": "NOT_REQUIRED",
+                  "label": "Not required",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
+                },
+                {
+                  "code": "ON_KNOWLEDGE_OF_OFFICER_OR_DIRECTOR",
+                  "label": "On knowledge of an executive officer or director",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
+                },
+                {
+                  "code": "ON_RECEIPT",
+                  "label": "On receipt",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
+                },
+                {
+                  "code": "IDENTITY_OF_PERSON",
+                  "label": "Identity of the person",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
+                },
+                {
+                  "code": "COPY_OF_WRITTEN_PROPOSAL",
+                  "label": "Copy of a written proposal, inquiry or request",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
+                },
+                {
+                  "code": "MATERIAL_TERMS_WHEN_ORAL",
+                  "label": "Material terms and conditions when oral",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
+                },
+                {
+                  "code": "MODIFICATIONS",
+                  "label": "Modifications",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
+                },
+                {
+                  "code": "DRAFT_DOCUMENTATION",
+                  "label": "Draft documentation",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
+                },
+                {
+                  "code": "STATUS_AND_DEVELOPMENTS",
+                  "label": "Status and developments",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
+                },
+                {
+                  "code": "MAY_REQUEST_WRITTEN_PROPOSAL",
+                  "label": "Company may ask that an oral proposal be made in writing",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
+                },
+                {
+                  "code": "SILENT",
+                  "label": "Not addressed",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
+                },
+                {
+                  "code": "PROHIBITED",
+                  "label": "Prohibited",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
                 }
               ],
               "vocabulary_by_row": {
-                "Notice of a proposal": [
-                  "REQUIRED",
-                  "NOT_REQUIRED"
+                "Initial notice": [
+                  "REQUIRED_PROMPTLY",
+                  "REQUIRED_WITHIN_STATED_PERIOD",
+                  "NOT_REQUIRED",
+                  "ON_KNOWLEDGE_OF_OFFICER_OR_DIRECTOR",
+                  "ON_RECEIPT"
                 ],
-                "Notice content": [
-                  "IDENTITY_OF_BIDDER",
-                  "MATERIAL_TERMS",
-                  "COPIES_OF_PROPOSAL",
-                  "STATUS_UPDATES"
+                "Notice contents": [
+                  "IDENTITY_OF_PERSON",
+                  "COPY_OF_WRITTEN_PROPOSAL",
+                  "MATERIAL_TERMS_WHEN_ORAL",
+                  "MODIFICATIONS",
+                  "DRAFT_DOCUMENTATION",
+                  "STATUS_AND_DEVELOPMENTS"
                 ],
                 "Ongoing updates": [
                   "REQUIRED_PROMPTLY",
                   "REQUIRED_WITHIN_STATED_PERIOD",
+                  "NOT_REQUIRED",
+                  "DRAFT_DOCUMENTATION",
+                  "STATUS_AND_DEVELOPMENTS"
+                ],
+                "Notice of a decision to engage": [
+                  "REQUIRED_PROMPTLY",
+                  "REQUIRED_WITHIN_STATED_PERIOD",
                   "NOT_REQUIRED"
+                ],
+                "Oral proposals": [
+                  "MAY_REQUEST_WRITTEN_PROPOSAL",
+                  "SILENT"
+                ],
+                "No agreement restricting information to Parent": [
+                  "PROHIBITED",
+                  "SILENT"
                 ]
               },
               "fill_from": [
@@ -3657,7 +3724,7 @@
                 "DATE"
               ],
               "addition": true,
-              "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted. The notice period (24 hours; 48 hours; two business days)."
+              "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted. The hours or business days a notice or update must be given within (48 hours; two business days)."
             },
             {
               "column_id": "asDrafted",
@@ -3679,16 +3746,19 @@
           ],
           "rows_are": "fixed list",
           "fixed_row_labels": [
-            "Notice of a proposal",
-            "Notice period",
-            "Notice content",
-            "Ongoing updates"
+            "Initial notice",
+            "Notice contents",
+            "Ongoing updates",
+            "Notice of a decision to engage",
+            "Oral proposals",
+            "No agreement restricting information to Parent"
           ],
           "subtype_keys": [
             "NOTICE_PERIOD",
-            "NOTICE_UPDATE_OBLIGATION"
+            "NOTICE_UPDATE_OBLIGATION",
+            "PROHIBITED_ACTION"
           ],
-          "guidance": "Notice to Parent of a proposal: whether it is required, within what period (NOTICE_PERIOD; the period column carries the hours or days), what it must contain (one cell per item), and whether the Company must keep Parent informed (NOTICE_UPDATE_OBLIGATION). The notice and match periods of the superior-proposal path belong to the matching-rights table; those of the intervening-event path to the intervening-event table."
+          "guidance": "Notice to Parent under the no-shop, one fact and one readout per row, each row's timing one code (never \"Required within a stated period\" beside \"Required promptly\": \"promptly, and in any event within 48 hours\" is REQUIRED_WITHIN_STATED_PERIOD with 48 hours in the period column and promptly in the summary). Initial notice: the NOTICE_PERIOD fact giving notice of a proposal, inquiry or request (its trigger, knowledge of receipt by an executive officer or director, as a second code; its period). Notice contents: the NOTICE_UPDATE_OBLIGATION or NOTICE_PERIOD fact listing what the notice carries, one cell per item (the identity of the person; a copy of a written proposal, inquiry or request; the material terms and conditions when oral; modifications). Ongoing updates: the NOTICE_UPDATE_OBLIGATION fact keeping Parent reasonably informed (its timing; status and developments and draft documentation as content cells). Notice of a decision to engage: the NOTICE_PERIOD fact giving notice that the Company will provide information or negotiate (its period). Oral proposals: the clause letting the Company ask that an oral proposal be made in writing. No agreement restricting information to Parent: the PROHIBITED_ACTION fact that the Company will not enter into an agreement that would prevent it from giving Parent this information (Ben, 2026-10-17: a row of this table). The notice and match periods of the superior-proposal path belong to the matching-rights table; those of the intervening-event path to the intervening-event table."
         }
       ],
       "print_pages": [
@@ -4231,7 +4301,7 @@
                   "CHANGES_IN_LAW_OR_GAAP",
                   "REGULATORY_OR_CLINICAL_DEVELOPMENTS"
                 ],
-                "Board-change standard": [
+                "Board determination standard": [
                   "INCONSISTENT_WITH_FIDUCIARY_DUTIES",
                   "REASONABLY_LIKELY_TO_BE_INCONSISTENT_WITH_FIDUCIARY_DUTIES",
                   "WOULD_VIOLATE_FIDUCIARY_DUTIES",
@@ -4296,12 +4366,17 @@
             "Intervening Event provision",
             "Definition",
             "Excluded events",
-            "Board-change standard",
+            "Board determination standard",
             "Notice period",
             "Matching period",
             "Parent termination right on a change"
           ],
-          "guidance": "The intervening-event path. Intervening Event provision: YES when the board may change its recommendation for an Intervening Event (a RECOMMENDATION_CHANGE or EXCEPTION_PREREQUISITE fact on that path). Definition: the KEY_DEFINED_TERMS/INTERVENING_EVENT fact, as drafted, no code. Excluded events: one cell per event the definition excludes. Board-change standard: the determination standard on this path. Notice period and Matching period: the NOTICE_PERIOD and INITIAL_MATCH_PERIOD facts that govern a change for an Intervening Event (the superior-proposal path's periods go to the matching-rights table), the number in the period column. Parent termination right on a change is derived by the page from the TERMINATION/RECOMMENDATION_CHANGE fact; never fill it."
+          "guidance": "The intervening-event path. Intervening Event provision: YES when the board may change its recommendation for an Intervening Event (a RECOMMENDATION_CHANGE or EXCEPTION_PREREQUISITE fact on that path). Definition: the KEY_DEFINED_TERMS/INTERVENING_EVENT fact, as drafted, no code. Excluded events: one cell per event the definition excludes. Board determination standard: the fiduciary standard the board must meet to change its recommendation for an Intervening Event, one code (a clause such as \"has concluded in good faith, after consultation with its outside counsel, that failure to make an Adverse Recommendation Change on account of the Intervening Event would be, or would be reasonably likely to be, inconsistent with its fiduciary duties\" is REASONABLY_LIKELY_TO_BE_INCONSISTENT_WITH_FIDUCIARY_DUTIES on this row; the consultation is content of the summary). Notice period and Matching period: the NOTICE_PERIOD and INITIAL_MATCH_PERIOD facts that govern a change for an Intervening Event (the superior-proposal path's periods go to the matching-rights table), the number in the period column. Parent termination right on a change is derived by the page from the TERMINATION/RECOMMENDATION_CHANGE fact; never fill it.",
+          "fact_type_rows": {
+            "EXCEPTION_PREREQUISITE": "Board determination standard",
+            "RECOMMENDATION_CHANGE": "Board determination standard"
+          },
+          "fact_type_rows_when": "(?=[\\s\\S]*Intervening Event)(?=[\\s\\S]*fiduciary dut)"
         }
       ],
       "print_pages": [

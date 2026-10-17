@@ -731,3 +731,54 @@ test('the capitalization table counts each security class, the numbers parsed fr
   broken.sections.find((s) => s.section_key === 'capitalization').tables[0].row_from_security_class = 'yes';
   assert.throws(() => validateTableShapesV3(broken, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_ROW_FROM_SECURITY_CLASS/);
 });
+
+// Ben, 2026-10-17 (plan finding (42)): "odd under ongoing updates to have
+// required within a stated period and required promptly. Also weird to have
+// the 48 hours there" and "need ot include the detail of what info of what
+// must be shared in the no shop (i.e. just contracts, etc) and when and
+// orally etc. A lot more detail required"; finding (44), "yes to both".
+test('the no-shop notice table is 5.02(d)\'s own mechanics as fixed rows, one timing code per row, with the two rows Ben placed', () => {
+  const section = findSectionV3('nosol-noshop');
+  const notice = findTableV3(section, 'nosol-noshop-notice');
+  assert.deepEqual(notice.fixed_row_labels, ['Initial notice', 'Notice contents', 'Ongoing updates', 'Notice of a decision to engage', 'Oral proposals', 'No agreement restricting information to Parent']);
+  const provision = notice.columns.find((column) => column.column_id === 'provision');
+  assert.deepEqual(provision.vocabulary_by_row['Initial notice'], ['REQUIRED_PROMPTLY', 'REQUIRED_WITHIN_STATED_PERIOD', 'NOT_REQUIRED', 'ON_KNOWLEDGE_OF_OFFICER_OR_DIRECTOR', 'ON_RECEIPT']);
+  assert.deepEqual(provision.vocabulary_by_row['Notice contents'], ['IDENTITY_OF_PERSON', 'COPY_OF_WRITTEN_PROPOSAL', 'MATERIAL_TERMS_WHEN_ORAL', 'MODIFICATIONS', 'DRAFT_DOCUMENTATION', 'STATUS_AND_DEVELOPMENTS']);
+  assert.deepEqual(provision.vocabulary_by_row['Ongoing updates'], ['REQUIRED_PROMPTLY', 'REQUIRED_WITHIN_STATED_PERIOD', 'NOT_REQUIRED', 'DRAFT_DOCUMENTATION', 'STATUS_AND_DEVELOPMENTS']);
+  assert.deepEqual(provision.vocabulary_by_row['Notice of a decision to engage'], ['REQUIRED_PROMPTLY', 'REQUIRED_WITHIN_STATED_PERIOD', 'NOT_REQUIRED']);
+  assert.deepEqual(provision.vocabulary_by_row['Oral proposals'], ['MAY_REQUEST_WRITTEN_PROPOSAL', 'SILENT']);
+  assert.deepEqual(provision.vocabulary_by_row['No agreement restricting information to Parent'], ['PROHIBITED', 'SILENT']);
+  assert.deepEqual(notice.columns.map((column) => column.column_id), ['provision', 'period', 'asDrafted']);
+  assert.deepEqual(notice.subtype_keys, ['NOTICE_PERIOD', 'NOTICE_UPDATE_OBLIGATION', 'PROHIBITED_ACTION']);
+  assert.match(notice.guidance, /each row's timing one code \(never "Required within a stated period" beside "Required promptly"/);
+  assert.match(notice.guidance, /48 hours in the period column and promptly in the summary/);
+  assert.match(notice.guidance, /No agreement restricting information to Parent: the PROHIBITED_ACTION fact/);
+  const core = findTableV3(section, 'nosol-noshop-core-mechanics');
+  assert.deepEqual(core.detail_labels_by_row, { 'Representative control standard': ['Representative breach is Company breach'] });
+  assert.match(core.guidance, /row_detail "Representative breach is Company breach"/);
+});
+
+// Ben, 2026-10-17 (plan finding (42)): "you're missing the fiduciary
+// standard required (which we do have in the change of rec for superior
+// proposal section)". The intervening-event table's row carries the
+// fiduciary table's name and vocabulary; a readout-less fact of the path
+// whose words name the Intervening Event and the fiduciary duties defaults
+// to it (fact_type_rows gated by fact_type_rows_when).
+test('the intervening-event table has a Board determination standard row with the fiduciary vocabulary and a gated default', () => {
+  const table = findTableV3(findSectionV3('nosol-intervening'), 'nosol-intervening-table');
+  assert.ok(table.fixed_row_labels.includes('Board determination standard'));
+  assert.equal(table.fixed_row_labels.includes('Board-change standard'), false);
+  const provision = table.columns.find((column) => column.column_id === 'provision');
+  assert.deepEqual(provision.vocabulary_by_row['Board determination standard'], findTableV3(findSectionV3('nosol-fiduciary'), 'nosol-fiduciary-table').columns[0].vocabulary_by_row['Board determination standard']);
+  assert.deepEqual(table.fact_type_rows, { EXCEPTION_PREREQUISITE: 'Board determination standard', RECOMMENDATION_CHANGE: 'Board determination standard' });
+  assert.ok(new RegExp(table.fact_type_rows_when, 'i').test('The Board may change its recommendation for an Intervening Event when failure to do so would be inconsistent with its fiduciary duties'));
+  assert.equal(new RegExp(table.fact_type_rows_when, 'i').test('The Board may change its recommendation for a Superior Proposal when failure to do so would be inconsistent with its fiduciary duties'), false);
+  assert.match(table.guidance, /Board determination standard: the fiduciary standard the board must meet/);
+  const broken = structuredClone(tableShapesV3);
+  const brokenTable = broken.sections.find((s) => s.section_key === 'nosol-intervening').tables[0];
+  brokenTable.fact_type_rows_when = '(';
+  assert.throws(() => validateTableShapesV3(broken, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_FACT_TYPE_ROWS_WHEN/);
+  delete brokenTable.fact_type_rows;
+  brokenTable.fact_type_rows_when = 'Intervening Event';
+  assert.throws(() => validateTableShapesV3(broken, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_FACT_TYPE_ROWS_WHEN/);
+});

@@ -2956,6 +2956,41 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       filled row, and "Required promptly" pills beside summaries that
       say so are hidden. The live list for generation 7 is read from
       the page once the branch deploys.
+      C5 and C6, in the shapes (`scripts/product/table-shapes-decision-34.js`,
+      contract regenerated), the layer rules
+      (`scripts/product/build-legal-schema-v2.js`, contract regenerated)
+      and the page default. The intervening-event table's "Board-change
+      standard" row is "Board determination standard", the fiduciary
+      table's name and vocabulary (Ben: "you're missing the fiduciary
+      standard required (which we do have in the change of rec for
+      superior proposal section)"); its guidance names 5.02(f)'s clause
+      as that row, the layer rule asks for the standard as a fact of its
+      own on the intervening path, and a stored readout-less
+      EXCEPTION_PREREQUISITE or RECOMMENDATION_CHANGE fact whose words
+      name the Intervening Event and the fiduciary duties defaults to the
+      row (`fact_type_rows` gated by the new `fact_type_rows_when`
+      regular expression, validated in `lib/product/table-shapes.js`,
+      honoured by `defaultConclusions`), so generation 7's fact, if it
+      has one, shows now. Generation 7 had no fact on the old row, so
+      the rename costs no stored readout. The notice table is 5.02(d)'s
+      own mechanics as fixed rows: Initial notice (timing, and the
+      trigger as a second code: knowledge of an executive officer or
+      director, or receipt), Notice contents (identity of the person;
+      copy of a written proposal, inquiry or request; material terms
+      when oral; modifications; draft documentation; status and
+      developments), Ongoing updates (timing; the two content codes),
+      Notice of a decision to engage (timing), Oral proposals (may ask
+      that an oral proposal be made in writing; judged to belong here
+      because it governs how a proposal is communicated), and, per Ben's
+      "yes to both" (finding (44)), No agreement restricting information
+      to Parent (Prohibited; Not addressed); one timing code per row,
+      "promptly, and in any event within 48 hours" coded as the stated
+      period with the summary saying promptly, the 48 hours in the
+      Period column that folds under B4 when one row alone states it;
+      the deemed-breach sentence is the sub-item "Representative breach
+      is Company breach" under Representative control standard. The
+      NO_SHOP layer rule names each notice duty as its own fact. Left
+      out, as asked: nothing else of 5.02 moved.
       (44) 2026-10-17 23:45 UTC, Ben, on the two readout-less 5.02
       clauses (the Representative deemed-breach sentence as a sub-item
       "Representative breach is Company breach" under Representative

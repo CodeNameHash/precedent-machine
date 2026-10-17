@@ -1272,3 +1272,28 @@ test('applyColumnRules folds a one-line column into a trailing detail, hides pil
   assert.equal(pillStatedInSummary('Yes', 'Yes, the board may change'), false, 'a label under four characters never matches');
   assert.equal(pillStatedInSummary('Required promptly', 'Notice is required promptly, within 48 hours'), true);
 });
+
+// Ben, 2026-10-17 (plan finding (42)): "you're missing the fiduciary standard
+// required". A readout-less fiduciary-standard fact of the intervening-event
+// path defaults to the Board determination standard row; the same fact on
+// the superior-proposal path does not (fact_type_rows_when).
+test('a readout-less intervening-event fiduciary standard defaults to the Board determination standard row', () => {
+  const standard = (id, path) => ({
+    fact_id: id, proposal_id: id, family_key: 'NO_SHOP', subtype_key: 'EXCEPTION_PREREQUISITE', fact_type: 'EXCEPTION_PREREQUISITE', section_reference: '5.02(f)', structure_node_id: 'n-5-02',
+    statement: `The Board may make an Adverse Recommendation Change in response to ${path} if it has concluded in good faith, after consultation with its outside counsel, that failure to do so would be reasonably likely to be inconsistent with its fiduciary duties.`,
+    headline: { label: 'Fiduciary exception', distinguishing_component_ids: [`${id}-std`], summary: `Board may change its recommendation for ${path} when its fiduciary duties so require` },
+    components: [
+      { component_id: `${id}-std`, kind: 'STANDARD', label: 'fiduciary standard', text: 'would be, or would be reasonably likely to be, inconsistent with its fiduciary duties', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 80, gap_before: false, children: [] },
+      { component_id: `${id}-trg`, kind: 'TRIGGER', label: 'path', text: `in response to ${path}`, origin: 'OWN', source_span_id: 's', start_byte: 90, end_byte: 120, gap_before: true, children: [] },
+    ],
+  });
+  const view = buildTableView({ facts: [standard('ie', 'an Intervening Event'), standard('sp', 'a Superior Proposal')], tableShapes, legalSchema });
+  const tables = view.sections.flatMap((section) => section.tables);
+  const intervening = tables.find((candidate) => candidate.table_key === 'nosol-intervening-table');
+  assert.ok(intervening, 'the intervening-event table renders for the defaulted fact');
+  const row = intervening.rows.find((candidate) => candidate.subject === 'Board determination standard');
+  assert.ok(row && row.backing_facts.some((entry) => entry.fact_id === 'ie'));
+  assert.equal(row.backing_facts.some((entry) => entry.fact_id === 'sp'), false, 'the superior-proposal standard is not this row');
+  const noShopSection = view.sections.find((section) => section.section_key === 'nosol-fiduciary') || view.sections.find((section) => section.facts_without_readout.some((entry) => entry.fact_id === 'sp'));
+  assert.ok(noShopSection, 'the superior-proposal standard stays where its own rules put it');
+});

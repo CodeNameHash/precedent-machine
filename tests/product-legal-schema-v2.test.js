@@ -54,3 +54,17 @@ test("Ben's 2026-09-12 decisions are in V2", () => {
   assert.match(v2.families.find((f) => f.family_key === 'MATERIAL_CONTRACTS').headline.note, /threshold/);
   assert.ok(sub('MAE_DEFINITION', 'EXCLUSION').optional_roles.includes('FORUM'));
 });
+
+// Work package 2 (plan finding (42)): the no-shop layer rule asks for one
+// fact per notice duty and for the intervening-event path's fiduciary
+// standard, so the extractor is told what the rebuilt notice table and the
+// Board determination standard row need.
+test('the NO_SHOP layer rule names each notice duty as its own fact and the intervening-event fiduciary standard', () => {
+  const family = v2.families.find((entry) => entry.family_key === 'NO_SHOP');
+  assert.match(family.layer_rules, /The notice duties of the no-shop are one fact each, never one fact for the clause/);
+  assert.match(family.layer_rules, /the contents of that notice \(one fact, one LIST with a LIST_ELEMENT per item/);
+  assert.match(family.layer_rules, /"promptly, and in any event within 48 hours" is one PERIOD component in one fact, never two facts/);
+  assert.match(family.layer_rules, /the covenant not to enter into an agreement that would restrict the information the Company may give Parent \(PROHIBITED_ACTION\)/);
+  assert.match(family.layer_rules, /deeming a breach by a Representative a breach by the Company is a PROHIBITED_ACTION fact of its own/);
+  assert.match(family.layer_rules, /fiduciary standard the board must meet to change its recommendation for an Intervening Event/);
+});

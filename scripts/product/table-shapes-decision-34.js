@@ -301,29 +301,62 @@ function applyNoShop(doc) {
     subtypeKeys: ['PROHIBITED_ACTION', 'CEASE_DISCUSSIONS_REQUIREMENT', 'RETURN_OR_DESTROY_REQUIREMENT', 'SUBSEQUENT_VDR_REMOVAL'],
     guidance: 'The core no-shop mechanics, one row per question. Go-shop: YES only when the agreement grants a go-shop period. Cease existing discussions, Return or destruction of information and Data-room access terminated: from the cease-discussions clause (CEASE_DISCUSSIONS_REQUIREMENT, RETURN_OR_DESTROY_REQUIREMENT, SUBSEQUENT_VDR_REMOVAL). No-shop restriction (prohibited acts): the PROHIBITED_ACTION facts, one cell per act the clause prohibits (a clause that prohibits soliciting, initiating, knowingly encouraging and furnishing information yields four cells). Representative control standard: the words that bind the Company\'s Representatives ("shall cause its Representatives not to" is SHALL_CAUSE_REPRESENTATIVES; "shall not authorize or permit" is SHALL_NOT_AUTHORIZE_OR_PERMIT). Standstill enforcement: the clause on waiving or enforcing standstills. Omit a row the agreement does not address.',
   });
+  // Ben, 2026-10-17 (plan finding (42)), on generation 7's notice table:
+  // "odd under ongoing updates to have required within a stated period
+  // and required promptly. Also weird to have the 48 hours there" and
+  // "need ot include the detail of what info of what must be shared in
+  // the no shop (i.e. just contracts, etc) and when and orally etc. A lot
+  // more detail required". The table is 5.02(d)'s own mechanics as fixed
+  // rows, each its own fact with a readout; one timing code per row
+  // ("promptly, and in any event within 48 hours" codes as the stated
+  // period and the summary says promptly); the period column carries the
+  // hours and folds into a row when one row alone states it (table-view
+  // applyColumnRules). Finding (44), Ben "yes to both": the covenant not
+  // to enter into an agreement restricting information to Parent is a row
+  // here.
+  const TIMING = [
+    code('Required promptly', why, { code: 'REQUIRED_PROMPTLY' }),
+    code('Required within a stated period', why, { code: 'REQUIRED_WITHIN_STATED_PERIOD' }),
+    code('Not required', why, { code: 'NOT_REQUIRED' }),
+  ];
+  const CONTENTS = [
+    code('Identity of the person', why, { code: 'IDENTITY_OF_PERSON' }),
+    code('Copy of a written proposal, inquiry or request', why, { code: 'COPY_OF_WRITTEN_PROPOSAL' }),
+    code('Material terms and conditions when oral', why, { code: 'MATERIAL_TERMS_WHEN_ORAL' }),
+    code('Modifications', why, { code: 'MODIFICATIONS' }),
+    code('Draft documentation', why, { code: 'DRAFT_DOCUMENTATION' }),
+    code('Status and developments', why, { code: 'STATUS_AND_DEVELOPMENTS' }),
+  ];
   const notice = provisionTable({
     tableKey: 'nosol-noshop-notice',
     groupHeader: 'NOTICE',
     rows: [
-      ['Notice of a proposal', [code('Required', why, { code: 'REQUIRED' }), code('Not required', why, { code: 'NOT_REQUIRED' })]],
-      ['Notice period', []],
-      ['Notice content', [
-        code('Identity of the bidder', why, { code: 'IDENTITY_OF_BIDDER' }),
-        code('Material terms and conditions', why, { code: 'MATERIAL_TERMS' }),
-        code('Copies of the proposal and draft agreements', why, { code: 'COPIES_OF_PROPOSAL' }),
-        code('Status updates and amendments', why, { code: 'STATUS_UPDATES' }),
+      ['Initial notice', [
+        ...TIMING,
+        code('On knowledge of an executive officer or director', why, { code: 'ON_KNOWLEDGE_OF_OFFICER_OR_DIRECTOR' }),
+        code('On receipt', why, { code: 'ON_RECEIPT' }),
       ]],
-      ['Ongoing updates', [
-        code('Required promptly', why, { code: 'REQUIRED_PROMPTLY' }),
-        code('Required within a stated period', why, { code: 'REQUIRED_WITHIN_STATED_PERIOD' }),
-        code('Not required', why, { code: 'NOT_REQUIRED' }),
+      ['Notice contents', CONTENTS],
+      ['Ongoing updates', [...TIMING, CONTENTS[4], CONTENTS[5]]],
+      ['Notice of a decision to engage', TIMING],
+      ['Oral proposals', [
+        code('Company may ask that an oral proposal be made in writing', why, { code: 'MAY_REQUEST_WRITTEN_PROPOSAL' }),
+        code('Not addressed', why, { code: 'SILENT' }),
+      ]],
+      ['No agreement restricting information to Parent', [
+        code('Prohibited', why, { code: 'PROHIBITED' }),
+        code('Not addressed', why, { code: 'SILENT' }),
       ]],
     ],
-    numberColumns: [periodColumn('Period', `${why} The notice period (24 hours; 48 hours; two business days).`)],
+    numberColumns: [periodColumn('Period', `${why} The hours or business days a notice or update must be given within (48 hours; two business days).`)],
     reason: why,
-    subtypeKeys: ['NOTICE_PERIOD', 'NOTICE_UPDATE_OBLIGATION'],
-    guidance: 'Notice to Parent of a proposal: whether it is required, within what period (NOTICE_PERIOD; the period column carries the hours or days), what it must contain (one cell per item), and whether the Company must keep Parent informed (NOTICE_UPDATE_OBLIGATION). The notice and match periods of the superior-proposal path belong to the matching-rights table; those of the intervening-event path to the intervening-event table.',
+    subtypeKeys: ['NOTICE_PERIOD', 'NOTICE_UPDATE_OBLIGATION', 'PROHIBITED_ACTION'],
+    guidance: 'Notice to Parent under the no-shop, one fact and one readout per row, each row\'s timing one code (never "Required within a stated period" beside "Required promptly": "promptly, and in any event within 48 hours" is REQUIRED_WITHIN_STATED_PERIOD with 48 hours in the period column and promptly in the summary). Initial notice: the NOTICE_PERIOD fact giving notice of a proposal, inquiry or request (its trigger, knowledge of receipt by an executive officer or director, as a second code; its period). Notice contents: the NOTICE_UPDATE_OBLIGATION or NOTICE_PERIOD fact listing what the notice carries, one cell per item (the identity of the person; a copy of a written proposal, inquiry or request; the material terms and conditions when oral; modifications). Ongoing updates: the NOTICE_UPDATE_OBLIGATION fact keeping Parent reasonably informed (its timing; status and developments and draft documentation as content cells). Notice of a decision to engage: the NOTICE_PERIOD fact giving notice that the Company will provide information or negotiate (its period). Oral proposals: the clause letting the Company ask that an oral proposal be made in writing. No agreement restricting information to Parent: the PROHIBITED_ACTION fact that the Company will not enter into an agreement that would prevent it from giving Parent this information (Ben, 2026-10-17: a row of this table). The notice and match periods of the superior-proposal path belong to the matching-rights table; those of the intervening-event path to the intervening-event table.',
   });
+  // Finding (44), Ben "yes to both": the sentence deeming a Representative's
+  // breach a breach by the Company is a sub-item under the control standard.
+  core.detail_labels_by_row = { 'Representative control standard': ['Representative breach is Company breach'] };
+  core.guidance += ' The sentence deeming a breach by a Representative a breach by the Company is a PROHIBITED_ACTION fact on the Representative control standard row with row_detail "Representative breach is Company breach" (Ben, 2026-10-17).';
   noShop.tables = [core, notice];
 
   // --- Fiduciary-out / engagement and change of recommendation ------------
@@ -394,16 +427,27 @@ function applyNoShop(doc) {
         code('Changes in law or GAAP', why, { code: 'CHANGES_IN_LAW_OR_GAAP' }),
         code('Regulatory, clinical or product developments', why, { code: 'REGULATORY_OR_CLINICAL_DEVELOPMENTS' }),
       ]],
-      ['Board-change standard', BOARD_STANDARDS(why)],
+      // Ben, 2026-10-17 (plan finding (42)): "you're missing the fiduciary
+      // standard required (which we do have in the change of rec for
+      // superior proposal section)". The row carries the fiduciary table's
+      // name and vocabulary; 5.02(f)'s standard is this row.
+      ['Board determination standard', BOARD_STANDARDS(why)],
       ['Notice period', []],
       ['Matching period', []],
       ['Parent termination right on a change', []],
     ],
     numberColumns: [periodColumn('Period', `${why} The notice or match period of the intervening-event path.`)],
     reason: why,
-    guidance: 'The intervening-event path. Intervening Event provision: YES when the board may change its recommendation for an Intervening Event (a RECOMMENDATION_CHANGE or EXCEPTION_PREREQUISITE fact on that path). Definition: the KEY_DEFINED_TERMS/INTERVENING_EVENT fact, as drafted, no code. Excluded events: one cell per event the definition excludes. Board-change standard: the determination standard on this path. Notice period and Matching period: the NOTICE_PERIOD and INITIAL_MATCH_PERIOD facts that govern a change for an Intervening Event (the superior-proposal path\'s periods go to the matching-rights table), the number in the period column. Parent termination right on a change is derived by the page from the TERMINATION/RECOMMENDATION_CHANGE fact; never fill it.',
+    guidance: 'The intervening-event path. Intervening Event provision: YES when the board may change its recommendation for an Intervening Event (a RECOMMENDATION_CHANGE or EXCEPTION_PREREQUISITE fact on that path). Definition: the KEY_DEFINED_TERMS/INTERVENING_EVENT fact, as drafted, no code. Excluded events: one cell per event the definition excludes. Board determination standard: the fiduciary standard the board must meet to change its recommendation for an Intervening Event, one code (a clause such as "has concluded in good faith, after consultation with its outside counsel, that failure to make an Adverse Recommendation Change on account of the Intervening Event would be, or would be reasonably likely to be, inconsistent with its fiduciary duties" is REASONABLY_LIKELY_TO_BE_INCONSISTENT_WITH_FIDUCIARY_DUTIES on this row; the consultation is content of the summary). Notice period and Matching period: the NOTICE_PERIOD and INITIAL_MATCH_PERIOD facts that govern a change for an Intervening Event (the superior-proposal path\'s periods go to the matching-rights table), the number in the period column. Parent termination right on a change is derived by the page from the TERMINATION/RECOMMENDATION_CHANGE fact; never fill it.',
   });
   findColumn(interveningTable, 'provision').derived = { from_family: 'TERMINATION', from_subtype: 'RECOMMENDATION_CHANGE', join: 'presence', rows: ['Parent termination right on a change'] };
+  // A readout-less fiduciary-standard fact of the intervening-event path
+  // (an EXCEPTION_PREREQUISITE or RECOMMENDATION_CHANGE fact whose
+  // statement names the Intervening Event) takes this row by default, so a
+  // stored generation shows it too (generation 7 extracted 5.02(f)'s
+  // standard without a readout).
+  interveningTable.fact_type_rows = { EXCEPTION_PREREQUISITE: 'Board determination standard', RECOMMENDATION_CHANGE: 'Board determination standard' };
+  interveningTable.fact_type_rows_when = '(?=[\\s\\S]*Intervening Event)(?=[\\s\\S]*fiduciary dut)';
   intervening.tables = [interveningTable];
 
   // --- Superior proposal --------------------------------------------------
