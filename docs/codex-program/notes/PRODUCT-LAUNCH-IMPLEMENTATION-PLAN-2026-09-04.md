@@ -2899,6 +2899,24 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       display, never removed from the text (spans and hashes stand).
       Generation 8 waits for work package 2 and Ben's answer on the two
       readout-less 5.02 clauses.
+      (44) 2026-10-17 23:45 UTC, Ben, on the two readout-less 5.02
+      clauses (the Representative deemed-breach sentence as a sub-item
+      "Representative breach is Company breach" under Representative
+      control standard; the no-restricting-agreement sentence as a row
+      "No agreement restricting information to Parent" on the rebuilt
+      notice table): "yes to both". And: "Agreed on all following it -
+      also you now have $200 of API tokens you can use if you want to
+      preseve subscription capcaity". Decisions: both rows join work
+      package 2; generation 8 runs when work package 2 lands; NCS, then
+      Olaplex and Apogee, follow it. The ANTHROPIC provider in the code
+      (lib/product/anthropic-model.js) runs only inside the web request
+      on Sonnet with a 12,000-token output cap, not on the hosted worker
+      with the split and the Opus tier the subscription runs use; work
+      package 3 brings the API provider to the hosted worker at the same
+      model tier, output cap and part splitting, the key read from the
+      preview environment like the OAuth token and never from the
+      repository, with a cost estimate from the published prices and
+      generation 7's token counts before any run is submitted on it.
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
