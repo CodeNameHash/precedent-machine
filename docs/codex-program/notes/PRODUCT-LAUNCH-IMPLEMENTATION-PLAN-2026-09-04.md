@@ -2991,6 +2991,21 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       is Company breach" under Representative control standard. The
       NO_SHOP layer rule names each notice duty as its own fact. Left
       out, as asked: nothing else of 5.02 moved.
+      A5 (finding (47)), in `components/product/PublishedSummary.jsx`
+      (`childrenCoverParent`): a parent whose children together cover
+      its words, with nothing but a list's connectives (and, or, plus,
+      either, both) between them, is shown as its children, each
+      indented one level, with no line of its own and no toggle; a
+      parent with words of its own shows them with its children indented
+      beneath, no toggle; list elements such as (i) and (ii) are separate
+      indented lines; every line is one text style, left-aligned (the
+      italic grey of inherited words and the dotted underline of a
+      reference term are gone; the test ids stay). This supersedes the
+      closed-by-default detail of 2026-09-14: the tree is open
+      throughout. Verified by hand in headless Chromium on a 2.01-shaped
+      fact: "shall be converted into the right to receive" above its
+      object, "(i) $47.50 in cash" and "(ii) one CVR" as two indented
+      lines in the list's place, the defined-term line left-aligned.
       (44) 2026-10-17 23:45 UTC, Ben, on the two readout-less 5.02
       clauses (the Representative deemed-breach sentence as a sub-item
       "Representative breach is Company breach" under Representative

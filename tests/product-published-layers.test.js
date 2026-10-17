@@ -117,3 +117,30 @@ test('onComponentSelect and selectedComponentId are optional and only change out
   assert.doesNotMatch(withoutSelection, /data-selected/);
   assert.ok(baseline.length > 0);
 });
+
+// Ben, 2026-10-17 (plan finding (47)): "hitting 'show detail' doesn't add
+// much...just smae stuff again? Also, we should better indent the (i) and
+// (ii) for the right to receive that is shown".
+test('a parent covered by its children is shown as its children, indented; a parent with its own words keeps them above its children; no toggles', () => {
+  const { ComponentLayer, childrenCoverParent } = require('../components/product/PublishedSummary.jsx');
+  const child = (id, text, start, end, kind = 'LIST_ELEMENT') => ({ component_id: id, kind, label: id, text, origin: 'OWN', source_span_id: 's', start_byte: start, end_byte: end, gap_before: false, children: [] });
+  const covered = { component_id: 'pkg', kind: 'LIST', label: 'consideration', text: '(i) $47.50 in cash and (ii) one CVR', origin: 'OWN', source_span_id: 's', start_byte: 100, end_byte: 136, gap_before: false, children: [
+    child('i', '(i) $47.50 in cash', 100, 118), child('ii', '(ii) one CVR', 123, 136),
+  ] };
+  const own = { component_id: 'right', kind: 'OPERATION', label: 'right', text: 'shall be converted into the right to receive', origin: 'OWN', source_span_id: 's', start_byte: 50, end_byte: 95, gap_before: false, children: [
+    child('obj', 'the right to receive', 75, 95, 'OBJECT'),
+  ] };
+  assert.equal(childrenCoverParent(covered), true);
+  assert.equal(childrenCoverParent(own), false);
+  // Without bytes the words decide.
+  assert.equal(childrenCoverParent({ text: 'A and B', children: [{ text: 'A' }, { text: 'and B' }] }), true);
+  assert.equal(childrenCoverParent({ text: 'A and B and more', children: [{ text: 'A' }, { text: 'and B' }] }), false);
+  const html = renderToStaticMarkup(React.createElement(ComponentLayer, { components: [own, covered] }));
+  assert.doesNotMatch(html, /data-testid="descend-control"/);
+  assert.equal((html.match(/\(i\) \$47\.50 in cash/g) || []).length, 1, 'the covered parent\'s words appear once, as its child');
+  assert.doesNotMatch(html, /\(i\) \$47\.50 in cash and \(ii\) one CVR/);
+  assert.match(html, /data-covered="true"[^>]*>\s*<ul class="mt-1 space-y-1 border-l border-border pl-3 text-left">/);
+  assert.match(html, /shall be converted into the right to receive/);
+  assert.ok(html.indexOf('shall be converted into the right to receive') < html.indexOf('>the right to receive<'), 'the parent\'s own words sit above its child');
+  assert.doesNotMatch(html, /inline-flex|italic/);
+});
