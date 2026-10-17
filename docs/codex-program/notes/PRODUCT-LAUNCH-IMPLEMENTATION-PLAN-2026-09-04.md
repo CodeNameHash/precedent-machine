@@ -2868,7 +2868,12 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       conclusions; a footer fact needs no readout (39), so the guidance
       now says so and the contract is regenerated. Finding (38) is the
       pipeline, not the prompt: nothing of it belongs in the request.
-      No run submitted; generation 8 waits on Ben's comments.
+      Browser check (section 9, one per UI change): the page rendered
+      with its compiled Tailwind in headless Chromium, with six drift
+      lines (the generation 7 sections) and with none; the lines sit
+      between the title and the rule in the metadata grey and the
+      tables are untouched. No run submitted; generation 8 waits on
+      Ben's comments.
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
