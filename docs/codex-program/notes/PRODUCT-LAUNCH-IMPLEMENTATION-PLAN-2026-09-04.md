@@ -2868,7 +2868,12 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       conclusions; a footer fact needs no readout (39), so the guidance
       now says so and the contract is regenerated. Finding (38) is the
       pipeline, not the prompt: nothing of it belongs in the request.
-      No run submitted; generation 8 waits on Ben's comments.
+      Browser check (section 9, one per UI change): the page rendered
+      with its compiled Tailwind in headless Chromium, with six drift
+      lines (the generation 7 sections) and with none; the lines sit
+      between the title and the rule in the metadata grey and the
+      tables are untouched. No run submitted; generation 8 waits on
+      Ben's comments.
       (42) 2026-10-17 23:30 UTC. Work package 1 reviewed and accepted
       (finding (41); the implementer also found that the extraction
       request read footer_from_subtype.subtype_key alone, so after (39)
