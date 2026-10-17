@@ -2819,7 +2819,24 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       Open: the page does not yet show the draft-level drift issues;
       the six drift sections' definitions are generation 8's; Ben's
       intervening event and no-shop comments.
-      (40) 2026-10-17 23:00 UTC, work package 1 of the section 10 loop,
+      (40) 2026-10-17 23:00 UTC, Ben: "are you the overall / managing
+      chat for the precedent machine / corpus project?" and "can you
+      reorganize yourself as required and then give me clear
+      instructions on what you need from me then prepare to proceed?"
+      Since Phase 5B the manager session had also been the implementer
+      (code, runs, reads, plan). The section 10 loop is restored: the
+      manager session (session_014yr9q51NS76fiRGycShhxz) keeps this
+      checklist, reads the output, decides and talks to Ben; a fresh
+      implementer session (session_01FcuVU62gzc5H166ZEAXYLP, on the
+      product branch) takes work packages by message and reports its
+      diff, behaviour and tests for review. Work package 1: the page
+      shows draft-level SCHEMA_DRIFT_FACT_TYPE issues; generation 8
+      readiness confirmed by tests; finding (41) by the implementer.
+      The manager submits generation 8 after Ben's intervening event and
+      no-shop comments. The 5B.6 prerequisites (worker update script,
+      the schema variable on the preview environment) are in place from
+      the manager's side, so the NCS rerun waits only on Ben's go.
+      (41) 2026-10-17 23:20 UTC, work package 1 of the section 10 loop,
       generation 8 readiness. The page shows finding (38)'s drift: the
       preview read (`loadCompletedSectionResults`) keys every issue by
       its section node, so a draft-level issue (structure_node_id null)
