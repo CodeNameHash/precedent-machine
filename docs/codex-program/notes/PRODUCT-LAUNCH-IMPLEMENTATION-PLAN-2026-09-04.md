@@ -5632,6 +5632,102 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       rule. docs/core/CODEBASE-GUIDE.md updated. npm run test:active: the
       known failure only (the count in the commit). Nothing submitted or
       retried.
+      (96) 2026-10-18 21:30 UTC (implementer A), work package 18 as
+      revised by the manager's message of 20:48 on Ben's answers in
+      finding (163); (95)'s (d) and (e) are superseded by this finding.
+      Ben's words, verbatim, now in the code comments where a change
+      answers them: "For CVRs - I want to build a separate product for
+      that os I'd leave those"; "on A - if the shareholders have to do
+      something, okay for them to be an obligor. Ok on ETA on covenants.
+      reg rights I think goes with consideration (but at bottom)". (a),
+      (b), (c) stand as delivered in (94). (d) revised: the general
+      covenants table no longer has a Registration rights row; a table
+      consideration-registration-rights is the last table of the
+      Consideration section (scripts/product/table-shapes-decision-34.js
+      REGISTRATION_TABLE_KEY; one fixed row, the seven sub-items by
+      words as before, accepts_families GENERAL_COVENANTS, which
+      lib/product/table-shapes.js validates and lib/product/
+      fact-conclusions.js tableForFact honours). The covenants table's
+      words_rows rule carries table_key (validated at document level:
+      the table exists and holds the row), and rowFromWords moves a fact
+      across tables as across rows (a fact on the model's open
+      "Registration rights" row of the covenants table moves too); the
+      extractor's ROW_FROM_WORDS note names from_table_key and
+      to_table_key, the page's page_rule 'words_rows' carries the new
+      table_key. On NCS 5.17's 32 covenant facts the outcome of (95)
+      holds, now under Consideration: 29 on the registration table's one
+      row (Resale registration 3, Effectiveness and amendments 5,
+      Stockholder information and approval 4, Indemnification 8,
+      Expenses 1, Rule 144 and legend removal 3, Listing and reporting
+      5), the three Nasdaq notices where they were. Metsera generation
+      8: no covenant names the words, so no such table. (e) revised: the
+      exhibit-internal reference resolver of (95) is reverted
+      (lib/product/source-context.js restored as at 858bd92,
+      tests/product-exhibit-references.test.js removed; nothing of it
+      remains). In its place, lib/product/agreement-draft.js
+      outOfScopeExhibit: an exhibit or annex whose own text is an
+      agreement (a "Form of ... Agreement" title, or "THIS ... AGREEMENT
+      is made and entered into") with three or more articles or
+      sections of its own is a separate agreement and out of scope.
+      buildAgreementSectionDraft, after the routing and residual calls
+      (the routing stays as evidence of what the exhibit holds), records
+      one OUT_OF_SCOPE_EXHIBIT note on the node (section_reference,
+      title, own_headings, routed_families, reason), coverage NOT_FOUND
+      for the section, every family and the routed families' fact types
+      (never UNRESOLVED), and makes no extraction call. On the Metsera
+      filing as fetched: Exhibit-B is detected (title "Form of CVR
+      Agreement", 33 headings of its own), Exhibit-A (the Certificate of
+      Incorporation of the Surviving Corporation, 100 bytes) and 6.03
+      are not; the draft of Exhibit-B with a model that answers routing
+      and the residual pass and would throw on extraction makes those
+      two calls only, holds one note, no proposals, no UNRESOLVED
+      assertion (tests/product-out-of-scope-exhibit.test.js). On the next
+      Metsera run the 51 REQUIRED_FACT_TYPE_UNRESOLVED issues from
+      Exhibit-B become this one note; the residual pass still runs on
+      the exhibit, so its unusual-provision flags remain as they are
+      (the manager may want them silenced too; not changed here). The
+      provisions page lists the exhibit under a quiet line in the style
+      of the schema-drift lines ("Out of scope: Exhibit B, Form of CVR
+      Agreement, a separate agreement; not extracted in this product.";
+      lib/product/provisions-preview.js out_of_scope,
+      pages/review/product/[id]/provisions.js, data-testid
+      preview-out-of-scope; tests/product-provisions-preview.test.js).
+      (f) OTHER_PARTY: the obligor vocabulary of the general covenants
+      and registration-rights tables has OTHER_PARTY ("Other party
+      (named in the words)"), the column's other_party_code names it,
+      the guidance tells the extractor to cite the party's own words;
+      the page shows those words in the cell (lib/product/table-view.js
+      otherPartyWords: the cited component else the fact's own ACTOR)
+      and derives the cell for a stored fact whose obligor is empty and
+      whose ACTOR is neither the Company, Parent, Merger Sub nor "each
+      party" (otherPartyCell, derived 'other_party'). On NCS 5.17's
+      several indemnity (37ea48cb, "Each Specified Stockholder ...
+      indemnify and hold harmless") the Indemnification sub-item's
+      obligor reads "Each Specified Stockholder" beside Parent's;
+      pinned in tests/product-table-view.test.js. (g) By when: a
+      verbatim column byWhen (fill_from TRIGGER and PERIOD,
+      fill_from_components, validated) on the general covenants,
+      registration-rights and financing tables, before the as-drafted
+      column, which on those tables cites TRIGGER and PERIOD too; the
+      page fills it from the fact's own components in source order when
+      the readout has no cell (fillFromComponentsCell, derived
+      'fill_from_components'), never repeating a component a value
+      column of the same table reads, and pruneEmptyColumns hides it
+      when no row fills it. On NCS 5.17's Rule 424(b)(7) filing
+      (2bf58d52) the Resale registration line reads "Promptly following
+      the Closing Date (and in any event no later than two Business Days
+      thereafter)"; on a covenants table no row of which states a
+      deadline the column is hidden. On NCS 5.18's payoff letter the
+      financing table's Period column already reads 3 business days
+      from the PERIOD component (work package 7's rule), so By when
+      shows nothing there and is hidden, the as-drafted words now citing
+      the period; a By when that repeated the Period number would have
+      been the duplication Ben's column rule forbids. The Decision 34
+      test that no fact table carries a free-text column admits the By
+      when column alone, on Ben's words. Shapes regenerated: 30
+      sections, 50 tables, 164 columns. docs/core/CODEBASE-GUIDE.md
+      updated. npm run test:active: the known failure only (the count in
+      the commit). Nothing submitted or retried.
       (120) 2026-10-18 19:10 to 19:45 UTC (implementer C), Q5: the limb
       names harvested. `scripts/product/harvest-rep-limbs.js` (library
       `lib/product/rep-limb-harvest.js`, `tests/product-rep-limb-harvest.test.js`)
