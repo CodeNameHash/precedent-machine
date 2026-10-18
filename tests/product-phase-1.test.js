@@ -556,6 +556,104 @@ test('exhibit documents retain scoped articles, sections and nearest-scope refer
     && span.structure_node_id === structure.nodes.find((node) => node.reference === 'Exhibit-B::14.01').node_id), false);
 });
 
+test('a trailing annex after the signature pages bounds the last article and is never its child', () => {
+  // Lilly / Verve 2025 (EX-2.1): the intake failed twice at structure build
+  // with STRUCTURE_PARENT_SPAN because parseStructure gives the annex
+  // section "Annex I" the articleNumber "I" and the sectionizer parented it
+  // by that numeral under the main agreement's ARTICLE I, 265 kB earlier
+  // (plan finding (107)). The fixture holds the exhibit's own canonical
+  // bytes from the last signature page through Annex I's first conditions,
+  // appended here to a synthetic main agreement with nine articles.
+  const fixture = JSON.parse(fs.readFileSync(path.join(ROOT, 'tests/fixtures/product/verve-annex-i-boundary.v1.json'), 'utf8'));
+  assert.equal(fixture.schema_version, 'PRODUCT_STRUCTURE_BOUNDARY_FIXTURE/V1');
+  assert.equal(Buffer.byteLength(fixture.excerpt, 'utf8'), fixture.excerpt_byte_length);
+  const annexOffsetInExcerpt = fixture.annex_start_byte - fixture.excerpt_start_byte;
+  assert.equal(Buffer.from(fixture.excerpt, 'utf8').subarray(annexOffsetInExcerpt, annexOffsetInExcerpt + 31).toString('utf8'), 'Annex I\nCONDITIONS TO THE OFFER');
+  const mainAgreement = [
+    'AGREEMENT AND PLAN OF MERGER',
+    'ARTICLE I',
+    'THE OFFER',
+    'Section 1.1. The Offer.',
+    '(a) Commencement of the Offer. Purchaser shall commence the Offer.',
+    '(b) Terms and Conditions of the Offer. The Offer is subject to the conditions set forth in Annex I.',
+    'Section 1.2. Company Actions.',
+    'The Company shall file a Schedule 14D-9.',
+    'ARTICLE II',
+    'THE MERGER',
+    'Section 2.1. The Merger.',
+    'Purchaser shall be merged with and into the Company.',
+    'ARTICLE III',
+    'EFFECT OF THE MERGER ON THE CAPITAL STOCK',
+    'Section 3.1. Conversion of Capital Stock.',
+    'Each Share shall be converted into the right to receive the Merger Consideration.',
+    'ARTICLE IV',
+    'REPRESENTATIONS AND WARRANTIES OF THE COMPANY',
+    'Section 4.1. Organization.',
+    'The Company is duly organized.',
+    'ARTICLE V',
+    'REPRESENTATIONS AND WARRANTIES OF PARENT AND PURCHASER',
+    'Section 5.1. Organization.',
+    'Parent is duly organized.',
+    'ARTICLE VI',
+    'COVENANTS',
+    'Section 6.1. Covenants of the Company.',
+    'The Company shall conduct its business in the ordinary course.',
+    'ARTICLE VII',
+    'CONDITIONS OF MERGER',
+    'Section 7.1. Conditions to the Merger.',
+    'The Merger is conditioned on the Offer Closing.',
+    'ARTICLE VIII',
+    'TERMINATION, AMENDMENT AND WAIVER',
+    'Section 8.1. Termination.',
+    'This Agreement may be terminated by mutual written consent.',
+    'ARTICLE IX',
+    'GENERAL PROVISIONS',
+    'Section 9.1. Non-Survival of Representations and Warranties.',
+    'The representations and warranties shall not survive the Effective Time.',
+    'Section 9.2. Counterparts.',
+    'This Agreement may be executed in counterparts.',
+    '',
+  ].join('\n');
+  const canonicalText = mainAgreement + fixture.excerpt;
+  const annexStart = Buffer.byteLength(mainAgreement, 'utf8') + annexOffsetInExcerpt;
+  const digest = sha256ForTest(canonicalText);
+  const structure = buildAgreementStructure({
+    schema_version: 'SOURCE_DOCUMENT/V1', source_document_id: digest, agreement_id: digest,
+    retrieval_url: fixture.retrieval_url, final_url: fixture.retrieval_url, filing_accession: '0001193125-25-141748',
+    exhibit_filename: 'd30505dex21.htm', source_map_id: digest,
+    canonical_text: canonicalText, canonical_text_sha256: digest,
+  });
+  const bytes = Buffer.from(canonicalText, 'utf8');
+  const byId = new Map(structure.nodes.map((node) => [node.node_id, node]));
+  const root = structure.nodes.find((node) => node.kind === 'AGREEMENT');
+  const articleOne = structure.nodes.find((node) => node.reference === 'ARTICLE I');
+  const articleNine = structure.nodes.find((node) => node.reference === 'ARTICLE IX');
+  const annex = structure.nodes.find((node) => node.reference === 'Annex-I');
+  assert.ok(annex, 'Annex I is a node');
+  assert.equal(annex.parent_id, root.node_id, 'the annex hangs from the agreement, not ARTICLE I');
+  assert.equal(annex.span.start_byte, annexStart);
+  assert.equal(bytes.subarray(annex.span.start_byte, annex.span.start_byte + 7).toString('utf8'), 'Annex I');
+  assert.equal(annex.span.end_byte, bytes.length);
+  assert.equal(articleNine.span.end_byte, annexStart, 'the last article ends where the annex begins');
+  assert.ok(articleOne.span.end_byte < annexStart);
+  const section92 = structure.nodes.find((node) => node.reference === '9.2');
+  assert.equal(section92.parent_id, articleNine.node_id);
+  assert.ok(section92.span.end_byte <= annexStart, 'the last section never reaches into the annex');
+  const limbA = structure.nodes.find((node) => node.reference === 'Annex-I(a)');
+  const limbB = structure.nodes.find((node) => node.reference === 'Annex-I(b)');
+  assert.ok(limbA && limbB, 'the annex conditions are its limbs');
+  assert.equal(limbA.parent_id, annex.node_id);
+  assert.equal(limbB.parent_id, annex.node_id);
+  assert.equal(bytes.subarray(limbA.span.start_byte, limbA.span.start_byte + 36).toString('utf8'), '(a) there have been validly tendered');
+  assert.equal(structure.nodes.some((node) => /^9\.2\(/.test(node.reference || '')), false, 'no annex limb is claimed by the last section');
+  for (const node of structure.nodes) {
+    if (!node.parent_id) continue;
+    const parent = byId.get(node.parent_id);
+    assert.ok(parent.span.start_byte <= node.span.start_byte && parent.span.end_byte >= node.span.end_byte,
+      `${node.reference} lies inside its parent ${parent.reference || parent.kind}`);
+  }
+});
+
 function sha256ForTest(value) {
   return require('node:crypto').createHash('sha256').update(value).digest('hex');
 }

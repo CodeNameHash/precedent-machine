@@ -11,8 +11,6 @@
 
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
-const fs = require('node:fs');
-const path = require('node:path');
 const test = require('node:test');
 
 process.env.PRODUCT_PHASE2_DB_HELPER_ONLY = '1';
@@ -21,18 +19,11 @@ delete process.env.PRODUCT_PHASE2_DB_HELPER_ONLY;
 
 const { decideSandboxAssignment, sandboxPoolNames } = require('../lib/product/sandbox-pool');
 
-const ROOT = path.resolve(__dirname, '..');
-const migration = fs.readFileSync(path.join(ROOT, 'supabase/migrations/20261018200000_product_run_sandboxes.sql'), 'utf8');
+const MIGRATION = '20261018200000_product_run_sandboxes.sql';
 const POOL = [...sandboxPoolNames(2)];
 const [FIRST, SECOND] = POOL;
 
 const client = () => database.getDatabaseClient();
-
-async function execute(sql) {
-  const db = client();
-  if (typeof db.exec === 'function') await db.exec(sql);
-  else await db.query(sql);
-}
 
 async function createRun(status, { updatedAt = 'now()' } = {}) {
   const runId = crypto.randomUUID();
@@ -86,18 +77,16 @@ let backfilled;
 let stalePartial;
 let olderRunning;
 
-test.before(async () => {
-  await database.setupDatabase();
-  // The run live on the one sandbox before the pool: the most recently
+test.before(() => database.setupDatabase({ hooks: { [MIGRATION]: { before: async (client) => {
+  // The runs that exist when the migration is applied: the most recently
   // updated RUNNING or PARTIAL run is backfilled onto the first sandbox; an
   // older unfinished run (no worker: one lock, one worker) is not.
   olderRunning = await createRun('RUNNING', { updatedAt: "now() - interval '3 hours'" });
   stalePartial = await createRun('PARTIAL', { updatedAt: "now() - interval '2 hours'" });
   backfilled = await createRun('RUNNING', { updatedAt: "now() - interval '1 minute'" });
   await createRun('READY', { updatedAt: 'now()' });
-  await client().query('SAVEPOINT before_run_sandboxes');
-  await execute(migration);
-});
+  await client.query('SAVEPOINT before_run_sandboxes');
+} } } }));
 
 test.after(async () => {
   await client().query('ROLLBACK TO SAVEPOINT before_run_sandboxes');

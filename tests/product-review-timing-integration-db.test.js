@@ -2,8 +2,6 @@
 
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
-const fs = require('node:fs');
-const path = require('node:path');
 const test = require('node:test');
 
 process.env.PRODUCT_PHASE2_DB_HELPER_ONLY = '1';
@@ -13,31 +11,8 @@ delete process.env.PRODUCT_PHASE2_DB_HELPER_ONLY;
 const { ProductPhase3Store } = require('../lib/product/phase-3-store');
 const { applyReviewCommand, initialiseReviewState } = require('../lib/product/review-state');
 
-const ROOT = path.resolve(__dirname, '..');
-const migrations = [
-  'supabase/migrations/20260905070000_product_phase_3_review.sql',
-  'supabase/migrations/20260905203000_product_finalization_retry.sql',
-  'supabase/migrations/20260905205000_product_release_timing_guard.sql',
-  'supabase/migrations/20260905212000_product_review_citation_repair.sql',
-  'supabase/migrations/20260905213000_product_monotonic_failed_section_status.sql',
-  'supabase/migrations/20260905214000_product_cumulative_review_timing.sql',
-  'supabase/migrations/20260905215000_product_finding_resolution_validation.sql',
-  'supabase/migrations/20260905220000_product_review_proposition_group_repair.sql',
-  'supabase/migrations/20260905221000_product_analysis_running_progress.sql',
-  'supabase/migrations/20260905222000_product_relationship_review.sql',
-  'supabase/migrations/20260905223000_product_span_closure_lookup.sql',
-  'supabase/migrations/20260905224000_product_cross_section_relationship_staging.sql',
-  'supabase/migrations/20260905225000_product_legal_schema_v1_1_relationship_types.sql',
-  'supabase/migrations/20260905227000_product_legal_schema_revision_persistence.sql',
-  'supabase/migrations/20260905230000_product_notice_update_relationship_types.sql',
-  'supabase/migrations/20260905231000_product_termination_effect_relationship_types.sql',
-  'supabase/migrations/20260905232000_product_review_validation_identity_lookup.sql',
-  'supabase/migrations/20260906234757_product_release_timing_measurement.sql',
-  'supabase/migrations/20260907005021_product_article_intro_coverage.sql',
-].map((file) => fs.readFileSync(path.join(ROOT, file), 'utf8'));
-const referenceSamplesV3Migration = fs.readFileSync(path.join(
-  ROOT, 'supabase/migrations/20260907082337_product_release_reference_samples_v3.sql',
-), 'utf8');
+const harness = require('./helpers/product-database');
+const REFERENCE_SAMPLES_V3 = '20260907082337_product_release_reference_samples_v3.sql';
 let preV3SaveReviewDefinition;
 
 const actor = 'review-timing-integration-lawyer';
@@ -47,20 +22,15 @@ function fixedClock(instant) {
   return () => new Date(instant);
 }
 
-async function executeMigration(client, migration) {
-  if (process.env.TEST_PGLITE_MODULE) await client.exec(migration);
-  else await client.query(migration);
-}
-
-test.before(async () => {
-  await phase2Database.setupDatabase();
-  const client = phase2Database.getDatabaseClient();
-  for (const migration of migrations) await executeMigration(client, migration);
-  preV3SaveReviewDefinition = (await client.query(`SELECT pg_get_functiondef(to_regprocedure(
-    'product_private.product_phase3_save_review(uuid,integer,jsonb,text,text,text,text,jsonb)'
-  )) AS definition`)).rows[0].definition;
-  await executeMigration(client, referenceSamplesV3Migration);
-});
+// The save function's definition is read just before the reference-samples
+// V3 migration in the full list (finding (141)); the test below restores it.
+test.before(() => phase2Database.setupDatabase({ hooks: { [REFERENCE_SAMPLES_V3]: {
+  before: async (client) => {
+    preV3SaveReviewDefinition = (await client.query(`SELECT pg_get_functiondef(to_regprocedure(
+      'product_private.product_phase3_save_review(uuid,integer,jsonb,text,text,text,text,jsonb)'
+    )) AS definition`)).rows[0].definition;
+  },
+} } }));
 
 test.after(phase2Database.teardownDatabase);
 
@@ -378,7 +348,7 @@ test('real review validator preserves cumulative timing across publish, reopen, 
   await client.query('ROLLBACK TO SAVEPOINT restored_v2_rejects_v3');
   await client.query('RELEASE SAVEPOINT restored_v2_rejects_v3');
 
-  await executeMigration(client, referenceSamplesV3Migration);
+  await harness.applyMigration(REFERENCE_SAMPLES_V3);
   await client.query('SAVEPOINT reapplied_v3_accepts_v3');
   await assert.doesNotReject(() => store.saveReview({
     runId, expectedVersion: 6, state: review.state, actor, eventType: 'EVALUATE_RELEASE',

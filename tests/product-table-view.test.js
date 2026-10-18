@@ -1233,6 +1233,10 @@ test('page footers are hidden from the words the tables show and kept in the sto
   assert.equal(hidePageFooters('DOCUMENTS\n-85-\nREFERRED TO'), 'DOCUMENTS REFERRED TO');
   assert.equal(hidePageFooters('the\n - 7 - \nTransactions'), 'the Transactions');
   assert.equal(hidePageFooters('a 3-4 split and -5- inline stay'), 'a 3-4 split and -5- inline stay', 'only a footer on a line of its own is hidden');
+  // Work package 20 (b): the NCS filing's footers are bare page numbers on a line of their own.
+  assert.equal(hidePageFooters('relating to the Transactions,\n49\nthe Company or Parent'), 'relating to the Transactions, the Company or Parent');
+  assert.equal(hidePageFooters('as follows:\n34\nSection 4.1 Organization'), 'as follows:\nSection 4.1 Organization', 'between single newlines a paragraph boundary keeps one newline');
+  assert.equal(hidePageFooters('shares of 2,000 and 49 the Company'), 'shares of 2,000 and 49 the Company', 'a number inside a line is not a footer');
   assert.equal(hidePageFooters(null), null);
   const fact = {
     fact_id: 'pf-2', family_key: 'NO_SHOP', subtype_key: 'PROHIBITED_ACTION',

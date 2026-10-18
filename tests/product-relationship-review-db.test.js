@@ -2,30 +2,14 @@
 
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
-const fs = require('node:fs');
-const path = require('node:path');
 const test = require('node:test');
 
 process.env.PRODUCT_PHASE2_DB_HELPER_ONLY = '1';
 const database = require('./product-phase-2-db.test');
 delete process.env.PRODUCT_PHASE2_DB_HELPER_ONLY;
 
-const ROOT = path.resolve(__dirname, '..');
 const legalSchema = require('../contracts/product/legal-schema.v1.json');
 const { applyReviewCommand } = require('../lib/product/review-state');
-const migrationFiles = [
-  'supabase/migrations/20260905070000_product_phase_3_review.sql',
-  'supabase/migrations/20260905203000_product_finalization_retry.sql',
-  'supabase/migrations/20260905205000_product_release_timing_guard.sql',
-  'supabase/migrations/20260905212000_product_review_citation_repair.sql',
-  'supabase/migrations/20260905214000_product_cumulative_review_timing.sql',
-  'supabase/migrations/20260905215000_product_finding_resolution_validation.sql',
-  'supabase/migrations/20260905220000_product_review_proposition_group_repair.sql',
-];
-const relationshipMigration = fs.readFileSync(path.join(
-  ROOT, 'supabase/migrations/20260905222000_product_relationship_review.sql',
-), 'utf8');
-
 const sha = (value) => crypto.createHash('sha256').update(value).digest('hex');
 const itemId = (kind, sourceId) => sha(`${kind}\u001f${sourceId}`);
 
@@ -278,11 +262,7 @@ function reidentifyUserRelationship(state) {
   state.summary.relationships[summaryIndex] = effectiveRelationship(item);
 }
 
-test.before(async () => {
-  await database.setupDatabase();
-  for (const file of migrationFiles) await execute(fs.readFileSync(path.join(ROOT, file), 'utf8'));
-  if (process.env.PRODUCT_RELATIONSHIP_REVIEW_SKIP_MIGRATION !== '1') await execute(relationshipMigration);
-});
+test.before(database.setupDatabase);
 test.after(database.teardownDatabase);
 
 test('database validates edited, added, and all raw typed reviewed relationships', async () => {

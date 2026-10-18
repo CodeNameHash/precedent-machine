@@ -14,15 +14,6 @@ const {
 } = require('./product-phase-2-db.test');
 delete process.env.PRODUCT_PHASE2_DB_HELPER_ONLY;
 
-const migration = fs.readFileSync(path.join(
-  __dirname,
-  '../supabase/migrations/20260905221000_product_analysis_running_progress.sql',
-), 'utf8');
-
-async function executeScript(client, sql) {
-  if (typeof client.exec === 'function') return client.exec(sql);
-  return client.query(sql);
-}
 
 async function readAnalysis(client, runId) {
   await client.query('SET LOCAL ROLE service_role');
@@ -55,11 +46,11 @@ function withoutRunning(payload) {
   return copy;
 }
 
-test.before(setupDatabase);
-test.after(teardownDatabase);
-
-test('analysis progress reports running work without changing the stored analysis', async () => {
-  const client = getDatabaseClient();
+// The fixture is written and the baseline read just before the running-
+// progress migration in the full list (finding (141)); the test reads again
+// after it.
+let fixture;
+async function seedBeforeRunningProgress(client) {
   const runId = crypto.randomUUID();
   const runStatusRunId = crypto.randomUUID();
   const sourceDocumentId = 'a'.repeat(64);
@@ -150,17 +141,7 @@ test('analysis progress reports running work without changing the stored analysi
 
   const stateBeforeBaselineRead = await readStoredState(client, runId);
   const baseline = await readAnalysis(client, runId);
-  assert.equal(baseline.kind, 'draftAnalysis');
-  assert.equal(baseline.status, 'FAILED');
-  assert.equal(baseline.progress.failed, 1);
-  assert.equal(baseline.progress.running, undefined);
-  assert.equal(baseline.model_calls[0].invocation_id, invocationId);
-  assert.deepEqual(await readStoredState(client, runId), stateBeforeBaselineRead);
   const baselineRunStatus = await readAnalysis(client, runStatusRunId);
-  assert.equal(baselineRunStatus.kind, 'runStatus');
-  assert.equal(baselineRunStatus.status, 'FAILED');
-  assert.equal(baselineRunStatus.progress.failed, 1);
-  assert.equal(baselineRunStatus.progress.running, undefined);
 
   const functionStateBefore = (await client.query(`SELECT p.prosecdef,p.proconfig,
       has_function_privilege('service_role', p.oid, 'EXECUTE') AS service_execute,
@@ -168,10 +149,27 @@ test('analysis progress reports running work without changing the stored analysi
       has_function_privilege('authenticated', p.oid, 'EXECUTE') AS authenticated_execute
     FROM pg_proc p
     WHERE p.oid='product_private.product_phase2_get_analysis(uuid)'::regprocedure`)).rows[0];
+  fixture = { runId, runStatusRunId, invocationId, stateBeforeBaselineRead, baseline, baselineRunStatus, functionStateBefore };
+}
 
-  if (process.env.PRODUCT_ANALYSIS_RUNNING_SKIP_MIGRATION !== '1') {
-    await executeScript(client, migration);
-  }
+test.before(() => setupDatabase({ hooks: {
+  '20260905221000_product_analysis_running_progress.sql': { before: seedBeforeRunningProgress },
+} }));
+test.after(teardownDatabase);
+
+test('analysis progress reports running work without changing the stored analysis', async () => {
+  const client = getDatabaseClient();
+  const { runId, runStatusRunId, invocationId, stateBeforeBaselineRead, baseline, baselineRunStatus, functionStateBefore } = fixture;
+  assert.equal(baseline.kind, 'draftAnalysis');
+  assert.equal(baseline.status, 'FAILED');
+  assert.equal(baseline.progress.failed, 1);
+  assert.equal(baseline.progress.running, undefined);
+  assert.equal(baseline.model_calls[0].invocation_id, invocationId);
+  assert.deepEqual(await readStoredState(client, runId), stateBeforeBaselineRead);
+  assert.equal(baselineRunStatus.kind, 'runStatus');
+  assert.equal(baselineRunStatus.status, 'FAILED');
+  assert.equal(baselineRunStatus.progress.failed, 1);
+  assert.equal(baselineRunStatus.progress.running, undefined);
 
   const stateBeforeFirstRead = await readStoredState(client, runId);
   const first = await readAnalysis(client, runId);

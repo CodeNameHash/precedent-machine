@@ -2,21 +2,16 @@
 
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
-const fs = require('node:fs');
-const path = require('node:path');
 const test = require('node:test');
 
 process.env.PRODUCT_PHASE2_DB_HELPER_ONLY = '1';
 const database = require('./product-phase-2-db.test');
 delete process.env.PRODUCT_PHASE2_DB_HELPER_ONLY;
 
-const ROOT = path.resolve(__dirname, '..');
-const runningMigration = fs.readFileSync(path.join(
-  ROOT, 'supabase/migrations/20260905221000_product_analysis_running_progress.sql',
-), 'utf8');
-const indexMigration = fs.readFileSync(path.join(
-  ROOT, 'supabase/migrations/20260905223000_product_span_closure_lookup.sql',
-), 'utf8');
+const INDEX_MIGRATION = '20260905223000_product_span_closure_lookup.sql';
+const REVERSE_INDEX = 'product_source_closure_spans_run_span_closure_idx';
+let beforeMigration;
+let afterMigration;
 
 async function execute(client, sql) {
   if (typeof client.exec === 'function') await client.exec(sql);
@@ -57,10 +52,13 @@ async function indexDefinitions(client) {
     ORDER BY indexname`)).rows;
 }
 
-test.before(async () => {
-  await database.setupDatabase();
-  await execute(database.getDatabaseClient(), runningMigration);
-});
+// The index migration's own effect is measured in the full list (finding
+// (141)): the indexes and the database surface just before and just after
+// it; the test below proves the index changes no read.
+test.before(() => database.setupDatabase({ hooks: { [INDEX_MIGRATION]: {
+  before: async (client) => { beforeMigration = { indexes: await indexDefinitions(client), surface: await databaseSurface(client) }; },
+  after: async (client) => { afterMigration = { indexes: await indexDefinitions(client), surface: await databaseSurface(client) }; },
+} } }));
 test.after(database.teardownDatabase);
 
 test('reverse span lookup index preserves the complete effective analysis response and database surface', async () => {
@@ -137,17 +135,26 @@ test('reverse span lookup index preserves the complete effective analysis respon
     FROM generate_series(1,240) span_number
     CROSS JOIN generate_series(0,2) offset_number`, [runId]);
 
-  const surfaceBefore = await databaseSurface(client);
+  // The migration added the reverse index and nothing else: the surface
+  // (row security, the read functions' privileges and search_path) is the
+  // same on either side of it.
+  const surfaceBefore = beforeMigration.surface;
   assert.equal(surfaceBefore.table.relrowsecurity, true);
   assert.equal(surfaceBefore.table.relforcerowsecurity, false);
   assert.ok(surfaceBefore.functions.every((fn) => (
     fn.service_execute === true && fn.anon_execute === false && fn.authenticated_execute === false
   )));
   assert.ok(surfaceBefore.functions.every((fn) => fn.proconfig.includes('search_path=""')));
-  const indexesBefore = await indexDefinitions(client);
-  assert.deepEqual(indexesBefore.map((index) => index.indexname), [
+  assert.deepEqual(beforeMigration.indexes.map((index) => index.indexname), [
     'product_source_closure_spans_pkey',
   ]);
+  assert.deepEqual(afterMigration.indexes.map((index) => index.indexname), [
+    'product_source_closure_spans_pkey',
+    REVERSE_INDEX,
+  ]);
+  assert.match(afterMigration.indexes[1].indexdef, /\(run_id, span_id, source_closure_id\)$/);
+  assert.deepEqual(afterMigration.surface, surfaceBefore);
+
   const baseline = await readAnalysis(client, runId);
   assert.deepEqual(Object.keys(baseline).sort(), [
     'agreement_structure', 'analysis_run_id', 'coverage_assertions', 'draft_analysis_id',
@@ -160,24 +167,19 @@ test('reverse span lookup index preserves the complete effective analysis respon
   assert.equal(baseline.spans.length, 240);
   assert.ok(baseline.spans.every((span) => span.source_closure_ids.length === 3));
 
+  // The index changes no read: the same analysis with the index dropped,
+  // and again once it is back.
+  const indexesNow = await indexDefinitions(client);
+  const surfaceNow = await databaseSurface(client);
+  assert.ok(indexesNow.some((index) => index.indexname === REVERSE_INDEX));
   await client.query('SAVEPOINT reverse_index');
-  await execute(client, indexMigration);
-  const indexesApplied = await indexDefinitions(client);
-  assert.deepEqual(indexesApplied.map((index) => index.indexname), [
-    'product_source_closure_spans_pkey',
-    'product_source_closure_spans_run_span_closure_idx',
-  ]);
-  assert.match(indexesApplied[1].indexdef, /\(run_id, span_id, source_closure_id\)$/);
+  await client.query(`DROP INDEX public.${REVERSE_INDEX}`);
+  assert.deepEqual((await indexDefinitions(client)).map((index) => index.indexname), ['product_source_closure_spans_pkey']);
   assert.deepEqual(await readAnalysis(client, runId), baseline);
-  assert.deepEqual(await databaseSurface(client), surfaceBefore);
-
+  assert.deepEqual(await databaseSurface(client), surfaceNow);
   await client.query('ROLLBACK TO SAVEPOINT reverse_index');
   await client.query('RELEASE SAVEPOINT reverse_index');
-  assert.deepEqual(await indexDefinitions(client), indexesBefore);
+  assert.deepEqual(await indexDefinitions(client), indexesNow);
   assert.deepEqual(await readAnalysis(client, runId), baseline);
-  assert.deepEqual(await databaseSurface(client), surfaceBefore);
-
-  await execute(client, indexMigration);
-  assert.deepEqual(await readAnalysis(client, runId), baseline);
-  assert.deepEqual(await databaseSurface(client), surfaceBefore);
+  assert.deepEqual(await databaseSurface(client), surfaceNow);
 });
