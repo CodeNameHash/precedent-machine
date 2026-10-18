@@ -3245,6 +3245,48 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       4.06, 4.08, 4.09, 6.15) and the all-INVALID ones (3.03, 3.05,
       9.05); nothing is reported as right until it holds. Olaplex and
       Apogee wait until Metsera does.
+      (53) 2026-10-18 (implementer), work package 5 on finding (52)'s
+      terms, no separate message received. The summary cap: the
+      extractor is still asked for 15 words (HEADLINE_SUMMARY_RULE and
+      HEADLINE_SUMMARY_MAX_WORDS unchanged, so the prompt and the
+      extraction test are the same); headlineSummaryProblems drops a
+      summary only past HEADLINE_SUMMARY_TOLERATED_WORDS = 18, with the
+      message naming both numbers ("over 18 words (19; 15 asked for)").
+      The three families: generator decision 34 gains applyTaxMatters
+      (section tax-matters, table tax-matters-table, one row per
+      TAX_MATTERS subtype: Intended tax treatment, Tax treatment
+      protection, Tax reporting consistency, Tax opinion cooperation,
+      Transfer tax allocation, Withholding, FIRPTA certificate, Special
+      tax mechanic) and applyFinancing (section financing, families
+      FINANCING_COVENANTS and GUARANTY_FINANCING_PARTY, tables
+      financing-covenants-table with a Period column and
+      financing-guaranty-table, one row per subtype), each with a coded
+      Summary column, the fact as drafted, fact_type_rows for the
+      families' required fact types, and a new shape flag
+      default_rows_from_subtype (validated in validateTableV3; read by
+      defaultConclusions) so a stored fact whose fact type the shape does
+      not name still lands on its subtype's row. Rail groups Tax Matters
+      and Financing after Other Covenants; the sections sit after D&O and
+      before the boilerplate. table-shapes.v3.json regenerated (30
+      sections, 49 tables, 155 columns); every V2 family now has a page
+      (asserted in the shapes test). The Summary vocabularies (taxable
+      acquisition / 368(a) reorganisation / other; paid by Parent,
+      Company, Surviving Corporation, holder or shared; withholding
+      permitted and withheld amounts treated as paid; efforts standards;
+      no recourse against financing sources, forum and jury waiver,
+      third-party beneficiaries) are the implementer's proposals from the
+      subtype descriptions, not a lawyer decision: Ben and the manager
+      adjust the codes; the rows are the schema's subtypes and need no
+      decision. Tests: the contract test's 16-word summary now passes and
+      a 19-word one fails; new cases in the shapes test (rows, defaults,
+      rail groups, order, the two validation codes) and the table-view
+      test (readout-less transfer-tax, withholding, payoff and limited
+      guaranty facts on their rows, nothing listed without a readout).
+      The rail test's group count moves from 17 to 19. npm run
+      test:active: 659 tests, 658 pass, the one failure the known
+      Codex-client final-message test.
+      Generation 8 is unaffected: its stored facts take the new rows on
+      the next page render, no re-run.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
