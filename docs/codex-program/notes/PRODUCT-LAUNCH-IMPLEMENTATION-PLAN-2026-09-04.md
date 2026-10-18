@@ -3898,6 +3898,17 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       set on the project (all environments, 13:08 UTC) beside the key.
       This push is the redeploy the run route needs; then run 51577c57
       is retried (ncs-gen5-retry-1) and woken.
+      (72) 2026-10-18 13:12 UTC: retried (ncs-gen5-retry-1) on the
+      redeployed alias (b779328c) and FAILED again in a minute, zero
+      tokens: 400 invalid_request_error "anthropic-workspace-id header
+      must be a valid workspace ID." (req_011Cg9m1ecRhm2xz3J2vTdi7). The
+      value set is not a workspace id; Ben asked for the id shown on the
+      workspace's own page in the Console. Second defect, the
+      implementer's (work package 11b): the ANTHROPIC_API_NOT_CONFIGURED
+      error was raised with the right message but the section attempt
+      loop retried it three times per section and failed the run before
+      the worker's stop saw it; the fix stops the worker at the first
+      call and leaves the run resumable by a plain wake.
       the plan and guide.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
