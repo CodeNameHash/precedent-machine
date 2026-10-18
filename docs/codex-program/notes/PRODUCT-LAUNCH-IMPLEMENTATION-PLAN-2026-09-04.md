@@ -3251,6 +3251,17 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       and a second definition fact for a term already entered is dropped
       by the Defined Terms dedup (3.11's Company Benefit Plan exclusion,
       3.09's Tax).
+      (56) 2026-10-18 04:45 UTC, generation 8 at 44 of 85 (3.17 to 3.26,
+      IV-INTRO, 4.01 to 4.08 added; 479 proposals, 468 VALID; no failed
+      section). Work package 5's suite: the known Codex-client failure
+      only; finding (54) stands. Work package 6 (finding (55)) merged:
+      3.13's validity, no-default and disclosure-list limbs sit under the
+      reps table's Material Contracts row with their MAE and materiality
+      cells; the 178 facts of 3.13 and 3.17 to 4.08 all have a place
+      (none unplaced); IV-INTRO's joint-and-several qualification on the
+      Parent table's General Exceptions row; Merger Sub's 1,000 shares on
+      their capitalization row. Suite for work package 6 running at the
+      time of writing.
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
