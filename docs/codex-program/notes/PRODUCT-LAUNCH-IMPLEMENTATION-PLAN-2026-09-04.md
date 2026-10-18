@@ -4787,6 +4787,37 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       Phase 1 function wants, and whether the page shows them, for the
       manager to resolve with Ben. Olaplex and Apogee generation 2 at
       22:12 UTC: 24 of 97 and 21 of 85, no failures.
+      (172) 2026-10-18 22:30 UTC: implementer E's (180), implementer A's
+      (98), (99) and (99a) merged (head 5f1785ca). The ledger read by
+      the manager, not just its totals: the per-call costs reconcile
+      to the published rates to the cent; output is 63 per cent of
+      NCS generation 5's $145.68 (3.69m extraction output tokens at
+      87 a second are 97 per cent of call time), of the visible answer
+      30 per cent is the agreement's words written back twice, 20 per
+      cent 64-hex span ids, 12 per cent the V1 roles the page never
+      shows; fresh input is 20 per cent (every agreement byte sent at
+      least three times, a fifth of the bytes 119 to 277 times each,
+      74 per cent of 16.0m byte-sends); cache writes 12 per cent (51
+      distinct stable blocks, 22 used once); failed attempts 9.5 per
+      cent; 62 of 439 minutes idle. Floor: about $15 to $23 and 13
+      minutes in parallel; actual 6x to 10x the cost floor and 34x the
+      parallel time floor. The manager's (167) estimate holds: 10x is
+      there, 100x is not while a frontier model writes the facts.
+      Direction to E, in order of measured dollars: output (drop the
+      duplicate evidence quotes and the V1 roles, span aliases, quotes
+      as byte offsets, the thinking share measured by effort), then
+      input (one stable block for every call, the definitions article
+      and the most-referred sections as cached context, cross-reference
+      depth capped), then what remains of the failed attempts and the
+      idle, then concurrency; the three-section proof as a script run
+      inside a third sandbox created for experiments, the credentials
+      never read here. Work package 21 to A (findings from (200)): the
+      validator's acceptance of offsets and span aliases, proven on
+      the stored rows. A's (99) corrects (171): the registration row
+      shape the manager saw was real on the deployed code too (the
+      subtype naming overrode the words rule on the same table), fixed
+      and pinned. Olaplex and Apogee generation 2 at 22:12 UTC: 24 of
+      97 and 21 of 85, no failures.
       (95)'s rule reached the deployment (its deploy was created at
       20:50:39 UTC, the read fell between READY at 20:48 and that);
       on the real rows the move happens, now pinned with the stored
