@@ -4731,6 +4731,18 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       B's (105) merged (head 4506eb2c; the active suite in the next
       finding). Correction to (165) (g): the manager's read of the
       registration rows was of the preview deployed before finding
+      (169) 2026-10-18 21:55 UTC, Ben's intake order, verbatim: "apogee/
+      crinetics/ centessa/ akero / alerkems / verve as the top ones".
+      Applied: Apogee is generation 2 already running (run 686c3bf2);
+      the other five submitted now as generation 1 intakes on the
+      environment's default provider (the subscription), QUEUED with no
+      worker, woken in Ben's order as a pool sandbox frees: Vertex /
+      Crinetics, Lilly / Centessa (a UK scheme, filed as a Transaction
+      Agreement; its Court-sanction mechanics are not the schema's,
+      finding (127)), Novo Nordisk / Akero, Alkermes / Avadel (an Irish
+      scheme), Lilly / Verve. The URLs are finding (127)'s verified
+      Exhibit 2.1 links. The active suite on the merged head 4506eb2c:
+      772 of 773, the known failure only.
       (95)'s rule reached the deployment (its deploy was created at
       20:50:39 UTC, the read fell between READY at 20:48 and that);
       on the real rows the move happens, now pinned with the stored
