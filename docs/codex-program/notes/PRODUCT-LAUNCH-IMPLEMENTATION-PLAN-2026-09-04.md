@@ -3325,6 +3325,21 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       without a home (one 6.03 efforts fact without a readout, the
       ordinary-course communications carve-out, is a sub-item through
       its twin). 9.03 and one more section running.
+      (62) 2026-10-18 07:57 UTC, generation 8 FAILED at 84 of 85: 9.03,
+      the definitions section, failed its three attempts (a 30-minute
+      timeout, then CLAUDE_OUTPUT_TRUNCATED twice: "2 text blocks
+      (115712 / 124260 output tokens) do not join into one JSON
+      object"). The stored model calls show the cause: 9.03 has no
+      lettered limbs, LONG_SECTION_SPLIT splits only a section with three
+      or more operative children, so every generation has sent 9.03 as
+      one extraction call; generation 7's answered with 108,331 output
+      tokens and just joined, generation 8's, with the fuller readouts
+      the new rows ask for, passed the cap. Work package 9 (finding
+      (63)): a limbless long section splits by its paragraphs into parts
+      of the usual size, each definition whole; the timeout path reports
+      the output received. Then the worker is updated, 9.03 retried and
+      the run finalised. The other 84 sections stand as read (findings
+      (52) to (61)).
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
