@@ -172,7 +172,7 @@ test('the Markdown report names the runs, the counts and each section\'s differe
   assert.match(report, /- V2 only \[KEY_DEFINED_TERMS\/SUPERIOR_PROPOSAL\]/);
   assert.match(report, /coverage differs for TERMINATION \(FOUND in V1, NOT_FOUND in V2\)/);
   assert.match(report, /## By table/);
-  assert.match(report, /- Company termination fee \(1 V2 facts, 8\.3\) ← V1: 8\.3 "The Company shall pay \$50,000,000\." \(MATCHED 78%\)/);
+  assert.match(report, /- Company termination fee \(1 V2 facts, 8\.3\) ← V1: 1 V1 facts: 8\.3 "The Company shall pay \$50,000,000\." \(MATCHED 78%\)/);
   assert.match(report, /Families with V1 facts and no V2 table:\n\n- TERMINATION: 1 V1 facts \(1 without a V2 counterpart\); V2 0 valid, 0 held/);
   assert.doesNotMatch(report, /### 9\.1/, 'a section with nothing to say is left out');
 });

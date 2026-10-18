@@ -5864,6 +5864,128 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       generation 8: unchanged, no such table. docs/core/CODEBASE-GUIDE.md
       updated. npm run test:active: the known failure only (the count in
       the commit). Nothing submitted or retried.
+      (98) 2026-10-18 22:25 UTC (implementer A), work package 19 on the
+      manager's terms of 21:00 (delivered 21:20, after (97) had gone up
+      on the (165) text; the manager's message asks for finding (95),
+      which (95) already is, so this is (98); (97) stands for what it
+      says). (a) The unknown-span relocation the manager describes is
+      work package 13 (a)'s rule (plan finding (79)), in the code since
+      8eb259c and tested with 3.4's case; nothing new to build. The
+      note's entry now says unknown_span: true, as work package 18 (a)'s
+      says known_span: true. Stored facts the rule keeps VALID, counted
+      from the preview branch's rows as in (94) (every non-VALID fact
+      with a component of inherited origin on a span id its closure does
+      not know, counted against the closure's spans of the allowed
+      kind): NCS generation 5, ten (3.4's 05e8ab96, 2ec8f972, 36b14852,
+      4d765c14, 61ab1d62, 7b0b52ed, 854f8bcb, b7a123fb, b83fbcc8,
+      fcc71293; 28 components, each with exactly one holder); Metsera
+      generation 8, six (1dc9dadb, 8e819867, c54f636c, c7058ea6,
+      dca9d348, ece4453b; one component each). (b) Decided from the
+      contract and the validator: CROSS_REFERENCE (and DEFINED_TERM) are
+      allowed LIST children. A list of the representations a tier covers
+      is a list of references, each child already resolved to its
+      section, which a LIST_ELEMENT would not be; and the stored facts
+      stay VALID without a re-run, where wrapping would have needed one.
+      The validator rule and the contract's R2 say so; the extraction
+      instruction still asks for LIST_ELEMENT children for lists of
+      things that vary. 6.2's two tiers (7c534651, d2f8a9b9) are the
+      stored facts kept VALID. (c) An Article-level reference now
+      resolves to the article node of the agreement structure, as the
+      manager asked, not an exemption: agreement-draft.js
+      resolveStructureReferences runs over the model's components
+      before the tree is built (compileExtraction takes
+      agreementStructure, which buildAgreementSectionDraft passes): a
+      CROSS_REFERENCE the model left unresolved that reads "this Article
+      N" resolves to the enclosing article whose number it names (roman
+      or arabic), else the agreement's one article of that number in the
+      same document scope; "this Section N.M" to that section; "this
+      Agreement" to the root; the resolution's text is the node's
+      heading words ("ARTICLE VI CONDITIONS PRECEDENT"). The model's own
+      resolves_to, when given, stands; only the bare adverbs of
+      reference ("hereof", "herein") are exempt from resolution. Test
+      with a built structure (buildAgreementStructure, buildSourceClosure)
+      whose 6.4 says "any condition set forth in this Article VI": the
+      fact is VALID, the reference's structure_node_id is the article
+      node; without the structure the same proposal is held. On NCS
+      6.4's three facts (78926bd5, 7589b03e, fc6c34bd) the words are the
+      same, so they are VALID on the next generation and
+      FRUSTRATION_BREACH_STANDARD is FOUND rather than UNRESOLVED (the
+      draft's REQUIRED_FACT_TYPE_UNRESOLVED comes from a fact type whose
+      only facts are held; a VALID fact clears it). (d) Rows for the
+      eight facts without a readout, by fact_type_rows keyed
+      "FACT_TYPE:SUBTYPE" (scripts/product/table-shapes-decision-34.js;
+      the contract regenerated, 50 tables, 164 columns): 6.1's
+      Information Statement mailing takes "Other mutual conditions", a
+      new row of the mutual conditions table (fact_type_rows
+      GENERAL_CLOSING_CONDITION); 6.3's Closing Tax Opinion "Tax opinion"
+      and its Canadian tax-deposit condition "Other conditions", new rows
+      of both party tables (GENERAL_CLOSING_CONDITION:TAX_OPINION; the
+      bare key), and beside them 6.3's no-Parent-MAE condition
+      (e9bd4f85, the ninth readout-less fact of those sections) takes
+      the "No Material Adverse Effect" row the Company's table's mapping
+      named and its fixed list lacked; the party tables' statement_words
+      now read the party either way round ("the obligations of the
+      Company"; "the Company's obligation"), which is what kept 6.3's
+      facts off their table; 7.1's two rights take "Written consent not
+      delivered" and "Support agreement not delivered", new rows of the
+      buyer's termination table (subtype_rows and fact_type_rows); 7.2's
+      remedy entitlement "Remedies preserved", a new row of the effect
+      table; 7.3's VAT warranty (the model's CONSTRUCTION) the existing
+      "Construction" row; 7.5's cumulative rights "Cumulative remedies",
+      a new row of the boilerplate table. The nine NCS facts, with their
+      own words, each land on that row and nothing is left without a
+      readout (tests/product-table-view.test.js; the shapes in
+      tests/product-table-shapes.test.js; defaultConclusions' cases in
+      tests/product-fact-conclusions.test.js). Metsera generation 8: its
+      readout-less VALID facts (100: defined-term entries, exchange
+      mechanics, equity awards, no-shop prerequisites, merger mechanics,
+      appraisal, material contracts) are of none of these fact types and
+      subtypes, so none moves; the page shows none without a readout as
+      before. docs/core/CODEBASE-GUIDE.md updated. npm run test:active:
+      the known failure only (the count in the commit). Nothing
+      submitted, woken or retried.
+      (99) 2026-10-18 22:40 UTC (implementer A), the manager's addenda
+      of 21:10 and 21:05 to work package 19 (delivered 21:22 and 21:24).
+      (f) Done before the addenda arrived, in (96) and fb98374: the
+      registration rights are one row of their own small table, last in
+      the Consideration section, present or absent, the facts behind it,
+      no sub-items; the words rule that recognises the facts stays on
+      the general covenants table and sends them there; the general
+      covenants table keeps the three Nasdaq notices; the nine
+      CAPITALISATION facts stay on the capitalization table (question
+      (g) of (93) with Ben). Ben's words are in the code comments: "reg
+      rights I think goes with consideration (but at bottom)"; "are
+      these from a reg rights agreement? I wouldn't go into anywhere
+      near this depth in this product"; on the publicity labels, "all
+      sounds fine" (now in the PUBLICITY comment of
+      scripts/product/table-shapes-decision-34.js; the ten are final);
+      on the unusual provisions, "not a fact type today" (nothing
+      built). (g) The manager's diagnosis was right and (97)'s was
+      incomplete. The stale deploy was real, but the shape the manager
+      saw ("General notification" carrying 29 facts with (95)'s sub-items
+      and no "Registration rights" row) is what (95)'s code did on the
+      real rows even when deployed: the general covenants table names its
+      rows from the fact's subtype (row_from_subtype, subtype_rows), the
+      stored 5.17 facts are GENERAL_NOTIFICATION, so a fact the words
+      rule had moved to "Registration rights" on that same table was
+      still named "General notification" and the rule's row became its
+      sub-item, then the sub-item rule read the row_label and named the
+      details; the fixture's facts carried a made-up subtype
+      (OTHER_COVENANT, not in the schema) the subtype naming never
+      touched, so the test moved where the rows did not. Fixed in
+      lib/product/table-view.js: a fact a words_rows rule moved
+      (page_rule 'words_rows') keeps the rule's row over the subtype's
+      name, on the same table as across tables; pinned with a real
+      subtype on the general covenants table under a synthetic same-table
+      rule, and with the stored 5.17 rows (real subtypes, real fields:
+      tests/fixtures/product/ncs-generation-5-5-17-general-covenants.json)
+      on the registration table, where the move was already right since
+      (96) because the registration table has no subtype naming. Counts
+      from the real rows, through buildTableView with the generated
+      contract: Registration rights line 29 facts, no sub-rows; General
+      notification 2 (the Nasdaq deficiency notice and the delisting
+      event), Litigation notification 1 (Nasdaq or SEC proceedings);
+      nothing without a readout. Nothing submitted, woken or retried.
       (120) 2026-10-18 19:10 to 19:45 UTC (implementer C), Q5: the limb
       names harvested. `scripts/product/harvest-rep-limbs.js` (library
       `lib/product/rep-limb-harvest.js`, `tests/product-rep-limb-harvest.test.js`)
@@ -6067,6 +6189,82 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       touched; the preview API was not called; detail_labels_by_row,
       the closure builder and the draft's issue message are unchanged,
       proposed only.
+      (105) 2026-10-18 21:15 to 22:40 UTC (implementer B), work package
+      B2 on the manager's message of 21:10 UTC: NCS generation 5 (run
+      51577c57) read READY by SQL at 21:15 (READY since 20:47, 104 of
+      104 sections, 1,037 proposals; nothing woken, retried or touched)
+      and the comparison regenerated with it as the V2 side, the
+      inputs assembled from the preview branch's tables as (101) did
+      (headline summaries from product_fact_headlines joined on). The
+      note docs/codex-program/notes/NCS-V1-V2-GENERATION-COMPARISON-
+      2026-10-18.md now opens with the reading and keeps the script's
+      report after it. Counts, generation 4 then 5: V2 valid 850 then
+      1,015; held 145 then 22; V1 facts with a counterpart 649 then
+      689, partial 231 then 281, without 102 then 12 (11 of the 12
+      overlap a fact V2 held); new to V2 32 then 90 (49 KEY_DEFINED_
+      TERMS, 42 of them the definitions section 8.3, and 38
+      REPRESENTATIONS in sections V1 routed IMMATERIAL); every section
+      routed (104 of 104, V1 95). The by-table part is real: 29 table
+      sections, every V2 valid fact on a row or in a table's Other
+      provisions but nine without a readout (three intervening-event,
+      four conditions, one fee, one boilerplate); the only V1 facts a
+      table section lacks are the 3.4 and 6.2 holds below. Read, every
+      one of the twelve without a counterpart and the 226 partials
+      whose V2 counterparts together cover under half the V1 bytes:
+      eleven of the twelve are (i) held by V2 with the fact extracted
+      (nine 3.4 status representations, one 4.7, the 6.4 frustration
+      rule as three per-party facts, the two 6.2 bring-down tiers Ben
+      commented on, their summaries naming the standard he asked for),
+      one is (iii) the 6.1 conditions chapeau; none is a miss. Of the
+      partials, 144 are representations where V1 cites the whole
+      sub-section with its exception chapeau and V2's own words are the
+      limb (not a loss, said once); of the other 82, 78 carry the
+      substance as the operative limb (30 of them on the representations
+      table under REPRESENTATIONS where V1 filed them under a covenant
+      family: labour, listing, absence of changes, Merger Sub, tax
+      reps), two are held zero-amount facts, two are a fusion of two
+      V1 facts. Ben's comments on 3.1 (the exclusion as its own fact
+      with the inherited chapeau marked) and 3.16 (inherit the SEC
+      document limitation) are answered by the V2 output. Defects,
+      ranked by count, each with the fix proposed and none built: (1)
+      3.4's nine facts quote the Article III chapeau with span id
+      3d0f0a06 for the closure's 3d0f7a06 (one character), the only
+      CHAPEAU span of the closure with the quote, so work package 13
+      (a)'s relocation resolves it; 3.4 ran 15:21 to 15:27 UTC, before
+      that rule (17:06), so the fix for the nine is a re-extraction of
+      3.4 on the current worker (the manager's), plus a rule still
+      missing: an inherited context component that fails to resolve is
+      dropped with a note, never holding a fact whose own components
+      resolved; (2) "this Article VI" as a CROSS_REFERENCE cannot
+      resolve (three 6.4 facts): resolve Article references to the
+      structure's article nodes, an unplaceable one a note; (3) an
+      AMOUNT with no number in its words is held (four facts: "no
+      shares of Company Preferred Stock", treasury shares, "the Maximum
+      Cash Election Amount", the Base Amount in the Disclosure Letter):
+      extend work package 14's COUNT rules to AMOUNT (none to 0, a bare
+      defined term a FORMULA form, a disclosed-elsewhere value a
+      DISCLOSED form), none a hold; (4) a LIST of section references
+      without LIST_ELEMENT children holds the two 6.2 tiers: make the
+      elements in code from a comma-and list of references before the
+      rule, and the layer-rule line; (5) 4.7's three facts
+      PROPOSAL_EVIDENCE_NOT_EXACT, read as a quote across an SEC page
+      footer (5.4's "the Transactions, 49 the Company" shows the
+      pattern): match a quote with the footer tokens source-display.js
+      knows skipped; (6) 3.27 and 4.13 fuse "has not taken any action"
+      and "knows of no fact" into one fact against OPERATING-RULES'
+      one-effect rule: a representations extractor line and a reviewer
+      note; (7) ten facts of 3.5, 4.4 and 5.1 make each filing
+      exception of a no-conflicts representation its own fact: the
+      REPRESENTATIONS layer rule makes an exception an EXCEPTION
+      component unless the family's table has a row per exception (MAE
+      keeps its rows). Plan evidence: Phase 6's "Compare the rendered
+      V1 and V2 result" box is answered for NCS by this note; the plan
+      has nothing wrong here, and (101)'s "generation 5 is the
+      generation to compare by table" is done. Report changes beside
+      the note (code, so npm run test:active ran: 752 of 753, the one failure the known Codex-client final-message test): a
+      table row lists its V1 counterparts once each, strongest first,
+      three shown and the rest counted; a V1 fact V1 held is no
+      counterpart; a long statement keeps its head and tail.
       (125) 2026-10-18 20:55 to 21:30 UTC (implementer C), the design
       note for the Query on layered facts, no code:
       docs/codex-program/notes/QUERY-ON-LAYERED-FACTS-DESIGN-2026-10-18.md,
