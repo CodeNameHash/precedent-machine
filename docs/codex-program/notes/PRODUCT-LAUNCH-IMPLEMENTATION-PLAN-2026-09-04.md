@@ -4480,6 +4480,57 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       implementer; if 5.1 fails its three attempts the run is retried
       once the worker carries the fix.
 
+      (84) 2026-10-18 18:05 to 18:20 UTC (implementer), work package 15
+      on finding (83)'s terms ("the documented maximum output cap on the
+      API and an attempt-aware re-split"), begun before the manager's
+      message. No run submitted, no run or worker touched; no live API
+      call. Evidence, from the preview branch: 5.1's section row has two
+      failures in its error_history, both "ANTHROPIC_API_OUTPUT_TRUNCATED:
+      the answer ran past the output cap (64000 output tokens)" (attempt
+      1 at 17:37, attempt 2 at 17:55), and its extraction calls show the
+      same three parts each time: part 1 about 126,500 input and 2,900
+      output tokens, part 2 130,758 input and 64,000 output (the cap,
+      about 700 s), part 3 about 25,000 to 28,000 output; the third
+      attempt was running at 18:00 with the same parts. The documented
+      maximum, platform.claude.com/docs/en/models/opus-5/overview read
+      2026-10-18: "Max output: 128K tokens", the synchronous Messages API
+      limit, for claude-opus-5 and claude-opus-5-5 alike (300K only on
+      the Message Batches API under a beta header, not used). Built: (1)
+      `ANTHROPIC_API_MODEL_CONFIG.max_output_tokens` is 128000, the
+      source in its comment; (2) `splitForAttempt(split, claim)`
+      (lib/product/agreement-draft.js), called by the runner for every
+      claim: for each earlier attempt of the section whose recorded error
+      names an output cap (ANTHROPIC_API_OUTPUT_TRUNCATED, the CLI path's
+      CLAUDE_OUTPUT_TRUNCATED, by code or message), the parts' byte size
+      halves (3,500, then 1,750, then 875, down to a floor of 500) and a
+      section too short to split before is split now; any other failure
+      (a JSON failure, a database error) leaves the split as it was, and
+      a limb is never cut, so a single limb that still overflows is left
+      to the cap. The LONG_SECTION_SPLIT issue records the group_bytes
+      used and after_output_cap. (3) The failure record
+      (phase-1-store.js failSection) now carries the error's code beside
+      its message, so the history is read by code and not by words alone;
+      the two 5.1 entries, recorded before this, are read by their
+      message. On 5.1 the next attempt after a cap failure would send
+      parts of 1,750 bytes at a 128,000-token cap: the restrictions list
+      that filled 64,000 tokens as one part goes out in about two, each
+      with twice the room. The cap and the split are the two levers the
+      manager named; a third, not built, is the structure: part 2's
+      130,758 input tokens say the restrictions list is one long limb
+      with sub-limbs, and if a limb alone exceeds a part the paragraph
+      split of work package 9 would be the next rule. Tests:
+      tests/product-anthropic-api-provider.test.js (the cap),
+      tests/product-long-section-split.test.js (splitForAttempt on the
+      recorded messages, by code, the floor, no change for other
+      failures or for a whole-section caller; Concho 6.3 extracted in
+      more parts after a cap failure with every limb in exactly one part
+      and the issue saying so; the split suite is outside the active list
+      and run directly, 81 of 81 with the pool and phase-2 suites). npm
+      run test:active: 698 of 699, the one failure the known Codex-client
+      final-message test. The worker carries the fix once the manager
+      updates the sandbox worker to this branch's tip; the run route
+      needs no redeploy for it. Commits: the code and tests commit and
+      this plan and guide commit.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
