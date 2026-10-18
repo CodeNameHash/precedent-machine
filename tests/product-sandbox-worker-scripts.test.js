@@ -10,7 +10,7 @@
 const assert = require('node:assert/strict');
 const test = require('node:test');
 
-const { isSandboxGone, wakeSandboxProductRun, SANDBOX_NAME } = require('../lib/product/sandbox-wake');
+const { isSandboxGone, keepSandboxAlive, wakeSandboxProductRun, MINIMUM_SESSION_MS, SANDBOX_NAME } = require('../lib/product/sandbox-wake');
 const { createProductRunHandler } = require('../lib/product/run-handler');
 const { ANTHROPIC_API_MODEL_CONFIG, ANTHROPIC_API_PROVIDER_ID, CLAUDE_CLI_PROVIDER_ID, CODEX_PROVIDER_ID } = require('../lib/product/product-model-config');
 const { PROVIDER_SETUP, createSandboxWorker, parseArguments } = require('../scripts/product/create-sandbox-worker');
@@ -161,4 +161,74 @@ test('the Claude CLI provider installs claude-code with no login; the Codex prov
   assert.ok(codexCommands.some((command) => /codex login --device-auth/.test(command)));
   assert.ok(codexCommands.some((command) => /test -f \/vercel\/\.codex\/auth\.json/.test(command)));
   assert.match(written.join(''), /login url/);
+});
+
+// Work package 8 (manager, 2026-10-18): generation 8's worker died at about
+// 06:10 UTC when the four-hour session the 02:07 wake created ran out; a
+// generation takes six. The SDK addresses a sandbox by name with Vercel
+// credentials and sets none inside it, so the deployment keeps the session
+// alive: the route's keepalive resumes the named sandbox and gives its
+// session MINIMUM_SESSION_MS again, launching nothing.
+test('keepalive resumes the named sandbox and extends a short session back to the minimum without running a command', async () => {
+  const calls = { get: [], extend: [], run: 0 };
+  const now = Date.now();
+  const sandboxApi = { async get(params) {
+    calls.get.push(params);
+    return {
+      currentSession: () => ({ createdAt: new Date(now - (MINIMUM_SESSION_MS - 10 * 60 * 1000)), timeout: MINIMUM_SESSION_MS }),
+      async extendTimeout(ms) { calls.extend.push(ms); },
+      async runCommand() { calls.run += 1; throw new Error('never'); },
+    };
+  } };
+  const result = await keepSandboxAlive({ sandboxApi, now: () => now });
+  assert.equal(result.schema_version, 'PRODUCT_SANDBOX_KEEPALIVE/V1');
+  assert.equal(result.sandbox_name, SANDBOX_NAME);
+  assert.deepEqual(calls.get.map((params) => [params.name, params.resume]), [[SANDBOX_NAME, true]]);
+  assert.equal(result.remaining_before_ms, 10 * 60 * 1000);
+  assert.equal(result.extended_ms, MINIMUM_SESSION_MS - 10 * 60 * 1000);
+  assert.deepEqual(calls.extend, [MINIMUM_SESSION_MS - 10 * 60 * 1000]);
+  assert.equal(result.remaining_after_ms, MINIMUM_SESSION_MS);
+  assert.equal(calls.run, 0, 'no worker is launched');
+  // A session with the minimum left is not extended.
+  const fresh = { async get() { return { currentSession: () => ({ createdAt: new Date(now), timeout: MINIMUM_SESSION_MS + 1000 }), async extendTimeout() { throw new Error('not needed'); } }; } };
+  assert.equal((await keepSandboxAlive({ sandboxApi: fresh, now: () => now })).extended_ms, 0);
+  // A gone sandbox is the same code the wake gives.
+  const gone = { async get() { throw apiError(404, 'Status code 404 is not ok: sandbox not found'); } };
+  await assert.rejects(keepSandboxAlive({ sandboxApi: gone }), (error) => error.code === 'PRODUCT_SANDBOX_GONE');
+});
+
+test('the run route answers { keepalive: true } by keeping the sandbox alive and never waking a worker', async () => {
+  const runId = '46c45080-6935-49e5-96ae-b6cb0609a924';
+  let woke = 0;
+  const handler = createProductRunHandler({
+    getClient: () => ({}), actorResolver: async () => 'ben',
+    storeFactory: () => ({ assertAccess: async () => {}, getRun: async () => ({ run_id: runId, model_config: ANTHROPIC_API_MODEL_CONFIG }), getAgreementAnalysis: async () => ({}) }),
+    modelConfigResolver: () => ANTHROPIC_API_MODEL_CONFIG,
+    databaseUrlResolver: () => 'https://ecrtoofsyxozazkvsvcl.supabase.co',
+    serviceRoleKeyResolver: () => 'service-role-secret-value',
+    anthropicApiKeyResolver: () => 'sk-ant-'.repeat(6),
+    wakeRun: async () => { woke += 1; return { command_id: 'cmd' }; },
+    keepAlive: async () => ({ schema_version: 'PRODUCT_SANDBOX_KEEPALIVE/V1', sandbox_name: SANDBOX_NAME, extended_ms: 1000, remaining_before_ms: 5, remaining_after_ms: 1005, session_created_at: null }),
+  });
+  const response = { statusCode: null, body: null, setHeader() {}, status(code) { this.statusCode = code; return this; }, json(body) { this.body = body; return this; } };
+  await handler({ method: 'POST', query: { id: runId }, headers: { 'x-pm-csrf': 'same-origin' }, body: { keepalive: true } }, response);
+  assert.equal(response.statusCode, 200);
+  assert.equal(response.body.execution_mode, 'HOSTED');
+  assert.equal(response.body.keepalive.extended_ms, 1000);
+  assert.equal(woke, 0);
+});
+
+// The launcher runs the worker under one lock per sandbox: a wake that finds
+// a live worker waits on the lock (up to an hour, then exits 75) and never
+// runs a second worker beside it.
+test('the launcher starts the worker only under its flock', () => {
+  const fs = require('node:fs');
+  const path = require('node:path');
+  const launcher = fs.readFileSync(path.join(__dirname, '../infra/codex-sandbox-worker/launch.sh'), 'utf8');
+  const lines = launcher.split('\n');
+  const workerLines = lines.filter((line) => /product-hosted-worker\.js/.test(line) && !/^\s*#/.test(line));
+  assert.equal(workerLines.length, 1, 'one worker command');
+  const lockIndex = lines.findIndex((line) => /exec flock --wait 3600 --conflict-exit-code 75 \/vercel\/\.codex\/pm-worker\.lock/.test(line));
+  assert.ok(lockIndex >= 0, 'the flock line');
+  assert.equal(lines.indexOf(workerLines[0]), lockIndex + 1, 'the worker command is the flock\'s command');
 });
