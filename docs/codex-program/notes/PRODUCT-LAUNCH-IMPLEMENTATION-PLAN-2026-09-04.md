@@ -4727,6 +4727,36 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       the record: 10x is plausible from those levers; 100x is not while
       a frontier model reads every byte, and the finding must say what
       the next 10x would cost in facts.
+      (168) 2026-10-18 21:40 UTC: implementer A's (97) and implementer
+      B's (105) merged (head 4506eb2c; the active suite in the next
+      finding). Correction to (165) (g): the manager's read of the
+      registration rows was of the preview deployed before finding
+      (95)'s rule reached the deployment (its deploy was created at
+      20:50:39 UTC, the read fell between READY at 20:48 and that);
+      on the real rows the move happens, now pinned with the stored
+      5.17 rows in tests/fixtures/product/ncs-generation-5-5-17-
+      general-covenants.json. Accepted: the registration-rights table
+      as one line under Consideration, no sub-items, per Ben's (166);
+      the PARTY_NOUN and TIMING_WORDS rules the real rows forced; the
+      LIST-of-references and SELF_REFERENCE rules (five NCS holds VALID
+      on the next generation). B's comparison on generation 5: 12 V1
+      facts without a counterpart (11 held by V2 with the fact
+      extracted, one a chapeau), none a miss; seven V2 defects ranked.
+      Of them, (1) to (4) are in the code since work packages 13 (a),
+      14, 18 (b) and 19; the new ones go to implementer A as work
+      package 20: B's rule that an inherited context component which
+      fails to resolve is dropped with a note rather than holding a
+      fact whose own components resolved; (5) a quote across an SEC
+      page footer matched with the footer tokens skipped (4.7, 5.4);
+      (6) the fused "has not taken any action" and "knows of no fact"
+      representations split by the one-effect rule (3.27, 4.13); (7) a
+      filing exception of a no-conflicts representation as an EXCEPTION
+      component, not its own fact, unless the family's table has a row
+      per exception (3.5, 4.4, 5.1). Olaplex and Apogee generation 2 at
+      21:35 UTC: 16 of 97 and 10 of 85 sections, no failures, on the
+      subscription (slower than the API: about 25 sections an hour
+      across the two sandboxes). Implementer E started on work package
+      E1 at 21:22 UTC.
       (94) (c) are final). On the registration-rights sub-items: "are
       these from a reg rights agreement? I wouldn't go into anywhere near
       this depth in this product" (they are NCS 5.17, a registration
