@@ -4479,6 +4479,26 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       output cap on the API and an attempt-aware re-split) is with the
       implementer; if 5.1 fails its three attempts the run is retried
       once the worker carries the fix.
+      (85) 2026-10-18 18:00 UTC, Ben on the election options table
+      (finding (80)'s four questions), verbatim: (1) "STOCK"; (2) "I'D
+      SAY \"NOT A DEAL FEATURE\""; (3) "KEEP ELECTIONS BUT ONLY WHEN
+      THERE IS AN ELECTIOB"; (4) "WHAT DO YOU MEAN MINE TO SAY?
+      SHOYUULDN'T ALL THE INFO BE LINKED/ACCURTE?". On (4) Ben is right
+      and the manager's framing was wrong: the link is mechanical, not
+      a lawyer's description of the deal. "Mixed Share Consideration
+      Value" is defined as the Mixed Share Consideration Exchange Ratio
+      multiplied by the Parent Closing Price, so a value term whose
+      definition names an option's ratio term (or the option's own
+      term) belongs on that option's row; the code reads the
+      definitions and links them. Work package 16 to the implementer:
+      the row name "Stock election"; an option the deal does not offer
+      reads "Not a deal feature" (when no CONSIDERATION fact of the run
+      is that option's, VALID or held: a held fact is "held", never
+      "not a feature"); the components table keeps its election rows
+      only when the deal has an election (the options table has a
+      filled row), else the fixed forms alone; the value-term link
+      through the definitions, on the mixed row's Value terms and value
+      per share, with the derivation cited.
 
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
