@@ -3887,6 +3887,17 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       the launcher's unset line and no requirement. npm run test:active:
       682 tests, 681 pass, the one failure the known Codex-client
       final-message test. Guide line updated. Commit: the code and tests, then
+      (71) 2026-10-18 13:10 UTC: work package 11 (finding (70)) accepted
+      and merged (d82723e8, a fast-forward; its 36 tests across three
+      files pass here; its suite 681 of 682 with the known failure); the
+      sandbox worker at d82723e. Ben, 12:58 UTC: "the api key I made was
+      for the full org, what is wrong with that?" Nothing with the key:
+      the API requires a request made with an organisation-level key to
+      name its workspace in the anthropic-workspace-id header. Ben,
+      13:09 UTC: "done will be live on next redploy": ANTHROPIC_WORKSPACE_ID
+      set on the project (all environments, 13:08 UTC) beside the key.
+      This push is the redeploy the run route needs; then run 51577c57
+      is retried (ncs-gen5-retry-1) and woken.
       the plan and guide.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
