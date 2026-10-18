@@ -63,16 +63,24 @@ export function childrenCoverParent(component) {
   return leftover.every((word) => CONNECTIVES.has(word));
 }
 
-function ComponentNode({ display, raw, initiallyExpanded, onComponentSelect, selectedComponentId, selectedComponentIds = null }) {
+// Levels one to three are always open; the fourth level and below fold
+// behind one control (the manager's rule for A.5: "remove the Show/Hide
+// detail control entirely unless a tree is deeper than three levels, where
+// the fourth level and below fold").
+const OPEN_LEVELS = 3;
+
+function ComponentNode({ display, raw, initiallyExpanded, onComponentSelect, selectedComponentId, selectedComponentIds = null, level = 1 }) {
   const [resolvedOpen, setResolvedOpen] = useState(false);
+  const [deepOpen, setDeepOpen] = useState(false);
   const isReference = REFERENCE_KINDS.has(display.kind);
   const hoverText = display.resolves_to?.text || null;
   const showsValue = VALUE_KINDS.has(display.kind);
   const isSelected = (!!selectedComponentId && raw.component_id === selectedComponentId)
     || (Array.isArray(selectedComponentIds) && selectedComponentIds.includes(raw.component_id));
   const covered = display.has_children && childrenCoverParent(raw);
-  const children = display.has_children
-    ? <ComponentLayer components={raw.children} initiallyExpanded={initiallyExpanded} onComponentSelect={onComponentSelect} selectedComponentId={selectedComponentId} selectedComponentIds={selectedComponentIds} />
+  const foldsChildren = display.has_children && !covered && level >= OPEN_LEVELS;
+  const children = display.has_children && (!foldsChildren || deepOpen)
+    ? <ComponentLayer components={raw.children} initiallyExpanded={initiallyExpanded} onComponentSelect={onComponentSelect} selectedComponentId={selectedComponentId} selectedComponentIds={selectedComponentIds} level={level + 1} />
     : null;
   if (covered) {
     return <li className={isSelected ? 'mt-1 rounded bg-amber-100 ring-1 ring-amber-400' : 'mt-1'} data-testid="component-node" data-kind={display.kind} data-covered="true" data-selected={isSelected || undefined}>
@@ -104,16 +112,21 @@ function ComponentNode({ display, raw, initiallyExpanded, onComponentSelect, sel
         </span>
       )}
       {showsValue ? <CanonicalValue value={display.value} /> : null}
+      {foldsChildren ? (
+        <button type="button" onClick={() => setDeepOpen((current) => !current)} className="ml-1 text-xs text-accent" data-testid="descend-control">
+          {deepOpen ? 'Hide detail' : 'Show detail'}
+        </button>
+      ) : null}
     </div>
     {isReference && hoverText && resolvedOpen ? <p className="ml-4 text-[11px] text-inkLight" data-testid="resolved-text">&rarr; {hoverText}</p> : null}
     {children}
   </li>;
 }
 
-export function ComponentLayer({ components, initiallyExpanded, onComponentSelect, selectedComponentId, selectedComponentIds = null }) {
+export function ComponentLayer({ components, initiallyExpanded, onComponentSelect, selectedComponentId, selectedComponentIds = null, level = 1 }) {
   const displayed = renderLayer(components);
-  return <ul className="mt-1 space-y-1 border-l border-border pl-3 text-left">
-    {displayed.map((display, index) => <ComponentNode key={display.component_id} display={display} raw={components[index]} initiallyExpanded={initiallyExpanded} onComponentSelect={onComponentSelect} selectedComponentId={selectedComponentId} selectedComponentIds={selectedComponentIds} />)}
+  return <ul className="mt-1 space-y-1 border-l border-border pl-3 text-left" data-level={level}>
+    {displayed.map((display, index) => <ComponentNode key={display.component_id} display={display} raw={components[index]} initiallyExpanded={initiallyExpanded} onComponentSelect={onComponentSelect} selectedComponentId={selectedComponentId} selectedComponentIds={selectedComponentIds} level={level} />)}
   </ul>;
 }
 

@@ -756,3 +756,45 @@ test('a trailing detail renders after the subject and carries its cell to the se
   assert.equal((html.match(/data-testid="trailing-detail"/g) || []).length, 1);
   assert.doesNotMatch(html, />Period</, 'the folded column has no header');
 });
+
+// Ben, 2026-10-17 (plan finding (47)), on the 2.01 Consideration package
+// tree: "hitting 'show detail' doesn't add much...just smae stuff again?
+// Also, we should better indent the (i) and (ii) for the right to receive
+// that is shown". On the sidebar's rendered tree: a parent covered by its
+// children is shown as its children, indented; a parent with its own words
+// keeps them above its children; no toggle above the fourth level; one
+// text style, left-aligned.
+test('the sidebar tree shows a covered parent as its indented children, a parent\'s own words above its children, and folds only from the fourth level', () => {
+  const clause = 'Each share shall be converted into the right to receive (i) $47.50 in cash and (ii) one CVR (clauses (i) and (ii), collectively, the “Merger Consideration”).';
+  const at = (words) => Buffer.from(clause, 'utf8').indexOf(Buffer.from(words));
+  const comp = (id, kind, text, children = []) => ({ component_id: id, kind, label: id, text, origin: 'OWN', source_span_id: 's', start_byte: at(text), end_byte: at(text) + Buffer.byteLength(text), gap_before: false, children });
+  const fact = {
+    fact_id: 'tree-1', family_key: 'CONSIDERATION', subtype_key: 'CONSIDERATION_PACKAGE', section_reference: '2.01',
+    headline: { label: 'Consideration package', distinguishing_component_ids: ['list'], summary: 'Each Company share receives $47.50 cash plus one CVR' },
+    components: [
+      comp('op', 'OPERATION', 'shall be converted into the right to receive', [comp('obj', 'OBJECT', 'the right to receive')]),
+      comp('list', 'LIST', '(i) $47.50 in cash and (ii) one CVR', [comp('i', 'LIST_ELEMENT', '(i) $47.50 in cash'), comp('ii', 'LIST_ELEMENT', '(ii) one CVR')]),
+      { ...comp('def', 'DEFINED_TERM', '(clauses (i) and (ii), collectively, the “Merger Consideration”)'), resolves_to: { text: '$47.50 in cash and one CVR' } },
+    ],
+  };
+  const html = renderToStaticMarkup(React.createElement(EvidenceSidebar, { fact, componentId: 'list', sectionText: { exact_text: clause, start_byte: 0 } }));
+  const tree = html.slice(html.indexOf('data-testid="evidence-layers"'), html.indexOf('data-testid="evidence-clause-reference"'));
+  // The covered list parent has no line of its own: its words appear once, as its children, one level deeper.
+  assert.equal((tree.match(/\(i\) \$47\.50 in cash/g) || []).length, 1);
+  assert.doesNotMatch(tree, /\(i\) \$47\.50 in cash and \(ii\) one CVR/);
+  assert.match(tree, /data-covered="true"[^>]*>\s*<ul [^>]*data-level="2"/);
+  assert.match(tree, /data-level="2"[^]*?\(i\) \$47\.50 in cash[^]*?\(ii\) one CVR/);
+  // The operation keeps its own words above its child.
+  assert.ok(tree.indexOf('shall be converted into the right to receive') < tree.indexOf('>the right to receive<'));
+  // No toggle at three levels; one text style, left-aligned, no underline.
+  assert.doesNotMatch(tree, /descend-control/);
+  assert.doesNotMatch(tree, /underline|italic|inline-flex|text-center/);
+  assert.match(tree, /data-testid="reference-term"[^>]*>\(clauses \(i\) and \(ii\), collectively, the “Merger Consideration”\)</);
+  // A fourth level folds behind one control.
+  const deep = { ...fact, components: [comp('a', 'OPERATION', 'shall be converted into the right to receive', [
+    comp('b', 'OBJECT', 'the right to receive', [comp('c', 'TERM', 'right to receive', [comp('d', 'TERM', 'to receive')])]),
+  ])] };
+  const deepHtml = renderToStaticMarkup(React.createElement(EvidenceSidebar, { fact: deep, componentId: 'a', sectionText: { exact_text: clause, start_byte: 0 } }));
+  assert.equal((deepHtml.match(/data-testid="descend-control"/g) || []).length, 1);
+  assert.doesNotMatch(deepHtml, />to receive</, 'the fourth level is folded');
+});

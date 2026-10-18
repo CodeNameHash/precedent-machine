@@ -139,7 +139,7 @@ test('a parent covered by its children is shown as its children, indented; a par
   assert.doesNotMatch(html, /data-testid="descend-control"/);
   assert.equal((html.match(/\(i\) \$47\.50 in cash/g) || []).length, 1, 'the covered parent\'s words appear once, as its child');
   assert.doesNotMatch(html, /\(i\) \$47\.50 in cash and \(ii\) one CVR/);
-  assert.match(html, /data-covered="true"[^>]*>\s*<ul class="mt-1 space-y-1 border-l border-border pl-3 text-left">/);
+  assert.match(html, /data-covered="true"[^>]*>\s*<ul class="mt-1 space-y-1 border-l border-border pl-3 text-left" data-level="2">/);
   assert.match(html, /shall be converted into the right to receive/);
   assert.ok(html.indexOf('shall be converted into the right to receive') < html.indexOf('>the right to receive<'), 'the parent\'s own words sit above its child');
   assert.doesNotMatch(html, /inline-flex|italic/);
