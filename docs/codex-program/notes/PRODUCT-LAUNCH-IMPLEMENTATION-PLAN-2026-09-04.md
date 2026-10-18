@@ -4652,7 +4652,16 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       npm run test:active: 702 of 703, the one failure the known
       Codex-client final-message test. The page changes apply on the
       branch's next deploy; nothing in the worker changes. Commits: the
-      code and tests commit and this plan and guide commit.
+      code and tests commit and this plan and guide commit. Correction
+      to (84), read from (87) at 18:40: "the run route needs no redeploy
+      for it" was wrong. The run's stored model_config carried the
+      64,000 cap as part of the identity the run route and the
+      call-model resolver compared, so raising the deployed cap refused
+      the running run's wake and then every section; the manager's
+      commits 70c704f and 4247603 make the cap an operational limit
+      outside the identity. I should have read the identity comparison
+      before changing a value inside the config; noted for every
+      config change from here.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
