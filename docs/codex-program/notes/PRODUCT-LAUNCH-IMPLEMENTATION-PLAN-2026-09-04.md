@@ -3122,8 +3122,11 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       key value asserted, the run route, the intake field, the analysis
       read, the estimate), the worker's key check and its stop on a 429
       in `tests/product-hosted-worker-pool.test.js`, the provider on the
-      preview page. Commits 2d2c6f4, 7709441 and the package commit;
-      `npm run test:active` result below.
+      preview page. Commits 2d2c6f4, 7709441, 1eadf1d and 58ae85c;
+      `npm run test:active` 650 of 651, the one failure the known
+      Codex-client final-message test. Work package 3 closed 2026-10-18
+      01:00 UTC; the manager's review and Ben's choice of path for
+      generation 8 are open.
       (47) 2026-10-18 00:05 UTC, Ben, on the 2.01 Consideration package
       tree in the sidebar: "hitting 'show detail' doesn't add much...just
       smae stuff again? Also, we should better indent the (i) and (ii)
