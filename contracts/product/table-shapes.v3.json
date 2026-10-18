@@ -640,15 +640,14 @@
             {
               "column_id": "valuePerShare",
               "header": "Value per share",
-              "render": "verbatim",
-              "display": "fact_text",
+              "render": "value",
+              "value_kind": "AMOUNT",
               "fill_from": [
-                "DEFINED_TERM",
-                "OPERATION",
-                "OBJECT"
+                "AMOUNT",
+                "THRESHOLD"
               ],
               "addition": true,
-              "reason": "Work package 16, 2026-10-18 (plan finding (85), Ben on the election options table): the value the agreement defines for the option's consideration (a \"Mixed Share Consideration Value\" defined as the option's ratio times a closing price), as drafted, linked through the definitions."
+              "reason": "Work package 16, 2026-10-18 (plan finding (85), Ben on the election options table): the value per share the agreement states for the option, as a number: a linked value term whose definition is a bare number (the manager, 18:05 UTC: \"in the value-per-share cell when the definition is a bare number\"); a value defined as a formula is a Value terms entry."
             },
             {
               "column_id": "valueTerms",
@@ -698,7 +697,6 @@
             "term_column": "definedAs",
             "value_terms": "(?:Consideration|Value|Amount|Price|Ratio)$",
             "value_column": "valuePerShare",
-            "value_term": "Value$",
             "held_row_label": "Held: this option's fact is held by validation"
           }
         },

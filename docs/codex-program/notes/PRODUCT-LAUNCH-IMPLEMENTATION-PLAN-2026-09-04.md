@@ -4662,6 +4662,70 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       outside the identity. I should have read the identity comparison
       before changing a value inside the config; noted for every
       config change from here.
+      (88) 2026-10-18 18:42 to 19:04 UTC (implementer): work packages 15
+      and 16 reconciled with the manager's messages of 18:00 and 18:05
+      UTC, both delivered at 18:42, after (84) and (86) were built from
+      the findings. No run touched. Work package 15. The message's rule is
+      finer than (84)'s: "each part of the previous split that passed the
+      cap is halved by its limbs (a part of one limb that still passes the
+      cap goes to paragraphs mode within that limb); for paragraphs mode,
+      the part size halves". (84) halved every part's size, which cannot
+      cut a limb: 5.1's structure (read from the run's agreement
+      structure) is a 33-byte chapeau and three limbs, (a) 13,108 bytes
+      with twenty-seven sub-limbs (i) to (xxvii), (b) 1,776 bytes with
+      five, (c) 418 bytes, so the first split is [chapeau], [(a)],
+      [(b), (c)], part 2 is limb (a) alone, and at 1,750 or 875 bytes it
+      is still (a) alone; only the 128,000 cap would have changed its
+      outcome. Built now: the part loop puts the failed part on the error
+      (`extraction_part`: part, of, mode, span ids), failSection stores it
+      beside code and message, and `splitForAttempt` carries such parts as
+      `cap_failed_parts` to `resplitAfterOutputCap`, which replays the
+      failures in order: a failed part of two or more spans is halved by
+      bytes; a failed part of one limb becomes the paragraphs within that
+      limb (the residual pass's paragraph spans inside its byte range),
+      grouped to the usual size, the mode then limbs+paragraphs and each
+      such part told it covers the paragraphs of one limb; a failed part
+      of one paragraph cannot shrink and stays. A failure record without a
+      part (the three 5.1 failures at 17:37, 17:55 and 18:11 were written
+      before this) keeps (84)'s rule. The LONG_SECTION_SPLIT issue records
+      group_bytes, after_output_cap, resplit_parts and the mode. The part
+      counts asked for, 5.1 on this rule: attempt 1, three parts; attempt
+      2, after a record naming part 2, seven parts ([chapeau], (a) in five
+      paragraph parts of 2,575, 3,253, 2,756, 3,202 and 1,322 bytes if each
+      sub-limb is a paragraph, [(b), (c)]); attempt 3, after one of those
+      paragraph parts ran past the cap, eight (that part halved by
+      bytes), or nine if [(b), (c)] failed too. Whether the retry's reset
+      of 5.1 kept its error_history is the manager's to say; without it
+      the retry's first attempt is three parts at the 128,000 cap. Tests:
+      resplitAfterOutputCap on a synthetic closure of that shape, the
+      carried parts against the halving rule, and Concho 6.3 with a model
+      that runs past the cap on its last part (the error names the part;
+      the next attempt splits that part alone, the issue says so)
+      (tests/product-long-section-split.test.js). Work package 16. The
+      message puts a linked value term "under Value terms (and in the
+      value-per-share cell when the definition is a bare number)"; (86)
+      had sent a "...Value" term to a verbatim Value per share column.
+      Now: Value per share is a value column (AMOUNT) filled by a linked
+      bare-number definition; a linked formula definition sits under Value
+      terms after the option's own value terms; the cell cites the
+      definition and the option's facts, and a reading keeps its `derived`
+      and `via` through a merge. NCS 2.1 as the page reads it: Cash
+      election: Not a deal feature. Stock election [Share Consideration]:
+      Exchange ratio 0.5537. Mixed election [Mixed Share Consideration]:
+      Exchange ratio 0.2392; Value terms "Cash Consideration means the
+      Cash Exchange Ratio multiplied by the Parent Closing Price", "Cash
+      Exchange Ratio: 0.1371", "Mixed Share Consideration Value means the
+      mixed exchange ratio times the Parent Closing Price" (via Mixed Share
+      Consideration Exchange Ratio); Cash per share and Value per share
+      hidden (no option states either as a number). The stock election
+      carries no linked term, as the message expects for NCS; the negative
+      is tested (the longer mixed term links nothing to it). Metsera
+      generation 8 unchanged. npm run test:active: 702 of 703, the one
+      failure the known Codex-client final-message test; the split suite
+      (outside the list) 11 of 11. The worker carries the re-split once
+      the manager updates the sandbox worker to this tip; the page
+      changes apply on the next deploy. One commit for code, tests and
+      this finding.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).

@@ -1186,8 +1186,8 @@ function applyConsideration(doc) {
   // election (this table has a filled row), else the fixed forms alone;
   // and a value term whose definition names an option's own term or one
   // of its ratio terms is linked to that option's row by the code reading
-  // the definitions, its derivation cited: a term ending in "Value" under
-  // Value per share, any other under Value terms.
+  // the definitions, its derivation cited: under Value terms, and in the
+  // value-per-share cell when its definition is a bare number.
   const options = {
     table_key: 'consideration-election-options',
     group_header: 'ELECTION OPTIONS',
@@ -1200,7 +1200,7 @@ function applyConsideration(doc) {
     columns: [
       { column_id: 'exchangeRatio', header: 'Exchange ratio', render: 'value', value_kind: 'AMOUNT', fill_from: ['AMOUNT', 'THRESHOLD'], addition: true, reason: `${WP13}: the Parent shares each Company share receives under the option, as stated.` },
       { column_id: 'cashPerShare', header: 'Cash per share', render: 'value', value_kind: 'AMOUNT', fill_from: ['AMOUNT', 'THRESHOLD'], addition: true, reason: `${WP13}: the cash each Company share receives under the option, as stated.` },
-      { column_id: 'valuePerShare', header: 'Value per share', render: 'verbatim', display: 'fact_text', fill_from: ['DEFINED_TERM', 'OPERATION', 'OBJECT'], addition: true, reason: `${WP16}: the value the agreement defines for the option\'s consideration (a "Mixed Share Consideration Value" defined as the option\'s ratio times a closing price), as drafted, linked through the definitions.` },
+      { column_id: 'valuePerShare', header: 'Value per share', render: 'value', value_kind: 'AMOUNT', fill_from: ['AMOUNT', 'THRESHOLD'], addition: true, reason: `${WP16}: the value per share the agreement states for the option, as a number: a linked value term whose definition is a bare number (the manager, 18:05 UTC: "in the value-per-share cell when the definition is a bare number"); a value defined as a formula is a Value terms entry.` },
       { column_id: 'valueTerms', header: 'Value terms', render: 'verbatim', display: 'fact_text', fill_from: ['DEFINED_TERM', 'OPERATION', 'OBJECT'], addition: true, reason: `${WP13}: the value terms the option names (a "Cash Consideration" defined as a ratio times a closing price), each with its definition, when the option's value is a formula rather than a number.` },
       { column_id: 'definedAs', header: 'Defined as', render: 'term', fill_from: ['DEFINED_TERM', 'TERM'], display: 'subject_note', addition: true, reason: `${WP13}: the defined term the agreement gives the option's consideration ("Share Consideration", "Mixed Consideration").` },
     ],
@@ -1216,10 +1216,9 @@ function applyConsideration(doc) {
       terms_column: 'valueTerms',
       term_column: 'definedAs',
       value_terms: '(?:Consideration|Value|Amount|Price|Ratio)$',
-      // Work package 16: the linked value term's column, by its name, and
-      // the words of a row whose only fact is held.
+      // Work package 16: the value cell a linked bare-number definition
+      // fills, and the words of a row whose only fact is held.
       value_column: 'valuePerShare',
-      value_term: 'Value$',
       held_row_label: 'Held: this option\'s fact is held by validation',
     },
   };

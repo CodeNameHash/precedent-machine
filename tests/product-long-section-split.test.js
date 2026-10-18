@@ -253,3 +253,81 @@ test('after an output-cap failure the section is extracted in more, smaller part
   assert.equal(issue.group_bytes, 3000);
   assert.equal(JSON.parse(before.issues.find((candidate) => candidate.code === 'LONG_SECTION_SPLIT').message).after_output_cap, undefined);
 });
+
+// The manager's terms for work package 15 (18:00 UTC): "for limbs mode, each
+// part of the previous split that passed the cap is halved by its limbs (a
+// part of one limb that still passes the cap goes to paragraphs mode within
+// that limb); for paragraphs mode, the part size halves". The failure record
+// names its part; the next attempt re-splits that part alone.
+test('resplitAfterOutputCap halves a failed part of several spans by bytes, turns a failed one-limb part into its paragraphs, and leaves a one-paragraph part', () => {
+  const { resplitAfterOutputCap } = require('../lib/product/agreement-draft');
+  const span = (id, start, end, kind = 'OPERATIVE') => ({ span_id: id, kind, start_byte: start, end_byte: end });
+  const closure = { spans: [span('chapeau', 0, 100, 'CHAPEAU'), span('a', 100, 13200), span('b', 13200, 15000), span('c', 15000, 15400), span('full', 0, 15400, 'FULL_SECTION')], full_section_span_id: 'full', operative_span_ids: ['a', 'b', 'c'] };
+  const paragraphs = [span('a-lead', 100, 1600, 'PARAGRAPH'), span('a-1', 1600, 3500, 'PARAGRAPH'), span('a-2', 3500, 7600, 'PARAGRAPH'), span('a-3', 7600, 11000, 'PARAGRAPH'), span('a-4', 11000, 13200, 'PARAGRAPH'), span('b-1', 13200, 15000, 'PARAGRAPH'), span('c-1', 15000, 15400, 'PARAGRAPH')];
+  const first = [['chapeau'], ['a'], ['b', 'c']];
+  const split = { min_section_bytes: 5000, min_children: 3, group_bytes: 3500 };
+  // Attempt 2: part 2 (limb (a) alone) ran past the cap: its paragraphs, grouped to the usual size.
+  const second = resplitAfterOutputCap({ groups: first, closure, paragraphs, split, failedParts: [{ part: 2, of: 3, span_ids: ['a'] }] });
+  assert.deepEqual(second.groups, [['chapeau'], ['a-lead', 'a-1'], ['a-2'], ['a-3'], ['a-4'], ['b', 'c']]);
+  assert.deepEqual(second.paragraph_spans.map((entry) => entry.span_id), ['a-lead', 'a-1', 'a-2', 'a-3', 'a-4']);
+  assert.equal(second.resplit, 1);
+  // Attempt 3: the first paragraph part and the two-limb part ran past the cap: halved by bytes; a one-paragraph part cannot shrink.
+  const third = resplitAfterOutputCap({ groups: first, closure, paragraphs, split, failedParts: [
+    { part: 2, of: 3, span_ids: ['a'] }, { part: 2, of: 6, span_ids: ['a-lead', 'a-1'] }, { part: 6, of: 6, span_ids: ['b', 'c'] }, { part: 3, of: 7, span_ids: ['a-2'] },
+  ] });
+  assert.deepEqual(third.groups, [['chapeau'], ['a-lead'], ['a-1'], ['a-2'], ['a-3'], ['a-4'], ['b'], ['c']]);
+  assert.equal(third.resplit, 3);
+  // A failure naming a part that no longer exists is skipped.
+  assert.deepEqual(resplitAfterOutputCap({ groups: first, closure, paragraphs, split, failedParts: [{ span_ids: ['nope'] }] }).groups, first);
+});
+
+test('splitForAttempt carries the failed parts when the record names them and halves the size only for records that do not', () => {
+  const split = { min_section_bytes: 5000, min_children: 3, group_bytes: 3500 };
+  const capMessage = 'ANTHROPIC_API_OUTPUT_TRUNCATED: the answer ran past the output cap (64000 output tokens)';
+  const withPart = splitForAttempt(split, { error_history: [{ attempt: 1, error: { message: capMessage, code: 'ANTHROPIC_API_OUTPUT_TRUNCATED', part: { part: 2, of: 3, mode: 'limbs', span_ids: ['a'] } } }] });
+  assert.deepEqual(withPart, { min_section_bytes: 0, min_children: 3, group_bytes: 3500, after_output_cap: 1, cap_failed_parts: [{ part: 2, of: 3, mode: 'limbs', span_ids: ['a'] }] }, 'the part size stays; the failed part is re-split');
+  const mixed = splitForAttempt(split, { error_history: [
+    { attempt: 1, error: { message: capMessage } },
+    { attempt: 2, error: { message: capMessage, part: { part: 2, of: 3, span_ids: ['a'] } } },
+  ] });
+  assert.equal(mixed.group_bytes, 1750, 'one record without a part halves the size once');
+  assert.deepEqual(mixed.cap_failed_parts.map((part) => part.span_ids), [['a']]);
+});
+
+test('a part that fails names itself on the error, and the next attempt extracts that part in more pieces', async () => {
+  const { sourceDocument, agreementStructure, node } = await conchoNoShop();
+  const usual = { min_section_bytes: 1000, min_children: 3, group_bytes: 6000 };
+  const first = partModel();
+  await buildAgreementSectionDraft({ sourceDocument, agreementStructure, legalSchema: schema, model: first, node, longSectionSplit: usual });
+  const parts = first.extractionRequests.length;
+  assert.ok(parts >= 2);
+  // A model that runs past the cap on the last part.
+  const inner = partModel();
+  const failing = { ...inner, async complete(input) {
+    if (input.call_kind === 'EXTRACTION' && input.request.source_closure.extraction_part?.part === parts) { const error = new Error('ANTHROPIC_API_OUTPUT_TRUNCATED: the answer ran past the output cap (64000 output tokens)'); error.code = 'ANTHROPIC_API_OUTPUT_TRUNCATED'; throw error; }
+    return inner.complete(input);
+  } };
+  let thrown = null;
+  try { await buildAgreementSectionDraft({ sourceDocument, agreementStructure, legalSchema: schema, model: failing, node, longSectionSplit: usual }); } catch (error) { thrown = error; }
+  assert.ok(thrown, 'the attempt fails');
+  const lastRequest = first.extractionRequests[parts - 1];
+  assert.deepEqual(thrown.extraction_part, { part: parts, of: parts, mode: 'limbs', span_ids: lastRequest.source_closure.operative.map((span) => span.span_id) });
+  // The record the store keeps, read back for the next attempt: that part alone is split.
+  const claim = { error_history: [{ attempt: 1, error: { message: thrown.message, code: thrown.code, part: thrown.extraction_part } }] };
+  const retry = partModel();
+  const after = await buildAgreementSectionDraft({ sourceDocument, agreementStructure, legalSchema: schema, model: retry, node, longSectionSplit: splitForAttempt(usual, claim) });
+  const failedSpanCount = thrown.extraction_part.span_ids.length;
+  if (failedSpanCount >= 2) {
+    assert.equal(retry.extractionRequests.length, parts + 1, 'the failed part of several limbs is halved; the others are as they were');
+    assert.deepEqual(retry.extractionRequests.slice(0, parts - 1).map((request) => request.source_closure.operative.map((span) => span.span_id)), first.extractionRequests.slice(0, parts - 1).map((request) => request.source_closure.operative.map((span) => span.span_id)));
+  } else {
+    assert.ok(retry.extractionRequests.length >= parts, 'a one-limb part splits into its paragraphs when it has several, else stays');
+  }
+  const issue = JSON.parse(after.issues.find((candidate) => candidate.code === 'LONG_SECTION_SPLIT').message);
+  assert.equal(issue.after_output_cap, 1);
+  assert.equal(issue.group_bytes, 6000, 'the part size is unchanged when the failed part is known');
+  assert.ok(issue.resplit_parts >= 0);
+  const closure = buildSourceClosure({ sourceDocument, agreementStructure, nodeId: node.node_id });
+  const operativeInParts = retry.extractionRequests.flatMap((request) => request.source_closure.operative.map((span) => span.span_id)).filter((id) => closure.operative_span_ids.includes(id));
+  if (issue.mode === 'limbs') assert.deepEqual(operativeInParts, closure.operative_span_ids, 'every limb still goes to exactly one part, in order');
+});

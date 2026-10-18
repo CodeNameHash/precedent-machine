@@ -1718,8 +1718,8 @@ test('the election options table: one row per election from the facts, the cash 
   assert.deepEqual(options.rows.map((row) => [row.subject, row.absent === true]), [['Cash election', true], ['Stock election', false], ['Mixed election', false]], 'the two elections NCS offers, in the fixed order, and the one it does not');
   assert.equal(options.absent_row_label, 'Not a deal feature');
   assert.equal(options.rows[0].absent_label, undefined, 'no held fact: the table\'s own absent words');
-  assert.deepEqual(options.columns.map((column) => column.column_id), ['exchangeRatio', 'valueTerms'], 'no cash number and no linked value term: those columns are not rendered (the empty value column goes with the as-drafted columns, the empty cash column is named in hidden_columns)');
-  assert.deepEqual(options.hidden_columns.map((column) => column.column_id), ['cashPerShare']);
+  assert.deepEqual(options.columns.map((column) => column.column_id), ['exchangeRatio', 'valueTerms'], 'no cash number and no stated value per share: those columns are not rendered');
+  assert.deepEqual(options.hidden_columns.map((column) => column.column_id), ['cashPerShare', 'valuePerShare']);
   const [, stock, mixedRow] = options.rows;
   const cell = (row, columnId) => row.cells.find((candidate) => candidate.column_id === columnId);
   assert.equal(stock.subject_note, 'Share Consideration');
@@ -1839,7 +1839,7 @@ test('the election options: a formula amount backs its option, fills no cell, an
   assert.deepEqual(mixedRow.backing_facts.map((entry) => entry.fact_id), ['mixed', 'cash-leg'], 'the cash leg backs the mixed election');
   assert.equal(cell(mixedRow, 'exchangeRatio').label, '0.2392', 'the Cash Exchange Ratio is not a second exchange ratio');
   assert.equal(cell(mixedRow, 'exchangeRatio').values, undefined);
-  assert.deepEqual(options.hidden_columns, [{ column_id: 'cashPerShare', header: 'Cash per share', reason: 'empty' }], 'a formula states no cash figure');
+  assert.deepEqual(options.hidden_columns.map((column) => column.column_id), ['cashPerShare', 'valuePerShare'], 'a formula states no cash figure and no value per share');
   assert.deepEqual(cell(mixedRow, 'valueTerms').values.map((value) => value.label), [
     'Cash Consideration means cash in an amount equal to the product of (x) the Cash Exchange Ratio, multiplied by (y) the Parent Closing Price',
     'Cash Exchange Ratio: 0.1371',
@@ -1888,14 +1888,33 @@ test('the election options: a value term whose definition names the option\'s ra
   const cell = (row, columnId) => row.cells.find((candidate) => candidate.column_id === columnId);
   const stock = options.rows.find((row) => row.subject === 'Stock election');
   const mixedRow = options.rows.find((row) => row.subject === 'Mixed election');
-  assert.ok(options.columns.some((column) => column.column_id === 'valuePerShare'), 'the value column is rendered once a term is linked');
-  const value = cell(mixedRow, 'valuePerShare');
-  assert.equal(value.label, 'Mixed Share Consideration Value means the mixed exchange ratio times the Parent Closing Price', 'the Defined Terms entry\'s text');
-  assert.equal(value.derived, 'definition_link');
-  assert.equal(value.via, 'Mixed Share Consideration Exchange Ratio', 'the derivation: the definition names the option\'s ratio term');
-  assert.deepEqual(value.fact_ids, ['def-mixed-value'], 'the cell cites the definition');
-  assert.equal(cell(stock, 'valuePerShare').kind, 'dash', '"Share Consideration Exchange Ratio" inside "Mixed Share Consideration Exchange Ratio" links nothing to the stock election');
-  assert.equal(cell(stock, 'valueTerms').kind, 'dash');
+  // The manager (18:05 UTC): the linked term sits under Value terms beside
+  // the Cash Consideration definition; a bare-number definition would fill
+  // the value-per-share cell instead.
+  assert.equal(options.columns.some((column) => column.column_id === 'valuePerShare'), false, 'no option states a value per share as a number');
+  const terms = cell(mixedRow, 'valueTerms');
+  const linked = terms.values.find((value) => value.label.startsWith('Mixed Share Consideration Value'));
+  assert.equal(linked.label, 'Mixed Share Consideration Value means the mixed exchange ratio times the Parent Closing Price', 'the Defined Terms entry\'s text');
+  assert.deepEqual(linked.fact_ids, ['def-mixed-value', 'mixed'], 'the derivation cites the definition and the option fact');
+  assert.equal(linked.derived, 'definition_link');
+  assert.equal(linked.via, 'Mixed Share Consideration Exchange Ratio', 'the derivation: the definition names the option\'s ratio term');
+  assert.equal(terms.values[0].derived, undefined, 'the option\'s own value term is not a link');
+  assert.deepEqual(terms.values.map((value) => value.label).slice(0, 2), [
+    'Cash Consideration means cash in an amount equal to the product of (x) the Cash Exchange Ratio, multiplied by (y) the Parent Closing Price',
+    'Cash Exchange Ratio: 0.1371',
+  ], 'the option\'s own value terms come first');
+  assert.equal(cell(stock, 'valueTerms').kind, 'dash', '"Share Consideration Exchange Ratio" inside "Mixed Share Consideration Exchange Ratio" links nothing to the stock election');
+  // A bare-number definition that names the option's term fills Value per share.
+  const statedValue = { ...mixedValue, fact_id: 'def-mixed-stated', proposal_id: 'def-mixed-stated',
+    headline: { ...mixedValue.headline, summary: 'Mixed Election Value means $18.25', distinguishing_component_ids: ['def-mixed-stated-t'] },
+    components: [{ ...mixedValue.components[0], component_id: 'def-mixed-stated-t', text: '“Mixed Election Value”' }, { ...mixedValue.components[1], component_id: 'def-mixed-stated-op', text: 'means $18.25 per share of Mixed Share Consideration' }] };
+  const withStated = buildTableView({ facts: [...Object.values(facts), statedValue], tableShapes, legalSchema }).sections.flatMap((section) => section.tables).find((table) => table.table_key === 'consideration-election-options');
+  const statedRow = withStated.rows.find((row) => row.subject === 'Mixed election');
+  const statedCell = statedRow.cells.find((candidate) => candidate.column_id === 'valuePerShare') || (statedRow.trailing_details || []).find((detail) => detail.column_id === 'valuePerShare')?.cell;
+  assert.equal(statedCell.label, '$18.25');
+  assert.equal(statedCell.derived, 'definition_link');
+  assert.equal(statedCell.via, 'Mixed Share Consideration');
+  assert.deepEqual(statedCell.fact_ids, ['def-mixed-stated', 'mixed']);
 });
 
 test('the election options: an option whose only fact is held by validation reads held, never "Not a deal feature"; a held fact of a filled option backs its row', () => {
