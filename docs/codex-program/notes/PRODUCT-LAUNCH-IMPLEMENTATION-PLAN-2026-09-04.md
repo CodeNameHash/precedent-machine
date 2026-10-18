@@ -3108,7 +3108,9 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       not what (45) asked for; Ben's call. Tests:
       `tests/product-anthropic-api-provider.test.js` (in test:active).
       Not done: no live call was made from here (no key in this
-      environment, by design).
+      environment, by design). Commits 2d2c6f4 (the provider), a0b677e
+      (A.5's fourth-level fold) and 72c2ec6; `npm run test:active` 643
+      of 644, the one failure the known Codex-client final-message test.
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
