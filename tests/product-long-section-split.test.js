@@ -7,8 +7,8 @@ const assert = require('node:assert/strict');
 const test = require('node:test');
 
 const { buildAgreementStructure } = require('../lib/product/agreement-structure');
-const { buildAgreementSectionDraft, longSectionGroups, mergePartResponses, LONG_SECTION_SPLIT } = require('../lib/product/agreement-draft');
-const { buildSourceClosure, substantiveSections } = require('../lib/product/source-context');
+const { buildAgreementSectionDraft, longSectionGroups, limblessSectionParts, mergePartResponses, LONG_SECTION_SPLIT } = require('../lib/product/agreement-draft');
+const { buildSourceClosure, residualParagraphSpans, substantiveSections } = require('../lib/product/source-context');
 
 process.env.PRODUCT_PHASE2_HELPER_ONLY = '1';
 const { conchoSource, schema } = require('./product-phase-2.test');
@@ -70,7 +70,11 @@ function partModel({ declinePart = null } = {}) {
     async complete({ call_kind: kind, request }) {
       let response;
       if (kind === 'ROUTING') {
-        response = { families: ['NO_SHOP'], disposition: 'FAMILY_ASSIGNED', rationale: 'no-shop', deterministic_disagreements: [] };
+        // The synthetic router answers NO_SHOP and disagrees, with a reason,
+        // with any other family the deterministic evidence names (Concho
+        // 6.1's interim operating covenants, work package 9).
+        const others = (request.deterministic_family_evidence || []).map((evidence) => evidence.section_family).filter((family) => family && family !== 'NO_SHOP');
+        response = { families: ['NO_SHOP'], disposition: 'FAMILY_ASSIGNED', rationale: 'no-shop', deterministic_disagreements: [...new Set(others)].map((family) => ({ family_key: family, reason: 'synthetic test model routes the no-shop family only' })) };
       } else if (kind === 'RESIDUAL') {
         response = { paragraphs: request.paragraphs.map((paragraph) => ({ source_span_id: paragraph.source_span_id, disposition: 'KNOWN_FAMILY', family_keys: ['NO_SHOP'], rationale: 'covered' })) };
       } else {
@@ -143,4 +147,65 @@ test('a part that declines (no proposals, every family UNRESOLVED) fails the att
     }),
     (error) => error.code === 'EXTRACTION_DECLINED' && /part 2 of/.test(error.message),
   );
+});
+
+// Work package 9 (plan finding (62), 2026-10-18): generation 8 FAILED on
+// 9.03, the definitions section, which has no lettered limbs and so was
+// never split: a 30-minute timeout, then two answers past the output cap.
+// A long section with too few limbs splits by its paragraphs, each
+// paragraph whole in exactly one part of the usual size.
+async function conchoSection(reference) {
+  const sourceDocument = await conchoSource();
+  const agreementStructure = buildAgreementStructure({
+    agreement_id: sourceDocument.source_document_id,
+    canonical_text: sourceDocument.canonical_text,
+    canonical_text_sha256: sourceDocument.canonical_text_sha256,
+  });
+  const node = substantiveSections(agreementStructure).find((item) => item.reference === reference);
+  return { sourceDocument, agreementStructure, node };
+}
+
+test('a long section with too few limbs splits by its paragraphs, each paragraph whole, into parts of the usual size', async () => {
+  const { sourceDocument, agreementStructure, node } = await conchoSection('6.1');
+  const closure = buildSourceClosure({ sourceDocument, agreementStructure, nodeId: node.node_id });
+  assert.ok(closure.operative_span_ids.length < LONG_SECTION_SPLIT.min_children, 'Concho 6.1 (14k bytes) has fewer limbs than the split asks for');
+  assert.deepEqual(longSectionGroups(closure), [], 'the limb split leaves it whole');
+  const paragraphs = residualParagraphSpans({ sourceDocument, closure });
+  const parts = limblessSectionParts({ closure, paragraphs });
+  assert.ok(parts && parts.groups.length > 1, `parts: ${parts && parts.groups.length}`);
+  assert.deepEqual(parts.groups.flat(), paragraphs.map((span) => span.span_id), 'every paragraph is in exactly one part, in order');
+  const bytesOf = new Map(paragraphs.map((span) => [span.span_id, span.end_byte - span.start_byte]));
+  for (const group of parts.groups) {
+    const total = group.reduce((sum, id) => sum + bytesOf.get(id), 0);
+    assert.ok(total <= LONG_SECTION_SPLIT.group_bytes || group.length === 1, `a part is the usual size unless one paragraph alone exceeds it (${total})`);
+  }
+  // A short section, or one with enough limbs, takes no paragraph split.
+  assert.equal(limblessSectionParts({ closure, paragraphs, split: { min_section_bytes: 50000, min_children: 3, group_bytes: 3500 } }), null);
+  const { node: limbed } = await conchoSection('6.3');
+  const limbedClosure = buildSourceClosure({ sourceDocument, agreementStructure, nodeId: limbed.node_id });
+  assert.equal(limblessSectionParts({ closure: limbedClosure, paragraphs: residualParagraphSpans({ sourceDocument, closure: limbedClosure }) }), null, 'a section with limbs splits by its limbs, never its paragraphs');
+});
+
+test('a limbless long section is extracted in paragraph parts and the parts merge into one section draft', async () => {
+  const { sourceDocument, agreementStructure, node } = await conchoSection('6.1');
+  const model = partModel();
+  const section = await buildAgreementSectionDraft({
+    sourceDocument, agreementStructure, legalSchema: schema, model, node, longSectionSplit: LONG_SECTION_SPLIT,
+  });
+  const parts = model.extractionRequests.length;
+  assert.ok(parts > 1, `parts: ${parts}`);
+  const closure = buildSourceClosure({ sourceDocument, agreementStructure, nodeId: node.node_id });
+  const paragraphs = residualParagraphSpans({ sourceDocument, closure });
+  assert.deepEqual(model.extractionRequests.flatMap((request) => request.source_closure.operative.map((span) => span.span_id)), paragraphs.map((span) => span.span_id), 'the parts carry the paragraphs, each once, in order');
+  for (const request of model.extractionRequests) {
+    assert.ok(request.source_closure.operative.every((span) => span.kind === 'RESIDUAL_PARAGRAPH' && span.exact_text), 'each part carries its paragraphs\' words');
+    assert.equal(request.source_closure.extraction_part.mode, 'paragraphs');
+    assert.equal(request.source_closure.extraction_part.covers_chapeau, false);
+    assert.match(request.part_instruction, /has no lettered limbs, so it is extracted in \d+ parts by its paragraphs/);
+    assert.equal(request.source_closure.full_section.exact_text, '', 'the whole section is not resent with each part');
+  }
+  const splitIssue = section.issues.find((issue) => issue.code === 'LONG_SECTION_SPLIT');
+  assert.match(splitIssue.message, /"mode":"paragraphs"/);
+  assert.equal(section.model_calls.length, 2 + parts, 'routing, residual and one extraction call per part');
+  assert.equal(section.proposals.length, parts, 'one proposal per part, each quoting its own paragraph');
 });
