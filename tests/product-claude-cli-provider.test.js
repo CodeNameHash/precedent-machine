@@ -200,3 +200,30 @@ test('several text blocks that do not join into one JSON object fail as truncate
   const model = createClaudeCliProductModel({ client: { messages: { create: async () => response } } });
   await assert.rejects(model.complete({ call_kind: 'EXTRACTION', prompt_version: 'E1', request: {} }), /CLAUDE_OUTPUT_TRUNCATED: 2 text blocks/);
 });
+
+// Work package 9 (plan finding (62)): generation 8's 9.03 timed out after
+// 30 minutes with nothing in the attempt history to say how much had
+// arrived. The failure now says what the CLI had streamed.
+test('a CLI failure names the output received before it, and the summary reads a partial stream', async () => {
+  const { summariseReceivedClaudeOutput, describeReceivedClaudeOutput } = require('../lib/llm-cli-client');
+  const partial = [
+    JSON.stringify({ type: 'system', subtype: 'init' }),
+    JSON.stringify({ type: 'assistant', message: { content: [{ type: 'text', text: '{"proposals":[' }] } }),
+    JSON.stringify({ type: 'assistant', message: { content: [{ type: 'thinking', thinking: 'x' }, { type: 'text', text: '{"a":1}' }] } }),
+    '{"type":"assistant","message":{"content":[{"type":"text","te',
+  ].join('\n');
+  assert.deepEqual(summariseReceivedClaudeOutput(partial), { stream_events: 3, assistant_text_blocks: 2, text_characters: 21, result_event: false, output_tokens: null });
+  assert.equal(describeReceivedClaudeOutput(partial), 'received before the failure: 3 stream events, 2 text blocks, 21 characters of text, no result event');
+  assert.deepEqual(summariseReceivedClaudeOutput(''), { stream_events: 0, assistant_text_blocks: 0, text_characters: 0, result_event: false, output_tokens: null });
+  // A fake claude that streams two events and then hangs: the timeout names what arrived.
+  const fs = require('node:fs');
+  const os = require('node:os');
+  const path = require('node:path');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pm-fake-claude-'));
+  fs.writeFileSync(path.join(dir, 'claude'), '#!/bin/sh\ncat >/dev/null &\necho \'{"type":"system","subtype":"init"}\'\necho \'{"type":"assistant","message":{"content":[{"type":"text","text":"{\\"proposals\\":["}]}}\'\nsleep 30\n', { mode: 0o755 });
+  const client = createClaudeCliProductClient({ model: 'claude-opus-5', effort: 'low', timeoutMs: 400, env: { PATH: `${dir}:/bin:/usr/bin`, CLAUDE_CODE_OAUTH_TOKEN: 't'.repeat(40) } });
+  await assert.rejects(client.messages.create({ messages: [{ role: 'user', content: '{}' }] }), (error) => {
+    assert.match(error.message, /claude timed out after 400ms \(received before the failure: 2 stream events, 1 text blocks, 14 characters of text, no result event\)/);
+    return true;
+  });
+});
