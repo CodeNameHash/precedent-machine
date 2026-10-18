@@ -3370,6 +3370,28 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       fails as before (tests/product-phase-2.test.js, the Concho fixture
       with permitted_trigger dropped from the recommendation-change
       fact). Then the deploy, and the run retried at finalisation.
+      (66) 2026-10-18 10:28 UTC, generation 8 READY: finding (65)'s fix
+      deployed (d2a3ef9, the worker updated), the finalisation retried
+      (gen8-finalisation-retry-1) and the draft finalised. 974
+      proposals, 961 VALID, 13 held; 313 model calls; 10.88m input and
+      3.62m output tokens; no drift issue. 9.03 read against the text:
+      seven paragraph parts, 53 facts, none held; the Company MAE's two
+      prong facts on one row; the two carve-back provisos as the
+      carve-out table's footer; the disproportionality answers as the
+      proviso gives them (A to E and I Yes; F, G, H, J No); the
+      Disclosure Letter carve-out on its row with its summary; 33
+      definitions in Defined Terms. Two summary defects found in the
+      read and fixed in the rule: "Company Disclosure Letter Section
+      3.21" (the prefixed form) was dropped as a section reference
+      (3.11, 3.21); the Rights Agent summary carries one Han character
+      ("Parent's选"), so a letter from another script now drops the
+      summary with a note. The audit:
+      docs/codex-program/notes/METSERA-GENERATION-8-AUDIT-2026-10-18.md
+      (verdict, per article from findings (52) to (65), causes and
+      fixes, open items). Supabase's preview branch answered two reads
+      with Cloudflare 520s during finalisation; both succeeded on retry.
+      Next: the NCS run on the Anthropic API after a prompt-cache
+      breakpoint (finding (46)), then Olaplex and Apogee.
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,

@@ -121,8 +121,14 @@ test('headline.summary is optional; headlineSummaryProblems checks it without ho
   // A section of the Disclosure Letter names a schedule, not a section of the agreement (generation 7, 9.03).
   assert.deepEqual(headlineSummaryProblems('Matters listed on Section 9.03(a) of the Company Disclosure Letter are excluded'), []);
   assert.ok(headlineSummaryProblems('Matters on Section 9.03(a) of the Company Disclosure Letter are excluded under Section 9.03').some((problem) => problem.includes('section reference')));
+  assert.deepEqual(headlineSummaryProblems('Company Disclosure Letter Section 3.21 lists all material insurance policies'), []);
+  assert.deepEqual(headlineSummaryProblems('Company Disclosure Letter Section 3.11(a) lists each material Company Benefit Plan'), []);
   assert.ok(headlineSummaryProblems('Parent pays the "Termination Fee"').some((problem) => problem.includes('quotation mark')));
   assert.ok(headlineSummaryProblems('Parent pays the fee.').some((problem) => problem.includes('ends with a period')));
+  // A letter from another script is the model's slip, never the agreement's
+  // words (generation 8, 9.03: "Parent's选 alternative").
+  assert.ok(headlineSummaryProblems('Rights Agent is the transfer agent or Parent\u2019s选 alternative').some((problem) => problem.includes('outside the agreement\'s script ("选")')));
+  assert.deepEqual(headlineSummaryProblems('Consideration is \u20ac47.50 per share, résumé of the 20% test and the “Outside Date”'.replace(/[“”]/g, '')), []);
   assert.deepEqual(headlineSummaryProblems("Parent's obligation survives the Closing"), [], 'a possessive apostrophe is not a quotation mark');
   // A malformed summary never feeds the INVALID_FACT_COMPONENTS path.
   fact.headline.summary = 'Parent pays the fee under Section 8.3.';
