@@ -802,3 +802,21 @@ test('the sidebar tree shows a covered parent as its indented children, a parent
   assert.equal((deepHtml.match(/data-testid="descend-control"/g) || []).length, 1);
   assert.doesNotMatch(deepHtml, />to receive</, 'the fourth level is folded');
 });
+
+// Work package 8: a re-read value cell says so on hover and in its data
+// attribute, for the sidebar to pick up.
+test('a reparsed value cell carries data-reparsed and a title saying the words were re-read', () => {
+  const text = 'except that the references to four (4) business days will be deemed two (2) business days';
+  const fact = {
+    fact_id: 'rp', proposal_id: 'rp', family_key: 'NO_SHOP', subtype_key: 'SUBSEQUENT_MATCH_PERIOD', fact_type: 'SUBSEQUENT_MATCH_PERIOD', section_reference: '5.02(e)', structure_node_id: 'n-5-02', validation_status: 'VALID',
+    headline: { label: 'Subsequent match period', distinguishing_component_ids: ['rp-p'], summary: 'Each amended proposal restarts a shorter match period' },
+    components: [{ component_id: 'rp-p', kind: 'PERIOD', label: 'period', text, origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: text.length, gap_before: false, children: [] }],
+    conclusions: { table_key: 'nosol-superior-matching-rights', row_label: 'Subsequent match period', cells: [{ column_id: 'period', value: { canonical: 4, unit: 'BUSINESS_DAY' }, component_ids: ['rp-p'] }] },
+  };
+  const view = buildTableView({ facts: [fact], tableShapes, legalSchema });
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts: [fact] }));
+  assert.match(html, /data-reparsed="true"/);
+  assert.match(html, /title="Re-read from the cited words; the stored number differed"/);
+  assert.match(html, /2 business days/);
+  assert.doesNotMatch(html, /4 business days/);
+});

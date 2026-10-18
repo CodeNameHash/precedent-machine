@@ -1539,3 +1539,59 @@ test('the six 5.02 permissions take their rows or the other-provisions entry by 
   const unplaced = view.sections.flatMap((section) => section.facts_without_readout.map((entry) => entry.fact_id));
   assert.deepEqual(unplaced, [], 'every one of the six has a place');
 });
+
+// Work package 8 (manager, 2026-10-18): the cited words are the truth, the
+// stored number a reading of them. Generation 8's subsequent match period
+// stored 4 business days; its cited words deem the four two.
+test('a stored value cell whose cited words parse to a different value shows the parsed value, marked reparsed; unparsable words keep the stored value', () => {
+  const stored = (id, text, canonical) => ({
+    fact_id: id, proposal_id: id, family_key: 'NO_SHOP', subtype_key: 'SUBSEQUENT_MATCH_PERIOD', fact_type: 'SUBSEQUENT_MATCH_PERIOD', section_reference: '5.02(e)', structure_node_id: 'n-5-02', validation_status: 'VALID',
+    headline: { label: 'Subsequent match period', distinguishing_component_ids: [`${id}-p`], summary: 'Each amended proposal restarts a shorter match period' },
+    components: [{ component_id: `${id}-p`, kind: 'PERIOD', label: 'period', text, origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: text.length, gap_before: false, children: [] }],
+    conclusions: { table_key: 'nosol-superior-matching-rights', row_label: 'Subsequent match period', cells: [{ column_id: 'period', value: { canonical, unit: 'BUSINESS_DAY' }, component_ids: [`${id}-p`] }] },
+  });
+  const cellOf = (fact) => buildTableView({ facts: [fact], tableShapes, legalSchema }).sections.flatMap((section) => section.tables)
+    .find((table) => table.table_key === 'nosol-superior-matching-rights').rows[0].cells.find((cell) => cell.column_id === 'period');
+  const deemed = cellOf(stored('deemed', 'except that the references to four (4) business days will be deemed two (2) business days', 4));
+  assert.equal(deemed.label, '2 business days');
+  assert.equal(deemed.reparsed, true);
+  assert.deepEqual(deemed.value, { canonical: 2, unit: 'BUSINESS_DAY' });
+  assert.deepEqual(deemed.stored_value, { canonical: 4, unit: 'BUSINESS_DAY' });
+  const plain = cellOf(stored('plain', 'a period of four (4) business days', 4));
+  assert.equal(plain.label, '4 business days');
+  assert.equal(plain.reparsed, undefined);
+  const unparsable = cellOf(stored('words', 'a reasonable period after the notice', 3));
+  assert.equal(unparsable.label, '3 business days', 'words that do not parse keep the stored value');
+  assert.equal(unparsable.reparsed, undefined);
+});
+
+// Work package 8: generation 8's 8.02(a) willful-breach definition carried a
+// readout naming a table where its row does not exist and vanished. A
+// KEY_DEFINED_TERMS fact whose readout lands on no row is a Defined Terms
+// entry, never dropped.
+test('a definition fact whose readout lands on no row falls back to a Defined Terms entry', () => {
+  const willful = (readout) => ({
+    fact_id: 'wb', proposal_id: 'wb', family_key: 'KEY_DEFINED_TERMS', subtype_key: 'WILLFUL_BREACH', fact_type: 'WILLFUL_BREACH_DEFINED', section_reference: '8.02', structure_node_id: 'n-8-02', validation_status: 'VALID',
+    headline: { label: 'Willful breach', summary: 'Willful and material breach means material breach or material failure to perform', distinguishing_component_ids: ['wb-t'] },
+    components: [{ component_id: 'wb-t', kind: 'DEFINED_TERM', label: 'Willful and Material Breach', text: '“Willful and Material Breach” means a material breach that is a consequence of a deliberate act', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 90, gap_before: false, children: [] }],
+    conclusions: readout,
+  });
+  const cases = [
+    ['unknown row on a fixed-list table', { table_key: 'termination-rights-mutual', row_label: 'Willful breach', cells: [] }],
+    ['a table of another family', { table_key: 'tax-matters-table', row_label: 'Withholding', cells: [] }],
+    ['a retired table', { table_key: 'defined-terms-table', row_label: 'Willful and Material Breach', cells: [] }],
+  ];
+  for (const [label, readout] of cases) {
+    const view = buildTableView({ facts: [willful(readout)], tableShapes, legalSchema });
+    const entry = view.defined_terms.find((candidate) => candidate.fact_id === 'wb');
+    assert.ok(entry, `${label}: a Defined Terms entry`);
+    assert.equal(entry.term, 'Willful and Material Breach', label);
+    assert.equal(entry.definition, 'Willful and material breach means material breach or material failure to perform', label);
+    assert.equal(view.sections.flatMap((section) => section.tables).some((table) => table.rows.some((row) => row.backing_facts.some((b) => b.fact_id === 'wb'))), false, `${label}: no row`);
+    assert.deepEqual(view.sections.filter((section) => section.facts_without_readout.some((e) => e.fact_id === 'wb')), [], `${label}: not listed without a readout`);
+  }
+  // A readout on a row the shapes have is kept (the superior-proposal definition's own table).
+  const superior = { ...willful({ table_key: 'nosol-superior-acquisition-proposal-definition', row_label: 'Acquisition Proposal', cells: [] }), subtype_key: 'ACQUISITION_PROPOSAL', fact_id: 'ap', proposal_id: 'ap' };
+  const kept = buildTableView({ facts: [superior], tableShapes, legalSchema });
+  assert.ok(kept.sections.flatMap((section) => section.tables).find((table) => table.table_key === 'nosol-superior-acquisition-proposal-definition').rows.some((row) => row.subject === 'Acquisition Proposal'));
+});

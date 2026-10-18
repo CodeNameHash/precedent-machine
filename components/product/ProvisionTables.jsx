@@ -117,7 +117,8 @@ function Cell({ cell, tableKey, rowIndex, subIndex = null, selected, onSelect })
   // definition". No inline "definition" link: the cell carries its
   // link_section on the selection and the sidebar pins the summary.
   if (!canSelect) return <span className={baseClass}>{cell.label}</span>;
-  const title = cell.defaulted ? 'Not stated for this row; shown as the column\'s default' : undefined;
+  const title = cell.defaulted ? 'Not stated for this row; shown as the column\'s default'
+    : (cell.reparsed ? 'Re-read from the cited words; the stored number differed' : undefined);
   return (
     <button
       type="button"
@@ -136,6 +137,7 @@ function Cell({ cell, tableKey, rowIndex, subIndex = null, selected, onSelect })
       className={`${baseClass} ${selectedClass}`}
       title={title}
       data-defaulted={cell.defaulted || undefined}
+      data-reparsed={cell.reparsed || undefined}
     >
       {cell.label}
     </button>
