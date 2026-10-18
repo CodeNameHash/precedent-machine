@@ -2305,3 +2305,25 @@ test('NCS generation 5\'s facts without a readout each take a row: the mutual an
   });
   assert.equal(view.sections.flatMap((section) => section.without_readout || []).length, 0, 'nothing is left without a readout');
 });
+
+
+// Work package 19 (g) (manager's addendum of 21:10): on the stored rows the
+// general covenants table named the row from the subtype
+// (GENERAL_NOTIFICATION) and made a words_rows row the sub-item, so the
+// move looked as if it had not happened; the fixture's made-up subtype
+// never showed it. A words_rows row wins over the subtype's name, on the
+// same table as across tables.
+test('a words_rows rule on a subtype-named table moves the fact to the rule\'s row, not to a sub-item under its subtype\'s row', () => {
+  const shapes = structuredClone(tableShapes);
+  const covenants = shapes.sections.find((section) => section.section_key === 'general-covenants').tables.find((table) => table.table_key === 'general-covenants-table');
+  covenants.words_rows = [...(covenants.words_rows || []), { row_label: 'Public announcements', when: 'press\\s+release', over_readout: true }];
+  const fact = {
+    fact_id: 'gn-1', proposal_id: 'gn-1', family_key: 'GENERAL_COVENANTS', subtype_key: 'GENERAL_NOTIFICATION', section_reference: '5.14', structure_node_id: 'n-5-14',
+    headline: { label: 'General notification', distinguishing_component_ids: ['gn-1-1'], summary: 'Parent consults the Company before any press release' },
+    components: [['ACTOR', 'Parent'], ['OPERATION', 'shall consult the Company before issuing any press release']].map(([kind, text], index) => ({ component_id: `gn-1-${index}`, kind, label: 'words', text, origin: 'OWN', source_span_id: 's', start_byte: index * 10, end_byte: index * 10 + 5, gap_before: false, children: [] })),
+    conclusions: { table_key: 'general-covenants-table', row_label: 'General notification', cells: [{ column_id: 'obligor', code: 'PARENT', component_ids: ['gn-1-0'] }] },
+  };
+  const view = buildTableView({ facts: [fact], tableShapes: shapes, legalSchema });
+  const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'general-covenants-table');
+  assert.deepEqual(table.rows.map((row) => [row.subject, row.backing_facts.length, row.sub_rows ? row.sub_rows.map((sub) => sub.subject) : undefined]), [['Public announcements', 1, ['Consultation and review']]]);
+});

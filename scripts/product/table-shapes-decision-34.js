@@ -1508,8 +1508,8 @@ function applyCapitalization(doc) {
 // "Public announcements" row, "correct and unreadable". The row's sub-items,
 // named by the facts' own words (detail_from_words_by_row, first match
 // wins), so a sponsor-backed seller's carve-outs read as a line of their
-// own. The labels are the code's proposal; Ben names them ("he decides the
-// names; the code only proposes"). Order of the rules: the carve-outs and
+// own. The labels were the code's proposal; Ben, 2026-10-18 (plan finding
+// (166)): "all sounds fine", so the ten are final. Order of the rules: the carve-outs and
 // the consistency proviso before the duties they qualify, so "without
 // providing ... the opportunity for such consultation and review, issue a
 // press release ... consistent with prior press releases" is the
