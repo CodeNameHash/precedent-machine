@@ -3909,6 +3909,8 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       loop retried it three times per section and failed the run before
       the worker's stop saw it; the fix stops the worker at the first
       call and leaves the run resumable by a plain wake.
+      13:24 UTC, Ben: "fixed" (ANTHROPIC_WORKSPACE_ID replaced); this
+      push redeploys the alias and the run is retried (ncs-gen5-retry-2).
       the plan and guide.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
