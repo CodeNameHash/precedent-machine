@@ -3310,6 +3310,21 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       7's did: 6.03 pending; 6.05's indemnification rows, 6.10 and 6.11,
       the conditions tiers, 8.01's rights and cures, 8.02's fee and tail;
       141 facts, one unplaced (the willful-breach definition, above).
+      (61) 2026-10-18 07:00 UTC, generation 8 at 83 of 85 (4.04, 6.03,
+      8.05, 9.02, 9.04 to 9.11 and Exhibit A added; 921 proposals, 908
+      VALID; the dead worker's two leases were reclaimed by the new
+      worker, no retry needed; work package 7's suite clean but for the
+      known failure). Work package 8 (finding (60)) merged and verified
+      on generation 8: the subsequent match period now reads 2 business
+      days, re-read from its cited words and marked as such; the
+      willful-breach definition is a Defined Terms entry; the run route
+      has a keepalive for the worker's sandbox session. The new sections
+      read as generation 7's did: 6.03's efforts and remedy rows with
+      their sub-items (54 facts), 4.04, 8.05's formalities, Article IX
+      on its Miscellaneous, No Other Reps and D&O rows; 143 facts, none
+      without a home (one 6.03 efforts fact without a readout, the
+      ordinary-course communications carve-out, is a sub-item through
+      its twin). 9.03 and one more section running.
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
