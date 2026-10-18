@@ -3140,6 +3140,47 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       children indented beneath, no toggle; list elements such as (i)
       and (ii) are separate indented lines; every tree line uses one
       text style, left-aligned.
+      (49) 2026-10-18 01:25 to 01:50 UTC, implementer, work package 4 (the
+      manager's message of 01:21 UTC): the persistent worker sandbox
+      `pm-codex-preview-worker` idled a month and no longer resumed
+      ("Status code 400 is not ok: Cannot resume sandbox: no snapshot
+      available"). Nothing was run against Vercel from here; the manager
+      runs the scripts. `isSandboxGone` in `lib/product/sandbox-wake.js`
+      names a gone sandbox for every caller: a 404, a missing snapshot
+      (410 snapshot_not_found, @vercel/sandbox 3.2.1's own check), or the
+      older 400 on a resume. A wake on one fails as PRODUCT_SANDBOX_GONE
+      and the run route answers 503 with that code, not a 500.
+      `update-sandbox-worker.js` says in one line that the sandbox no
+      longer resumes and names the create script. `create-sandbox-worker.js`
+      serves every hosted provider: `--provider` (ANTHROPIC_API,
+      ANTHROPIC_CLAUDE_CLI_SUBSCRIPTION, OPENAI_CODEX_CLI_SUBSCRIPTION;
+      default PRODUCT_MODEL_PROVIDER, else ANTHROPIC_API), `--branch`;
+      credentials from `sandboxCredentials()` (VERCEL_TOKEN,
+      VERCEL_TEAM_ID, VERCEL_PROJECT_ID in the shell); a stale record is
+      found with resume off and deleted with its orphan snapshots (the
+      SDK's own getOrCreate does the same on 410, not on the 400 the
+      server gave), then the sandbox is created under the same name,
+      persistent, with snapshots that do not expire
+      (`snapshotExpiration: 0`), the branch cloned, `npm ci --omit=dev`,
+      /vercel/.codex (the launcher's flock file) and
+      /vercel/sandbox/pm-cli/bin made, the modules-load check run for the
+      provider's model module; the Claude CLI provider also installs
+      @anthropic-ai/claude-code into pm-cli (no login; the OAuth token
+      arrives per wake), the Codex provider installs @openai/codex and
+      runs the device login as before, the API provider installs nothing
+      more. It prints the sandbox id, the commit and the CLIs installed,
+      never a credential. The manager's command, from a shell with the
+      three Vercel variables set: `node scripts/product/create-sandbox-worker.js
+      --provider ANTHROPIC_CLAUDE_CLI_SUBSCRIPTION` for generation 8 on
+      the subscription (the manager's recommendation in (50)), or
+      `--provider ANTHROPIC_API` for the API path; a later provider only
+      needs its CLI, so `update-sandbox-worker.js` plus one
+      `npm install -g --prefix /vercel/sandbox/pm-cli <cli>` in the
+      sandbox, or a re-create. Tests:
+      `tests/product-sandbox-worker-scripts.test.js` (gone detection, the
+      wake and the 503, the update message, the provider option, the
+      create flow per provider with a fake sandbox API, no credential in
+      any output). Suite result below.
       (50) 2026-10-18 01:20 UTC, manager review of work packages 2 and 3
       (findings (43), (46), (48)): accepted. The suite on the merged
       head is 649 of 650 (the known Codex-client failure). The key
