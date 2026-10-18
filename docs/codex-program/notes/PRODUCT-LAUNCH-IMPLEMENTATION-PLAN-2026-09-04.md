@@ -3340,6 +3340,15 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       the output received. Then the worker is updated, 9.03 retried and
       the run finalised. The other 84 sections stand as read (findings
       (52) to (61)).
+      (64) 2026-10-18 08:55 UTC, work package 9 (finding (63)) merged
+      (the long-section-split tests pass; the full suite running): a
+      limbless long section is extracted by its paragraphs, each
+      definition whole in exactly one part, the part instruction honest
+      about what a paragraph part covers; a second answer object fails
+      the call at once as the output cap; a Claude CLI failure names the
+      output received before it. The sandbox worker updated to bea7fb9,
+      9.03 retried (gen8-9.03-retry-1) and the run woken: RUNNING at 84
+      of 85 with 9.03 in its routing call at 08:55.
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
