@@ -536,6 +536,17 @@ test('a period written in words with parenthetical digits parses to the digits',
   assert.deepEqual(parseComponentValue('PERIOD', 'within five (5) Business Days'), { canonical: 5, unit: 'BUSINESS_DAY' });
   // Generation 6, 5.02: "twenty percent (20)% or more" was held.
   assert.deepEqual(parseComponentValue('PERCENTAGE', 'twenty percent (20)% or more'), { canonical: 20, unit: 'PERCENT' });
+  // Work package 14 (plan finding (81), NCS generation 5, 3.2 and 4.2): a
+  // count whose words are "no", "none" or "zero" of the counted thing is 0;
+  // a negation that is not the count ("no later than") is untouched.
+  assert.deepEqual(parseComponentValue('AMOUNT', 'no shares of Company Preferred Stock'), { canonical: 0, unit: 'COUNT' });
+  assert.deepEqual(parseComponentValue('COUNT', '(ii) no Parent Ordinary Shares'), { canonical: 0, unit: 'COUNT' });
+  assert.deepEqual(parseComponentValue('COUNT', 'none of the shares of Company Common Stock'), { canonical: 0, unit: 'COUNT' });
+  assert.deepEqual(parseComponentValue('AMOUNT', 'zero shares'), { canonical: 0, unit: 'COUNT' });
+  assert.deepEqual(parseComponentValue('AMOUNT', 'not more than 10 shares'), { canonical: 10, unit: 'COUNT' });
+  assert.equal(parseComponentValue('AMOUNT', 'a fee'), null);
+  assert.equal(parseComponentValue('AMOUNT', '“Cash Consideration” means cash in an amount equal to the product of (x) the Cash Exchange Ratio, multiplied by (y) the Parent Closing Price.'), null, 'a formula states no number');
+  assert.equal(formatValue({ canonical: 0, unit: 'COUNT' }, 'COUNT'), '0');
   assert.deepEqual(parseComponentValue('PERCENTAGE', 'fifty percent (50%)'), { canonical: 50, unit: 'PERCENT' });
   assert.deepEqual(parseComponentValue('PERCENTAGE', 'seventy-five percent'), { canonical: 75, unit: 'PERCENT' });
   assert.deepEqual(parseComponentValue('PERIOD', 'at least two (2) Business Days prior'), { canonical: 2, unit: 'BUSINESS_DAY' });

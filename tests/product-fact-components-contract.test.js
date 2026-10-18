@@ -179,3 +179,38 @@ test('renderLayer hides a page footer in a component\'s words', () => {
   assert.equal(renderLayer([component])[0].text, 'any agreement');
   assert.equal(component.text, 'any\n-38-\nagreement');
 });
+
+// Work package 14 (manager, 2026-10-18, plan finding (81), NCS generation 5):
+// "a count component whose words are 'no'/'none'/'zero' of the counted thing
+// is 0; an AMOUNT whose words define it as a product, sum or ratio of
+// defined terms carries no canonical value and a note, and the fact stays
+// VALID with its components". The three held facts' own words.
+test('a count of none is 0 and a formula amount is valid without a number; prose without either is still held', () => {
+  const { buildComponentTree, validateFactComponents, isFormulaValue } = require('../lib/product/fact-components');
+  const resolve = (raw) => ({ span: { source_span_id: 's', span_id: 's', start_byte: 0, end_byte: Buffer.byteLength(raw.quote, 'utf8') }, context: { component_kind: 'FULL_SECTION' } });
+  const contentId = (kind, parts) => `${parts.path.join('.')}-${parts.kind}`;
+  const tree = buildComponentTree({
+    modelComponents: [
+      { kind: 'AMOUNT', label: 'no preferred shares', quote: 'no shares of Company Preferred Stock', origin: 'OWN', children: [] },
+      { kind: 'AMOUNT', label: 'no parent shares', quote: '(ii) no Parent Ordinary Shares', origin: 'OWN', children: [] },
+      { kind: 'AMOUNT', label: 'cash consideration', quote: '“Cash Consideration” means cash in an amount equal to the product of (x) the Cash Exchange Ratio, multiplied by (y) the Parent Closing Price.', origin: 'OWN', children: [] },
+      { kind: 'AMOUNT', label: 'a fee', quote: 'a fee', origin: 'OWN', children: [] },
+    ],
+    resolve, factId: 'f', contentId,
+  });
+  assert.deepEqual(tree.components.map((component) => component.value), [
+    { canonical: 0, unit: 'COUNT' }, { canonical: 0, unit: 'COUNT' }, { canonical: null, unit: null, form: 'FORMULA' }, null,
+  ]);
+  assert.deepEqual(tree.formulas, [{ path: '2', component_id: '2-AMOUNT', text: '“Cash Consideration” means cash in an amount equal to the product of (x) the Cash Exchange Ratio, multiplied by (y) the Parent Closing Price.' }]);
+  assert.deepEqual(tree.problems, ['3: no parsable value in "a fee"'], 'only the prose amount is a problem');
+  const fact = { headline: { label: 'Values', distinguishing_component_ids: ['0-AMOUNT'] }, components: tree.components.slice(0, 3) };
+  assert.deepEqual(validateFactComponents(fact).filter((problem) => /canonical/.test(problem)), [], 'none and a formula are valid values');
+  const prose = { headline: { label: 'Values', distinguishing_component_ids: ['3-AMOUNT'] }, components: tree.components.slice(3) };
+  assert.ok(validateFactComponents(prose).some((problem) => problem.includes('AMOUNT needs a canonical value')));
+  // A formula names an operation on at least two defined terms; a number
+  // in the words is parsed instead, and prose with one term is not one.
+  assert.equal(isFormulaValue('the Mixed Share Consideration Exchange Ratio multiplied by the Parent Closing Price'), true);
+  assert.equal(isFormulaValue('the sum of the Closing Amount plus the CVR'), true);
+  assert.equal(isFormulaValue('an amount equal to the Termination Fee'), false);
+  assert.equal(isFormulaValue('the product of 0.1371 and the Parent Closing Price'), false);
+});

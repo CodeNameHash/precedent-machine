@@ -683,3 +683,64 @@ test('a component quote on an unknown span is taken from the one closure span it
   ]));
   assert.equal(ownUnknown.proposals[0].validation_status, 'INVALID');
 });
+
+// Work package 14 (manager, 2026-10-18, plan finding (81), NCS generation 5):
+// 3.2 "no shares of Company Preferred Stock were issued and outstanding" and
+// 2.1's cash leg "“Cash Consideration” means cash in an amount equal to the
+// product of (x) the Cash Exchange Ratio, multiplied by (y) the Parent
+// Closing Price" were held on "AMOUNT needs a canonical value". The count of
+// none is 0; the formula carries no number and a note; both facts are VALID.
+test('a count of none and a formula amount compile as VALID facts; the formula is noted', () => {
+  const capitalization = 'Section 3.2 Capitalization. As of the Capitalization Date, 1,000,000 shares of Company Common Stock were issued and outstanding and no shares of Company Preferred Stock were issued and outstanding.';
+  const consideration = ' Section 2.1 Effect on Capital Stock. “Cash Consideration” means cash in an amount equal to the product of (x) the Cash Exchange Ratio, multiplied by (y) the Parent Closing Price.';
+  const canonical = `${capitalization}${consideration}`;
+  const doc = { source_document_id: 'e'.repeat(64), canonical_text: canonical };
+  const section = (reference, nodeKey, start, end) => {
+    const sectionNode = nodeKey.repeat(64);
+    const span = { span_id: `${nodeKey}1`.repeat(32), kind: 'FULL_SECTION', structure_node_id: sectionNode, start_byte: start, end_byte: end, exact_text: canonical.slice(start, end) };
+    return {
+      node: { node_id: sectionNode, reference, kind: 'SECTION' },
+      closure: { source_closure_id: `${nodeKey}2`.repeat(32), structure_node_id: sectionNode, section_node_id: sectionNode, section_reference: reference, full_section_span_id: span.span_id, spans: [span] },
+      span,
+    };
+  };
+  const cap = section('3.2', 'k', 0, bytes(capitalization));
+  const con = section('2.1', 'q', bytes(capitalization), bytes(canonical));
+  const own = (span, ref, kind, label, quote) => ({ ref, kind, label, quote, source_span_id: span.span_id, occurrence: 0, origin: 'OWN', children: [] });
+  const body = (family, subtype, factType, statement, roles, quote, headline, components) => ({
+    proposals: [{ client_ref: 'p1', group_ref: 'g1', family_key: family, subtype_key: subtype, fact_type: factType, statement, roles, value: null, evidence_quotes: [quote], headline, components }],
+    groups: [{ client_ref: 'g1', family_key: family, subtype_key: subtype }],
+    links: [],
+  });
+  const none = compileExtraction({
+    sourceDocument: doc, legalSchema: legalSchemaV2, node: cap.node, closure: cap.closure, call, routedFamilies: ['CAPITALISATION'], ownedNodeIds: new Set([cap.node.node_id]),
+    response: body('CAPITALISATION', 'ISSUED_AND_OUTSTANDING', 'CAPITALISATION_ISSUED_AND_OUTSTANDING', 'No shares of Company Preferred Stock were issued and outstanding.',
+      { LEGAL_ACTOR_OR_SUBJECT: 'Company Preferred Stock', LEGAL_OPERATION: 'were issued and outstanding', OPERATIVE_OBJECT: 'no shares' },
+      { quote: 'no shares of Company Preferred Stock were issued and outstanding', source_span_id: cap.span.span_id, occurrence: 0 },
+      { label: 'Preferred stock outstanding', distinguishing_refs: ['c1'], summary: 'No shares of Company Preferred Stock are issued and outstanding' },
+      [own(cap.span, 'c1', 'AMOUNT', 'no preferred shares', 'no shares of Company Preferred Stock'), own(cap.span, 'c2', 'OPERATION', 'issued and outstanding', 'were issued and outstanding')]),
+  });
+  assert.equal(none.proposals.length, 1);
+  assert.equal(none.proposals[0].validation_status, 'VALID', none.issues.map((issue) => `${issue.code}: ${issue.message}`).join('\n'));
+  assert.deepEqual(none.proposals[0].components[0].value, { canonical: 0, unit: 'COUNT' });
+  assert.equal(none.issues.some((issue) => issue.code === 'COMPONENT_VALUE_FORMULA'), false);
+
+  const formulaQuote = '“Cash Consideration” means cash in an amount equal to the product of (x) the Cash Exchange Ratio, multiplied by (y) the Parent Closing Price.';
+  const formula = compileExtraction({
+    sourceDocument: doc, legalSchema: legalSchemaV2, node: con.node, closure: con.closure, call, routedFamilies: ['CONSIDERATION'], ownedNodeIds: new Set([con.node.node_id]),
+    response: body('CONSIDERATION', 'CASH_COMPONENT', 'PER_SHARE_CASH_CONSIDERATION', 'The Cash Consideration is the Cash Exchange Ratio multiplied by the Parent Closing Price.',
+      { LEGAL_ACTOR_OR_SUBJECT: 'Cash Consideration', LEGAL_OPERATION: 'means', OPERATIVE_OBJECT: 'cash in an amount equal to the product of the Cash Exchange Ratio and the Parent Closing Price' },
+      { quote: formulaQuote, source_span_id: con.span.span_id, occurrence: 0 },
+      { label: 'Cash Consideration', distinguishing_refs: ['c1'], summary: 'Cash Consideration means the Cash Exchange Ratio multiplied by the Parent Closing Price' },
+      [own(con.span, 'c1', 'AMOUNT', 'cash consideration formula', formulaQuote)]),
+  });
+  assert.equal(formula.proposals.length, 1);
+  assert.equal(formula.proposals[0].validation_status, 'VALID', formula.issues.map((issue) => `${issue.code}: ${issue.message}`).join('\n'));
+  assert.deepEqual(formula.proposals[0].components[0].value, { canonical: null, unit: null, form: 'FORMULA' });
+  const note = formula.issues.find((issue) => issue.code === 'COMPONENT_VALUE_FORMULA');
+  assert.ok(note && note.kind === 'NOTE', 'the formula is a note, not a hold');
+  const parsed = JSON.parse(note.message);
+  assert.equal(parsed.client_ref, 'p1');
+  assert.deepEqual(parsed.formulas.map((entry) => [entry.path, entry.text]), [['0', formulaQuote]]);
+  assert.equal(parsed.formulas[0].component_id, formula.proposals[0].components[0].component_id);
+});
