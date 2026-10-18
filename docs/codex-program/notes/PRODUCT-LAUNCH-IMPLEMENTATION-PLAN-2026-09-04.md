@@ -5864,6 +5864,86 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       generation 8: unchanged, no such table. docs/core/CODEBASE-GUIDE.md
       updated. npm run test:active: the known failure only (the count in
       the commit). Nothing submitted or retried.
+      (98) 2026-10-18 22:25 UTC (implementer A), work package 19 on the
+      manager's terms of 21:00 (delivered 21:20, after (97) had gone up
+      on the (165) text; the manager's message asks for finding (95),
+      which (95) already is, so this is (98); (97) stands for what it
+      says). (a) The unknown-span relocation the manager describes is
+      work package 13 (a)'s rule (plan finding (79)), in the code since
+      8eb259c and tested with 3.4's case; nothing new to build. The
+      note's entry now says unknown_span: true, as work package 18 (a)'s
+      says known_span: true. Stored facts the rule keeps VALID, counted
+      from the preview branch's rows as in (94) (every non-VALID fact
+      with a component of inherited origin on a span id its closure does
+      not know, counted against the closure's spans of the allowed
+      kind): NCS generation 5, ten (3.4's 05e8ab96, 2ec8f972, 36b14852,
+      4d765c14, 61ab1d62, 7b0b52ed, 854f8bcb, b7a123fb, b83fbcc8,
+      fcc71293; 28 components, each with exactly one holder); Metsera
+      generation 8, six (1dc9dadb, 8e819867, c54f636c, c7058ea6,
+      dca9d348, ece4453b; one component each). (b) Decided from the
+      contract and the validator: CROSS_REFERENCE (and DEFINED_TERM) are
+      allowed LIST children. A list of the representations a tier covers
+      is a list of references, each child already resolved to its
+      section, which a LIST_ELEMENT would not be; and the stored facts
+      stay VALID without a re-run, where wrapping would have needed one.
+      The validator rule and the contract's R2 say so; the extraction
+      instruction still asks for LIST_ELEMENT children for lists of
+      things that vary. 6.2's two tiers (7c534651, d2f8a9b9) are the
+      stored facts kept VALID. (c) An Article-level reference now
+      resolves to the article node of the agreement structure, as the
+      manager asked, not an exemption: agreement-draft.js
+      resolveStructureReferences runs over the model's components
+      before the tree is built (compileExtraction takes
+      agreementStructure, which buildAgreementSectionDraft passes): a
+      CROSS_REFERENCE the model left unresolved that reads "this Article
+      N" resolves to the enclosing article whose number it names (roman
+      or arabic), else the agreement's one article of that number in the
+      same document scope; "this Section N.M" to that section; "this
+      Agreement" to the root; the resolution's text is the node's
+      heading words ("ARTICLE VI CONDITIONS PRECEDENT"). The model's own
+      resolves_to, when given, stands; only the bare adverbs of
+      reference ("hereof", "herein") are exempt from resolution. Test
+      with a built structure (buildAgreementStructure, buildSourceClosure)
+      whose 6.4 says "any condition set forth in this Article VI": the
+      fact is VALID, the reference's structure_node_id is the article
+      node; without the structure the same proposal is held. On NCS
+      6.4's three facts (78926bd5, 7589b03e, fc6c34bd) the words are the
+      same, so they are VALID on the next generation and
+      FRUSTRATION_BREACH_STANDARD is FOUND rather than UNRESOLVED (the
+      draft's REQUIRED_FACT_TYPE_UNRESOLVED comes from a fact type whose
+      only facts are held; a VALID fact clears it). (d) Rows for the
+      eight facts without a readout, by fact_type_rows keyed
+      "FACT_TYPE:SUBTYPE" (scripts/product/table-shapes-decision-34.js;
+      the contract regenerated, 50 tables, 164 columns): 6.1's
+      Information Statement mailing takes "Other mutual conditions", a
+      new row of the mutual conditions table (fact_type_rows
+      GENERAL_CLOSING_CONDITION); 6.3's Closing Tax Opinion "Tax opinion"
+      and its Canadian tax-deposit condition "Other conditions", new rows
+      of both party tables (GENERAL_CLOSING_CONDITION:TAX_OPINION; the
+      bare key), and beside them 6.3's no-Parent-MAE condition
+      (e9bd4f85, the ninth readout-less fact of those sections) takes
+      the "No Material Adverse Effect" row the Company's table's mapping
+      named and its fixed list lacked; the party tables' statement_words
+      now read the party either way round ("the obligations of the
+      Company"; "the Company's obligation"), which is what kept 6.3's
+      facts off their table; 7.1's two rights take "Written consent not
+      delivered" and "Support agreement not delivered", new rows of the
+      buyer's termination table (subtype_rows and fact_type_rows); 7.2's
+      remedy entitlement "Remedies preserved", a new row of the effect
+      table; 7.3's VAT warranty (the model's CONSTRUCTION) the existing
+      "Construction" row; 7.5's cumulative rights "Cumulative remedies",
+      a new row of the boilerplate table. The nine NCS facts, with their
+      own words, each land on that row and nothing is left without a
+      readout (tests/product-table-view.test.js; the shapes in
+      tests/product-table-shapes.test.js; defaultConclusions' cases in
+      tests/product-fact-conclusions.test.js). Metsera generation 8: its
+      readout-less VALID facts (100: defined-term entries, exchange
+      mechanics, equity awards, no-shop prerequisites, merger mechanics,
+      appraisal, material contracts) are of none of these fact types and
+      subtypes, so none moves; the page shows none without a readout as
+      before. docs/core/CODEBASE-GUIDE.md updated. npm run test:active:
+      the known failure only (the count in the commit). Nothing
+      submitted, woken or retried.
       (120) 2026-10-18 19:10 to 19:45 UTC (implementer C), Q5: the limb
       names harvested. `scripts/product/harvest-rep-limbs.js` (library
       `lib/product/rep-limb-harvest.js`, `tests/product-rep-limb-harvest.test.js`)
