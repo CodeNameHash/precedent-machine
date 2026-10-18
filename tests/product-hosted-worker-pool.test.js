@@ -4,7 +4,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { setImmediate: nextTurn } = require('node:timers/promises');
 const { parseArguments, runHostedWorker } = require('../scripts/product-hosted-worker');
-const { CODEX_MODEL_CONFIG } = require('../lib/product/product-model-config');
+const { ANTHROPIC_API_MODEL_CONFIG, CODEX_MODEL_CONFIG } = require('../lib/product/product-model-config');
 
 const id = '11111111-1111-4111-8111-111111111111';
 const options = { runId: id, actor: 'ben', workers: 2 };
@@ -202,4 +202,19 @@ test('unchanged progress waits instead of repeatedly querying the database', asy
   assert.equal((await runHostedWorker({ ...options, workers: 1 }, output, deps)).status, 'READY');
   assert.equal(times.length, 3);
   assert.ok(times[2] - times[1] >= 900, 'unchanged progress must wait approximately one second');
+});
+
+// Work package 3: a run on the API provider needs the key the wake passed
+// into the sandbox; without it the worker stops before any claim, as the
+// Claude CLI path does without its login.
+test('an API-provider run requires ANTHROPIC_API_KEY before any claim', async () => {
+  const priorKey = process.env.ANTHROPIC_API_KEY;
+  delete process.env.ANTHROPIC_API_KEY;
+  try {
+    const deps = dependencies(() => assert.fail('unexpected claim'), { model_config: ANTHROPIC_API_MODEL_CONFIG });
+    await assert.rejects(runHostedWorker(options, output, deps), /PRODUCT_HOSTED_ANTHROPIC_API_KEY_REQUIRED/);
+    assert.equal(deps.models.length, 0);
+  } finally {
+    if (priorKey === undefined) delete process.env.ANTHROPIC_API_KEY; else process.env.ANTHROPIC_API_KEY = priorKey;
+  }
 });
