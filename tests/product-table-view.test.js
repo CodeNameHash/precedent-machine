@@ -2267,3 +2267,63 @@ test('NCS 5.17 as stored: 29 registration-rights covenants gather on the one Reg
   assert.ok(labels.includes('After the Registration Statement becomes effective'));
   assert.equal(labels.some((label) => /upon the discovery|insofar as such losses|as such expenses are incurred/.test(label)), false, 'event triggers are not deadlines');
 });
+
+
+// Work package 19 (d) (manager finding (165); NCS generation 5): the eight
+// VALID facts the page listed without a readout (and the no-Parent-MAE
+// condition beside them), as stored, each on its row.
+test('NCS generation 5\'s facts without a readout each take a row: the mutual and party conditions, the written-consent termination rights, remedies preserved, construction and cumulative remedies', () => {
+  const stored = (id, section, family, subtype, factType, statement, summary, texts) => ({
+    fact_id: id, proposal_id: id, family_key: family, subtype_key: subtype, fact_type: factType, section_reference: section, structure_node_id: `n-${section}`, validation_status: 'VALID', statement,
+    headline: { label: summary.split(' ').slice(0, 3).join(' '), summary, distinguishing_component_ids: [`${id}-0`] },
+    components: texts.map(([kind, text], index) => ({ component_id: `${id}-${index}`, kind, label: 'words', text, origin: 'OWN', source_span_id: 's', start_byte: index * 10, end_byte: index * 10 + 5, gap_before: false, children: [] })),
+  });
+  const facts = [
+    stored('f54d1f70', '6.1', 'CLOSING_CONDITIONS', 'GENERAL_CLOSING_CONDITION', 'GENERAL_CLOSING_CONDITION', 'The obligation of each Party to effect the Merger is subject to the satisfaction at or prior to the Effective Time of the condition that the Information Statement shall have been mailed to all holders of the Company Common Stock following effectiveness of the Form S-4 and at least 20 Business Days prior to the Closing Date.', 'Information Statement mailed to Company stockholders at least 20 Business Days before Closing', [['OBJECT', 'The Information Statement'], ['OPERATION', 'shall have been mailed to all holders of the Company Common Stock'], ['TRIGGER', 'following effectiveness of the Form S-4'], ['PERIOD', 'at least 20 Business Days prior to the Closing Date']]),
+    stored('a7fd4aca', '6.3', 'CLOSING_CONDITIONS', 'TAX_OPINION', 'GENERAL_CLOSING_CONDITION', "As a condition to the Company's obligation to effect the Merger, subject to satisfaction or waiver by the Company at or prior to the Effective Time, the Company shall have received, on the Closing Date but before the Effective Time, an opinion in form and substance reasonably satisfactory to the Company (the Closing Tax Opinion) from Tax Counsel concluding that the Merger will qualify for the Intended Tax Treatment.", 'Company must receive Tax Counsel opinion that the Merger qualifies for the Intended Tax Treatment', [['ACTOR', 'The Company'], ['OPERATION', 'shall have received'], ['TRIGGER', 'on the Closing Date, but before the Effective Time'], ['OBJECT', 'an opinion'], ['STANDARD', 'in form and substance reasonably satisfactory to the Company']]),
+    stored('d5e41bd3', '6.3', 'CLOSING_CONDITIONS', 'GENERAL_CLOSING_CONDITION', 'GENERAL_CLOSING_CONDITION', "As a condition to the Company's obligation to effect the Merger, subject to satisfaction or waiver by the Company at or prior to the Effective Time, the Company shall have timely remitted the entire amount of any and all the required tax deposits necessary to fully proceed with its Notice of Objection.", 'Company must have timely remitted required tax deposits for its Canadian and Alberta objections', [['ACTOR', 'The Company'], ['OPERATION', 'shall have timely remitted'], ['OBJECT', 'the entire amount of any and all the required tax deposits necessary to fully proceed with its Notice of Objection']]),
+    stored('e9bd4f85', '6.3', 'CLOSING_CONDITIONS', 'FRUSTRATION', 'NO_MAE_CONDITION', "As a condition to the Company's obligation to effect the Merger, since the date of this Agreement there shall not have occurred any event that has had or would reasonably be expected to have a Parent Material Adverse Effect.", 'No Parent Material Adverse Effect has occurred since the date of the Agreement', [['TRIGGER', 'Since the date of this Agreement'], ['OPERATION', 'there shall not have occurred'], ['LITANY', 'any event, change, circumstance, occurrence, effect or state of facts'], ['STANDARD', 'that has had or would reasonably be expected to have']]),
+    stored('4df07313', '7.1', 'TERMINATION', 'WRITTEN_CONSENT_NOT_DELIVERED', 'TERMINATION_RIGHT', 'Parent may terminate this Agreement and abandon the Merger if the Written Consent, duly executed by the Consenting Stockholders, shall not have been delivered to Parent and the Company by the Consent Time.', "Parent may terminate if Consenting Stockholders' Written Consent is not delivered by the Consent Time", [['ACTOR', 'by Parent'], ['TRIGGER', 'if the Written Consent, duly executed by the Consenting Stockholders, shall not have been delivered to Parent and the Company'], ['CONDITION', 'by the Consent Time']]),
+    stored('0f4dd949', '7.1', 'TERMINATION', 'SUPPORT_AGREEMENT_NOT_DELIVERED', 'TERMINATION_RIGHT', 'Parent may terminate this Agreement and abandon the Merger if the Support Agreement, duly executed by the Consenting Stockholders, shall not have been delivered to Parent and the Company by the Consent Time.', 'Parent may terminate if the executed Support Agreement is not delivered by the Consent Time', [['ACTOR', 'by Parent'], ['TRIGGER', 'if the Support Agreement, duly executed by the Consenting Stockholders, shall not have been delivered to Parent and the Company'], ['CONDITION', 'by the Consent Time']]),
+    stored('ee3f3736', '7.2', 'TERMINATION', 'REMEDY_ENTITLEMENT', 'TERMINATION_EFFECT', 'Where liability for fraud or willful and material breach is preserved, then, except as otherwise provided in Section 7.3, the non-breaching Party shall be entitled to all rights and remedies available at law or in equity.', 'Non-breaching Party keeps all rights and remedies at law or in equity', [['TRIGGER', 'in which case'], ['EXCEPTION', 'except as otherwise provided in Section 7.3'], ['ACTOR', 'the non-breaching Party'], ['OPERATION', 'shall be entitled to all rights and remedies available at law or in equity']]),
+    stored('17a1ac3c', '7.3', 'MISC_BOILERPLATE', 'CONSTRUCTION', 'MISC_BOILERPLATE_MECHANIC_PRESENT', 'The Company warrants that it does not have an establishment for VAT purposes in any EU Member State, that it is in business for VAT purposes, and that it will make any payment of the Company Termination Fee in the course of such business for VAT purposes.', 'Company warrants no EU VAT establishment and business-course payment of the fee', [['ACTOR', 'The Company warrants'], ['OBJECT', 'that it does not have an establishment for VAT purposes in any EU Member State'], ['OBJECT', 'that it is in business for VAT purposes']]),
+    stored('7358e051', '7.5', 'SPECIFIC_PERFORMANCE_REMEDIES', 'CUMULATIVE_RIGHTS', 'SPECIFIC_PERFORMANCE_REMEDY_PRESENT', 'The rights and remedies of the Parties are cumulative and are not exclusive of any rights or remedies which they would otherwise have hereunder.', "The Parties' rights and remedies are cumulative and not exclusive of other remedies", [['ACTOR', 'The rights and remedies of the Parties'], ['OPERATION', 'are cumulative and are not exclusive'], ['OBJECT', 'of any rights or remedies which they would otherwise have hereunder']]),
+  ];
+  const view = buildTableView({ facts, tableShapes, legalSchema });
+  const placement = new Map();
+  for (const section of view.sections) for (const table of section.tables) for (const row of table.rows) for (const entry of row.backing_facts) placement.set(entry.fact_id, [table.table_key, row.subject]);
+  assert.deepEqual(Object.fromEntries([...placement.entries()].sort()), {
+    '0f4dd949': ['termination-rights-buyer-may-terminate', 'Support agreement not delivered'],
+    '17a1ac3c': ['misc-boilerplate-table', 'Construction'],
+    '4df07313': ['termination-rights-buyer-may-terminate', 'Written consent not delivered'],
+    '7358e051': ['misc-boilerplate-table', 'Cumulative remedies'],
+    a7fd4aca: ['conditions-s-table', 'Tax opinion'],
+    d5e41bd3: ['conditions-s-table', 'Other conditions'],
+    e9bd4f85: ['conditions-s-table', 'No Material Adverse Effect'],
+    ee3f3736: ['termination-rights-effect', 'Remedies preserved'],
+    f54d1f70: ['conditions-table', 'Other mutual conditions'],
+  });
+  assert.equal(view.sections.flatMap((section) => section.without_readout || []).length, 0, 'nothing is left without a readout');
+});
+
+
+// Work package 19 (g) (manager's addendum of 21:10): on the stored rows the
+// general covenants table named the row from the subtype
+// (GENERAL_NOTIFICATION) and made a words_rows row the sub-item, so the
+// move looked as if it had not happened; the fixture's made-up subtype
+// never showed it. A words_rows row wins over the subtype's name, on the
+// same table as across tables.
+test('a words_rows rule on a subtype-named table moves the fact to the rule\'s row, not to a sub-item under its subtype\'s row', () => {
+  const shapes = structuredClone(tableShapes);
+  const covenants = shapes.sections.find((section) => section.section_key === 'general-covenants').tables.find((table) => table.table_key === 'general-covenants-table');
+  covenants.words_rows = [...(covenants.words_rows || []), { row_label: 'Public announcements', when: 'press\\s+release', over_readout: true }];
+  const fact = {
+    fact_id: 'gn-1', proposal_id: 'gn-1', family_key: 'GENERAL_COVENANTS', subtype_key: 'GENERAL_NOTIFICATION', section_reference: '5.14', structure_node_id: 'n-5-14',
+    headline: { label: 'General notification', distinguishing_component_ids: ['gn-1-1'], summary: 'Parent consults the Company before any press release' },
+    components: [['ACTOR', 'Parent'], ['OPERATION', 'shall consult the Company before issuing any press release']].map(([kind, text], index) => ({ component_id: `gn-1-${index}`, kind, label: 'words', text, origin: 'OWN', source_span_id: 's', start_byte: index * 10, end_byte: index * 10 + 5, gap_before: false, children: [] })),
+    conclusions: { table_key: 'general-covenants-table', row_label: 'General notification', cells: [{ column_id: 'obligor', code: 'PARENT', component_ids: ['gn-1-0'] }] },
+  };
+  const view = buildTableView({ facts: [fact], tableShapes: shapes, legalSchema });
+  const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'general-covenants-table');
+  assert.deepEqual(table.rows.map((row) => [row.subject, row.backing_facts.length, row.sub_rows ? row.sub_rows.map((sub) => sub.subject) : undefined]), [['Public announcements', 1, ['Consultation and review']]]);
+});

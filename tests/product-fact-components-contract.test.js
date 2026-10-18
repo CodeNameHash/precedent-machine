@@ -241,7 +241,7 @@ test('a count of none is 0 and a formula amount is valid without a number; prose
 // Work package 19 (b) and (c) (NCS generation 5, 6.2 and 6.4; plan finding
 // (165)): a LIST of resolved cross-references is a list; a reference to the
 // words' own article or agreement needs no resolution.
-test('a LIST of cross-reference children is valid, and "this Article VI" needs no resolution; a LIST of plain terms and an unresolved section reference still do not pass', () => {
+test('a LIST of cross-reference children is valid; "this Article VI" still needs its resolution (the extractor supplies it), "hereof" needs none; a LIST of plain terms does not pass', () => {
   const { buildComponentTree } = require('../lib/product/fact-components');
   const resolve = (raw) => ({ span: { source_span_id: 's', span_id: 's', start_byte: 0, end_byte: Buffer.byteLength(raw.quote, 'utf8') }, context: { component_kind: 'FULL_SECTION' } });
   const contentId = (kind, parts) => `${parts.path.join('.')}-${parts.kind}`;
@@ -253,11 +253,12 @@ test('a LIST of cross-reference children is valid, and "this Article VI" needs n
       { kind: 'OPERATION', label: 'reliance', quote: 'may rely on the failure of any condition set forth in this Article VI', origin: 'OWN', children: [{ kind: 'CROSS_REFERENCE', label: 'this Article', quote: 'this Article VI', origin: 'OWN', children: [] }] },
       { kind: 'LIST', label: 'plain terms', quote: 'apples, pears', origin: 'OWN', children: [{ kind: 'TERM', label: 'a', quote: 'apples', origin: 'OWN', children: [] }, { kind: 'TERM', label: 'b', quote: 'pears', origin: 'OWN', children: [] }] },
       { kind: 'CROSS_REFERENCE', label: 'elsewhere', quote: 'Section 7.1(b)', origin: 'OWN', children: [] },
+      { kind: 'CROSS_REFERENCE', label: 'hereof', quote: 'hereof', origin: 'OWN', children: [] },
     ],
     resolve, factId: 'f', contentId,
   });
   const fact = { headline: { label: 'Bring-down', distinguishing_component_ids: ['1-LIST'] }, components: tree.components };
   const problems = validateFactComponents(fact);
   assert.deepEqual(problems.filter((problem) => /LIST without LIST_ELEMENT/.test(problem)), ['3: LIST without LIST_ELEMENT children'], 'only the list of plain terms is held');
-  assert.deepEqual(problems.filter((problem) => /must resolve/.test(problem)), ['4: CROSS_REFERENCE must resolve'], 'only the reference elsewhere must resolve');
+  assert.deepEqual(problems.filter((problem) => /must resolve/.test(problem)), ['2.0: CROSS_REFERENCE must resolve', '4: CROSS_REFERENCE must resolve'], 'the article and the reference elsewhere must resolve; hereof need not');
 });

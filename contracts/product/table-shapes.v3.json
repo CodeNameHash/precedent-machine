@@ -6030,7 +6030,8 @@
             "Antitrust / Regulatory Clearance",
             "S-4 / Proxy Effective",
             "Stock Exchange Listing",
-            "Frustration of conditions"
+            "Frustration of conditions",
+            "Other mutual conditions"
           ],
           "guidance": "One row per mutual condition as the precedent names it (Stockholder Approval with its vote standard; No Legal Restraint; Antitrust / Regulatory Clearance, each regime a sub-item; S-4 / Proxy Effective; Stock Exchange Listing) and the frustration rule (a FRUSTRATION fact: no party may rely on a failed condition its own breach caused) as a row, each as drafted.",
           "fact_type_rows": {
@@ -6041,9 +6042,10 @@
             "S4_CONDITION_COMPONENT": "S-4 / Proxy Effective",
             "LISTING_CONDITION": "Stock Exchange Listing",
             "FRUSTRATION_BREACH_STANDARD": "Frustration of conditions",
-            "METSERA_7_04_FRUSTRATION_BRANCH": "Frustration of conditions"
+            "METSERA_7_04_FRUSTRATION_BRANCH": "Frustration of conditions",
+            "GENERAL_CLOSING_CONDITION": "Other mutual conditions"
           },
-          "statement_words": "obligations? of each (party|of the parties)"
+          "statement_words": "obligations? of each (party|of the parties)|each (party|of the parties)'?s obligations?"
         }
       ],
       "print_pages": [
@@ -6141,7 +6143,9 @@
             "Accuracy of Representations",
             "Performance of Covenants",
             "No Material Adverse Effect",
-            "Officer's Certificate"
+            "Officer's Certificate",
+            "Tax opinion",
+            "Other conditions"
           ],
           "additional_row_reasons": {
             "Performance of Covenants": "Ben's decision 2026-09-13 #24: \"where is cov compliance\" -- the covenant performance condition is a row of its own."
@@ -6150,12 +6154,14 @@
           "guidance": "One line per bring-down tier under Accuracy of Representations (each tier is a fact with its standard, the representations it covers as resolved CROSS_REFERENCE components, and whether materiality qualifiers are disregarded); the covenant performance condition, the no-MAE condition and the officer's certificate are rows of their own.",
           "fact_type_rows": {
             "GENERAL_CLOSING_CONDITION:BRINGDOWN": "Accuracy of Representations",
+            "GENERAL_CLOSING_CONDITION:TAX_OPINION": "Tax opinion",
+            "GENERAL_CLOSING_CONDITION": "Other conditions",
             "COVENANT_COMPLIANCE_STANDARD": "Performance of Covenants",
             "NO_MAE_CONDITION": "No Material Adverse Effect",
             "NO_MAE_CONDITION_CONTINUING": "No Material Adverse Effect",
             "OFFICER_CERTIFICATE_REQUIRED": "Officer's Certificate"
           },
-          "statement_words": "obligations? of (each of )?Parent"
+          "statement_words": "obligations? of (each of )?Parent|Parent'?s obligations?"
         }
       ],
       "print_pages": [
@@ -6252,7 +6258,10 @@
           "fixed_row_labels": [
             "Accuracy of Representations",
             "Performance of Covenants",
-            "Officer's Certificate"
+            "Officer's Certificate",
+            "No Material Adverse Effect",
+            "Tax opinion",
+            "Other conditions"
           ],
           "additional_row_reasons": {
             "Performance of Covenants": "Ben's decision 2026-09-13 #24: \"where is cov compliance\" -- the covenant performance condition is a row of its own."
@@ -6261,12 +6270,14 @@
           "guidance": "One line per bring-down tier under Accuracy of Representations (each tier is a fact with its standard, the representations it covers as resolved CROSS_REFERENCE components, and whether materiality qualifiers are disregarded); the covenant performance condition, the no-MAE condition and the officer's certificate are rows of their own.",
           "fact_type_rows": {
             "GENERAL_CLOSING_CONDITION:BRINGDOWN": "Accuracy of Representations",
+            "GENERAL_CLOSING_CONDITION:TAX_OPINION": "Tax opinion",
+            "GENERAL_CLOSING_CONDITION": "Other conditions",
             "COVENANT_COMPLIANCE_STANDARD": "Performance of Covenants",
             "NO_MAE_CONDITION": "No Material Adverse Effect",
             "NO_MAE_CONDITION_CONTINUING": "No Material Adverse Effect",
             "OFFICER_CERTIFICATE_REQUIRED": "Officer's Certificate"
           },
-          "statement_words": "obligations? of the Company"
+          "statement_words": "obligations? of the Company|Company'?s obligations?"
         }
       ],
       "print_pages": [
@@ -6576,13 +6587,21 @@
           "fixed_row_labels": [
             "Company (Target) breach",
             "Change of Recommendation",
-            "Breach of the no-shop"
+            "Breach of the no-shop",
+            "Written consent not delivered",
+            "Support agreement not delivered"
           ],
           "row_from_subtype": true,
           "subtype_rows": {
             "BREACH": "Company (Target) breach",
             "RECOMMENDATION_CHANGE": "Change of Recommendation",
-            "NO_SOLICITATION_BREACH": "Breach of the no-shop"
+            "NO_SOLICITATION_BREACH": "Breach of the no-shop",
+            "WRITTEN_CONSENT_NOT_DELIVERED": "Written consent not delivered",
+            "SUPPORT_AGREEMENT_NOT_DELIVERED": "Support agreement not delivered"
+          },
+          "fact_type_rows": {
+            "TERMINATION_RIGHT:WRITTEN_CONSENT_NOT_DELIVERED": "Written consent not delivered",
+            "TERMINATION_RIGHT:SUPPORT_AGREEMENT_NOT_DELIVERED": "Support agreement not delivered"
           },
           "guidance": "Parent's termination rights, the row from the subtype: Company breach (cure period, its end, whether curable, the terminator-breach bar as faultBasedCarveOut); Change of Recommendation (trigger, window); breach of the no-shop. A BREACH fact in this table is Parent terminating for the Company's breach; the Company's right for Parent's breach goes to the company table."
         },
@@ -6832,6 +6851,10 @@
                   "WRITTEN_NOTICE_REQUIRED",
                   "BOARD_ACTION_REQUIRED",
                   "STOCKHOLDER_APPROVAL_NOT_REQUIRED"
+                ],
+                "Remedies preserved": [
+                  "YES",
+                  "NO"
                 ]
               },
               "fill_from": [
@@ -6872,7 +6895,8 @@
             "Release of liability",
             "Willful and material breach carve-out",
             "Surviving provisions",
-            "Termination formalities"
+            "Termination formalities",
+            "Remedies preserved"
           ],
           "row_from_subtype": true,
           "subtype_rows": {
@@ -6880,9 +6904,13 @@
             "LIABILITY_RELEASE": "Release of liability",
             "WILLFUL_MATERIAL_BREACH_CARVEOUT": "Willful and material breach carve-out",
             "PROVISION_SURVIVAL": "Surviving provisions",
-            "TERMINATION_NOTICE": "Termination formalities"
+            "TERMINATION_NOTICE": "Termination formalities",
+            "REMEDY_ENTITLEMENT": "Remedies preserved"
           },
-          "guidance": "The effect of termination, the row from the subtype: the agreement becoming void; the release of liability and its carve-outs; the willful and material breach carve-out; the surviving provisions; and the formalities of terminating (notice, board action, no stockholder approval), one cell per formality."
+          "guidance": "The effect of termination, the row from the subtype: the agreement becoming void; the release of liability and its carve-outs; the willful and material breach carve-out; the surviving provisions; and the formalities of terminating (notice, board action, no stockholder approval), one cell per formality.",
+          "fact_type_rows": {
+            "TERMINATION_EFFECT:REMEDY_ENTITLEMENT": "Remedies preserved"
+          }
         }
       ],
       "print_pages": [
@@ -8940,6 +8968,10 @@
                 "Construction": [
                   "YES",
                   "NO"
+                ],
+                "Cumulative remedies": [
+                  "YES",
+                  "NO"
                 ]
               },
               "fill_from": [
@@ -8990,7 +9022,8 @@
             "Severability",
             "Counterparts and electronic execution",
             "Survival",
-            "Construction"
+            "Construction",
+            "Cumulative remedies"
           ],
           "subtype_keys": [
             "GOVERNING_LAW",
@@ -9006,7 +9039,11 @@
             "CONSTRUCTION",
             "EXPENSES"
           ],
-          "guidance": "One row per boilerplate term as the precedent names it; the row is the term the fact addresses (a FORUM fact on the jury waiver is Jury trial waiver; a SPECIFIC_PERFORMANCE_REMEDIES fact on equitable relief, irreparable harm, the bond waiver or closing enforcement is Specific performance, each a sub-item; a REMEDY_COORDINATION or REMEDY_ACTION_EXTENSION fact is Specific performance limitations; an EXPENSES or COST_SHIFT fact is Fee / expense allocation). The Provision cell is the code from that row's list (several cells when the clause states several: the amendment formalities, the notice methods); the clause as drafted beside it. A row the agreement does not address is omitted."
+          "guidance": "One row per boilerplate term as the precedent names it; the row is the term the fact addresses (a FORUM fact on the jury waiver is Jury trial waiver; a SPECIFIC_PERFORMANCE_REMEDIES fact on equitable relief, irreparable harm, the bond waiver or closing enforcement is Specific performance, each a sub-item; a REMEDY_COORDINATION or REMEDY_ACTION_EXTENSION fact is Specific performance limitations; an EXPENSES or COST_SHIFT fact is Fee / expense allocation). The Provision cell is the code from that row's list (several cells when the clause states several: the amendment formalities, the notice methods); the clause as drafted beside it. A row the agreement does not address is omitted.",
+          "fact_type_rows": {
+            "MISC_BOILERPLATE_MECHANIC_PRESENT:CONSTRUCTION": "Construction",
+            "SPECIFIC_PERFORMANCE_REMEDY_PRESENT:CUMULATIVE_RIGHTS": "Cumulative remedies"
+          }
         }
       ],
       "print_pages": [
