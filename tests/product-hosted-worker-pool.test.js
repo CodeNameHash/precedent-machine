@@ -4,7 +4,14 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { setImmediate: nextTurn } = require('node:timers/promises');
 const { parseArguments, runHostedWorker } = require('../scripts/product-hosted-worker');
-const { ANTHROPIC_API_MODEL_CONFIG, CODEX_MODEL_CONFIG } = require('../lib/product/product-model-config');
+const { ANTHROPIC_API_MODEL_CONFIG, CLAUDE_CLI_MODEL_CONFIG, CODEX_MODEL_CONFIG } = require('../lib/product/product-model-config');
+const { buildAgreementStructure } = require('../lib/product/agreement-structure');
+const { substantiveSections } = require('../lib/product/source-context');
+const { isWorkerStopError, workerStopReason } = require('../lib/product/worker-stop');
+
+process.env.PRODUCT_PHASE2_HELPER_ONLY = '1';
+const { conchoSource } = require('./product-phase-2.test');
+delete process.env.PRODUCT_PHASE2_HELPER_ONLY;
 
 const id = '11111111-1111-4111-8111-111111111111';
 const options = { runId: id, actor: 'ben', workers: 2 };
@@ -247,4 +254,138 @@ test('an API account limit stops the worker with the usage-limit reason', async 
   } finally {
     if (priorKey === undefined) delete process.env.ANTHROPIC_API_KEY; else process.env.ANTHROPIC_API_KEY = priorKey;
   }
+});
+
+// Work package 11b (plan finding (73)). The live path: the worker's loop
+// calls advanceAgreementDraftAnalysis, whose section loop records a failed
+// attempt and returns the analysis, so a stop error never reached the
+// worker's catch and the section was claimed again until its attempts were
+// spent (NCS generation 5 on the API, 2026-10-18 13:11 UTC: three attempts
+// for each of two sections in six seconds, then PRODUCT_HOSTED_RUN_FAILED).
+// This store keeps the database's claim and failure rules in memory, with
+// the real section loop and a model that refuses its first call.
+async function conchoRunStore(runOverrides) {
+  const sourceDocument = await conchoSource();
+  const agreementStructure = buildAgreementStructure({
+    agreement_id: sourceDocument.source_document_id,
+    canonical_text: sourceDocument.canonical_text,
+    canonical_text_sha256: sourceDocument.canonical_text_sha256,
+  });
+  const run = { run_id: id, status: 'PENDING', stage: 'SECTION_ANALYSIS', source_document_id: sourceDocument.source_document_id, ...runOverrides };
+  const work = substantiveSections(agreementStructure).map((node, index) => ({
+    node_id: node.node_id, authored_order: index, status: 'PENDING', attempts: 0, max_attempts: 3, worker_id: null, attempt_token: null, error: null,
+  }));
+  const events = { claims: 0, failures: [], commits: 0 };
+  let tokens = 0;
+  const store = {
+    work, run, events,
+    getRun: async () => ({ ...run }),
+    assertAccess: async ({ actor }) => assert.equal(actor, 'ben'),
+    recoverExpiredSections: async () => {},
+    getRunContext: async () => ({ run: { ...run }, sourceDocument, agreementStructure }),
+    // product_phase1_claim_section: a PENDING or FAILED section with
+    // attempts to spare, in authored order; the claim counts the attempt.
+    claimNextSection: async ({ workerId }) => {
+      if (['FAILED', 'READY'].includes(run.status)) return null;
+      const next = work.find((item) => item.attempts < item.max_attempts && ['PENDING', 'FAILED'].includes(item.status));
+      if (!next) return null;
+      events.claims += 1;
+      tokens += 1;
+      Object.assign(next, { status: 'RUNNING', attempts: next.attempts + 1, worker_id: workerId, attempt_token: `token-${tokens}`, error: null });
+      run.status = 'RUNNING';
+      return { node_id: next.node_id, attempt_token: next.attempt_token };
+    },
+    renewSectionLease: async () => ({}),
+    recordModelCall: async () => ({}),
+    // product_phase2_fail_section: the section FAILED with its reason; the
+    // run FAILED only when the section's attempts are spent, else PARTIAL.
+    failSection: async ({ nodeId, attemptToken, error }) => {
+      const item = work.find((entry) => entry.node_id === nodeId);
+      assert.equal(item.attempt_token, attemptToken, 'the failing attempt is the claimed one');
+      Object.assign(item, { status: 'FAILED', error: { message: error.message } });
+      events.failures.push({ node_id: nodeId, attempts: item.attempts, message: error.message });
+      run.status = item.attempts >= item.max_attempts ? 'FAILED' : 'PARTIAL';
+      return { work: { ...item }, run: { ...run } };
+    },
+    commitSection: async () => { events.commits += 1; throw new Error('no section completes in this test'); },
+    getProgress: async () => ({
+      total: work.length, completed: work.filter((item) => item.status === 'COMPLETE').length,
+      failed: work.filter((item) => item.status === 'FAILED').length, running: work.filter((item) => item.status === 'RUNNING').length,
+      cost_microusd: 0, input_tokens: 0, output_tokens: 0,
+    }),
+    getAgreementAnalysis: async () => ({ status: run.status, stage: run.stage, progress: await store.getProgress() }),
+  };
+  return store;
+}
+
+function refusingModel(error) {
+  const calls = [];
+  return {
+    calls,
+    async complete(input) { calls.push(input.call_kind); throw error; },
+  };
+}
+
+test('through the real section loop, a refused API configuration stops the worker after one attempt and leaves the run resumable', async () => {
+  const priorKey = process.env.ANTHROPIC_API_KEY;
+  process.env.ANTHROPIC_API_KEY = 'sk-ant-test-'.repeat(3);
+  try {
+    const store = await conchoRunStore({ model_config: ANTHROPIC_API_MODEL_CONFIG });
+    const refused = Object.assign(new Error('ANTHROPIC_API_NOT_CONFIGURED: the API refused the key with the ANTHROPIC_WORKSPACE_ID header sent (400): 400 anthropic-workspace-id header must be a valid workspace ID.'), { code: 'ANTHROPIC_API_NOT_CONFIGURED' });
+    const model = refusingModel(refused);
+    const lines = [];
+    await assert.rejects(
+      runHostedWorker({ ...options, workers: 1 }, { write: (line) => lines.push(line) }, { createStore: () => store, createModel: () => model }),
+      /^Error: PRODUCT_HOSTED_ANTHROPIC_API_NOT_CONFIGURED: ANTHROPIC_API_NOT_CONFIGURED: the API refused the key with the ANTHROPIC_WORKSPACE_ID header sent \(400\)/,
+    );
+    assert.deepEqual(model.calls, ['ROUTING'], 'one call: the first routing call');
+    assert.equal(store.events.claims, 1, 'one attempt, one claim');
+    const [first] = store.work;
+    assert.equal(first.attempts, 1);
+    assert.equal(first.status, 'FAILED', 'the one attempt is recorded with its reason');
+    assert.match(first.error.message, /ANTHROPIC_API_NOT_CONFIGURED/);
+    assert.equal(store.events.failures.length, 1);
+    assert.equal(store.run.status, 'PARTIAL', 'the store\'s resumable state after one failed attempt, not FAILED');
+    assert.ok(store.work.slice(1).every((item) => item.status === 'PENDING' && item.attempts === 0), 'no other section was touched');
+    assert.ok(lines.some((line) => /SECTION_FAILED/.test(line) && /ANTHROPIC_API_NOT_CONFIGURED/.test(line)), 'the failure is on the worker\'s output once');
+    assert.equal(lines.filter((line) => /SECTION_FAILED/.test(line)).length, 1);
+  } finally {
+    if (priorKey === undefined) delete process.env.ANTHROPIC_API_KEY; else process.env.ANTHROPIC_API_KEY = priorKey;
+  }
+});
+
+test('through the real section loop, a usage limit stops the worker the same way; an ordinary section error is retried', async () => {
+  const priorToken = process.env.CLAUDE_CODE_OAUTH_TOKEN;
+  process.env.CLAUDE_CODE_OAUTH_TOKEN = 'claude-oauth-test-'.repeat(2);
+  try {
+    const limited = await conchoRunStore({ model_config: CLAUDE_CLI_MODEL_CONFIG });
+    const limit = refusingModel(new Error("claude exited 1: You've hit your session limit. Resets at 8pm"));
+    await assert.rejects(
+      runHostedWorker({ ...options, workers: 1 }, output, { createStore: () => limited, createModel: () => limit }),
+      /^Error: PRODUCT_HOSTED_CODEX_USAGE_LIMIT: claude exited 1: You've hit your session limit/,
+    );
+    assert.equal(limited.events.claims, 1);
+    assert.equal(limited.run.status, 'PARTIAL');
+    // A section's own failure keeps today's behaviour: claimed again until
+    // its attempts are spent, then the run FAILED.
+    const ordinary = await conchoRunStore({ model_config: CLAUDE_CLI_MODEL_CONFIG });
+    const broken = refusingModel(new Error('MODEL_RESPONSE_SHAPE: proposals'));
+    await assert.rejects(
+      runHostedWorker({ ...options, workers: 1 }, output, { createStore: () => ordinary, createModel: () => broken }),
+      /PRODUCT_HOSTED_RUN_FAILED: SECTION_ANALYSIS/,
+    );
+    assert.equal(ordinary.events.claims, 3, 'three attempts on the first section');
+    assert.equal(ordinary.work[0].attempts, 3);
+    assert.equal(ordinary.run.status, 'FAILED');
+  } finally {
+    if (priorToken === undefined) delete process.env.CLAUDE_CODE_OAUTH_TOKEN; else process.env.CLAUDE_CODE_OAUTH_TOKEN = priorToken;
+  }
+});
+
+test('worker-stop names the two account reasons and nothing else', () => {
+  assert.equal(workerStopReason(Object.assign(new Error('x'), { code: 'ANTHROPIC_API_NOT_CONFIGURED' })), 'PRODUCT_HOSTED_ANTHROPIC_API_NOT_CONFIGURED');
+  assert.equal(workerStopReason(new Error('ANTHROPIC_API_USAGE_LIMIT: usage limit on the API account (429): rate limit')), 'PRODUCT_HOSTED_CODEX_USAGE_LIMIT');
+  assert.equal(workerStopReason(new Error("codex exited 1: You've hit your usage limit.")), 'PRODUCT_HOSTED_CODEX_USAGE_LIMIT');
+  assert.equal(workerStopReason(new Error('EXTRACTION_DECLINED: 5.02')), null);
+  assert.equal(isWorkerStopError(new Error('SECTION_LEASE_LOST')), false);
 });
