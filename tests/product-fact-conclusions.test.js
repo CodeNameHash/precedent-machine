@@ -536,6 +536,54 @@ test('a period written in words with parenthetical digits parses to the digits',
   assert.deepEqual(parseComponentValue('PERIOD', 'at least two (2) Business Days prior'), { canonical: 2, unit: 'BUSINESS_DAY' });
 });
 
+// Work package 7 (manager, 2026-10-18; generation 8, 5.02(e)): the
+// subsequent match period read 4 business days from "the references to
+// four (4) business days will be deemed two (2) business days". A deeming
+// form takes the deemed value; any other two-value text parses to nothing.
+test('a value deemed another reads the deemed one; two values with no deeming form read nothing', () => {
+  const { parseComponentValue, ambiguousValueComponents } = require('../lib/product/fact-conclusions');
+  const { componentValueAmbiguous } = require('../lib/product/fact-components');
+  assert.deepEqual(parseComponentValue('PERIOD', 'except that the references to four (4) business days will be deemed two (2) business days'), { canonical: 2, unit: 'BUSINESS_DAY' });
+  assert.deepEqual(parseComponentValue('PERIOD', 'the four (4) business day period shall be two (2) business days'), { canonical: 2, unit: 'BUSINESS_DAY' });
+  assert.deepEqual(parseComponentValue('PERIOD', 'the references to four (4) business days will be three (3) business days'), { canonical: 3, unit: 'BUSINESS_DAY' });
+  assert.deepEqual(parseComponentValue('PERIOD', 'the references to five business days shall be deemed to be references to three business days'), { canonical: 3, unit: 'BUSINESS_DAY' });
+  assert.equal(parseComponentValue('PERIOD', 'within ten (10) business days, or 48 hours for an amendment'), null, 'two periods and no deeming: nothing');
+  assert.equal(componentValueAmbiguous('PERIOD', 'within ten (10) business days, or 48 hours for an amendment'), true);
+  assert.equal(componentValueAmbiguous('PERIOD', 'the references to four (4) business days will be deemed two (2) business days'), false);
+  assert.equal(componentValueAmbiguous('PERIOD', 'within five (5) Business Days'), false);
+  // A repeated value is one value.
+  assert.deepEqual(parseComponentValue('PERIOD', 'four (4) business days (the "Match Period"), such four (4) business days'), { canonical: 4, unit: 'BUSINESS_DAY' });
+  // AMOUNT, PERCENTAGE and DATE follow the same rule.
+  assert.deepEqual(parseComponentValue('AMOUNT', 'a fee of $50,000,000, which shall be $25,000,000 if terminated during the go-shop period'), { canonical: 25000000, unit: 'USD' });
+  assert.equal(parseComponentValue('AMOUNT', 'an amount between $40,000,000 and $50,000,000'), null);
+  assert.deepEqual(parseComponentValue('PERCENTAGE', 'twenty percent (20%) or more, which threshold shall be fifty percent (50%) after the Closing'), { canonical: 50, unit: 'PERCENT' });
+  assert.equal(parseComponentValue('PERCENTAGE', 'more than 15% but less than 50%'), null);
+  assert.deepEqual(parseComponentValue('DATE', 'March 21, 2026, which date shall be deemed June 21, 2026 upon an extension'), { canonical: '2026-06-21', unit: 'ISO_DATE' });
+  assert.equal(parseComponentValue('DATE', 'the earlier of March 21, 2026 and June 21, 2026'), null);
+  // The extractor notes the empty cell.
+  const matching = tableShapes.sections.find((section) => section.section_key === 'nosol-superior').tables.find((table) => table.table_key === 'nosol-superior-matching-rights');
+  const components = [{ component_id: 'p1', kind: 'PERIOD', text: 'within ten (10) business days, or 48 hours for an amendment', origin: 'OWN' }];
+  assert.deepEqual(ambiguousValueComponents({ table: matching, rowLabel: 'Subsequent match period', subtypeKey: 'SUBSEQUENT_MATCH_PERIOD', cells: [], components }).map((entry) => [entry.column_id, entry.component_id, entry.value_kind]), [['period', 'p1', 'PERIOD']]);
+  assert.deepEqual(ambiguousValueComponents({ table: matching, rowLabel: 'Subsequent match period', subtypeKey: 'SUBSEQUENT_MATCH_PERIOD', cells: [{ column_id: 'period' }], components }), [], 'a filled cell is not noted');
+});
+
+// Work package 7 (b): the Defined Terms section is a reference appendix
+// (decision 15, excluded_from_fact_tables). Its table is never offered to
+// the extractor and a readout naming it is treated as none.
+test('the defined-terms reference appendix is not a fact table: not offered, and a readout naming its table does not validate', () => {
+  const { tablesForFamily, findTableByKey, tableForFact } = require('../lib/product/fact-conclusions');
+  assert.equal(tablesForFamily('KEY_DEFINED_TERMS', tableShapes).some(({ table }) => table.table_key === 'defined-terms-table'), false);
+  assert.ok(tablesForFamily('KEY_DEFINED_TERMS', tableShapes).length > 0, 'the family keeps its fact tables (the Knowledge row, the no-shop definitions)');
+  assert.equal(findTableByKey(tableShapes, 'defined-terms-table'), null);
+  const fact = {
+    fact_id: 'dt-1', family_key: 'KEY_DEFINED_TERMS', subtype_key: 'OTHER_DEFINED_TERM',
+    components: [{ component_id: 'dt-1-t', kind: 'DEFINED_TERM', label: 'Tax', text: '“Tax” means any tax', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 20, children: [] }],
+    conclusions: { table_key: 'defined-terms-table', row_label: 'Tax', cells: [{ column_id: 'definition', text: 'any tax', component_ids: ['dt-1-t'] }] },
+  };
+  assert.equal(tableForFact(fact, tableShapes), null);
+  assert.ok(validateFactConclusions(fact, { tableShapes }).length > 0, 'the readout is dropped at extraction with a note, the fact stays');
+});
+
 // Metsera generation 6, 7.02 (2026-09-14): the extractor returned the second
 // bring-down tier and the buyer's officer certificate without conclusions.
 // A closing condition's row follows from its fact type, and the party's

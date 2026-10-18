@@ -1432,3 +1432,40 @@ test('a definition fact replaces a component reading of its term, and two defini
   const twice = buildTableView({ facts: [planCovers, { ...planCovers, fact_id: 'def-plan-1b', proposal_id: 'def-plan-1b' }], tableShapes, legalSchema });
   assert.equal(twice.defined_terms.find((entry) => entry.term === 'Company Benefit Plan').definition, planCovers.headline.summary);
 });
+
+// Work package 7 (a): generation 8's 5.02(e) subsequent match period, with
+// the readout's period cell left to the page: the deemed value, 2 business
+// days, not the stated 4; a two-period text with no deeming leaves the cell
+// empty and the row shows the summary alone.
+test('the page reads a deemed period as the deemed value and leaves a two-period text empty', () => {
+  const match = (id, text) => ({
+    fact_id: id, proposal_id: id, family_key: 'NO_SHOP', subtype_key: 'SUBSEQUENT_MATCH_PERIOD', fact_type: 'SUBSEQUENT_MATCH_PERIOD', section_reference: '5.02(e)', structure_node_id: 'n-5-02', validation_status: 'VALID',
+    headline: { label: 'Subsequent match period', distinguishing_component_ids: [`${id}-p`], summary: 'Each amended proposal restarts a shorter match period' },
+    components: [
+      { component_id: `${id}-op`, kind: 'OPERATION', label: 'restart', text: 'a new notice period shall commence', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 34, gap_before: false, children: [] },
+      { component_id: `${id}-p`, kind: 'PERIOD', label: 'period', text, origin: 'OWN', source_span_id: 's', start_byte: 40, end_byte: 40 + text.length, gap_before: true, children: [] },
+    ],
+    conclusions: { table_key: 'nosol-superior-matching-rights', row_label: 'Subsequent match period', cells: [] },
+  });
+  const deemed = match('deemed', 'except that the references to four (4) business days will be deemed two (2) business days');
+  const twoPeriods = match('two', 'within ten (10) business days, or 48 hours for an amendment');
+  const cellOf = (view, id) => view.sections.flatMap((section) => section.tables).find((table) => table.table_key === 'nosol-superior-matching-rights')
+    .rows.find((row) => row.backing_facts.some((entry) => entry.fact_id === id)).cells.find((cell) => cell.column_id === 'period');
+  assert.equal(cellOf(buildTableView({ facts: [deemed], tableShapes, legalSchema }), 'deemed').label, '2 business days');
+  assert.equal(cellOf(buildTableView({ facts: [twoPeriods], tableShapes, legalSchema }), 'two').kind, 'dash');
+});
+
+// Work package 7 (b): a definition fact whose readout named the retired
+// `defined-terms-table` is a Defined Terms entry and nothing else.
+test('a definition fact taken into Defined Terms is never listed under a section as without a readout', () => {
+  const fact = {
+    fact_id: 'def-law', proposal_id: 'def-law', family_key: 'KEY_DEFINED_TERMS', subtype_key: 'OTHER_DEFINED_TERM', fact_type: 'OTHER_DEFINED_TERM_RECORDED', section_reference: '9.03', structure_node_id: 'n-9-03', validation_status: 'VALID',
+    headline: { label: 'Other defined term', summary: 'Law means any statute, rule, regulation or order of a Governmental Entity', distinguishing_component_ids: ['def-law-t'] },
+    components: [{ component_id: 'def-law-t', kind: 'DEFINED_TERM', label: 'Law', text: '“Law” means any statute, rule, regulation or order', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 50, gap_before: false, children: [] }],
+    conclusions: { table_key: 'defined-terms-table', row_label: 'Law', cells: [{ column_id: 'definition', text: 'any statute, rule, regulation or order', component_ids: ['def-law-t'] }] },
+  };
+  const view = buildTableView({ facts: [fact], tableShapes, legalSchema });
+  assert.ok(view.defined_terms.some((entry) => entry.term === 'Law' && entry.fact_id === 'def-law'));
+  assert.deepEqual(view.sections.filter((section) => section.facts_without_readout.some((entry) => entry.fact_id === 'def-law')).map((section) => section.section_key), []);
+  assert.equal(view.sections.flatMap((section) => section.tables).some((table) => table.rows.some((row) => row.backing_facts.some((entry) => entry.fact_id === 'def-law'))), false);
+});
