@@ -1392,3 +1392,43 @@ test('readout-less material contracts representation limbs are sub-items of the 
   assert.deepEqual(materialContracts.facts_without_readout.map((entry) => entry.fact_id), ['mc-cat'], 'a category without a readout is listed under its own section, not under the representations');
   assert.equal(materialContracts.tables.flatMap((table) => table.rows).some((candidate) => candidate.backing_facts.some((entry) => /^mc-(list|status|default|event)$/.test(entry.fact_id))), false, 'no limb is a row of the list table');
 });
+
+// Work package 6 (manager, 2026-10-18, generation 8): 3.11's "Company
+// Benefit Plan excludes Law-mandated plans sponsored by Governmental
+// Entities" vanished behind "Company Benefit Plan covers ..."; 3.09's "Tax
+// means ..." vanished behind a component reading from an earlier section.
+test('a definition fact replaces a component reading of its term, and two definition facts of one term merge with "; "', () => {
+  const definition = (id, reference, term, summary) => ({
+    fact_id: id, proposal_id: id, family_key: 'KEY_DEFINED_TERMS', subtype_key: 'OTHER_DEFINED_TERM', fact_type: 'OTHER_DEFINED_TERM_RECORDED', section_reference: reference, structure_node_id: `n-${reference}`,
+    headline: { label: 'Other defined term', summary, distinguishing_component_ids: [`${id}-t`] },
+    components: [{ component_id: `${id}-t`, kind: 'DEFINED_TERM', label: term, text: `“${term}” means`, origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 20, gap_before: false, children: [] }],
+  });
+  // An earlier section's fact reads "Tax" as a DEFINED_TERM component.
+  const earlier = {
+    fact_id: 'rep-tax', proposal_id: 'rep-tax', family_key: 'REPRESENTATIONS', subtype_key: 'COMPLIANCE_REPRESENTATION', fact_type: 'TAX_RETURNS_FILED', section_reference: '3.09', structure_node_id: 'n-3-09',
+    headline: { label: 'Tax returns', distinguishing_component_ids: ['rep-tax-op'] },
+    components: [
+      { component_id: 'rep-tax-op', kind: 'OPERATION', label: 'filing', text: 'has timely filed all income Tax Returns', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 40, gap_before: false, children: [] },
+      { component_id: 'rep-tax-term', kind: 'DEFINED_TERM', label: 'Tax', text: '“Tax” means any federal, state, local or foreign tax', origin: 'DEFINITION', source_span_id: 'd', start_byte: 0, end_byte: 50, resolves_to: { text: '“Tax” means any federal, state, local or foreign tax' }, children: [] },
+    ],
+  };
+  const taxDefinition = definition('def-tax', '3.09', 'Tax', 'Tax means any federal, state, local or foreign income, gross receipts or other tax, with interest and penalties');
+  const planCovers = definition('def-plan-1', '3.11', 'Company Benefit Plan', 'Company Benefit Plan covers each employee benefit plan the Company sponsors or contributes to');
+  const planExcludes = definition('def-plan-2', '3.11', 'Company Benefit Plan', 'Company Benefit Plan excludes Law-mandated plans sponsored by Governmental Entities');
+  const view = buildTableView({ facts: [earlier, taxDefinition, planCovers, planExcludes], tableShapes, legalSchema });
+  const tax = view.defined_terms.filter((entry) => entry.term.toLowerCase() === 'tax');
+  assert.equal(tax.length, 1, 'one Tax entry');
+  assert.equal(tax[0].fact_id, 'def-tax', 'the definition fact is the entry, not the component reading');
+  assert.equal(tax[0].definition, taxDefinition.headline.summary);
+  const plan = view.defined_terms.filter((entry) => entry.term === 'Company Benefit Plan');
+  assert.equal(plan.length, 1, 'one Company Benefit Plan entry');
+  assert.equal(plan[0].definition, `${planCovers.headline.summary}; ${planExcludes.headline.summary}`);
+  assert.equal(plan[0].fact_id, 'def-plan-1');
+  // The same facts in the other order give the same entries.
+  const reversed = buildTableView({ facts: [planExcludes, planCovers, taxDefinition, earlier], tableShapes, legalSchema });
+  assert.equal(reversed.defined_terms.find((entry) => entry.term === 'Company Benefit Plan').definition, `${planExcludes.headline.summary}; ${planCovers.headline.summary}`);
+  assert.equal(reversed.defined_terms.filter((entry) => entry.term.toLowerCase() === 'tax').length, 1);
+  // A repeated identical summary is not joined to itself.
+  const twice = buildTableView({ facts: [planCovers, { ...planCovers, fact_id: 'def-plan-1b', proposal_id: 'def-plan-1b' }], tableShapes, legalSchema });
+  assert.equal(twice.defined_terms.find((entry) => entry.term === 'Company Benefit Plan').definition, planCovers.headline.summary);
+});
