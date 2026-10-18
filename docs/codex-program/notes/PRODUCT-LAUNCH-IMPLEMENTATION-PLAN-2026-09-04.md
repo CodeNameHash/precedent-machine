@@ -3574,47 +3574,75 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       the route action with no wake, the launcher's lock). npm run
       test:active: 675 tests, 674 pass, the one failure the known
       Codex-client final-message test.
-      (63) 2026-10-18 (implementer), work package 9 on finding (62)'s
-      terms (no separate message received by the time of writing;
-      reconciled when it arrives). The split: longSectionGroups splits a
-      section only with min_children (3) operative children, so 9.03,
-      the definitions section with no lettered limbs, went as one call
-      in every generation. agreement-draft.js gains limblessSectionParts:
-      when a section is at least min_section_bytes and has fewer
-      operative children than min_children, its paragraphs (the residual
-      pass's paragraph spans, residualParagraphSpans, already in the
-      section's span inventory) are grouped in source order into parts
-      of at most group_bytes (3,500), each paragraph whole in exactly one
-      part (a paragraph larger than a part stands alone); two or more
-      parts split, else the section goes whole. Each part carries its
+      (63) 2026-10-18 (implementer), work package 9, begun on finding
+      (62)'s terms and reconciled to the manager's message of 08:05 UTC
+      (received after the first push; the reconciliation is the second
+      push). The split: longSectionGroups splits a section only with
+      min_children (3) operative children, so 9.03, the definitions
+      section with no lettered limbs, went as one call in every
+      generation. agreement-draft.js gains limblessSectionParts: when a
+      section is at least min_section_bytes and has fewer operative
+      children than min_children, its paragraphs (the residual pass's
+      paragraph spans, residualParagraphSpans, already in the section's
+      span inventory) are grouped in source order into parts of at most
+      group_bytes (3,500), each paragraph whole in exactly one part (a
+      paragraph larger than a part stands alone); two or more parts
+      split, else the section goes whole. Each part carries its
       paragraphs as source_closure.operative (kind RESIDUAL_PARAGRAPH,
-      the words), extraction_part.mode "paragraphs", no chapeau part, and
-      a part instruction saying the section has no limbs and each
-      paragraph (so each definition) is whole in one part; the parts
-      merge as the limb parts do, the quotes resolve against the
-      paragraph spans, and the LONG_SECTION_SPLIT issue records the mode.
-      The limb split is unchanged. The timeout: the Claude CLI client's
-      failure message now carries what the CLI had streamed before it
-      ("received before the failure: N stream events, M text blocks, K
-      characters of text, a result event / no result event";
+      the words), extraction_part.mode "paragraphs", and a part
+      instruction saying the section has no limbs, each paragraph (so
+      each definition) is whole in one part, and "definitions in other
+      parts are extracted elsewhere, cite them as context only"; part 1
+      carries covers_chapeau (its first paragraph is the opening words;
+      the limb instruction about the chapeau span is not sent) and the
+      issue records chapeau_in_part 1; the parts merge as the limb parts
+      do under the same part identity (attempt token :part-n), the
+      quotes resolve against the paragraph spans, and the
+      LONG_SECTION_SPLIT issue records the mode. The limb split and
+      LONG_SECTION_SPLIT's numbers are unchanged. The cap, independent of
+      the split: attempt 1 timed out rather than failing on the cap
+      because the cap only showed at the result event (text_blocks > 1
+      in validateResponse); after the model resumed with a second object
+      it kept generating until the 30-minute clock. The Claude CLI client
+      now watches the stream as it arrives (runProcess takes an
+      abortWhen): a second assistant text block that begins a top-level
+      answer object (a block starting `{"proposals"`, `{"resume_note"`,
+      ... after one already did; a block that merely continues the one
+      object, as the thinking-interleaved streams do, is not one) is the
+      cap, and the process is stopped at once with
+      CLAUDE_OUTPUT_TRUNCATED naming the characters of text, the text
+      blocks and the last output-token count the stream reported
+      (outputCapReason), seconds after the second object begins. Every
+      Claude CLI failure reason (the cap, a timeout, a malformed answer)
+      now ends with the section and its size from the request
+      ("[section 9.03: 61,042 bytes, 0 operative spans, part 2 of 5]"),
+      and a timeout's message carries what had arrived ("received before
+      the failure: N stream events, M text blocks, K characters of text,
+      T output tokens reported, no result event";
       summariseReceivedClaudeOutput, lenient on a half-written last
-      line), and the recorded provider failure keeps the same summary
-      beside the raw output, so an attempt history reads how far the
-      answer got. Tests: Concho 6.1 (14k bytes, two operative spans)
+      line); the recorded provider failure keeps the same summary beside
+      the raw output. Tests: Concho 6.1 (14k bytes, two operative spans)
       splits by its paragraphs, every paragraph once in order, parts
       within the usual size; a limbed section never takes the paragraph
       split; the section draft on 6.1 is built in paragraph parts with
       the synthetic model (routing, residual, one call per part, one
-      proposal per part quoting its paragraph, the mode in the issue);
-      the summary on a partial stream; a fake claude that streams two
-      events and hangs times out with the summary in the message. The
-      worker update, the 9.03 retry and the run's finalisation are the
-      manager's. npm run test:active: 675 tests, 674 pass, the one
-      failure the known Codex-client final-message test; the two suites
-      these tests live in (product-long-section-split, which takes
-      minutes on the Concho fixture, and product-claude-cli-provider)
-      are outside test:active and were run directly: 6 of 6 and 10 of
-      10 pass.
+      proposal per part quoting its paragraph, part 1's covers_chapeau,
+      the mode and chapeau_in_part in the issue); the summary on a
+      partial stream with the token count; a continuation block is not a
+      second answer; a fake claude that streams two events and hangs
+      times out with the summary in the message; a fake claude that
+      begins a second answer object fails as the cap within seconds of a
+      20-second timeout; the product model names the section and its
+      size on a cap failure and on a timeout; product-extraction-
+      recovery: on Concho 6.1's paragraph parts, a part whose proposal
+      cites words absent from the section holds that proposal alone
+      (UNKNOWN_SOURCE_COMPONENT) while the other parts' proposals stay
+      VALID. The worker update, the 9.03 retry (POST /run retry) and the
+      wake are the manager's; the run was not touched. Suites outside
+      test:active run directly: product-long-section-split and
+      product-extraction-recovery together 21 of 21, product-claude-cli-
+      provider 11 of 11. npm run test:active: 676 tests, 675 pass, the
+      one failure the known Codex-client final-message test.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
