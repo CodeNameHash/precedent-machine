@@ -1055,6 +1055,67 @@ test('a required fact type the schema gained after a section was extracted is re
   );
 });
 
+// Metsera generation 8, 2026-10-18: every section complete, finalisation
+// failed DRAFT_PROPOSAL_VALIDATION on one 6.03 recommendation-change fact.
+// The section pass had kept it VALID with a MISSING_REQUIRED_ROLE note for
+// permitted_trigger (the generation 7 rule, LEGAL_SCHEMA/V2); the
+// finalisation check still demanded every legacy role. The note is the
+// evidence finalisation accepts.
+test('a VALID fact whose missing legacy role the draft notes finalises; without the note it fails', async () => {
+  const schemaV2 = JSON.parse(fs.readFileSync(path.join(ROOT, 'contracts/product/legal-schema.v2.json'), 'utf8'));
+  const sourceDocument = sourceDocumentFixture('soft-legacy-role', [
+    'AGREEMENT AND PLAN OF MERGER',
+    'ARTICLE I',
+    'GENERAL PROVISIONS',
+    'Section 1.1 Purpose. "Company Board" means the board of directors of the Company.',
+    'ARTICLE VI',
+    'COVENANTS',
+    'Section 6.1 No Solicitation. Neither the Company Board nor any committee thereof shall approve, recommend or declare advisable any Company Takeover Proposal.',
+    'Section 6.2 Access. The Company shall afford Parent reasonable access to its properties.',
+  ].join('\n\n'));
+  const agreementStructure = buildAgreementStructure(sourceDocument);
+  const quote = 'approve, recommend or declare advisable any Company Takeover Proposal';
+  const model = {
+    async complete({ call_kind: kind, request }) {
+      const reference = request.section_reference || request.source_closure?.section_reference;
+      const routed = reference === '6.1';
+      let response;
+      if (kind === 'ROUTING') response = { families: routed ? ['NO_SHOP'] : [], disposition: routed ? 'FAMILY_ASSIGNED' : 'IMMATERIAL', rationale: 'r', deterministic_disagreements: [] };
+      else if (kind === 'RESIDUAL') response = { paragraphs: request.paragraphs.map((paragraph) => ({ source_span_id: paragraph.source_span_id, disposition: routed ? 'KNOWN_FAMILY' : 'IMMATERIAL', family_keys: routed ? ['NO_SHOP'] : [], rationale: 'c' })) };
+      else {
+        const span = request.source_closure.operative.find((candidate) => candidate.exact_text.includes(quote));
+        response = {
+          proposals: [{
+            client_ref: 'p-1', group_ref: 'g-1', family_key: 'NO_SHOP', subtype_key: 'RECOMMENDATION_CHANGE', fact_type: 'RECOMMENDATION_CHANGE',
+            statement: 'The Company Board may not approve a Company Takeover Proposal.',
+            roles: { decision_maker: 'Company Board', action: 'approve, recommend or declare advisable any Company Takeover Proposal' }, value: null,
+            evidence_quotes: [{ quote, source_span_id: span.span_id, occurrence: 0 }],
+            headline: { label: 'Change of recommendation', distinguishing_refs: ['c1'], summary: 'Company Board may not approve any Company Takeover Proposal' },
+            components: [{ ref: 'c1', kind: 'OBJECT', label: 'Approval of a Company Takeover Proposal', quote, source_span_id: span.span_id, occurrence: 0, origin: 'OWN', gap_before: false, children: [] }],
+          }],
+          groups: [{ client_ref: 'g-1', family_key: 'NO_SHOP', subtype_key: 'RECOMMENDATION_CHANGE' }],
+          links: [],
+          coverage: { NO_SHOP: 'FOUND' },
+          fact_type_coverage: { NO_SHOP: Object.fromEntries(schemaV2.families.find((family) => family.family_key === 'NO_SHOP').required_fact_types.map((factType) => [factType, factType === 'RECOMMENDATION_CHANGE' ? 'FOUND' : 'NOT_FOUND'])) },
+        };
+      }
+      return { provider_id: 'SYNTHETIC_TEST_PROVIDER', model_id: 'SYNTHETIC_LEGAL_MODEL/V1', raw_request: request, raw_response: response, response, input_tokens: 1, output_tokens: 1, cost_microusd: 1, duration_ms: 1 };
+    },
+  };
+  const draft = await buildAgreementDraft({ sourceDocument, agreementStructure, legalSchema: schemaV2, model });
+  const change = draft.proposals.find((item) => item.fact_type === 'RECOMMENDATION_CHANGE');
+  assert.ok(change && change.roles.permitted_trigger === undefined, JSON.stringify(draft.proposals.map((item) => item.fact_type)));
+  assert.equal(change.validation_status, 'VALID', JSON.stringify(draft.issues.map((issue) => `${issue.kind}:${issue.code}:${issue.message}`)));
+  const note = draft.issues.find((issue) => issue.code === 'MISSING_REQUIRED_ROLE' && issue.message === 'permitted_trigger');
+  assert.ok(note && note.kind === 'NOTE' && note.structure_node_id === change.structure_node_id, JSON.stringify(note));
+  validateAgreementDraft(draft, { sourceDocument, agreementStructure, legalSchema: schemaV2 });
+  const unnoted = { ...draft, issues: draft.issues.filter((issue) => issue !== note) };
+  assert.throws(
+    () => validateAgreementDraft(unnoted, { sourceDocument, agreementStructure, legalSchema: schemaV2 }),
+    (error) => error.code === 'DRAFT_PROPOSAL_VALIDATION' && error.message.includes(change.proposal_id),
+  );
+});
+
 test('invalid evidence is retained for review without becoming a supporting citation', async () => {
   const sourceDocument = await conchoSource();
   const agreementStructure = buildAgreementStructure({

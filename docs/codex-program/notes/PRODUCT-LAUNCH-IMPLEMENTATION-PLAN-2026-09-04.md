@@ -3349,6 +3349,27 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       output received before it. The sandbox worker updated to bea7fb9,
       9.03 retried (gen8-9.03-retry-1) and the run woken: RUNNING at 84
       of 85 with 9.03 in its routing call at 08:55.
+      (65) 2026-10-18 10:00 UTC: 9.03 completed on attempt 2 as paragraph
+      parts (85 of 85), and the run then FAILED at DRAFT_FINALIZATION
+      with DRAFT_PROPOSAL_VALIDATION on one 6.03 fact: RECOMMENDATION_CHANGE
+      for 6.03(a)(C) ("Neither the Company Board nor any committee
+      thereof shall ... approve, recommend or declare advisable ... any
+      Company Takeover Proposal"), stored VALID with roles decision_maker
+      and action and no permitted_trigger, the draft carrying its
+      MISSING_REQUIRED_ROLE note (kind NOTE, message permitted_trigger).
+      The generation 7 section rule (finding on 5.02, commit 051bc2e5)
+      keeps a fact VALID when its component tree compiles and only a
+      legacy role is missing, recording the note; the finalisation check
+      in validateAgreementDraft still demanded every required role of a
+      non-INVALID fact. Generation 7 never met it because its 5.02 facts
+      were stored INVALID before that rule shipped; generation 8 is the
+      first run finalised with a soft-legacy fact. Fix in the code, the
+      same on every run: finalisation accepts a missing required role
+      only against a recorded MISSING_REQUIRED_ROLE note of kind NOTE for
+      the same family, subtype and section; without the note the fact
+      fails as before (tests/product-phase-2.test.js, the Concho fixture
+      with permitted_trigger dropped from the recommendation-change
+      fact). Then the deploy, and the run retried at finalisation.
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
