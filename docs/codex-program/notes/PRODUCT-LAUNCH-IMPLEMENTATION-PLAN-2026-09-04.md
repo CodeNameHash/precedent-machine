@@ -3313,6 +3313,54 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       reconciliation to the manager's message.
       Generation 8 is unaffected: its stored facts take the new rows on
       the next page render, no re-run.
+      (55) 2026-10-18 (implementer), work package 6 on the manager's
+      message of 04:05 UTC. The material contracts limbs: generator
+      decision 34 gains applyMaterialContractLimbs, which follows the
+      Knowledge definition's path on the company representations table
+      (MATERIAL_CONTRACTS joins the section at low confidence; the
+      Material Contracts row's detail labels are Disclosure list,
+      Validity and enforceability, No default; the three subtypes join
+      only_subtype_keys; a new shape field limb_rows_from_subtype,
+      family -> subtype -> { row_label, row_detail }, validated in
+      validateTableV3 and against the section's families). The page
+      rule in table-view.js places a stored fact of those subtypes
+      without a readout on its sub-item and reads the Qualifiers cell
+      from the qualifier words it carries (MATERIALITY_QUALIFIER,
+      QUALIFIER, STANDARD, EXCEPTION, CONDITION components: "Material
+      Adverse Effect" is MAE_AGGREGATE, "in all material respects" the
+      partial true-in-all-material-respects code, "knowledge" the
+      knowledge-qualified code, a bare "material" MATERIAL_TO_THE_REP;
+      one code per limb, the first that matches in that order; codes
+      outside the column's vocabulary never used). fact_type_rows was
+      not used for this: the gate is family and subtype, as the message
+      asked, because a stored fact's fact_type is whatever the extractor
+      wrote and only the subtype is validated. The extractor: the reps
+      table (with its guidance naming the limbs and their row) and the
+      list table now both reach the MATERIAL_CONTRACTS family's
+      table_shapes, as the KEY_DEFINED_TERMS family's do; the list
+      table's guidance says the limbs are never its rows; the family's
+      layer rules (schema overlay, legal-schema.v2.json regenerated) say
+      the limbs are facts of their own subtypes, one per sentence, each
+      carrying its qualifier, and where their readouts go. The fallback
+      table resolution prefers a family's high-confidence section, so a
+      material contract fact with no readout and no rule still lists
+      under Material Contracts, not under the representations (asserted).
+      The parent representations table is untouched. The Defined Terms
+      dedup: collectDefinitionFact keeps the kind of each entry; a
+      definition fact replaces a component reading of its term in place
+      (fact_id, section and definition become the definition fact's) and
+      two definition facts of one term merge their summaries with "; "
+      (an identical repeat is not joined); order-independent, asserted
+      both ways. Tests: shapes (fields, guidance, parent untouched, layer
+      rule, three validation codes), table-view (the four 3.13 limbs on
+      their sub-items with MAE (aggregate), a category fact still under
+      its own section, no limb on the list table; the Tax and Company
+      Benefit Plan cases), fact-conclusions (a limb readout to the row is
+      valid; a category readout to the reps table is not). The materiality
+      word rules are the implementer's; Ben or the manager adjust the
+      codes. Generation 8's stored facts take the sub-items on the next
+      page render. npm run test:active: 662 tests, 661 pass, the one
+      failure the known Codex-client final-message test.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
