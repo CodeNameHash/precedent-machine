@@ -4708,6 +4708,25 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       "Olaplex and Apogee run on the subscription, back to back/parallel".
       (166) 2026-10-18 21:05 UTC, Ben's decisions, verbatim. On the
       publicity sub-item names: "all sounds fine" (the ten labels of
+      (167) 2026-10-18 21:15 UTC, Ben, verbatim: "do you think it is
+      worth spooling an ageng to look at the cost of extractions/number
+      of runs because it seems SO high ... I'm thinking like a 10-100x
+      reduciton in cost"; then "I agree but I'd say get AS much cost
+      reduction and increase in speed as possible." Applied: a fifth
+      implementer, E (findings from (180)), on work package E1: the
+      cost and time ledger from product_model_calls for NCS generation
+      5 and Metsera generation 8, reconciled to the console's billed
+      usage; the levers ranked by measured dollars and minutes (quotes
+      as byte offsets, the cache, a cheaper model for routing and
+      residual calls, the Batch API, max_tokens and part sizing,
+      concurrency across sections and the pool, the idle gaps), proven
+      on three NCS sections against the facts on the bytes before any
+      deal; a replay harness that finalises a run from its stored
+      responses with no model call (the "number of runs" answer); a
+      cost and time gate per run. The manager's prior estimate, for
+      the record: 10x is plausible from those levers; 100x is not while
+      a frontier model reads every byte, and the finding must say what
+      the next 10x would cost in facts.
       (94) (c) are final). On the registration-rights sub-items: "are
       these from a reg rights agreement? I wouldn't go into anywhere near
       this depth in this product" (they are NCS 5.17, a registration
