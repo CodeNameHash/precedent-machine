@@ -4375,9 +4375,9 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       as a product, sum or ratio of defined terms carries no canonical
       value and a note, and the fact stays VALID with its components.
       (82) 2026-10-18 17:20 to 17:39 UTC (implementer), work package 14
-      on finding (81)'s rule, begun on its terms before the manager's
-      message (to be reconciled when it arrives). No run submitted; no
-      live API call. Evidence first, from the preview branch's issues for
+      on finding (81)'s rule, begun on its terms at 17:20 and reconciled
+      at 17:41 with the manager's message of 17:25 (queued 17:30). No run
+      submitted; no live API call. Evidence first, from the preview branch's issues for
       run 51577c57: three facts held on INVALID_FACT_COMPONENTS with "no
       parsable value" and "AMOUNT needs a canonical value", their words
       "no shares of Company Preferred Stock" (3.2, CAPITALISATION/
@@ -4398,7 +4398,7 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       acronyms) and state no number is a formula (`isFormulaValue`): its
       value is { canonical: null, unit: null, form: 'FORMULA' }, the
       validator accepts it, `buildComponentTree` lists it and
-      compileProposalComponents reports one COMPONENT_VALUE_FORMULA note
+      compileProposalComponents reports one VALUE_IS_FORMULA note
       per proposal (client_ref, path, component id, words); the fact
       stays VALID with its components. A formula with a number in it
       ("the product of 0.1371 and ...") is parsed as before, not
@@ -4416,10 +4416,37 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       through buildComponentTree and the validator, the formula
       boundary), tests/product-fact-conclusions.test.js (the parser),
       tests/product-fact-components-extraction.test.js (the two facts
-      through compileExtraction: VALID, the value 0, the note). npm run
-      test:active: 696 of 697, the one failure the known Codex-client
-      final-message test. Commits: the code and tests commit and this
-      plan and guide commit.
+      through compileExtraction: VALID, the value 0, the note). The
+      manager's message, read after the first commit (1126129): the note
+      is named VALUE_IS_FORMULA as it asks (renamed from
+      COMPONENT_VALUE_FORMULA in code, tests, contract and guide); every
+      other value rule is unchanged, and prose that is neither a number,
+      a count in words nor a formula ("a fee") still holds the fact, as
+      the tests show. "The capitalization row shows 0": checked through
+      buildTableView, the Preferred Stock row's Issued cell reads "0"
+      citing the "no shares" words, with and without a readout
+      (tests/product-table-view.test.js). "What the NCS 2.1 rows read
+      after the change, from the stored facts": the held cash leg's
+      components are not stored, so the check reconstructs it from the
+      words the issue kept (the formula AMOUNT) and the package fact's
+      mixed-election words, over the 33 stored VALID facts of 2.1. First
+      result: the leg backed the Mixed election row and its Cash Exchange
+      Ratio (0.1371, a count) was taken as a second exchange ratio
+      beside 0.2392, which is wrong: it is a factor of the cash formula.
+      Rule added to fillElectionOptions: a value term named only inside a
+      formula component is a factor of that formula, never the option's
+      ratio or cash; its number is listed under Value terms. The rows now
+      read: Stock election [Share Consideration]: Exchange ratio 0.5537.
+      Mixed election [Mixed Share Consideration]: Exchange ratio 0.2392;
+      Value terms "Cash Consideration means the Cash Exchange Ratio
+      multiplied by the Parent Closing Price", "Cash Exchange Ratio:
+      0.1371"; Cash per share stays hidden, since no option states a
+      dollar figure: the formula fills no cash cell, as the manager's
+      "may fill ... through its words" is answered by the Value terms
+      column. Tests for both in tests/product-table-view.test.js. npm run
+      test:active: 698 of 699, the one failure the known Codex-client
+      final-message test. Commits 1126129, 28c9417 and the
+      reconciliation commit.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).

@@ -1807,3 +1807,60 @@ test('the combined definition takes the term matching term_words, a DEFINED_TERM
   const noConsiderationTerm = componentsTable([share, pack([component('pack-eligible', 'DEFINED_TERM', '(such shares, the “Eligible Shares”)', 0)])]);
   assert.equal(noConsiderationTerm.combined_definition, undefined, 'no consideration term, no combined definition');
 });
+
+// Work package 14 (manager, 2026-10-18 17:25 UTC): "the cash leg's fact,
+// VALID now, may fill the Mixed election row's cash through its words:
+// check and record what the NCS 2.1 rows read after the change". The cash
+// leg carries the Cash Consideration formula as an AMOUNT with no number;
+// it backs the Mixed election row, fills no cash figure, and its Cash
+// Exchange Ratio is a factor of the formula, never the option's exchange
+// ratio.
+test('the election options: a formula amount backs its option, fills no cell, and its factors are value terms, not the ratio', () => {
+  const facts = ncsElectionFacts();
+  const formula = '“Cash Consideration” means cash in an amount equal to the product of (x) the Cash Exchange Ratio, multiplied by (y) the Parent Closing Price.';
+  const component = (id, kind, text, start, extra = {}) => ({ component_id: id, kind, label: id, text, origin: 'OWN', source_span_id: 's', start_byte: start, end_byte: start + text.length, gap_before: false, children: [], ...extra });
+  const cashLeg = {
+    fact_id: 'cash-leg', proposal_id: 'cash-leg', family_key: 'CONSIDERATION', subtype_key: 'CASH_COMPONENT', fact_type: 'PER_SHARE_CASH_CONSIDERATION', section_reference: '2.1', structure_node_id: 'n-2-1', validation_status: 'VALID',
+    headline: { label: 'Mixed election cash', summary: 'Each mixed-election share receives the Cash Consideration', distinguishing_component_ids: ['cash-leg-amt'] },
+    components: [
+      component('cash-leg-cond', 'CONDITION', 'with respect to which an election to receive mixed consideration has been made and not validly revoked pursuant to Section 2.5', 1000),
+      component('cash-leg-obj', 'OBJECT', '(A) the Cash Consideration', 1120),
+      component('cash-leg-amt', 'AMOUNT', formula, 2200, { value: { canonical: null, unit: null, form: 'FORMULA' } }),
+    ],
+  };
+  const view = buildTableView({ facts: [...Object.values(facts), cashLeg], tableShapes, legalSchema });
+  const options = view.sections.flatMap((section) => section.tables).find((table) => table.table_key === 'consideration-election-options');
+  const mixedRow = options.rows.find((row) => row.subject === 'Mixed election');
+  const cell = (row, columnId) => row.cells.find((candidate) => candidate.column_id === columnId);
+  assert.deepEqual(mixedRow.backing_facts.map((entry) => entry.fact_id), ['mixed', 'cash-leg'], 'the cash leg backs the mixed election');
+  assert.equal(cell(mixedRow, 'exchangeRatio').label, '0.2392', 'the Cash Exchange Ratio is not a second exchange ratio');
+  assert.equal(cell(mixedRow, 'exchangeRatio').values, undefined);
+  assert.deepEqual(options.hidden_columns, [{ column_id: 'cashPerShare', header: 'Cash per share', reason: 'empty' }], 'a formula states no cash figure');
+  assert.deepEqual(cell(mixedRow, 'valueTerms').values.map((value) => value.label), [
+    'Cash Consideration means cash in an amount equal to the product of (x) the Cash Exchange Ratio, multiplied by (y) the Parent Closing Price',
+    'Cash Exchange Ratio: 0.1371',
+  ]);
+});
+
+// Work package 14 (plan finding (81)): "the capitalization row shows 0, as
+// it shows a stated number" (NCS 3.2, "no shares of Company Preferred Stock
+// were issued and outstanding").
+test('the capitalization table shows a count of none as 0, with and without a readout', () => {
+  const component = (id, kind, text, start, extra = {}) => ({ component_id: id, kind, label: id, text, origin: 'OWN', source_span_id: 's', start_byte: start, end_byte: start + text.length, gap_before: false, children: [], ...extra });
+  const base = {
+    fact_id: 'pref', proposal_id: 'pref', family_key: 'CAPITALISATION', subtype_key: 'ISSUED_AND_OUTSTANDING', fact_type: 'CAPITALISATION_ISSUED_AND_OUTSTANDING', section_reference: '3.2', structure_node_id: 'n-3-2', validation_status: 'VALID',
+    headline: { label: 'Preferred stock outstanding', summary: 'No shares of Company Preferred Stock are issued and outstanding', distinguishing_component_ids: ['pref-amt'] },
+    components: [component('pref-amt', 'AMOUNT', 'no shares of Company Preferred Stock', 0, { value: { canonical: 0, unit: 'COUNT' } }), component('pref-op', 'OPERATION', 'were issued and outstanding', 40)],
+  };
+  const withReadout = { ...base, conclusions: { table_key: 'capitalization-table', row_label: 'Preferred Stock', cells: [{ column_id: 'issued', value: { canonical: 0, unit: 'COUNT' }, component_ids: ['pref-amt'] }] } };
+  for (const fact of [base, withReadout]) {
+    const view = buildTableView({ facts: [fact], tableShapes, legalSchema });
+    const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'capitalization-table');
+    const row = table.rows.find((candidate) => candidate.subject === 'Preferred Stock');
+    const issued = row.cells.find((candidate) => candidate.column_id === 'issued');
+    assert.equal(issued.kind, 'value');
+    assert.equal(issued.label, '0');
+    assert.deepEqual(issued.value, { canonical: 0, unit: 'COUNT' });
+    assert.deepEqual(issued.component_ids, ['pref-amt']);
+  }
+});

@@ -723,7 +723,7 @@ test('a count of none and a formula amount compile as VALID facts; the formula i
   assert.equal(none.proposals.length, 1);
   assert.equal(none.proposals[0].validation_status, 'VALID', none.issues.map((issue) => `${issue.code}: ${issue.message}`).join('\n'));
   assert.deepEqual(none.proposals[0].components[0].value, { canonical: 0, unit: 'COUNT' });
-  assert.equal(none.issues.some((issue) => issue.code === 'COMPONENT_VALUE_FORMULA'), false);
+  assert.equal(none.issues.some((issue) => issue.code === 'VALUE_IS_FORMULA'), false);
 
   const formulaQuote = '“Cash Consideration” means cash in an amount equal to the product of (x) the Cash Exchange Ratio, multiplied by (y) the Parent Closing Price.';
   const formula = compileExtraction({
@@ -737,7 +737,7 @@ test('a count of none and a formula amount compile as VALID facts; the formula i
   assert.equal(formula.proposals.length, 1);
   assert.equal(formula.proposals[0].validation_status, 'VALID', formula.issues.map((issue) => `${issue.code}: ${issue.message}`).join('\n'));
   assert.deepEqual(formula.proposals[0].components[0].value, { canonical: null, unit: null, form: 'FORMULA' });
-  const note = formula.issues.find((issue) => issue.code === 'COMPONENT_VALUE_FORMULA');
+  const note = formula.issues.find((issue) => issue.code === 'VALUE_IS_FORMULA');
   assert.ok(note && note.kind === 'NOTE', 'the formula is a note, not a hold');
   const parsed = JSON.parse(note.message);
   assert.equal(parsed.client_ref, 'p1');
