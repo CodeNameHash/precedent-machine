@@ -18,6 +18,18 @@ export function shouldPollProductRun(value) {
     && value.stage !== 'DOCUMENT_IDENTITY_REVIEW');
 }
 
+// A run-route failure as the panel says it (plan finding (140)): the pool
+// of worker sandboxes is held by other live runs, so the analysis waits for
+// a free one; every other error is shown as the route gave it.
+export function describeProductRunError(value, fallback = 'Analysis could not continue') {
+  if (value?.error === 'PRODUCT_SANDBOX_POOL_BUSY') {
+    const holders = (Array.isArray(value.sandboxes) ? value.sandboxes : []).filter((entry) => entry && entry.run_id)
+      .map((entry) => `${entry.sandbox_name} (run ${String(entry.run_id).slice(0, 8)}, ${entry.run_status || 'live'})`);
+    return `Every worker sandbox is busy${holders.length ? `: ${holders.join('; ')}` : ''}. The submission is saved; press Continue analysis when one finishes.`;
+  }
+  return value?.error || fallback;
+}
+
 export function canAdvanceProductRun(value) {
   return Boolean(productRunId(value)
     && ['QUEUED', 'RUNNING'].includes(value.status)
@@ -131,7 +143,7 @@ export default function ProductIntakePanel() {
     try {
       const response = await fetch(`/api/product/analysis/${runId}/run`, { method: 'POST', headers: csrfHeaders, body: JSON.stringify(retry ? { retry: true, idempotency_key: crypto.randomUUID() } : {}) });
       const value = await response.json();
-      if (!response.ok) throw new Error(value.error || 'Analysis could not continue');
+      if (!response.ok) throw new Error(describeProductRunError(value));
       const nextRun = await acceptRun(value, runId);
       if (nextRun.status !== 'READY' && value.execution_mode !== 'HOSTED' && canAdvanceProductRun(nextRun)
         && nextRun.progress?.failed === 0 && nextRun.progress?.completed < nextRun.progress?.total) {
@@ -205,6 +217,7 @@ export default function ProductIntakePanel() {
       {run ? (
         <div className="mt-4 rounded-lg bg-paper p-3 text-sm text-inkMid" data-testid="product-run-status">
           <div className="flex flex-wrap justify-between gap-2"><strong>{run.status}</strong><span>{run.stage}</span></div>
+          {run.sandbox?.sandbox_name && run.sandbox.live !== false && run.status !== 'READY' ? <p className="mt-1 text-xs text-inkLight" data-testid="product-run-sandbox">Worker sandbox: {run.sandbox.sandbox_name}</p> : null}
           {progress ? <p className="mt-1">{progress.completed}/{progress.total} sections, {progress.failed} failed, ${(Number(progress.cost_microusd || 0) / 1000000).toFixed(4)} model cost</p> : null}
           {draftAssemblyFailed ? <p className="mt-2">{allSectionsSaved ? 'All section results are saved, but assembling the review draft failed.' : 'The review draft could not be assembled. Saved section results are retained.'}</p> : null}
           {run.stage === 'DOCUMENT_IDENTITY_REVIEW' ? <div className="mt-2 rounded border border-amber-200 bg-amber-50 p-3"><p className="font-semibold text-amber-900">Confirm document identity</p><dl className="mt-2 grid gap-1 text-xs"><div><dt className="inline font-semibold">Parties: </dt><dd className="inline">{displayIdentityParties(run.source_identity?.parties)}</dd></div><div><dt className="inline font-semibold">Filing: </dt><dd className="inline">{run.source_identity?.filing_accession || 'Unknown'} · {run.source_identity?.exhibit_filename || 'Unknown exhibit'}</dd></div><div><dt className="inline font-semibold">Agreement date: </dt><dd className="inline">{run.source_identity?.agreement_date || 'Not identified'}</dd></div></dl>{run.identity_review?.reasons?.length ? <ul className="mt-2 list-disc pl-4 text-xs text-amber-800">{run.identity_review.reasons.map((reason) => <li key={typeof reason === 'string' ? reason : JSON.stringify(reason)}>{typeof reason === 'string' ? reason : reason.message || reason.code || JSON.stringify(reason)}</li>)}</ul> : null}<button type="button" onClick={confirmIdentity} disabled={busy} className="mt-2 rounded border border-amber-700 px-3 py-1 font-semibold text-amber-900">Confirm this agreement</button></div> : null}

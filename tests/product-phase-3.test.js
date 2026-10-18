@@ -949,6 +949,9 @@ test('Preview run boundary starts one detached Sandbox worker and returns durabl
     databaseUrl: 'https://ecrtoofsyxozazkvsvcl.supabase.co',
     serviceRoleKey: 'service-role-secret-value',
     providerId: CODEX_PROVIDER_ID,
+    sandboxName: 'pm-codex-preview-worker',
   });
-  assert.deepEqual(response.body, { ...progress, execution_mode: 'HOSTED', wake_command_id: 'command-1' });
+  // A store without the pool's assignment (plan finding (140)) places the
+  // run on the first sandbox and the body says so.
+  assert.deepEqual(response.body, { ...progress, execution_mode: 'HOSTED', wake_command_id: 'command-1', sandbox: { sandbox_name: 'pm-codex-preview-worker', state: 'UNPOOLED', sandboxes: [] } });
 });

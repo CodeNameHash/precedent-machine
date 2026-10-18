@@ -195,6 +195,23 @@ test('draft-level schema drift issues are one quiet line each under the title, i
   assert.deepEqual(previewFactsFromWorkspace(workspace()).schema_drift, []);
 });
 
+// Plan finding (140): the worker sandbox the run is on, beside the provider,
+// while the run is in progress; nothing once it is READY or before a wake.
+test('the header names the run\'s sandbox beside the provider while the run is in progress', () => {
+  const running = workspace();
+  running.progress = { ...running.progress, status: 'RUNNING', provider: 'ANTHROPIC_CLAUDE_CLI_SUBSCRIPTION', sandbox: 'pm-codex-preview-worker-2' };
+  const html = renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: running, runId: 'run-1' }));
+  assert.match(html, /data-testid="preview-provider">Claude subscription</);
+  assert.match(html, /data-testid="preview-sandbox">on pm-codex-preview-worker-2</);
+  assert.ok(html.indexOf('preview-provider') < html.indexOf('preview-sandbox'));
+  const ready = workspace();
+  ready.progress = { ...ready.progress, status: 'READY', sandbox: 'pm-codex-preview-worker-2' };
+  assert.doesNotMatch(renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: ready, runId: 'run-1' })), /preview-sandbox/);
+  const unplaced = workspace();
+  unplaced.progress = { ...unplaced.progress, status: 'RUNNING', sandbox: null };
+  assert.doesNotMatch(renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: unplaced, runId: 'run-1' })), /preview-sandbox/);
+});
+
 // Work package 3: the run page names the provider that paid, beside the
 // state chip, only when the run names one.
 test('the header names the run\'s provider beside the state chip', () => {

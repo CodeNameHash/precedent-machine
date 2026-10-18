@@ -38,6 +38,12 @@ async function call(method, path, body) {
   const text = await response.text();
   let value;
   try { value = JSON.parse(text); } catch { value = { raw: text }; }
+  // The pool of worker sandboxes is held by other live runs (plan finding
+  // (140)): the run is saved; this wake is repeated when one is free.
+  if (response.status === 503 && value?.error === 'PRODUCT_SANDBOX_POOL_BUSY') {
+    const holders = (value.sandboxes || []).map((entry) => `${entry.sandbox_name}: ${entry.run_id ? `run ${entry.run_id} ${entry.run_status || ''}`.trim() : 'free'}`).join('; ');
+    throw new Error(`${method} ${path} -> 503 PRODUCT_SANDBOX_POOL_BUSY (${holders}); wake the run again when a sandbox is free: POST ${path} {}`);
+  }
   if (!response.ok) throw new Error(`${method} ${path} -> ${response.status}: ${JSON.stringify(value)}`);
   return value;
 }
@@ -58,7 +64,7 @@ async function call(method, path, body) {
   });
   console.log(`submitted run ${submitted.run_id} (generation ${submitted.generation}, ${submitted.status})`);
   const advanced = await call('POST', `/api/product/analysis/${submitted.run_id}/run`, {});
-  console.log(`woke worker: execution ${advanced.execution_mode || 'LOCAL'}${advanced.wake_command_id ? `, command ${advanced.wake_command_id}` : ''}`);
+  console.log(`woke worker: execution ${advanced.execution_mode || 'LOCAL'}${advanced.wake_command_id ? `, command ${advanced.wake_command_id}` : ''}${advanced.sandbox?.sandbox_name ? `, sandbox ${advanced.sandbox.sandbox_name} (${advanced.sandbox.state})` : ''}`);
   console.log(`status:   ${baseUrl.replace(/\/$/, '')}/review?productRun=${submitted.run_id}`);
   console.log(`tables:   ${baseUrl.replace(/\/$/, '')}/review/product/${submitted.run_id}/provisions`);
 })().catch((error) => {

@@ -271,6 +271,8 @@ test('the run route wakes the sandbox for an API run with the deployment\'s key'
   assert.deepEqual(wakeInput, {
     runId, databaseUrl: 'https://ecrtoofsyxozazkvsvcl.supabase.co', serviceRoleKey: 'service-role-secret-value',
     providerId: ANTHROPIC_API_PROVIDER_ID, anthropicApiKey: 'sk-ant-'.repeat(6), anthropicWorkspaceId: 'wrkspc_01WORKSPACE',
+    // A store without the pool (this fake) places the run on the first sandbox.
+    sandboxName: 'pm-codex-preview-worker',
   });
   assert.equal(response.body.execution_mode, 'HOSTED');
 });

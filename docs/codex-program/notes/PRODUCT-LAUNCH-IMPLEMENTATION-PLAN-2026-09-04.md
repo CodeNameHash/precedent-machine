@@ -4563,6 +4563,125 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       with no fact, held for a held one; election forms fold when the
       deal has no election; value terms linked through the definitions.
       NCS at 19:00 UTC: RUNNING again from 65 of 104 on the 128,000 cap.
+      (140) 2026-10-18 (implementer D), parallel hosted workers, on the
+      manager's brief of 19:06 UTC. No run submitted, woken or touched;
+      nothing created on Vercel; no live sandbox call; the migration is
+      in the repository, not applied. Read first: the sandbox runs one
+      agreement at a time because the wake names one sandbox
+      (SANDBOX_NAME in lib/product/sandbox-wake.js) and the launcher's
+      flock serialises workers on it. Built, in code, tested on fakes
+      and on inactive Postgres: (1) lib/product/sandbox-pool.js: the
+      pool from one constant (SANDBOX_POOL_SIZE = 2: pm-codex-preview-
+      worker, pm-codex-preview-worker-2; sandboxPoolNames), the rule as
+      a pure decision (decideSandboxAssignment: a run keeps the sandbox
+      it owns; a run without one takes the first free name; an owner
+      that is READY or FAILED is released in the same decision; a full
+      pool is BUSY; a READY or FAILED run takes none), and
+      assignSandboxForRun, which throws PRODUCT_SANDBOX_POOL_BUSY naming
+      the holders. (2) Migration 20261018200000_product_run_sandboxes:
+      table product_run_sandboxes (run_id, sandbox_name, assigned_at,
+      released_at, release_reason; one live row per sandbox name by a
+      partial unique index), product_sandbox_assign(run, pool) as the
+      atomic form of the decision (one advisory lock per decision, so
+      two wakes for two new runs never take the same free sandbox),
+      product_sandbox_release(run, reason); service_role only, as the
+      Phase 3 functions. It backfills the most recently updated RUNNING
+      or PARTIAL run onto pm-codex-preview-worker (one lock, one worker:
+      at most one run is live there), so the run on it when the
+      migration is applied, NCS generation 5 if still running, keeps its
+      sandbox, its keepalive and its wakes; any other unfinished run has
+      no worker and is placed at its next wake. (3) The run route
+      (lib/product/run-handler.js): after the retry and the model-config
+      check, the run's sandbox is taken (KEPT or ASSIGNED) and the wake
+      goes there (wakeSandboxProductRun and keepSandboxAlive take
+      sandboxName; the gone error names its sandbox and the create
+      command with --name); BUSY answers 503 { error:
+      PRODUCT_SANDBOX_POOL_BUSY, sandboxes } with Retry-After 300 and
+      launches nothing (the run keeps its state; the intake panel says
+      "Every worker sandbox is busy: <name> (run ..., RUNNING); ... press
+      Continue analysis when one finishes", and start-generation.js
+      prints the holders and the wake to repeat); a READY or FAILED run
+      gets 202 with wake_command_id null and state RUN_ENDED instead of
+      a worker that exits at once; a gone sandbox releases the run
+      (reason SANDBOX_GONE) so its next wake is placed again (the pool
+      cannot know a sandbox is gone before a wake tries it, so the next
+      wake takes the first free name again until the operator recreates
+      it); { keepalive: true } resumes the run's own sandbox, and
+      answers { state: NOT_ASSIGNED } in the same 200 for a run without
+      a live assignment (never woken on the pool, or finished), so the
+      manager's monitor pattern of finding (60) is unchanged in form;
+      { release_sandbox: true } ends a run's ownership by hand (reason
+      OPERATOR:<actor>) for a PARTIAL run nobody will wake again. The
+      202 body carries sandbox { sandbox_name, state, sandboxes }. The
+      launcher (its flock is per sandbox because each sandbox has its
+      own filesystem), the worker and the lease recovery are untouched;
+      the launcher test holds the flock line. (4) Reads: the analysis
+      GET carries sandbox { sandbox_name, assigned_at, released_at,
+      release_reason, live }; the preview's progress.sandbox names the
+      live one; the provisions page shows "on <name>" beside the
+      provider while the run is in progress; the intake panel shows
+      "Worker sandbox: <name>" under the status. A read before the
+      migration is applied reads no placement and warns once, so the
+      status poll never breaks on it; the wake fails loudly on the
+      missing function. (5) Scripts: create-sandbox-worker.js and
+      update-sandbox-worker.js take --name <sandbox> (a name outside the
+      pool is refused) or walk the pool; the create leaves an existing
+      sandbox to the update; the update checks the launcher's lock
+      inside each sandbox (flock -n) and skips one whose worker is live
+      (an npm ci under a live worker removes modules it may still load)
+      unless --force. Both provision every sandbox the same way
+      (finding (49)'s steps). Repository evidence on the manual step the
+      brief expected ("the Claude CLI login"): there is none per
+      sandbox. The Claude CLI provider installs @anthropic-ai/claude-code
+      with no login in the sandbox; the subscription token is
+      PRODUCT_CLAUDE_CODE_OAUTH_TOKEN on the deployment, passed to the
+      sandbox on every wake as CLAUDE_CODE_OAUTH_TOKEN (sandbox-wake.js,
+      launch.sh, create-sandbox-worker.js's PROVIDER_SETUP), so one
+      token serves both sandboxes; Ben repeats `claude setup-token` only
+      if that token has expired, once, and updates the deployment
+      variable. The Codex provider's device login is per sandbox and the
+      create script runs it for each name it creates. Two sandboxes on
+      one subscription draw on the same five-hour usage window twice as
+      fast; a limit stops a worker as finding (73) says and a plain
+      wake resumes the run on its own sandbox. Not decided here, for
+      the manager: ownership "until READY or FAILED" means a PARTIAL run
+      stopped on a usage limit holds its sandbox while nobody wakes it;
+      the release action and the BUSY answer's holders cover that by
+      hand; a rule that frees a sandbox whose owner has had no section
+      commit for some hours would be the code answer. Tests:
+      tests/product-sandbox-pool.test.js (names from the constant; the
+      decision in every state; ownership across wakes and the BUSY
+      error; the route placing two runs, the third's 503 with holders
+      and Retry-After, KEPT on a second wake, the READY run launching
+      nothing; a gone sandbox released and re-placed; the keepalive on
+      the run's sandbox, NOT_ASSIGNED and the operator release; the wake
+      and the keepalive resuming the named sandbox and refusing a name
+      outside the pool; the reads and the page; the panel's words and
+      record), tests/product-sandbox-worker-scripts.test.js (the two
+      scripts' arguments, the pool walk with a fake sandbox API, the
+      busy skip, --force, the gone message; no credential in any
+      output), tests/product-sandbox-pool-db.test.js on local Postgres
+      16 (the backfill; the function against the decision over the rows
+      before each call in every state; the release; the index; bad
+      input; a three-name pool; the grants; the rollback), added to the
+      CI database step. npm run test:active: 716 tests, 715 pass, the one failure the known Codex-client final-message test; `npm run build` compiles; the database suite ran here on Postgres 16 (4 of 4).
+      Commands for the manager, in this order, once NCS is finished (or
+      the migration first while it runs: the backfill then records NCS
+      on the first sandbox): (a) apply
+      supabase/migrations/20261018200000_product_run_sandboxes.sql to
+      the preview branch (ecrtoofsyxozazkvsvcl) before the deployment
+      carries this code, and check `select run_id, sandbox_name,
+      released_at from product_run_sandboxes;`; (b) merge and deploy;
+      (c) from a shell with VERCEL_TOKEN, VERCEL_TEAM_ID and
+      VERCEL_PROJECT_ID: `node scripts/product/create-sandbox-worker.js
+      --provider ANTHROPIC_CLAUDE_CLI_SUBSCRIPTION --name
+      pm-codex-preview-worker-2`; (d) `node
+      scripts/product/update-sandbox-worker.js` to bring the first
+      sandbox to the tip (skipped while a worker holds its lock); (e)
+      start Olaplex and Apogee with start-generation.js as before, one
+      after the other: the first takes pm-codex-preview-worker, the
+      second pm-codex-preview-worker-2, and each monitor's { keepalive:
+      true } extends that run's sandbox.
 
       (84) 2026-10-18 18:05 to 18:20 UTC (implementer), work package 15
       on finding (83)'s terms ("the documented maximum output cap on the
