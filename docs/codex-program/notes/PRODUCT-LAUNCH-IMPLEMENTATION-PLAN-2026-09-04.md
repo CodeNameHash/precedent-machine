@@ -4758,6 +4758,35 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       product_phase1_resolve_identity), which needs the identity
       resolution before any wake; Avadel went straight to
       SECTION_ANALYSIS.
+      (171) 2026-10-18 22:15 UTC: implementer B's (106) and implementer
+      C's (128) merged (head 81203646; the active suite in the next
+      finding). Read: the move script applies the 42 migrations to a
+      named target in one transaction against Supabase's own ledger,
+      carries one run's 36 tables in key order idempotently, and proves
+      the three reads equal; its dry run on the preview branch shows
+      each run's analysis and no release row, because no review is
+      published yet. Manager's answer to B's question: the move runs
+      after Ben's first review is published and activated on the
+      preview branch, so it carries a release and not only analyses;
+      Ben reviews on the preview deployment until then (his (166) "you
+      can move over whener you like" stands as the authority for that
+      apply, with --confirm-target). C's tender-offer and stock-deal
+      rows accepted (eleven of 24 tender-offer provisions and five of
+      21 stock-deal provisions had no row; now every one is reachable
+      by row_label); what waits on Ben, put to him with this check-in:
+      an Offer step with five subtypes, a MINIMUM_CONDITION subtype, an
+      OFFER_FAILURE termination subtype, three LEGAL-RULES lines, the
+      ratio's form and adjustment as grid columns, a combined-company
+      governance table, Parent's no-shop, a Dividends table. Next:
+      work package B4 to implementer B, Verve's intake failure
+      (STRUCTURE_PARENT_SPAN on span 4b477bbe at buildAgreementStructure,
+      twice, finding (170)), a structure defect to fix in code with the
+      exhibit's own bytes pinned; work package C5 to implementer C, the
+      DOCUMENT_IDENTITY_REVIEW gate the Crinetics, Centessa and Akero
+      intakes stopped at: the recorded reasons, the resolution the
+      Phase 1 function wants, and whether the page shows them, for the
+      manager to resolve with Ben. Olaplex and Apogee generation 2 at
+      22:12 UTC: 24 of 97 and 21 of 85, no failures.
       (95)'s rule reached the deployment (its deploy was created at
       20:50:39 UTC, the read fell between READY at 20:48 and that);
       on the real rows the move happens, now pinned with the stored
