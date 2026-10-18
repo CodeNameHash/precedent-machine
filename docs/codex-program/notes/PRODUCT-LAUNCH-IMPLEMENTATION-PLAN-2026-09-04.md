@@ -4706,6 +4706,28 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       environment's default provider: runs 686c3bf2 (1974640) and
       f1e2493f (1786205), QUEUED, woken next on the pool, per Ben's
       "Olaplex and Apogee run on the subscription, back to back/parallel".
+      (166) 2026-10-18 21:05 UTC, Ben's decisions, verbatim. On the
+      publicity sub-item names: "all sounds fine" (the ten labels of
+      (94) (c) are final). On the registration-rights sub-items: "are
+      these from a reg rights agreement? I wouldn't go into anywhere near
+      this depth in this product" (they are NCS 5.17, a registration
+      covenant inside the merger agreement, not a separate agreement;
+      applied: registration rights is one row at the bottom of the
+      Consideration section, present or absent with the as-drafted
+      summary and its facts behind it, no sub-items; the seven labels of
+      (95) are withdrawn). On the ten unusual provisions: "not a fact
+      type today". On the production project: "I'm not sure what you
+      mean but I don't care boaut the old site, you can move over whener
+      you like" (applied: the move of the product schema and the
+      reviewed rows to the production project is approved in principle;
+      implementer B prepares it as a script with a dry run and a report,
+      the manager runs it after reading the dry run; the released Review
+      still publishes only a review every item of which Ben decided).
+      On the next deals: "btw let's do major biopharma deals as the
+      basi sfor the build out of next searches, starting > $1bn"
+      (applied: after Olaplex and Apogee, the intakes are public-target
+      biopharma merger agreements over $1bn; implementer C compiles the
+      candidate list with each Exhibit 2.1 URL for Ben to order).
       (94) (a) and (b) are finalisation rules: NCS generation 5's worker
       runs the code of its wake (18:55 UTC), so 4.7's three inherited
       quotes and 5.11's reference premium stay held in that run and are
