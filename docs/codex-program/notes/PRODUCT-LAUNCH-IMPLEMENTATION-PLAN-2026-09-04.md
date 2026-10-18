@@ -5944,6 +5944,48 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       before. docs/core/CODEBASE-GUIDE.md updated. npm run test:active:
       the known failure only (the count in the commit). Nothing
       submitted, woken or retried.
+      (99) 2026-10-18 22:40 UTC (implementer A), the manager's addenda
+      of 21:10 and 21:05 to work package 19 (delivered 21:22 and 21:24).
+      (f) Done before the addenda arrived, in (96) and fb98374: the
+      registration rights are one row of their own small table, last in
+      the Consideration section, present or absent, the facts behind it,
+      no sub-items; the words rule that recognises the facts stays on
+      the general covenants table and sends them there; the general
+      covenants table keeps the three Nasdaq notices; the nine
+      CAPITALISATION facts stay on the capitalization table (question
+      (g) of (93) with Ben). Ben's words are in the code comments: "reg
+      rights I think goes with consideration (but at bottom)"; "are
+      these from a reg rights agreement? I wouldn't go into anywhere
+      near this depth in this product"; on the publicity labels, "all
+      sounds fine" (now in the PUBLICITY comment of
+      scripts/product/table-shapes-decision-34.js; the ten are final);
+      on the unusual provisions, "not a fact type today" (nothing
+      built). (g) The manager's diagnosis was right and (97)'s was
+      incomplete. The stale deploy was real, but the shape the manager
+      saw ("General notification" carrying 29 facts with (95)'s sub-items
+      and no "Registration rights" row) is what (95)'s code did on the
+      real rows even when deployed: the general covenants table names its
+      rows from the fact's subtype (row_from_subtype, subtype_rows), the
+      stored 5.17 facts are GENERAL_NOTIFICATION, so a fact the words
+      rule had moved to "Registration rights" on that same table was
+      still named "General notification" and the rule's row became its
+      sub-item, then the sub-item rule read the row_label and named the
+      details; the fixture's facts carried a made-up subtype
+      (OTHER_COVENANT, not in the schema) the subtype naming never
+      touched, so the test moved where the rows did not. Fixed in
+      lib/product/table-view.js: a fact a words_rows rule moved
+      (page_rule 'words_rows') keeps the rule's row over the subtype's
+      name, on the same table as across tables; pinned with a real
+      subtype on the general covenants table under a synthetic same-table
+      rule, and with the stored 5.17 rows (real subtypes, real fields:
+      tests/fixtures/product/ncs-generation-5-5-17-general-covenants.json)
+      on the registration table, where the move was already right since
+      (96) because the registration table has no subtype naming. Counts
+      from the real rows, through buildTableView with the generated
+      contract: Registration rights line 29 facts, no sub-rows; General
+      notification 2 (the Nasdaq deficiency notice and the delisting
+      event), Litigation notification 1 (Nasdaq or SEC proceedings);
+      nothing without a readout. Nothing submitted, woken or retried.
       (120) 2026-10-18 19:10 to 19:45 UTC (implementer C), Q5: the limb
       names harvested. `scripts/product/harvest-rep-limbs.js` (library
       `lib/product/rep-limb-harvest.js`, `tests/product-rep-limb-harvest.test.js`)
