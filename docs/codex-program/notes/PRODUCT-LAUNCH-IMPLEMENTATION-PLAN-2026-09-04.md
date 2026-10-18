@@ -4743,6 +4743,21 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       scheme), Lilly / Verve. The URLs are finding (127)'s verified
       Exhibit 2.1 links. The active suite on the merged head 4506eb2c:
       772 of 773, the known failure only.
+      (170) 2026-10-18 21:58 UTC, Ben, verbatim: "I don't think we
+      intake until E is done and we have reduced cost". Applied: no run
+      is woken until implementer E's work package E1 has landed and the
+      cost per agreement is down; the four intakes of (169) (Crinetics
+      cd1d3e91, Centessa 436276fe, Akero 94cd879e, Avadel 91fe48a1) stay
+      QUEUED with no worker and no model call; Olaplex and Apogee
+      generation 2, already running on the subscription, continue. Two
+      facts from the submissions, for later work: Verve's intake failed
+      twice at structure build (STRUCTURE_PARENT_SPAN on span 4b477bbe,
+      the Vercel function log), a structure defect on that exhibit for
+      implementer A once E1 is in; and three of the four queued runs
+      stopped at DOCUMENT_IDENTITY_REVIEW (the Phase 1 identity gate,
+      product_phase1_resolve_identity), which needs the identity
+      resolution before any wake; Avadel went straight to
+      SECTION_ANALYSIS.
       (95)'s rule reached the deployment (its deploy was created at
       20:50:39 UTC, the read fell between READY at 20:48 and that);
       on the real rows the move happens, now pinned with the stored
