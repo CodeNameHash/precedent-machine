@@ -4374,6 +4374,52 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       "zero" of the counted thing is 0; an AMOUNT whose words define it
       as a product, sum or ratio of defined terms carries no canonical
       value and a note, and the fact stays VALID with its components.
+      (82) 2026-10-18 17:20 to 17:39 UTC (implementer), work package 14
+      on finding (81)'s rule, begun on its terms before the manager's
+      message (to be reconciled when it arrives). No run submitted; no
+      live API call. Evidence first, from the preview branch's issues for
+      run 51577c57: three facts held on INVALID_FACT_COMPONENTS with "no
+      parsable value" and "AMOUNT needs a canonical value", their words
+      "no shares of Company Preferred Stock" (3.2, CAPITALISATION/
+      ISSUED_AND_OUTSTANDING), "(ii) no Parent Ordinary Shares" (4.2, the
+      same subtype) and "“Cash Consideration” means cash in an amount
+      equal to the product of (x) the Cash Exchange Ratio, multiplied by
+      (y) the Parent Closing Price." (2.1, CONSIDERATION/CASH_COMPONENT);
+      a held fact's components are not stored, so the tests carry the
+      words. Built, lib/product/fact-components.js: (1) a count whose
+      words open with "no", "none (of)" or "zero" (after an enumerator
+      such as "(ii)") and carry no digit is 0 (`noneCount`, on the COUNT
+      path and the AMOUNT/THRESHOLD path after every number form), so
+      "no later than 10 days" and "not more than 10 shares" keep their
+      numbers; (2) an AMOUNT whose words name an arithmetic operation
+      (product, sum, quotient, ratio, difference, excess, aggregate or
+      total of; multiplied or divided by; times, plus, minus, less the)
+      on at least two defined terms (capitalised phrases, quoted terms or
+      acronyms) and state no number is a formula (`isFormulaValue`): its
+      value is { canonical: null, unit: null, form: 'FORMULA' }, the
+      validator accepts it, `buildComponentTree` lists it and
+      compileProposalComponents reports one COMPONENT_VALUE_FORMULA note
+      per proposal (client_ref, path, component id, words); the fact
+      stays VALID with its components. A formula with a number in it
+      ("the product of 0.1371 and ...") is parsed as before, not
+      computed. formatValue shows a count of 0 as "0". The contract's
+      rule R6 (contracts/product/fact-components.v2.json, not sent to the
+      model) records both. On the page: the capitalization table's
+      issued count reads 0 from "no shares" through the same parser; the
+      cash leg of NCS's mixed election would now be a VALID fact whose
+      AMOUNT carries no number, so the election options table shows its
+      formula under Value terms as finding (80) built, with the Cash
+      Exchange Ratio's 0.1371 after it. The three NCS facts stay held in
+      this run (extracted before the rule); the rule applies to the page
+      at once and to extraction from the next run. Tests:
+      tests/product-fact-components-contract.test.js (the three words
+      through buildComponentTree and the validator, the formula
+      boundary), tests/product-fact-conclusions.test.js (the parser),
+      tests/product-fact-components-extraction.test.js (the two facts
+      through compileExtraction: VALID, the value 0, the note). npm run
+      test:active: 696 of 697, the one failure the known Codex-client
+      final-message test. Commits: the code and tests commit and this
+      plan and guide commit.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
