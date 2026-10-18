@@ -31,6 +31,14 @@ case "${PRODUCT_MODEL_PROVIDER:-OPENAI_CODEX_CLI_SUBSCRIPTION}" in
       exit 78
     fi
     ;;
+  ANTHROPIC_API)
+    # Work package 3 (Ben, 2026-10-17: "done on the key, will be live on
+    # your next redploy"): the API key the wake passed from the deployment.
+    if [[ -z "${ANTHROPIC_API_KEY:-}" ]]; then
+      printf '%s\n' 'PRODUCT_HOSTED_ANTHROPIC_API_KEY_REQUIRED' >&2
+      exit 78
+    fi
+    ;;
   *)
     printf '%s\n' 'PRODUCT_HOSTED_PROVIDER_UNSUPPORTED' >&2
     exit 78
@@ -38,7 +46,12 @@ case "${PRODUCT_MODEL_PROVIDER:-OPENAI_CODEX_CLI_SUBSCRIPTION}" in
 esac
 
 export PATH="/vercel/sandbox/pm-cli/bin:$PATH"
-unset ANTHROPIC_API_KEY OPENAI_API_KEY CODEX_API_KEY CODEX_ACCESS_TOKEN
+# No path sees another path's credential: the API key stays only for the
+# API provider.
+unset OPENAI_API_KEY CODEX_API_KEY CODEX_ACCESS_TOKEN
+if [[ "${PRODUCT_MODEL_PROVIDER:-}" != 'ANTHROPIC_API' ]]; then
+  unset ANTHROPIC_API_KEY
+fi
 cd /vercel/sandbox/pm-product
 
 # Concurrent wakes wait for the same account instead of sharing its refresh token.

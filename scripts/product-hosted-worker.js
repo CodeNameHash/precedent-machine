@@ -6,7 +6,7 @@ const { advanceAgreementDraftAnalysis } = require('../lib/product/analysis-runne
 const { createHostedProductModel } = require('../lib/product/claude-cli-model');
 const { ProductPhase3Store } = require('../lib/product/phase-3-store');
 const {
-  CLAUDE_CLI_PROVIDER_ID, assertConfiguredRunModelConfig, hostedModelConfigFor, isHostedProvider,
+  ANTHROPIC_API_PROVIDER_ID, CLAUDE_CLI_PROVIDER_ID, assertConfiguredRunModelConfig, hostedModelConfigFor, isHostedProvider,
 } = require('../lib/product/product-model-config');
 const { assertDisposableDatabaseUrl } = require('../lib/product/sandbox-wake');
 const { isUsageLimitError } = require('../lib/llm-cli-client');
@@ -60,6 +60,10 @@ async function runHostedWorker(options, output = process.stdout, dependencies = 
   assertConfiguredRunModelConfig(run, hostedModelConfigFor(providerId));
   if (providerId === CLAUDE_CLI_PROVIDER_ID && !process.env.CLAUDE_CODE_OAUTH_TOKEN) {
     throw new Error('PRODUCT_HOSTED_CLAUDE_LOGIN_REQUIRED');
+  }
+  // The API path (work package 3) needs the key the wake passed in.
+  if (providerId === ANTHROPIC_API_PROVIDER_ID && !process.env.ANTHROPIC_API_KEY) {
+    throw new Error('PRODUCT_HOSTED_ANTHROPIC_API_KEY_REQUIRED');
   }
   await store.assertAccess({ runId: options.runId, actor: options.actor });
   if (run.stage === 'DOCUMENT_IDENTITY_REVIEW') throw new Error('PRODUCT_HOSTED_IDENTITY_REVIEW_REQUIRED');
