@@ -2144,11 +2144,14 @@ test('registration-rights covenants move to the Registration rights row and take
   const covenant = (id, row, texts, rowDetail) => ({
     fact_id: id, proposal_id: id, family_key: 'GENERAL_COVENANTS', subtype_key: 'OTHER_COVENANT', section_reference: '5.17', structure_node_id: 'n-5-17',
     headline: { label: 'Covenant', distinguishing_component_ids: [`${id}-0`], summary: '' },
-    components: texts.map((text, index) => ({ component_id: `${id}-${index}`, kind: index === 0 ? 'ACTOR' : 'OPERATION', label: 'words', text, origin: 'OWN', source_span_id: 's', start_byte: index * 10, end_byte: index * 10 + 5, gap_before: false, children: [] })),
+    components: texts.map((entry, index) => {
+      const [kind, text] = Array.isArray(entry) ? entry : [index === 0 ? 'ACTOR' : 'OPERATION', entry];
+      return { component_id: `${id}-${index}`, kind, label: 'words', text, origin: 'OWN', source_span_id: 's', start_byte: index * 10, end_byte: index * 10 + 5, gap_before: false, children: [] };
+    }),
     conclusions: { table_key: 'general-covenants-table', row_label: row, ...(rowDetail ? { row_detail: rowDetail } : {}), cells: [{ column_id: 'obligor', code: 'PARENT', component_ids: [`${id}-0`] }] },
   });
   const facts = [
-    covenant('2bf58d52', 'General notification', ['Promptly following the Closing Date', '(and in any event no later than two Business Days thereafter)', 'Parent', 'shall either (a) file with the SEC', 'a prospectus supplement to the Registration Statement on Form S-3 (SEC file number 333-288045), filed June 13, 2025, pursuant to Rule 424(b)(7) under the Securities Act', 'or (b) file with the SEC a Registration Statement pursuant to Rule 415 under the Securities Act']),
+    covenant('2bf58d52', 'General notification', [['TRIGGER', 'Promptly following the Closing Date'], ['PERIOD', '(and in any event no later than two Business Days thereafter)'], ['ACTOR', 'Parent'], ['OPERATION', 'shall either (a) file with the SEC'], ['OBJECT', 'a prospectus supplement to the Registration Statement on Form S-3 (SEC file number 333-288045), filed June 13, 2025, pursuant to Rule 424(b)(7) under the Securities Act'], ['QUALIFIER', 'or (b) file with the SEC a Registration Statement pursuant to Rule 415 under the Securities Act']]),
     covenant('8a57ad66', 'General notification', ['Statement (or any prospectus or prospectus supplement forming a part of such Registration Statement), as initially filed', 'shall include the Registrable Securities of the Specified Stockholders and any permitted transferee thereof', 'and name the Specified Stockholders or any permitted transferees as selling securityholders', '(subject to receipt of information reasonably requested by Parent necessary to complete such prospectus supplement)']),
     covenant('5de42e39', 'General notification', ['Parent', 'shall use its reasonable best efforts', 'to keep such Registration Statement continuously effective under the Securities Act', 'until the date on which all Registrable Securities covered by such Registration Statement have been sold']),
     covenant('009dfdb5', 'General notification', ['Parent', 'shall use reasonable best efforts', 'to prepare and file with the SEC such amendments and supplements to the Registration Statement and the prospectus used in connection therewith', 'as may be reasonably necessary', 'to keep the Registration Statement effective and to comply with the provisions of the Securities Act with respect to the disposition of all Registrable Securities covered by the Registration Statement']),
@@ -2167,18 +2170,70 @@ test('registration-rights covenants move to the Registration rights row and take
     // wrote for it begins with the row's label, so it comes along.
     covenant('add29195', 'Registration rights indemnification', ['Such indemnity and reimbursement of expenses', 'shall remain in full force and effect', 'regardless of any investigation made by or on behalf of such indemnified party', 'shall survive the transfer of such securities by such holder'], 'Survival'),
   ];
+  // (f) Ben: "on A - if the shareholders have to do something, okay for them
+  // to be an obligor": the stockholders' several indemnity, no obligor cell.
+  facts.push({
+    ...covenant('37ea48cb', 'Registration rights indemnification', ['Each Specified Stockholder', 'severally and not jointly', 'indemnify and hold harmless', 'with respect to any untrue statement or alleged untrue statement of any material fact in, or omission or alleged omission of any material fact from, the Registration Statement'], 'Specified Stockholder indemnity'),
+    conclusions: { table_key: 'general-covenants-table', row_label: 'Registration rights indemnification', row_detail: 'Specified Stockholder indemnity', cells: [{ column_id: 'standard', code: 'UNQUALIFIED_OBLIGATION', component_ids: ['37ea48cb-2'] }] },
+  });
   const view = buildTableView({ facts, tableShapes, legalSchema });
-  const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'general-covenants-table');
-  assert.deepEqual(table.rows.map((row) => [row.subject, row.backing_facts.length]), [['General notification', 1], ['Registration rights', 15]]);
-  assert.deepEqual(table.rows[0].backing_facts.map((entry) => entry.fact_id), ['31da8ce7'], 'the Nasdaq notice names none of the words and stays');
-  assert.deepEqual(table.rows[1].sub_rows.map((row) => [row.subject, row.backing_facts.map((entry) => entry.fact_id).sort()]), [
+  const covenantsTable = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'general-covenants-table');
+  assert.deepEqual(covenantsTable.rows.map((row) => [row.subject, row.backing_facts.length]), [['General notification', 1]]);
+  assert.deepEqual(covenantsTable.rows[0].backing_facts.map((entry) => entry.fact_id), ['31da8ce7'], 'the Nasdaq notice names none of the words and stays');
+  // Ben: "reg rights I think goes with consideration (but at bottom)".
+  const consideration = view.sections.find((section) => section.section_key === 'consideration-hero');
+  assert.ok(consideration, 'the registration rights show under Consideration');
+  const table = consideration.tables[consideration.tables.length - 1];
+  assert.equal(table.table_key, 'consideration-registration-rights');
+  assert.deepEqual(table.rows.map((row) => [row.subject, row.backing_facts.length]), [['Registration rights', 16]]);
+  assert.deepEqual(table.rows[0].sub_rows.map((row) => [row.subject, row.backing_facts.map((entry) => entry.fact_id).sort()]), [
     ['Resale registration', ['2bf58d52', '8a57ad66']],
     ['Effectiveness and amendments', ['009dfdb5', '5de42e39', 'ee197fc0']],
     ['Stockholder information and approval', ['43e27ac9', 'a01a67c4']],
-    ['Indemnification', ['a47dc26b', 'add29195', 'f598ad96']],
+    ['Indemnification', ['37ea48cb', 'a47dc26b', 'add29195', 'f598ad96']],
     ['Expenses', ['95c2cf94']],
     ['Rule 144 and legend removal', ['50ba52cb', 'eb3ace36']],
     ['Listing and reporting', ['199b43b6', 'f45fa9c4']],
   ]);
-  assert.equal(table.rows.some((row) => ['Registration rights indemnification', 'Registration expenses', 'Access to information', 'Stock exchange listing'].includes(row.subject)), false);
+  assert.equal(view.sections.flatMap((section) => section.tables).some((candidate) => candidate.rows.some((row) => ['Registration rights indemnification', 'Registration expenses', 'Access to information', 'Stock exchange listing'].includes(row.subject))), false);
+  // (f): the several indemnity's obligor is the stockholders, in their words.
+  const indemnification = table.rows[0].sub_rows.find((row) => row.subject === 'Indemnification');
+  const obligor = indemnification.cells.find((cell) => cell.column_id === 'obligor');
+  const obligorValues = obligor.values || [obligor];
+  assert.ok(obligorValues.some((value) => value.code === 'OTHER_PARTY' && value.label === 'Each Specified Stockholder'), JSON.stringify(obligorValues));
+  assert.ok(obligorValues.some((value) => value.code === 'PARENT'), 'Parent\'s indemnity keeps its obligor');
+  // (g) Ben: "Ok on ETA on covenants": the 424(b)(7) filing's trigger and
+  // outside date in By when, from its TRIGGER and PERIOD components.
+  const resale = table.rows[0].sub_rows.find((row) => row.subject === 'Resale registration');
+  const byWhen = resale.cells.find((cell) => cell.column_id === 'byWhen');
+  const byWhenValues = byWhen.values || [byWhen];
+  assert.ok(byWhenValues.some((value) => value.label === 'Promptly following the Closing Date (and in any event no later than two Business Days thereafter)' && value.derived === 'fill_from_components'), JSON.stringify(byWhenValues));
+  assert.ok(table.columns.some((column) => column.column_id === 'byWhen'), 'By when shows when a row fills it');
+  // A covenants table no row of which states a deadline hides By when.
+  assert.ok((covenantsTable.hidden_columns || []).some((column) => column.column_id === 'byWhen'), JSON.stringify(covenantsTable.hidden_columns));
+});
+
+// Work package 18 (g) on the financing table (Ben: "Ok on ETA on covenants"):
+// NCS 5.18's payoff letter, "at least three (3) Business Days prior to the
+// Closing Date": the Period column reads the number from the PERIOD
+// component, the as-drafted words cite it, and By when does not repeat a
+// component the Period column already reads.
+test('the financing table reads the payoff letter lead time into Period and does not repeat it in By when', () => {
+  const fact = {
+    fact_id: 'payoff', proposal_id: 'payoff', family_key: 'FINANCING_COVENANTS', subtype_key: 'PAYOFF', section_reference: '5.18', structure_node_id: 'n-5-18',
+    headline: { label: 'Payoff letters', distinguishing_component_ids: ['payoff-4'], summary: 'Company uses reasonable best efforts to deliver Parent a payoff letter three Business Days pre-Closing' },
+    components: [
+      ['ACTOR', 'The Company'], ['EFFORTS_STANDARD', 'shall use reasonable best efforts'], ['OPERATION', 'to deliver to Parent'],
+      ['PERIOD', 'at least three (3) Business Days prior to the Closing Date'], ['OBJECT', 'a copy of a payoff letter'],
+    ].map(([kind, text], index) => ({ component_id: `payoff-${index}`, kind, label: 'words', text, origin: 'OWN', source_span_id: 's', start_byte: index * 10, end_byte: index * 10 + 5, gap_before: false, children: [], ...(kind === 'PERIOD' ? { value: { canonical: 3, unit: 'BUSINESS_DAY' } } : {}) })),
+    conclusions: { table_key: 'financing-table', row_label: 'Payoff letters', cells: [{ column_id: 'provision', code: 'REQUIRED', component_ids: ['payoff-2'] }, { column_id: 'asDrafted', text: 'to deliver to Parent', component_ids: ['payoff-2'] }] },
+  };
+  const view = buildTableView({ facts: [fact], tableShapes, legalSchema });
+  const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'financing-table');
+  const row = table.rows.find((candidate) => candidate.subject === 'Payoff letters');
+  const line = [row, ...(row.sub_rows || [])].find((candidate) => (candidate.cells || []).some((cell) => cell.column_id === 'period' && cell.kind !== 'dash'))
+    || row;
+  const period = line.cells.find((cell) => cell.column_id === 'period');
+  assert.ok(period && /3/.test(period.label) && /business day/i.test(period.label), JSON.stringify(period));
+  assert.equal(table.columns.some((column) => column.column_id === 'byWhen'), false, 'nothing is left for By when once Period has the number');
 });

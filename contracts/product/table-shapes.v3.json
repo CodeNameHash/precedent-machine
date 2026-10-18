@@ -726,6 +726,202 @@
             "ELECTION"
           ],
           "guidance": "Only for a deal whose holders elect between forms of consideration. Never place a fact here when the agreement has no election."
+        },
+        {
+          "table_key": "consideration-registration-rights",
+          "group_header": "REGISTRATION RIGHTS",
+          "term_column": {
+            "header": "Covenant",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "obligor",
+              "header": "Obligor",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "COMPANY",
+                  "label": "Company",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-13 #21 (Metsera 6.07): a covenant reads as obligor, standard, scope and exceptions, never as its grammatical subjects and verbs. The Company (and its subsidiaries) is bound."
+                },
+                {
+                  "code": "PARENT",
+                  "label": "Parent",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-13 #21 (Metsera 6.07): a covenant reads as obligor, standard, scope and exceptions, never as its grammatical subjects and verbs. Parent (and Merger Sub) is bound."
+                },
+                {
+                  "code": "EACH_PARTY",
+                  "label": "Each party",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-13 #21 (Metsera 6.07): a covenant reads as obligor, standard, scope and exceptions, never as its grammatical subjects and verbs. A mutual covenant."
+                },
+                {
+                  "code": "OTHER_PARTY",
+                  "label": "Other party (named in the words)",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben, 2026-10-18 (plan finding (163)): \"on A - if the shareholders have to do something, okay for them to be an obligor\". The cell shows the party's own words (the Specified Stockholders; a sponsor; a guarantor)."
+                }
+              ],
+              "fill_from": [
+                "ACTOR"
+              ],
+              "other_party_code": "OTHER_PARTY",
+              "guidance": "OTHER_PARTY when the words bind a party that is neither the Company nor Parent (stockholders, a sponsor, a guarantor); cite the party's own words, which the page shows in the cell."
+            },
+            {
+              "column_id": "standard",
+              "header": "Standard",
+              "render": "vocabulary",
+              "fill_from": [
+                "EFFORTS_STANDARD",
+                "STANDARD",
+                "QUALIFIER",
+                "OPERATION"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-13 #21 (Metsera 6.07): a covenant reads as obligor, standard, scope and exceptions, never as its grammatical subjects and verbs. The effort or conduct standard (reasonable access during normal business hours; commercially reasonable efforts; promptly).",
+              "vocabulary": [
+                {
+                  "code": "REASONABLE_BEST_EFFORTS",
+                  "label": "Reasonable best efforts",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): no column shows a cited fragment."
+                },
+                {
+                  "code": "COMMERCIALLY_REASONABLE_EFFORTS",
+                  "label": "Commercially reasonable efforts",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): no column shows a cited fragment."
+                },
+                {
+                  "code": "BEST_EFFORTS",
+                  "label": "Best efforts",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): no column shows a cited fragment."
+                },
+                {
+                  "code": "UNQUALIFIED_OBLIGATION",
+                  "label": "Unqualified obligation (shall)",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): no column shows a cited fragment."
+                },
+                {
+                  "code": "PROMPTLY",
+                  "label": "Promptly / as promptly as practicable",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): no column shows a cited fragment."
+                },
+                {
+                  "code": "REASONABLE_ACCESS",
+                  "label": "Reasonable access during normal business hours",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): no column shows a cited fragment."
+                }
+              ],
+              "guidance": "The efforts or conduct standard the covenant states, coded; the words themselves are in the as-drafted column."
+            },
+            {
+              "column_id": "byWhen",
+              "header": "By when",
+              "render": "verbatim",
+              "fill_from": [
+                "TRIGGER",
+                "PERIOD"
+              ],
+              "fill_from_components": true,
+              "addition": true,
+              "reason": "Ben, 2026-10-18 (plan finding (163)): \"Ok on ETA on covenants\".",
+              "guidance": "The deadline or trigger the covenant states (a period before or after a date; \"promptly following the Closing Date\"), the TRIGGER and PERIOD components' words in source order; the page fills it from the components when the readout has no cell."
+            },
+            {
+              "column_id": "asDrafted",
+              "header": "As drafted",
+              "render": "verbatim",
+              "display": "fact_text",
+              "fill_from": [
+                "OPERATION",
+                "OBJECT",
+                "CONDITION",
+                "STANDARD",
+                "EXCEPTION",
+                "QUALIFIER",
+                "TRIGGER",
+                "PERIOD"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): no column shows a cited fragment.",
+              "guidance": "Shown as the fact's own words as drafted (every component in source order); cite the operative words."
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Registration rights"
+          ],
+          "accepts_families": [
+            "GENERAL_COVENANTS"
+          ],
+          "detail_labels_by_row": {
+            "Registration rights": [
+              "Resale registration",
+              "Effectiveness and amendments",
+              "Stockholder information and approval",
+              "Indemnification",
+              "Expenses",
+              "Rule 144 and legend removal",
+              "Listing and reporting"
+            ]
+          },
+          "detail_from_words_by_row": {
+            "Registration rights": [
+              {
+                "detail": "Indemnification",
+                "words": "indemni|hold\\s+harmless|reimburs|omission\\s+or\\s+alleged\\s+omission|net\\s+proceeds|required\\s+to\\s+pay"
+              },
+              {
+                "detail": "Expenses",
+                "words": "expenses\\s+incurred\\s+in\\s+connection\\s+with\\s+any\\s+registration|registration\\s+expenses|shall\\s+be\\s+paid\\s+by"
+              },
+              {
+                "detail": "Listing and reporting",
+                "words": "\\blisting\\b|Nasdaq|delisting|Depository\\s+Trust|reports?\\s+(?:and\\s+other\\s+documents\\s+)?required|timely\\s+file|Exchange\\s+Act\\s+reports?"
+              },
+              {
+                "detail": "Rule 144 and legend removal",
+                "words": "Rule\\s+144|legend"
+              },
+              {
+                "detail": "Stockholder information and approval",
+                "words": "approved\\s+in\\s+writing|written\\s+approval|review\\s+and\\s+approve|opportunity\\s+to\\s+review|furnish|information\\s+concerning"
+              },
+              {
+                "detail": "Resale registration",
+                "words": "Rule\\s+415|\\bshelf\\b|prospectus\\s+supplement\\s+to|424\\(b\\)|selling\\s+securityholders?|include\\s+the\\s+Registrable\\s+Securities"
+              },
+              {
+                "detail": "Effectiveness and amendments",
+                "words": "effective|amend|supplement|untrue\\s+statement|request\\s+by\\s+the\\s+SEC"
+              }
+            ]
+          },
+          "addition": true,
+          "reason": "Ben, 2026-10-18 (plan finding (163)): \"reg rights I think goes with consideration (but at bottom)\". NCS generation 5, 5.17: the Specified Stockholders' registration rights came back as covenants spread over five rows of the general covenants table.",
+          "guidance": "Every covenant of a registration-rights package for the stock consideration (the resale registration statement or shelf, keeping it effective and amending it, the holders' information and approval rights, the indemnities and their mechanics, the expenses, Rule 144 and legend removal, the listing and reporting covenants for the resale period) is on this table's one row, one fact per operative unit, each a sub-item with row_detail from the row's detail_labels_by_row; the code moves a general covenant whose words name the Registration Statement, Registrable Securities, a prospectus, Rule 144 or Rule 415 here from the general covenants table and names its sub-item from its words (work package 18, 2026-10-18). A deal without registration rights shows no such table."
         }
       ],
       "print_pages": [
@@ -7453,11 +7649,20 @@
                   "tone": "neutral",
                   "addition": true,
                   "reason": "Ben's decision 2026-09-13 #21 (Metsera 6.07): a covenant reads as obligor, standard, scope and exceptions, never as its grammatical subjects and verbs. A mutual covenant."
+                },
+                {
+                  "code": "OTHER_PARTY",
+                  "label": "Other party (named in the words)",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben, 2026-10-18 (plan finding (163)): \"on A - if the shareholders have to do something, okay for them to be an obligor\". The cell shows the party's own words (the Specified Stockholders; a sponsor; a guarantor)."
                 }
               ],
               "fill_from": [
                 "ACTOR"
-              ]
+              ],
+              "other_party_code": "OTHER_PARTY",
+              "guidance": "OTHER_PARTY when the words bind a party that is neither the Company nor Parent (stockholders, a sponsor, a guarantor); cite the party's own words, which the page shows in the cell."
             },
             {
               "column_id": "standard",
@@ -7518,6 +7723,19 @@
               "guidance": "The efforts or conduct standard the covenant states, coded; the words themselves are in the as-drafted column."
             },
             {
+              "column_id": "byWhen",
+              "header": "By when",
+              "render": "verbatim",
+              "fill_from": [
+                "TRIGGER",
+                "PERIOD"
+              ],
+              "fill_from_components": true,
+              "addition": true,
+              "reason": "Ben, 2026-10-18 (plan finding (163)): \"Ok on ETA on covenants\".",
+              "guidance": "The deadline or trigger the covenant states (a period before or after a date; \"promptly following the Closing Date\"), the TRIGGER and PERIOD components' words in source order; the page fills it from the components when the readout has no cell."
+            },
+            {
               "column_id": "asDrafted",
               "header": "As drafted",
               "render": "verbatim",
@@ -7528,7 +7746,9 @@
                 "CONDITION",
                 "STANDARD",
                 "EXCEPTION",
-                "QUALIFIER"
+                "QUALIFIER",
+                "TRIGGER",
+                "PERIOD"
               ],
               "addition": true,
               "reason": "Ben's decision 2026-09-14 (decision 34): no column shows a cited fragment.",
@@ -7551,8 +7771,7 @@
             "Confidentiality",
             "Transaction litigation",
             "Financing cooperation",
-            "Director and officer indemnification",
-            "Registration rights"
+            "Director and officer indemnification"
           ],
           "fixed_row_labels_source": "LEGAL_SCHEMA/V2 GENERAL_COVENANTS subtypes plus the covenants the legacy Other Covenants index curated (financing cooperation, D&O indemnification, confidentiality, transaction litigation)",
           "open_rows": true,
@@ -7570,7 +7789,7 @@
             "CVR": "CVR Agreement",
             "LISTING": "Stock exchange listing"
           },
-          "guidance": "One row per covenant, named as the precedent would (fixed_row_labels), with a new name only when none fits. Each limb of a covenant is a sub-item (row_detail) with the same columns; the covenant's line gives the overview. The subject of the row is the covenant, never a party or a pronoun; the obligor is a coded cell. The covenant as drafted replaces the scope and exceptions fragments. Registration rights: every covenant of a registration-rights package (the resale registration statement or shelf, keeping it effective and amending it, the holders' information and approval rights, the indemnities and their mechanics, the expenses, Rule 144 and legend removal, the listing and reporting covenants for the resale period) is on this row, one fact per operative unit, each a sub-item with row_detail from the row's detail_labels_by_row; the code places a covenant whose words name the Registration Statement, Registrable Securities, a prospectus, Rule 144 or Rule 415 here and names its sub-item from its words (work package 18, 2026-10-18). Public announcements: every publicity fact is on this row, one fact per operative unit (the announcement release and its approval; the consent, consultation and review duties; the consistency proviso; each carve-out; the Law, court-process or listing-agreement exception), each a sub-item with row_detail from the row's detail_labels_by_row; the code names the sub-item from the fact's own words when a label's words are present (work package 18, 2026-10-18).",
+          "guidance": "One row per covenant, named as the precedent would (fixed_row_labels), with a new name only when none fits. Each limb of a covenant is a sub-item (row_detail) with the same columns; the covenant's line gives the overview. The subject of the row is the covenant, never a party or a pronoun; the obligor is a coded cell. The covenant as drafted replaces the scope and exceptions fragments. By when: the covenant's deadline or trigger, from its TRIGGER and PERIOD components. Public announcements: every publicity fact is on this row, one fact per operative unit (the announcement release and its approval; the consent, consultation and review duties; the consistency proviso; each carve-out; the Law, court-process or listing-agreement exception), each a sub-item with row_detail from the row's detail_labels_by_row; the code names the sub-item from the fact's own words when a label's words are present (work package 18, 2026-10-18).",
           "detail_labels_by_row": {
             "Public announcements": [
               "Announcement release",
@@ -7583,15 +7802,6 @@
               "Carve-out: investor and media communications",
               "Carve-out: sponsor disclosure",
               "Law or exchange exception"
-            ],
-            "Registration rights": [
-              "Resale registration",
-              "Effectiveness and amendments",
-              "Stockholder information and approval",
-              "Indemnification",
-              "Expenses",
-              "Rule 144 and legend removal",
-              "Listing and reporting"
             ]
           },
           "detail_from_words_by_row": {
@@ -7636,43 +7846,14 @@
                 "detail": "Law or exchange exception",
                 "words": "required\\s+by\\s+(?:applicable\\s+)?Law|listing\\s+agreement|court\\s+process|securities\\s+exchange"
               }
-            ],
-            "Registration rights": [
-              {
-                "detail": "Indemnification",
-                "words": "indemni|hold\\s+harmless|reimburs|omission\\s+or\\s+alleged\\s+omission|net\\s+proceeds|required\\s+to\\s+pay"
-              },
-              {
-                "detail": "Expenses",
-                "words": "expenses\\s+incurred\\s+in\\s+connection\\s+with\\s+any\\s+registration|registration\\s+expenses|shall\\s+be\\s+paid\\s+by"
-              },
-              {
-                "detail": "Listing and reporting",
-                "words": "\\blisting\\b|Nasdaq|delisting|Depository\\s+Trust|reports?\\s+(?:and\\s+other\\s+documents\\s+)?required|timely\\s+file|Exchange\\s+Act\\s+reports?"
-              },
-              {
-                "detail": "Rule 144 and legend removal",
-                "words": "Rule\\s+144|legend"
-              },
-              {
-                "detail": "Stockholder information and approval",
-                "words": "approved\\s+in\\s+writing|written\\s+approval|review\\s+and\\s+approve|opportunity\\s+to\\s+review|furnish|information\\s+concerning"
-              },
-              {
-                "detail": "Resale registration",
-                "words": "Rule\\s+415|\\bshelf\\b|prospectus\\s+supplement\\s+to|424\\(b\\)|selling\\s+securityholders?|include\\s+the\\s+Registrable\\s+Securities"
-              },
-              {
-                "detail": "Effectiveness and amendments",
-                "words": "effective|amend|supplement|untrue\\s+statement|request\\s+by\\s+the\\s+SEC"
-              }
             ]
           },
           "words_rows": [
             {
               "row_label": "Registration rights",
               "when": "Registration\\s+Statement|Registrable\\s+Securities|\\bprospectus|Rule\\s+144|Rule\\s+415",
-              "over_readout": true
+              "over_readout": true,
+              "table_key": "consideration-registration-rights"
             }
           ]
         }
@@ -8418,6 +8599,19 @@
               "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18. The payoff letter lead time in business days, or a financing deadline."
             },
             {
+              "column_id": "byWhen",
+              "header": "By when",
+              "render": "verbatim",
+              "fill_from": [
+                "TRIGGER",
+                "PERIOD"
+              ],
+              "fill_from_components": true,
+              "addition": true,
+              "reason": "Ben, 2026-10-18 (plan finding (163)): \"Ok on ETA on covenants\".",
+              "guidance": "The deadline or trigger the covenant states (a period before or after a date; \"promptly following the Closing Date\"), the TRIGGER and PERIOD components' words in source order; the page fills it from the components when the readout has no cell."
+            },
+            {
               "column_id": "asDrafted",
               "header": "As drafted",
               "render": "verbatim",
@@ -8428,7 +8622,9 @@
                 "CONDITION",
                 "STANDARD",
                 "EXCEPTION",
-                "QUALIFIER"
+                "QUALIFIER",
+                "TRIGGER",
+                "PERIOD"
               ],
               "addition": true,
               "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18.",
