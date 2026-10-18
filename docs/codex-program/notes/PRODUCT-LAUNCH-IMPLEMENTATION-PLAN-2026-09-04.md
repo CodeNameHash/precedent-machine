@@ -3910,6 +3910,29 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       loop retried it three times per section and failed the run before
       the worker's stop saw it; the fix stops the worker at the first
       call and leaves the run resumable by a plain wake.
+      13:24 UTC, Ben: "fixed" (ANTHROPIC_WORKSPACE_ID replaced); this
+      push redeploys the alias and the run is retried (ncs-gen5-retry-2).
+      (74) 2026-10-18 13:40 UTC: ncs-gen5-retry-2 ran on the API. The key
+      and workspace id are accepted; the cache breakpoint works as
+      designed (1.1's routing call wrote 8,198 tokens to the 1-hour
+      entry, 1.2's second routing attempt read the same 8,198; the
+      residual entry 1,029 written then read; 1.1's extraction wrote
+      17,628). 1.1 completed (19,600 input, 7,577 output, $0.38 for the
+      extraction). 1.2 (the Tolling Period blackout on Closing) failed
+      its three attempts in a minute on RESIDUAL_FAMILY_CONSISTENCY: the
+      residual pass answered UNRESOLVED_UNUSUAL_PROVISION and named the
+      families the paragraph sits near (MERGER_STRUCTURE_CLOSING,
+      TERMINATION), the same answer each time, and the rule treated any
+      family on a non-KNOWN_FAMILY disposition as a contradiction though
+      the response contract never says a family needs KNOWN_FAMILY.
+      Fixed in code for every run: a known family with no family is
+      still a contradiction; an unusual or immaterial paragraph keeps
+      the families it names, on the disposition and in its issue ("...
+      (near MERGER_STRUCTURE_CLOSING, TERMINATION)"), and the routing is
+      not widened by them (widenRoutingFromResidual reads KNOWN_FAMILY
+      only). The worker updated; the run retried (ncs-gen5-retry-3).
+      Work package 11b (the configuration stop) is still with the
+      implementer; its merge follows.
       (73) 2026-10-18 13:21 to 13:50 UTC (implementer), work package 11b
       on the manager's message of 13:17 UTC. No run retried; no live
       call. The gap, read in the live path: the worker's loop calls
