@@ -88,10 +88,10 @@ test('a CROSS_REFERENCE to a statute outside the agreement needs no resolution; 
 // is a problem for the extractor to drop with a note, never a held fact, so
 // validateFactComponents does not report it.
 test('headline.summary is optional; headlineSummaryProblems checks it without holding the fact', () => {
-  const { headlineSummaryProblems, HEADLINE_SUMMARY_MAX_WORDS, HEADLINE_SUMMARY_TOLERATED_WORDS, HEADLINE_SUMMARY_RULE } = require('../lib/product/fact-components');
+  const { headlineSummaryProblems, HEADLINE_SUMMARY_MAX_WORDS, HEADLINE_SUMMARY_ASKED_WORDS, HEADLINE_SUMMARY_RULE } = require('../lib/product/fact-components');
   const fact = example();
   fact.components.forEach((component) => { if (component.origin === 'CHAPEAU') component.origin_structure_node_id = 'n31'; });
-  assert.equal(HEADLINE_SUMMARY_MAX_WORDS, 15);
+  assert.equal(HEADLINE_SUMMARY_ASKED_WORDS, 15);
   assert.equal(typeof fact.headline.summary, 'string', 'the contract example carries a summary');
   assert.deepEqual(headlineSummaryProblems(fact.headline.summary), []);
   assert.deepEqual(validateFactComponents(fact), []);
@@ -103,14 +103,14 @@ test('headline.summary is optional; headlineSummaryProblems checks it without ho
   assert.ok(headlineSummaryProblems(12).some((problem) => problem.includes('headline summary must be a string')));
   assert.ok(headlineSummaryProblems(' Parent pays the fee ').some((problem) => problem.includes('leading or trailing whitespace')));
   // Work package 5 (plan finding (52)): three fair generation 8 summaries
-  // dropped at 16 words, so the cap tolerates 18 while the extractor is
+  // dropped at 16 words, so the check allows 18 while the extractor is
   // still asked for 15 (the rule text).
   assert.deepEqual(headlineSummaryProblems('one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen'), []);
   assert.deepEqual(headlineSummaryProblems('one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen'), []);
   assert.ok(headlineSummaryProblems('one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen').some((problem) => problem.includes('over 18 words (19; 15 asked for)')));
   assert.match(HEADLINE_SUMMARY_RULE, /at most 15/);
-  assert.equal(HEADLINE_SUMMARY_MAX_WORDS, 15);
-  assert.equal(HEADLINE_SUMMARY_TOLERATED_WORDS, 18);
+  assert.equal(HEADLINE_SUMMARY_ASKED_WORDS, 15);
+  assert.equal(HEADLINE_SUMMARY_MAX_WORDS, 18);
   assert.ok(headlineSummaryProblems('Parent pays the fee under Section 8.3').some((problem) => problem.includes('section reference')));
   // A statutory section or an Article of the agreement is content (generation 7, 1.02 and 1.04).
   assert.deepEqual(headlineSummaryProblems('The Merger has the effects set forth in Section 259 of the DGCL'), []);
