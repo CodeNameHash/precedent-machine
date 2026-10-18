@@ -3844,6 +3844,50 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       scripts/product/estimate-run-cost.js --run <run-id>` prices the run
       from its own cache reads and writes. Commits 33540c0 (code and
       tests) and the plan and guide commit.
+      (70) 2026-10-18 11:58 to 12:25 UTC (implementer), work package 11
+      on the manager's message of 11:55 UTC (the message asked for a
+      finding (69); the manager's own (69) already records the refusal,
+      so this is (70)). No run submitted or retried; no live call; no
+      key or workspace id value anywhere. The refusal, verbatim from the
+      manager's log of run 51577c57: 400 invalid_request_error, "This
+      API key is not scoped to a workspace, so this request must include
+      the anthropic-workspace-id header with the ID of the workspace to
+      use. Add the header, or use an API key that is scoped to a
+      workspace." Built: `lib/product/anthropic-api-model.js`
+      `clientOptions` gives the Anthropic client `defaultHeaders:
+      { 'anthropic-workspace-id': <id> }` when ANTHROPIC_WORKSPACE_ID is
+      set (trimmed; an empty setting is no setting) and nothing when it
+      is not; the option is the SDK's own (@anthropic-ai/sdk 0.78.0,
+      client.d.ts: "Default headers to include with every request to the
+      API"). The id takes the key's path: `run-handler.js` reads it from
+      the deployment (`anthropicWorkspaceIdResolver`), the wake passes it
+      to the sandbox command's env as ANTHROPIC_WORKSPACE_ID beside
+      ANTHROPIC_API_KEY for the API provider only, `launch.sh` unsets
+      both for every other provider and requires only the key, the
+      worker requires nothing new and the model reads the id from its
+      environment; no code path prints it. A 400 whose message names the
+      header is `ANTHROPIC_API_NOT_CONFIGURED` (the API's message kept,
+      the error saying whether the header was sent), and
+      `scripts/product-hosted-worker.js` stops on it with
+      PRODUCT_HOSTED_ANTHROPIC_API_NOT_CONFIGURED the way it stops on a
+      usage limit, so a misconfigured key costs one call, not three
+      attempts of every section. What Ben sets on the Vercel project,
+      one of: ANTHROPIC_WORKSPACE_ID (the workspace's id from the
+      console) beside the existing ANTHROPIC_API_KEY, or a key created
+      inside a workspace replacing ANTHROPIC_API_KEY; then a redeploy
+      (the run route reads the variable) and `update-sandbox-worker.js`
+      before the manager retries 51577c57. Tests (no live call):
+      `tests/product-anthropic-api-provider.test.js` the header present
+      when configured, absent when not, and read from the environment;
+      the 400 as ANTHROPIC_API_NOT_CONFIGURED with the message kept and
+      not matching the usage-limit rule; the wake's env carrying the
+      variable by name and the result never carrying the value; the run
+      route's resolver. `tests/product-hosted-worker-pool.test.js` the
+      worker stopping on it. `tests/product-sandbox-worker-scripts.test.js`
+      the launcher's unset line and no requirement. npm run test:active:
+      682 tests, 681 pass, the one failure the known Codex-client
+      final-message test. Guide line updated. Commit: the code and tests, then
+      the plan and guide.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
