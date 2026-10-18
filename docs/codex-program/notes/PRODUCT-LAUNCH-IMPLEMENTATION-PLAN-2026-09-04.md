@@ -4021,6 +4021,121 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       again. npm run test:active: 685 tests, 684 pass, the one
       failure the known Codex-client final-message test. Guide line for
       analysis-runner.js updated.
+      (76) 2026-10-18 14:22 to 15:05 UTC (implementer), work package 12
+      on the manager's message of 14:15 UTC: Ben's six comments on the
+      provisions page, each read against the page as it is today and
+      against Metsera generation 8 (run 72d94dd2; its 961 layered VALID
+      facts rebuilt through `buildTableView` from the stored rows) and
+      the NCS run (51577c57, 7 sections and 23 facts complete at the
+      time). Four of the six were answered in work package 2 (findings
+      (43) and (47)) and hold; two are new code here. No extraction or
+      stored data changed; the NCS run not touched.
+      1. "when I clicked 'see provision' on 'definition' in 'intervening
+      event mechanics' the main body of the page leapt around, it should
+      stay static and the left hand side should just come up." Answered
+      in (43): the sidebar is fixed to the viewport and comes up over the
+      page; the content column keeps one width whether or not a fact is
+      selected (tests/product-provision-tables.test.js "the content
+      column keeps its width when a selection opens the sidebar"). Read
+      again today: no scrollIntoView and no layout change on the
+      provisions page or in EvidenceSidebar / ProvisionTables (the one
+      scrollIntoView in components/product is SourceContextPanel's, used
+      by the review workspace, not this page). Nothing to change.
+      2. "in the right hand side bar - I like interpretation tree,
+      'provision' - should that read as How Corpus Interpreted (or
+      something better sounding!) and then 'clause' - what is that? The
+      full section it comes from? Be clearer?" Answered in (43):
+      "Interpretation Tree" stays; "Provision" is "How Corpus read it";
+      "Clause" is "Source text · Section 5.02(f)" with the note "The full
+      section these words come from, as drafted; the cited words are
+      marked." and the tab "Source text". For Ben's decision, the
+      wordings the code can carry (one constant each in
+      EvidenceSidebar.jsx): words block "How Corpus read it" (built) or
+      "Corpus's reading" or "What Corpus read"; section block "Source
+      text · Section 5.02(f)" (built) or "Section 5.02(f) in full" (the
+      manager's example) or "Section 5.02(f), as drafted". The code keeps
+      (43)'s until he chooses.
+      3. "Also look at this one, not formatted very prettily and also
+      random page breaks and page numbers...!" Answered in (43):
+      `lib/product/source-display.js` `hidePageFooters`, a deterministic
+      rule (a line that is only a page number or a front-matter roman
+      numeral, with the blank lines around it; a break at a sentence end
+      or before a new limb keeps one paragraph break, mid-sentence it is
+      a space; a hyphenated word or an inline "-5-" is left alone),
+      display only, never on the stored text or spans; its own unit test
+      in tests/product-table-view.test.js and the sidebar test "the SEC
+      page footers in a cited run of words are hidden in the sidebar
+      words and clause, with the marks still in place"; the section
+      renders as paragraphs with lettered limbs indented. Nothing to
+      change.
+      4. "why do we have a summary column here? Also 'period' as a
+      column is wasteful as it only applies to one provision? Consider
+      that point generally?" New, general, in `lib/product/table-view.js`
+      `pruneEmptyColumns` after the fold and pill rules of (43): a
+      column with no filled cell on any line of a table in this run's
+      output is not rendered, whatever it renders, and is named on the
+      table (`hidden_columns`, with its header and reason); an as-drafted
+      (fact_text) column whose every filled cell is the line's own label,
+      or empty, is not rendered; the Other provisions table renders its
+      Summary column only when some line's summary says more than its
+      term (ProvisionTables `summarySaysMore`). On generation 8 the
+      rule removes: Period on the general IOC terms (empty on all 3
+      rows), Vote Standard on the stockholder meeting table (0 of 6) and
+      on the conditions table (0 of 6), Summary and Threshold on the tail
+      fee table (0 of 1), Summary on the tax matters table (0 of 1); no
+      as-drafted column repeats its labels on that run, so none is
+      removed for that reason. On the NCS run so far: Exercised By,
+      Outside Date, Extended To, Written Consent and Vote Threshold on
+      the mutual termination table (its one row fills only the as-drafted
+      cell). The "Summary" Ben saw is the `provision` vocabulary column's
+      header on seventeen tables (the no-shop notice table among them):
+      a column of code pills called Summary. With codes hidden (point 5)
+      it shows the words read; the header is still misleading. Proposed
+      for Ben, not done: rename that header to "Provision" (or
+      "Reading") in scripts/product/table-shapes-decision-34.js and
+      regenerate; one line, every deal.
+      5. "odd under ongoing updates to have required within a stated
+      period and required promptly. Also weird to have the 48 hours
+      there. I know the pills are likely helpful for background
+      comparison work etc but do we need to show them here? Consider
+      this more generally on the UI pills etc." New: every coded cell
+      carries the words it was read from (`attachWords`: the cited
+      components' text in the cell's order, page footers hidden, cut to
+      one short line of 90 characters), and the page has one setting,
+      `SHOW_CODES_BY_DEFAULT` in table-view.js, false. With codes hidden
+      a coded cell shows its words in the body face and still opens the
+      sidebar (the code label on the title); a folded trailing detail
+      shows its words; a cell with no cited words (a default, a presence)
+      keeps its label; values and as-drafted text are words already.
+      "Show codes" in the section-toggle row brings the pills up
+      page-wide ("Hide codes" to put them back). The pills stay in the
+      data and on Query. Proposed default for Ben: codes hidden (words
+      first), as built; the alternative is one constant. On the notice
+      table's Ongoing updates row this reads the two facts' own words
+      ("promptly (and in any event within 48 hours)…" and the
+      material-terms words) instead of "Required within a stated period"
+      and "Required promptly" beside "48 hours".
+      6. On the 2.01 Consideration package tree: "hitting 'show detail'
+      doesn't add much...just same stuff again? Also, we should better
+      indent the (i) and (ii) for the right to receive that is shown."
+      Answered in (47): a parent whose children cover its words shows the
+      children in its place with no control; "Show detail" appears only
+      from the fourth level, on a parent whose own words stand above
+      children not yet shown, so it never repeats what is on the line;
+      list elements (i), (ii), (A), (B) are separate indented lines with
+      their markers (tests "the sidebar tree shows a covered parent as its
+      indented children, a parent's own words above its children, and
+      folds only from the fourth level"). Nothing to change.
+      Tests: tests/product-table-view.test.js (three tests that expected
+      a dash in a never-filled column now expect the column hidden and
+      named), tests/product-provision-tables.test.js (the default and the
+      toggle, the words on cells and trailing details, the pruning rule's
+      cases and the rendered headers, the Other provisions Summary rule;
+      the pill tests open with the codes shown). Suites: table view,
+      provision tables, provisions preview and published layers 122 of
+      122 together; npm run test:active: 689 tests, 688 pass, the one
+      failure the known Codex-client final-message test. Guide line updated.
+      Commit af97f4e (code and tests), then the plan and guide.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
