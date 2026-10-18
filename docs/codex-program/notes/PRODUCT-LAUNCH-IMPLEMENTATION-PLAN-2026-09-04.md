@@ -1280,7 +1280,12 @@ it is not an attestation or a completed independent inventory.
       `fixtures/product/ben-samples/` to V2 facts by section reference and
       word overlap and write a Markdown report with severity and acceptance
       columns left for Ben (`tests/product-sample-reconciliation.test.js`).
-      Waits on V2 runs of Olaplex and Apogee.
+      Waits on V2 runs of Olaplex and Apogee. Dry run 2026-10-18
+      (finding (122)): one command, `scripts/product/reconcile-ben-samples.js
+      --notes olaplex|apogee --run <id> --out-dir <dir>`, proven end to
+      end against Metsera generation 8 as a path check; three matcher
+      defects fixed (the "III-INTRO" node name, "6.1" against "6.01",
+      a subsection note reaching its section's facts).
 - [ ] Measure severity-weighted reference-sample success, with missed,
       incorrect and unresolved counts, citation sufficiency and narrowness,
       duplicates, contradictions, unresolved burden and review time. Report
@@ -4858,6 +4863,209 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       test. The page changes apply on the next deploy; the savings-clause
       default reaches extraction from the next worker update. One commit
       for code, tests and this finding.
+      (120) 2026-10-18 19:10 to 19:45 UTC (implementer C), Q5: the limb
+      names harvested. `scripts/product/harvest-rep-limbs.js` (library
+      `lib/product/rep-limb-harvest.js`, `tests/product-rep-limb-harvest.test.js`)
+      reads every readout on the two representations tables across the
+      runs it is given (`--run <id>` from the database or `--snapshot
+      <file>`, finding (124)), clusters the row_detail values per
+      representation row by the words they share (stop words, the
+      parties and materiality dropped, a small stemmer, a "Scope: rest"
+      prefix such as "Subsidiaries:" or "Non-U.S. Benefit Plans:" kept
+      as a scope, the row's own common words left out on rows of ten or
+      more names, two names one run gave to one section never folded,
+      likeness 0.6) and proposes one canonical name per cluster: an
+      existing detail_labels_by_row label when the cluster holds one,
+      else the most used member. Ben decides the names; nothing in
+      table-shapes.v3.json changed. The note for his decision:
+      docs/codex-program/notes/Q5-REPRESENTATION-LIMB-NAMES-PROPOSAL-2026-10-18.md
+      (858 lines, one table per representation with the counts, the
+      names folded and one example per name), rerun as one command when
+      Olaplex and Apogee finish. Read from Metsera generation 8 and NCS
+      generation 5 (NCS generation 4 is bundle V8 and carries no
+      readouts, so it adds nothing): 558 readouts, 528 with a limb name,
+      489 distinct names, 21 used in more than one run, 446 proposed
+      names of which 43 fold several. What the harvest shows, which is
+      the premise of Q5 proved on the data: on the nine rows that have a
+      canonical list (decision 31's Organization and Authority, General
+      Exceptions, Knowledge, Capitalization, Material Contracts and the
+      Parent twins) 64 of 78 limb facts carry a canonical name, and
+      Organization, Authority and General Exceptions carry one on every
+      fact in both deals; on the 43 rows without a list the extractor
+      named 450 facts with 442 distinct names, 8 of them used in both
+      deals, so nothing on those rows compares across deals until Ben
+      fixes the vocabulary. The clustering was read against the output
+      three times (Ben: "look at all of the output yourself and analyze
+      if you think it is right or wrong and if not, iterate to improve
+      it"): the first pass folded "Securities law filings exception"
+      with the HSR Act exception and two post-Closing income limbs of
+      one section, fixed by the likeness, the same-section rule and the
+      scope prefix; every one of the 43 folds in the committed note was
+      then read and holds (the Taxes, ERISA and Labor pairs are the
+      same limb in NCS words and Metsera words). What it cannot do: the
+      403 single-name clusters on the unseeded rows are the extractor's
+      one-off wording, a limb list has to be decided, not clustered,
+      and the note gives Ben the material per row to decide from.
+      (121) 2026-10-18 19:45 UTC (implementer C), Q4: the evidence note
+      docs/codex-program/notes/Q4-LEGACY-QUERY-COMPARE-EVIDENCE-2026-10-18.md,
+      no code changed. Read from the code at 3ab0989 (a survey agent's
+      inventory, its main claims checked line by line): legacy Query is
+      already off at every entry point (the five `/api/query/*` routes
+      answer 503 ROUTE_CONTAINED, every `/query/*` page but
+      `/query/provisions` redirects to `/`, the home page hides the
+      query surface behind QUERY_UI_CONTAINED) and its archived handlers
+      read the legacy `deals`, `provisions`, `provision_cards`,
+      `saved_queries` and `users` tables through the
+      `ai_metadata.features` field model, never a product table;
+      Compare is two extra columns on the legacy review page behind
+      `?compare=` and `?market=1`, reachable only by typing the URL,
+      with its market stats contained; the layered read
+      (`listPublishedLayeredFacts`) serves activated releases only, and
+      the preview branch holds none (zero release heads, zero releases
+      on 2026-10-18), so it answers an empty list until Phase 6 loads
+      one. The cost table: retire now is one deletion commit (about
+      36,000 lines, 18,170 of them the alias registry, and 80 test files
+      outside test:active); keep unrouted costs nothing now and keeps
+      ageing; migrate is a rewrite, not a port, because the V2 facts do
+      not carry the fields the kinds filter on. Put to Ben as one line:
+      retire now or keep unrouted, and whether a Query on layered facts
+      (a conclusions-cell filter across agreements) becomes a plan item
+      once releases exist.
+      (122) 2026-10-18 19:20 to 19:45 UTC (implementer C), Phase 5
+      reconciliation dry run. One command now exports a run's V2 facts
+      and reconciles Ben's notes against them:
+      `node scripts/product/reconcile-ben-samples.js --notes olaplex|apogee
+      --run <id> --out-dir <dir>` (`--snapshot <file>` in place of
+      `--run`), writing v2-facts.json, reconciliation.md and summary.txt;
+      it refuses a V1 run (no component trees) and a run of another
+      agreement when the notes name their source URL (Apogee's do;
+      `--allow-source-mismatch` for a path check), and
+      `scripts/product/reconcile-sample-notes.js` now exports its report
+      renderer and runs only as a script. Run against Metsera generation
+      8 (the only READY V2 run; Olaplex has V1 runs 068d9468 and
+      9cb8e881, Apogee V1 run a21f9bf7, both refused as V1 by the
+      command) with both note files as a path check, not a measure, and
+      three defects in the tooling found and fixed with tests
+      (`tests/product-sample-reconciliation.test.js`,
+      `tests/product-reconcile-ben-samples.test.js`): (a) the article
+      introduction: the structure builder names the node "III-INTRO"
+      (every run's closures carry "III-INTRO" and "IV-INTRO") and the
+      matcher accepted "III", "3" and "3.0", so Apogee's "Article III
+      intro" note would have matched nothing; (b) section numbering: a
+      note says "6.1(a)" and Metsera's sections are "6.01", so every
+      Olaplex item was MISSING with no candidate until leading zeros are
+      dropped on both sides (as source-context's normalizedReference
+      does; "6.10" stays section ten); (c) the fact's reference is its
+      section node's ("6.01"), never a subsection, so a note on
+      "6.1(a)-(d)" must reach the facts filed under "6.1", which the
+      self-or-descendant rule never did; the fact's section may now be
+      the note's own, below it or above it (an article number alone
+      never matches). After the three: Olaplex 72 items against Metsera
+      3 MATCHED, 24 PARTIAL, 44 MISSING, 1 GAP, 29 items whose section
+      Metsera lacks; Apogee 7 items 0, 4, 3, 0 and 2 (meaningless as a
+      measure, the agreements differ; the path runs end to end). What
+      the measure will say once Olaplex and Apogee are READY under V2:
+      per note item, the best fact in its section by word overlap with a
+      status at 50 and 20 per cent, the facts in noted sections no item
+      mentions, and the counts; Ben fills severity and acceptance.
+      What it will not say: a success rate (the report prints
+      "unavailable until the lawyer marks severity"), whole-agreement
+      recall (the notes are partial by their own provenance fields),
+      citation sufficiency or narrowness (the matcher reads headline and
+      component words, not spans), duplicates or contradictions (not
+      scored), or review time (not recorded). A MATCHED status is a
+      word-overlap guess for Ben to confirm, never acceptance. The
+      database path of the command (`ProductPhase3Store#getAgreementAnalysis`,
+      as export-review-comparison-inputs.js uses it) ran only through
+      the test's fake store in this session, because the branch's keys
+      are not in this environment (finding (124)).
+      (123) 2026-10-18 19:30 to 19:45 UTC (implementer C), finding
+      (66)'s open item: the 51 REQUIRED_FACT_TYPE_UNRESOLVED draft
+      issues on Metsera generation 8. `scripts/product/unresolved-fact-types.js`
+      (library `lib/product/unresolved-fact-types.js`,
+      `tests/product-unresolved-fact-types.test.js`) reads each one back
+      to the sections whose FACT_TYPE assertion is UNRESOLVED and the
+      cause the stored rows hold (a SOURCE_CLOSURE_INCOMPLETE issue, a
+      held proposal of the type, or the model's own coverage answer
+      parsed from the extraction call against its facts), says whether
+      another section carries the type VALID, and gives a verdict per
+      fact type; `--compare` sets a second run's list beside it. The
+      note: docs/codex-program/notes/METSERA-GENERATION-8-UNRESOLVED-FACT-TYPES-2026-10-18.md.
+      The reading corrects the item's premise. The 51 are not sections
+      answering NOT_FOUND where another section carries the fact: all
+      51 come from one section, Exhibit-B, the Form CVR Agreement,
+      routed to 13 families (nine by the router, four widened from the
+      residual pass) and never extracted, because its closure records
+      six unresolved references (2.4, 2.4(a), 2.4(e), 2.4(i), 2.6, 5.3:
+      the CVR Agreement's own sections, which are inside the one exhibit
+      node and have no node of their own) and seventeen more resolved
+      into the main agreement by number ("2.2" to the merger agreement's
+      2.02), and the closureIncomplete branch of agreement-draft.js
+      writes UNRESOLVED for every required fact type of every routed
+      family and makes no extraction call. 47 of the 51 fact types are
+      carried VALID elsewhere in the run and 4 are not
+      (ORDINARY_COURSE_DEFINITION_RECORDED, INTENDED_TAX_TREATMENT_KIND,
+      TAX_OPINION_COOPERATION_COVENANT, TAX_TREATMENT_PROTECTION_COVENANT:
+      a cash deal with no tax-treatment covenant, absent as such).
+      Generation 7 has the same 51 plus NO_SHOP/SUBSEQUENT_MATCH_PERIOD
+      (5.02's held facts, since fixed). So the state is two things at
+      once: bookkeeping in the draft issue, which names the fact type
+      and not the section or the cause, so "TERMINATION_RIGHT
+      UNRESOLVED" stands beside sixteen valid termination rights; and a
+      real gap in the draft, the CVR Agreement itself, whose nine
+      unusual-provision flags from the residual pass (the $1.5bn
+      development spend commitment, the Change of Control assumption,
+      the anti-avoidance covenant, the abandonment right) are the only
+      trace of its content in the run. NCS shows the other causes the
+      script tells apart (generation 4: 23 draft issues, 14 held facts
+      the lawyer decides, 3 model answers against the model's own
+      facts, 5 FOUND-with-nothing with no valid fact anywhere;
+      generation 5 so far: 2, both held). Proposed, for the manager and
+      implementer A (extraction defects are A's track), not built here:
+      (i) the draft issue carries the sections and causes it is made of
+      (the message naming `Exhibit-B: SOURCE_CLOSURE_INCOMPLETE` beside
+      the fact type), the state staying UNRESOLVED as OPERATING-RULES
+      requires; (ii) a reference from an exhibit scope that has no
+      target in that scope is the exhibit's own internal reference (its
+      text is already in the closure as the full section span) and
+      neither unresolved nor a cross-scope match into the main agreement
+      by bare number, so the CVR Agreement's closure is complete and it
+      is extracted like any section (it would then split as a long
+      section, which Q6 and work packages 9 and 15 already handle);
+      (iii) until (ii) lands, an incomplete closure should still be
+      extracted with the incompleteness recorded as the issue it already
+      is, rather than skipped, because a skipped section is absence
+      presented as UNRESOLVED bookkeeping. Whether the CVR Agreement's
+      terms belong in the Metsera draft at all is Ben's call; the
+      router and residual pass both said they do.
+      (124) 2026-10-18 (implementer C), how the runs were read.
+      `lib/product/run-rows.js` (`tests/product-run-rows.test.js`) is
+      the one loader the three scripts share: a run's rows per table
+      from the database through supabase-js, paged in the store's order
+      with equality filters, or the same rows from a snapshot file
+      (`PRODUCT_RUN_SNAPSHOT/V1`: `{ run_id, tables: { <table>: rows } }`),
+      so a script's reading of a snapshot is its reading of the
+      database (Ben: "everything to be driven by coding and not just a
+      layer on top so all edits need to be repeatable across corpus").
+      This session's environment holds the production project's keys,
+      which the preview branch ecrtoofsyxozazkvsvcl refuses ("Invalid
+      API key") and the production project itself now answers with
+      "Legacy API keys are disabled", and no key was decrypted or
+      written down; the rows
+      were read as plain SQL through the Supabase connector, saved
+      outside the repository and assembled into snapshots of the same
+      row shape (Metsera generations 7 and 8, NCS generations 4 and 5,
+      the generation 8 proposals in ten pages of a hundred with their
+      components, headlines and statements; the model calls of the
+      unresolved sections as their two coverage objects). The snapshots
+      are not committed (the generation 8 one is 4 MB); the notes say
+      which runs they came from and every figure above reruns from
+      `--run` with the branch's keys. The four test files are in
+      test:active: 729 of 730, the one failure the known Codex-client
+      final-message test. Not done, deliberately: no run, worker or sandbox was
+      touched; the preview API was not called; detail_labels_by_row,
+      the closure builder and the draft's issue message are unchanged,
+      proposed only.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
@@ -4886,8 +5094,17 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       proposed canonical list per representation to Ben in one note for his
       decision; then add them to `detail_labels_by_row` in generator decision
       31 and regenerate. Ben decides the names; the code only proposes.
+      Harvested 2026-10-18 (finding (120)): the proposal per
+      representation is in
+      docs/codex-program/notes/Q5-REPRESENTATION-LIMB-NAMES-PROPOSAL-2026-10-18.md
+      from Metsera generation 8 and NCS generation 5, rerun by
+      `scripts/product/harvest-rep-limbs.js` as Olaplex and Apogee
+      finish; waits on Ben's names.
 - [ ] Q4 Decide with Ben whether legacy Query and Compare migrate to this
-      read or are retired.
+      read or are retired. Evidence 2026-10-18 (finding (121)):
+      docs/codex-program/notes/Q4-LEGACY-QUERY-COMPARE-EVIDENCE-2026-10-18.md;
+      both are already off every entry point and read only legacy
+      tables; the question put is retire now or keep unrouted.
 
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
