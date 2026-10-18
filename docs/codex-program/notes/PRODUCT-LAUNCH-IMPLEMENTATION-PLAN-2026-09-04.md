@@ -3206,6 +3206,24 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       contracts, $102.34 on claude-opus-5-5. Recommendation to Ben:
       generation 8 on the subscription (no charge, the limit resets);
       the API for NCS after a cache breakpoint lands.
+      (51) 2026-10-18 02:07 to 02:25 UTC, Ben: "Go ahead and" (the
+      recommendation of (50)). Work package 4 (finding (49)) merged;
+      suite 656 of 657 (the known Codex-client failure). The sandbox was
+      recreated for the Claude CLI path (`create-sandbox-worker.js
+      --provider ANTHROPIC_CLAUDE_CLI_SUBSCRIPTION`: the stale record
+      deleted, cloned at d001711, Claude Code 2.1.302 in pm-cli). The
+      first two wakes answered 503 "not configured" with nothing in the
+      log: the run route now logs the failure's code, which was
+      PRODUCT_SANDBOX_STARTUP_FAILED, the launcher exiting 78 because its
+      `command -v claude` check ran before pm-cli joined PATH (the old
+      sandbox had the CLI on the default prefix). PATH is exported before
+      the provider checks; the sandbox checkout updated to 172b961.
+      Generation 8 (Metsera, explicit generation 7, stored generation 8)
+      is run `72d94dd2-cb59-49cf-8f46-c89d161b7769`, submitted 02:10 UTC,
+      RUNNING from 02:20 UTC on the subscription with two workers; the
+      manager monitors it and reads it section by section as
+      generations 6 and 7 were read; the API path (finding (46)) is held
+      for NCS after a cache breakpoint.
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
