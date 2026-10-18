@@ -4527,6 +4527,32 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       names. 5.1 and 846731e1 (the section the stopped worker had
       held) FAILED on it; retried (ncs-gen5-retry-6) after the worker
       update.
+      (88) 2026-10-18 19:05 UTC, Ben: "btw IU have a full fable reset to
+      use in the next 4 days sop you should burn on agents etc to
+      advance this whole thing as much as you cna." Recorded as the
+      authority to run several implementers in parallel for four days.
+      Tracks, each its own cloud session on the product branch, each
+      with a reserved finding range so the plan merges cleanly: the
+      existing implementer (A) keeps the extraction and page defects
+      from the reads (work packages 16 onward, findings numbered as
+      today); implementer B, Phase 6 engineering without the cutover
+      (the inactive release pointer load, the V1 against V2 comparison,
+      the outside-in smoke test, the rollback drill, each as a script
+      and a test on the preview branch; findings (100) to (119));
+      implementer C, the analysis track (Q5: harvest the
+      representation row_detail values across Metsera generation 8 and
+      NCS generation 5, cluster them, propose the canonical list per
+      representation for Ben's decision; Q4: the evidence note on what
+      legacy Query and Compare consume and what migrating costs, for
+      Ben's one-line decision; the Phase 5 reconciliation dry run of
+      Ben's Olaplex and Apogee sample notes against the tooling so it
+      is ready the hour those runs finish; the UNRESOLVED fact-type
+      bookkeeping of finding (66); findings (120) to (139));
+      implementer D, parallel hosted workers (a second named sandbox so
+      Olaplex and Apogee run at once on the subscription, each run
+      owning one sandbox, the wake choosing a free one; findings (140)
+      to (159)). The manager merges each track's pushes and resolves
+      the plan file.
 
       (84) 2026-10-18 18:05 to 18:20 UTC (implementer), work package 15
       on finding (83)'s terms ("the documented maximum output cap on the
