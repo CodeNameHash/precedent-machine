@@ -63,6 +63,27 @@ test('reference matcher: a bare reference matches itself and everything below it
   assert.ok(!matches('5.3'));
 });
 
+test('reference matcher: a note\'s "6.1" reaches an agreement that counts "6.01" (Metsera) and one that counts "6.1" (NCS)', () => {
+  const matches = referenceMatcher('6.1(a)-(d)');
+  assert.ok(matches('6.01(a)'));
+  assert.ok(matches('6.01(d)(ii)'));
+  assert.ok(!matches('6.01(e)'));
+  assert.ok(!matches('6.10(a)'), '"6.10" is section ten, not "6.1" padded');
+  const plain = referenceMatcher('5.2');
+  assert.ok(plain('5.02'));
+  assert.ok(plain('5.02(b)(viii)'));
+  assert.ok(!plain('5.20'));
+  assert.ok(referenceMatcher('Section 7.1(b)')('7.01(b)'));
+});
+
+test('reference matcher: a subsection note reaches the fact filed under its section (V2 facts carry the section node\'s reference)', () => {
+  assert.ok(referenceMatcher('6.1(a)-(d)')('6.01'));
+  assert.ok(referenceMatcher('5.3(a)(ii)')('5.3'));
+  assert.ok(referenceMatcher('7.2 and 7.3(d)')('7.03'));
+  assert.ok(!referenceMatcher('5.3(a)(ii)')('5.30'));
+  assert.ok(!referenceMatcher('5.3(a)(ii)')('5'), 'an article number alone is not a section');
+});
+
 test('reference matcher: a lettered range matches every member and its descendants', () => {
   const matches = referenceMatcher('6.1(a)-(d)');
   assert.ok(matches('6.1(a)'));
@@ -70,7 +91,8 @@ test('reference matcher: a lettered range matches every member and its descendan
   assert.ok(matches('6.1(d)'));
   assert.ok(matches('6.1(c)(i)'));
   assert.ok(!matches('6.1(e)'));
-  assert.ok(!matches('6.1'));
+  assert.ok(matches('6.1'), 'the section the range sits in: V2 facts are filed under the section node');
+  assert.ok(!matches('6.10'));
 });
 
 test('reference matcher: an "and" reference matches either side', () => {
@@ -78,12 +100,15 @@ test('reference matcher: an "and" reference matches either side', () => {
   assert.ok(matches('7.2'));
   assert.ok(matches('7.2(a)'));
   assert.ok(matches('7.3(d)'));
-  assert.ok(!matches('7.3'));
+  assert.ok(matches('7.3'), 'the section "7.3(d)" sits in');
   assert.ok(!matches('7.3(e)'));
+  assert.ok(!matches('7.30'));
 });
 
-test('reference matcher: an Article intro reference matches the roman, arabic and ".0" forms', () => {
+test('reference matcher: an Article intro reference matches the structure builder\'s "III-INTRO" and the roman, arabic and ".0" forms', () => {
   const matches = referenceMatcher('Article III intro');
+  assert.ok(matches('III-INTRO'), 'the active structure builder\'s reference for the article introduction');
+  assert.ok(!matches('IV-INTRO'));
   assert.ok(matches('III'));
   assert.ok(matches('3'));
   assert.ok(matches('3.0'));
