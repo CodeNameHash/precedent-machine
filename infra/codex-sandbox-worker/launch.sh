@@ -51,11 +51,12 @@ case "${PRODUCT_MODEL_PROVIDER:-OPENAI_CODEX_CLI_SUBSCRIPTION}" in
     ;;
 esac
 
-# No path sees another path's credential: the API key stays only for the
-# API provider.
+# No path sees another path's credential: the API key, and the optional
+# workspace id beside it (work package 11; never required, never printed),
+# stay only for the API provider.
 unset OPENAI_API_KEY CODEX_API_KEY CODEX_ACCESS_TOKEN
 if [[ "${PRODUCT_MODEL_PROVIDER:-}" != 'ANTHROPIC_API' ]]; then
-  unset ANTHROPIC_API_KEY
+  unset ANTHROPIC_API_KEY ANTHROPIC_WORKSPACE_ID
 fi
 cd /vercel/sandbox/pm-product
 

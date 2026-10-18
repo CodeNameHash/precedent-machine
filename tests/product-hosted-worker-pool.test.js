@@ -219,6 +219,21 @@ test('an API-provider run requires ANTHROPIC_API_KEY before any claim', async ()
   }
 });
 
+// A key the API refuses for want of its workspace header is the
+// deployment's configuration, not a section failure: the worker stops with
+// its own reason (work package 11, plan finding (70)).
+test('an API key without its workspace header stops the worker as not configured', async () => {
+  const priorKey = process.env.ANTHROPIC_API_KEY;
+  process.env.ANTHROPIC_API_KEY = 'sk-ant-test-'.repeat(3);
+  try {
+    const refused = Object.assign(new Error('ANTHROPIC_API_NOT_CONFIGURED: the API key is not scoped to a workspace and no ANTHROPIC_WORKSPACE_ID is set (400): 400 This API key is not scoped to a workspace, so this request must include the anthropic-workspace-id header'), { code: 'ANTHROPIC_API_NOT_CONFIGURED' });
+    const deps = dependencies(async () => { throw refused; }, { model_config: ANTHROPIC_API_MODEL_CONFIG });
+    await assert.rejects(runHostedWorker(options, output, deps), /PRODUCT_HOSTED_ANTHROPIC_API_NOT_CONFIGURED: ANTHROPIC_API_NOT_CONFIGURED: the API key is not scoped to a workspace .*anthropic-workspace-id header/);
+  } finally {
+    if (priorKey === undefined) delete process.env.ANTHROPIC_API_KEY; else process.env.ANTHROPIC_API_KEY = priorKey;
+  }
+});
+
 // A 429 (or an exhausted balance) on the API account stops the worker with
 // the usage-limit reason, as the CLI paths' limits do, instead of burning
 // attempts (work package 3).

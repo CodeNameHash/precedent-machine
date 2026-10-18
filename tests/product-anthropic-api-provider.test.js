@@ -18,7 +18,7 @@ const {
 const { createProductIntakeHandler } = require('../lib/product/intake-handler');
 const { createProductAnalysisHandler } = require('../lib/product/analysis-handler');
 const { estimateFromSplit, estimateRunCost, parseArguments, usageSplit } = require('../scripts/product/estimate-run-cost');
-const { PER_SECTION_KEYS, REQUEST_LAYOUT_NOTE, cacheableContent, createAnthropicApiProductModel, isAccountLimit, splitRequestForCache } = require('../lib/product/anthropic-api-model');
+const { PER_SECTION_KEYS, REQUEST_LAYOUT_NOTE, cacheableContent, clientOptions, createAnthropicApiProductModel, isAccountLimit, isNotConfiguredError, isWorkspaceScopeError, splitRequestForCache } = require('../lib/product/anthropic-api-model');
 const { createHostedProductModel, SYSTEM_PROMPT } = require('../lib/product/claude-cli-model');
 const { receivedProviderFailure } = require('../lib/product/model-adapter');
 const { isUsageLimitError } = require('../lib/llm-cli-client');
@@ -142,6 +142,58 @@ test('a 429 or an exhausted credit balance is the account\'s limit, which stops 
   await assert.rejects(failing.complete({ call_kind: 'ROUTING', prompt_version: 'R1', request: {} }), (error) => error === broken);
 });
 
+// Work package 11 (plan finding (70)): an organisation-level key needs the
+// workspace header; a 400 naming it stops the worker as configuration.
+const WORKSPACE_REFUSAL = '400 {"type":"error","error":{"type":"invalid_request_error","message":"This API key is not scoped to a workspace, so this request must include the anthropic-workspace-id header with the ID of the workspace to use. Add the header, or use an API key that is scoped to a workspace."}}';
+
+test('the client sends anthropic-workspace-id on every request when ANTHROPIC_WORKSPACE_ID is configured, and nothing when it is not', async () => {
+  const key = 'sk-ant-test-'.repeat(3);
+  assert.deepEqual(clientOptions({ apiKey: key, workspaceId: ' wrkspc_01ABC ' }), { apiKey: key, defaultHeaders: { 'anthropic-workspace-id': 'wrkspc_01ABC' } });
+  assert.deepEqual(clientOptions({ apiKey: key, workspaceId: '' }), { apiKey: key });
+  assert.deepEqual(clientOptions({ apiKey: key, workspaceId: undefined }), { apiKey: key });
+  const built = [];
+  const factory = (options) => { built.push(options); return fakeClient(message()); };
+  await createAnthropicApiProductModel({ apiKey: key, workspaceId: 'wrkspc_01ABC', clientFactory: factory }).complete({ call_kind: 'ROUTING', prompt_version: 'R1', request: {} });
+  await createAnthropicApiProductModel({ apiKey: key, workspaceId: undefined, clientFactory: factory }).complete({ call_kind: 'ROUTING', prompt_version: 'R1', request: {} });
+  assert.deepEqual(built, [{ apiKey: key, defaultHeaders: { 'anthropic-workspace-id': 'wrkspc_01ABC' } }, { apiKey: key }]);
+  // The environment is the default, as for the key.
+  const saved = [process.env.ANTHROPIC_API_KEY, process.env.ANTHROPIC_WORKSPACE_ID];
+  process.env.ANTHROPIC_API_KEY = key;
+  process.env.ANTHROPIC_WORKSPACE_ID = 'wrkspc_env';
+  try {
+    createAnthropicApiProductModel({ clientFactory: factory });
+    assert.deepEqual(built[2], { apiKey: key, defaultHeaders: { 'anthropic-workspace-id': 'wrkspc_env' } });
+    delete process.env.ANTHROPIC_WORKSPACE_ID;
+    createAnthropicApiProductModel({ clientFactory: factory });
+    assert.deepEqual(built[3], { apiKey: key });
+  } finally {
+    for (const [index, name] of ['ANTHROPIC_API_KEY', 'ANTHROPIC_WORKSPACE_ID'].entries()) {
+      if (saved[index] === undefined) delete process.env[name]; else process.env[name] = saved[index];
+    }
+  }
+});
+
+test('a 400 naming the workspace header is ANTHROPIC_API_NOT_CONFIGURED with the API\'s message kept, which the worker stops on', async () => {
+  const refusal = Object.assign(new Error(WORKSPACE_REFUSAL), { status: 400 });
+  assert.equal(isWorkspaceScopeError(refusal), true);
+  assert.equal(isAccountLimit(refusal), false, 'not a usage limit');
+  assert.equal(isWorkspaceScopeError(Object.assign(new Error('400 invalid_request_error: max_tokens'), { status: 400 })), false);
+  assert.equal(isWorkspaceScopeError(Object.assign(new Error(WORKSPACE_REFUSAL), { status: 403 })), false);
+  const model = createAnthropicApiProductModel({ client: fakeClient(() => { throw refusal; }) });
+  await assert.rejects(model.complete({ call_kind: 'ROUTING', prompt_version: 'R1', request: {} }), (error) => {
+    assert.equal(error.code, 'ANTHROPIC_API_NOT_CONFIGURED');
+    assert.match(error.message, /^ANTHROPIC_API_NOT_CONFIGURED: the API key is not scoped to a workspace and no ANTHROPIC_WORKSPACE_ID is set \(400\): 400 .*This API key is not scoped to a workspace, so this request must include the anthropic-workspace-id header/);
+    assert.equal(error.cause, refusal);
+    assert.equal(isNotConfiguredError(error), true);
+    assert.equal(isUsageLimitError(error), false, 'not the usage-limit rule: the worker has its own test for it');
+    return true;
+  });
+  const withHeader = createAnthropicApiProductModel({ apiKey: 'sk-ant-test-'.repeat(3), workspaceId: 'wrkspc_01ABC', clientFactory: () => fakeClient(() => { throw refusal; }) });
+  await assert.rejects(withHeader.complete({ call_kind: 'ROUTING', prompt_version: 'R1', request: {} }), /ANTHROPIC_API_NOT_CONFIGURED: the API refused the key with the ANTHROPIC_WORKSPACE_ID header sent \(400\)/);
+  assert.equal(isNotConfiguredError(new Error('ANTHROPIC_API_NOT_CONFIGURED: wrapped')), true);
+  assert.equal(isNotConfiguredError(new Error('ANTHROPIC_API_USAGE_LIMIT: x')), false);
+});
+
 test('the key is required unless a client is supplied, and a hosted run on the API provider builds this model', () => {
   assert.throws(() => createAnthropicApiProductModel({ apiKey: undefined, client: null }), /ANTHROPIC_API_KEY is not configured/);
   assert.throws(() => createAnthropicApiProductModel({ apiKey: 'short', client: null }), /ANTHROPIC_API_KEY is not configured/);
@@ -180,6 +232,14 @@ test('the wake carries the API key into the sandbox for the API provider only, a
     ANTHROPIC_API_KEY: 'sk-ant-'.repeat(6),
   });
   assert.doesNotMatch(JSON.stringify(result), /sk-ant-/);
+  // Work package 11: the workspace id rides beside the key when set, by
+  // name, for this provider only, and never into the result.
+  const withWorkspace = await wakeSandboxProductRun({ ...base, providerId: ANTHROPIC_API_PROVIDER_ID, anthropicApiKey: 'sk-ant-'.repeat(6), anthropicWorkspaceId: ' wrkspc_01WORKSPACE ' });
+  assert.equal(commandInput.env.ANTHROPIC_WORKSPACE_ID, 'wrkspc_01WORKSPACE');
+  assert.deepEqual(Object.keys(commandInput.env), ['SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'PRODUCT_MODEL_PROVIDER', 'ANTHROPIC_API_KEY', 'ANTHROPIC_WORKSPACE_ID']);
+  assert.doesNotMatch(JSON.stringify(withWorkspace), /wrkspc_/);
+  await wakeSandboxProductRun({ ...base, providerId: ANTHROPIC_API_PROVIDER_ID, anthropicApiKey: 'sk-ant-'.repeat(6), anthropicWorkspaceId: '' });
+  assert.equal('ANTHROPIC_WORKSPACE_ID' in commandInput.env, false, 'an empty setting is no setting');
 });
 
 test('the run route wakes the sandbox for an API run with the deployment\'s key', async () => {
@@ -198,6 +258,7 @@ test('the run route wakes the sandbox for an API run with the deployment\'s key'
     serviceRoleKeyResolver: () => 'service-role-secret-value',
     claudeOauthTokenResolver: () => assert.fail('the OAuth token is not read for an API run'),
     anthropicApiKeyResolver: () => 'sk-ant-'.repeat(6),
+    anthropicWorkspaceIdResolver: () => 'wrkspc_01WORKSPACE',
     wakeRun: async (input) => { wakeInput = input; return { command_id: 'command-1' }; },
   });
   const response = { statusCode: null, body: null, setHeader() {}, status(code) { this.statusCode = code; return this; }, json(body) { this.body = body; return this; } };
@@ -205,7 +266,7 @@ test('the run route wakes the sandbox for an API run with the deployment\'s key'
   assert.equal(response.statusCode, 202);
   assert.deepEqual(wakeInput, {
     runId, databaseUrl: 'https://ecrtoofsyxozazkvsvcl.supabase.co', serviceRoleKey: 'service-role-secret-value',
-    providerId: ANTHROPIC_API_PROVIDER_ID, anthropicApiKey: 'sk-ant-'.repeat(6),
+    providerId: ANTHROPIC_API_PROVIDER_ID, anthropicApiKey: 'sk-ant-'.repeat(6), anthropicWorkspaceId: 'wrkspc_01WORKSPACE',
   });
   assert.equal(response.body.execution_mode, 'HOSTED');
 });

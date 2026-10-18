@@ -231,4 +231,8 @@ test('the launcher starts the worker only under its flock', () => {
   const lockIndex = lines.findIndex((line) => /exec flock --wait 3600 --conflict-exit-code 75 \/vercel\/\.codex\/pm-worker\.lock/.test(line));
   assert.ok(lockIndex >= 0, 'the flock line');
   assert.equal(lines.indexOf(workerLines[0]), lockIndex + 1, 'the worker command is the flock\'s command');
+  // Work package 11: the optional workspace id is passed through for the
+  // API provider, never required, and unset with the key for every other.
+  assert.ok(lines.some((line) => /^\s*unset ANTHROPIC_API_KEY ANTHROPIC_WORKSPACE_ID$/.test(line)), 'the key and the workspace id leave together');
+  assert.equal(lines.some((line) => /ANTHROPIC_WORKSPACE_ID:-/.test(line)), false, 'the workspace id is never required');
 });

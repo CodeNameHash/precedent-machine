@@ -10,6 +10,7 @@ const {
 } = require('../lib/product/product-model-config');
 const { assertDisposableDatabaseUrl } = require('../lib/product/sandbox-wake');
 const { isUsageLimitError } = require('../lib/llm-cli-client');
+const { isNotConfiguredError } = require('../lib/product/anthropic-api-model');
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const IDLE_WAIT_MS = 1000;
@@ -61,7 +62,9 @@ async function runHostedWorker(options, output = process.stdout, dependencies = 
   if (providerId === CLAUDE_CLI_PROVIDER_ID && !process.env.CLAUDE_CODE_OAUTH_TOKEN) {
     throw new Error('PRODUCT_HOSTED_CLAUDE_LOGIN_REQUIRED');
   }
-  // The API path (work package 3) needs the key the wake passed in.
+  // The API path (work package 3) needs the key the wake passed in;
+  // ANTHROPIC_WORKSPACE_ID beside it is optional (work package 11) and the
+  // model reads it from the environment itself.
   if (providerId === ANTHROPIC_API_PROVIDER_ID && !process.env.ANTHROPIC_API_KEY) {
     throw new Error('PRODUCT_HOSTED_ANTHROPIC_API_KEY_REQUIRED');
   }
@@ -117,6 +120,13 @@ async function runHostedWorker(options, output = process.stdout, dependencies = 
       // account has credits (Metsera generation 5, 2026-09-14; generation 7
       // at 19:29 UTC, the Claude session limit). The code keeps its name.
       if (isUsageLimitError(error)) throw new Error(`PRODUCT_HOSTED_CODEX_USAGE_LIMIT: ${error.message}`);
+      // An API key the account refuses for want of its workspace header is
+      // the deployment's configuration, not a section failure (NCS
+      // generation 5, 2026-10-18: two sections burnt three attempts each
+      // in a minute before the run failed). The worker stops with the
+      // reason; the run is retried once ANTHROPIC_WORKSPACE_ID, or a
+      // workspace-scoped key, is set (work package 11, plan finding (70)).
+      if (isNotConfiguredError(error)) throw new Error(`PRODUCT_HOSTED_ANTHROPIC_API_NOT_CONFIGURED: ${error.message}`);
       throw error;
     }
   };
