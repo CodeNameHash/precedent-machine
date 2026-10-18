@@ -558,11 +558,12 @@ function Table({ table, selection, onSelect, initialSubRowsOpen = false }) {
           {table.rows.map((row, rowIndex) => {
             if (row.absent) {
               return (
-                <tr key={`${row.subject}-${rowIndex}`} className={ROW} data-testid="table-row" data-absent="true">
+                <tr key={`${row.subject}-${rowIndex}`} className={ROW} data-testid="table-row" data-absent="true" {...(row.held ? { 'data-held': 'true' } : {})}>
                   {table.term_column ? (
                     <td className={TD}><span className={SUBJECT}>{row.subject}</span></td>
                   ) : null}
-                  <td className={`${TD} font-ui text-[12.5px] text-[#6b6b6b]`} colSpan={table.columns.length} data-testid="table-absent">{table.absent_row_label}</td>
+                  {/* Work package 16: a row whose only fact is held by validation carries its own words (absent_label) in place of the table's absent label. */}
+                  <td className={`${TD} font-ui text-[12.5px] text-[#6b6b6b]`} colSpan={table.columns.length} data-testid="table-absent">{row.absent_label || table.absent_row_label}</td>
                 </tr>
               );
             }

@@ -915,3 +915,21 @@ test('the Other provisions table renders its Summary column only when a summary 
   assert.match(says, />Summary<\/th>/);
   assert.match(says, /data-testid="other-provision-line"[^>]*>The Company files the Certificate of Merger/);
 });
+
+// Work package 16 (plan finding (85)): a row whose only fact is held by
+// validation carries its own words in place of the table's absent label.
+test('an absent row with its own label (a held option) renders that label and data-held', () => {
+  const view = { sections: [{ section_key: 'consideration-hero', title: 'Consideration', tables: [{
+    table_key: 'consideration-election-options', group_header: 'ELECTION OPTIONS', layout: 'rows', term_column: { header: 'Election', source: 'subject' },
+    columns: [{ column_id: 'exchangeRatio', header: 'Exchange ratio' }], absent_row_label: 'Not a deal feature',
+    rows: [
+      { subject: 'Cash election', absent: true, cells: [{ column_id: 'exchangeRatio', kind: 'dash' }], backing_facts: [] },
+      { subject: 'Stock election', absent: true, held: true, absent_label: 'Held: this option\'s fact is held by validation', cells: [{ column_id: 'exchangeRatio', kind: 'dash' }], backing_facts: [{ fact_id: 'held-share', held: true }] },
+      { subject: 'Mixed election', cells: [{ column_id: 'exchangeRatio', kind: 'value', label: '0.2392', tone: 'value', component_ids: ['c'], fact_ids: ['f'] }], backing_facts: [{ fact_id: 'f' }] },
+    ],
+  }] }], defined_terms: [] };
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts: [] }));
+  assert.match(html, /data-absent="true"[^>]*>(?:(?!<\/tr>).)*Not a deal feature/s);
+  assert.match(html, /data-held="true"[^>]*>(?:(?!<\/tr>).)*Held: this option(?:&#x27;|')s fact is held by validation/s);
+  assert.equal((html.match(/data-absent="true"/g) || []).length, 2);
+});

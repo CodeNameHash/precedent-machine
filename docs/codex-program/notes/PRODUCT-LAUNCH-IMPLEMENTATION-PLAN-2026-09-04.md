@@ -4605,6 +4605,153 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       updates the sandbox worker to this branch's tip; the run route
       needs no redeploy for it. Commits: the code and tests commit and
       this plan and guide commit.
+      (86) 2026-10-18 18:25 to 18:40 UTC (implementer), work package 16
+      on finding (85), Ben's four answers on the election options table,
+      each in code for every agreement, his words in the shape
+      generator's comment. No run submitted or touched; no live API
+      call. (1) "STOCK": the row stays "Stock election" (built so in
+      (80); recorded). (2) "I'D SAY \"NOT A DEAL FEATURE\"": the options
+      table has absent_row_label "Not a deal feature", shown for a fixed
+      row no fact fills once the table has a filled row (the existing
+      rule, so a deal without an election shows no table and no
+      "feature" line). The manager's qualification, "a held fact is
+      'held', never 'not a feature'": the preview skipped every
+      non-VALID proposal (lib/product/provisions-preview.js), so a held
+      fact never reached the tables; a held V2 proposal keeps its
+      component tree in its payload (checked on the preview branch: NCS
+      2.1's held cash leg 608d3d2b has eight components with their words,
+      "with respect to which an election to receive mixed consideration
+      ...", "the Cash Consideration", the Cash Consideration formula).
+      previewFactsFromWorkspace now returns `held_facts` (layered,
+      non-VALID, not rejected), the provisions page hands them to
+      PublishedSummary and buildTableView takes `heldFacts`, read by the
+      election options rule alone: a held fact is placed on its option
+      by the same words rule (it has no readout); an option with no
+      filled row and a held fact is a row reading the rule's
+      held_row_label, "Held: this option's fact is held by validation",
+      its held fact cited (data-held on the page); a held fact of a
+      filled option backs that row, marked held. (3) "KEEP ELECTIONS BUT
+      ONLY WHEN THERE IS AN ELECTIOB": the per-share table's
+      `election_forms` (CASH_ELECTION to CASH, STOCK_ELECTION to
+      PARENT_STOCK) and `foldElectionForms`: when the options table has
+      no filled row, a per-share row coded as an election form folds
+      into its plain form's row (cells merged, the form cell recoded with
+      folded_from); with an election the rows stay; the table's guidance
+      tells the extractor the election forms are for an election deal
+      only. (4) "WHAT DO YOU MEAN MINE TO SAY? SHOYUULDN'T ALL THE INFO BE
+      LINKED/ACCURTE?": the link through the definitions, mechanical as
+      the manager put it. Each option row keeps its own term and the
+      numeric terms its facts name (its ratio or cash terms); every value
+      term whose definition fact's own words (not its summary) name one
+      of them is linked to the row, with the longest defined term matched
+      first over all terms (the first render linked the mixed terms to
+      the stock row because "Share Consideration Exchange Ratio" sits
+      inside "Mixed Share Consideration Exchange Ratio"; fixed before
+      commit). A linked term matching the rule's value_term ("Value$")
+      goes under a new Value per share column, any other under Value
+      terms, each cell marked derived 'definition_link' with `via` the
+      term that links it and citing the definition; the numeric terms the
+      definition names in turn are listed after it. NCS 2.1 as the page
+      now reads it, from the stored facts with the held cash leg: Cash
+      election: Not a deal feature. Stock election [Share Consideration]:
+      Exchange ratio 0.5537. Mixed election [Mixed Share Consideration]:
+      Exchange ratio 0.2392; Value per share "Mixed Share Consideration
+      Value means the mixed exchange ratio times the Parent Closing
+      Price" (linked via Mixed Share Consideration Exchange Ratio; the
+      text is the Defined Terms entry's, the model's summary, which
+      paraphrases "the mixed exchange ratio"); Value terms "Cash
+      Consideration means the Cash Exchange Ratio multiplied by the
+      Parent Closing Price", "Cash Exchange Ratio: 0.1371"; the held cash
+      leg backs the mixed row; Cash per share hidden. The per-share table
+      keeps Stock election 0.5537 and Acquirer stock 0.2392. Metsera
+      generation 8 (thirteen held facts passed): no election table, the
+      per-share rows unchanged. Observed, for the manager: the linked
+      text is the Defined Terms entry's text, so where the model's
+      summary paraphrases the words the cell paraphrases too; reading the
+      definition fact's own words instead would change every Defined
+      Terms entry and is a separate decision. Tests: the shape and its
+      validation (tests/product-table-shapes.test.js), the absent and
+      held rows, the link and its longest match, the fold with and
+      without an election (tests/product-table-view.test.js), the held
+      row's label and data-held (tests/product-provision-tables.test.js),
+      held_facts from the preview (tests/product-provisions-preview.test.js).
+      npm run test:active: 702 of 703, the one failure the known
+      Codex-client final-message test. The page changes apply on the
+      branch's next deploy; nothing in the worker changes. Commits: the
+      code and tests commit and this plan and guide commit. Correction
+      to (84), read from (87) at 18:40: "the run route needs no redeploy
+      for it" was wrong. The run's stored model_config carried the
+      64,000 cap as part of the identity the run route and the
+      call-model resolver compared, so raising the deployed cap refused
+      the running run's wake and then every section; the manager's
+      commits 70c704f and 4247603 make the cap an operational limit
+      outside the identity. I should have read the identity comparison
+      before changing a value inside the config; noted for every
+      config change from here.
+      (88) 2026-10-18 18:42 to 19:04 UTC (implementer): work packages 15
+      and 16 reconciled with the manager's messages of 18:00 and 18:05
+      UTC, both delivered at 18:42, after (84) and (86) were built from
+      the findings. No run touched. Work package 15. The message's rule is
+      finer than (84)'s: "each part of the previous split that passed the
+      cap is halved by its limbs (a part of one limb that still passes the
+      cap goes to paragraphs mode within that limb); for paragraphs mode,
+      the part size halves". (84) halved every part's size, which cannot
+      cut a limb: 5.1's structure (read from the run's agreement
+      structure) is a 33-byte chapeau and three limbs, (a) 13,108 bytes
+      with twenty-seven sub-limbs (i) to (xxvii), (b) 1,776 bytes with
+      five, (c) 418 bytes, so the first split is [chapeau], [(a)],
+      [(b), (c)], part 2 is limb (a) alone, and at 1,750 or 875 bytes it
+      is still (a) alone; only the 128,000 cap would have changed its
+      outcome. Built now: the part loop puts the failed part on the error
+      (`extraction_part`: part, of, mode, span ids), failSection stores it
+      beside code and message, and `splitForAttempt` carries such parts as
+      `cap_failed_parts` to `resplitAfterOutputCap`, which replays the
+      failures in order: a failed part of two or more spans is halved by
+      bytes; a failed part of one limb becomes the paragraphs within that
+      limb (the residual pass's paragraph spans inside its byte range),
+      grouped to the usual size, the mode then limbs+paragraphs and each
+      such part told it covers the paragraphs of one limb; a failed part
+      of one paragraph cannot shrink and stays. A failure record without a
+      part (the three 5.1 failures at 17:37, 17:55 and 18:11 were written
+      before this) keeps (84)'s rule. The LONG_SECTION_SPLIT issue records
+      group_bytes, after_output_cap, resplit_parts and the mode. The part
+      counts asked for, 5.1 on this rule: attempt 1, three parts; attempt
+      2, after a record naming part 2, seven parts ([chapeau], (a) in five
+      paragraph parts of 2,575, 3,253, 2,756, 3,202 and 1,322 bytes if each
+      sub-limb is a paragraph, [(b), (c)]); attempt 3, after one of those
+      paragraph parts ran past the cap, eight (that part halved by
+      bytes), or nine if [(b), (c)] failed too. Whether the retry's reset
+      of 5.1 kept its error_history is the manager's to say; without it
+      the retry's first attempt is three parts at the 128,000 cap. Tests:
+      resplitAfterOutputCap on a synthetic closure of that shape, the
+      carried parts against the halving rule, and Concho 6.3 with a model
+      that runs past the cap on its last part (the error names the part;
+      the next attempt splits that part alone, the issue says so)
+      (tests/product-long-section-split.test.js). Work package 16. The
+      message puts a linked value term "under Value terms (and in the
+      value-per-share cell when the definition is a bare number)"; (86)
+      had sent a "...Value" term to a verbatim Value per share column.
+      Now: Value per share is a value column (AMOUNT) filled by a linked
+      bare-number definition; a linked formula definition sits under Value
+      terms after the option's own value terms; the cell cites the
+      definition and the option's facts, and a reading keeps its `derived`
+      and `via` through a merge. NCS 2.1 as the page reads it: Cash
+      election: Not a deal feature. Stock election [Share Consideration]:
+      Exchange ratio 0.5537. Mixed election [Mixed Share Consideration]:
+      Exchange ratio 0.2392; Value terms "Cash Consideration means the
+      Cash Exchange Ratio multiplied by the Parent Closing Price", "Cash
+      Exchange Ratio: 0.1371", "Mixed Share Consideration Value means the
+      mixed exchange ratio times the Parent Closing Price" (via Mixed Share
+      Consideration Exchange Ratio); Cash per share and Value per share
+      hidden (no option states either as a number). The stock election
+      carries no linked term, as the message expects for NCS; the negative
+      is tested (the longer mixed term links nothing to it). Metsera
+      generation 8 unchanged. npm run test:active: 702 of 703, the one
+      failure the known Codex-client final-message test; the split suite
+      (outside the list) 11 of 11. The worker carries the re-split once
+      the manager updates the sandbox worker to this tip; the page
+      changes apply on the next deploy. One commit for code, tests and
+      this finding.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).

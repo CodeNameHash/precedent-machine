@@ -88,6 +88,9 @@ test('previewFactsFromWorkspace keeps valid layered facts, drops held and reject
   }));
   assert.equal(preview.facts.length, fixture.facts.length - 1);
   assert.equal(preview.held_count, 1);
+  // Work package 16: the held layered facts travel with their words, for
+  // the election options table.
+  assert.deepEqual(preview.held_facts.map((fact) => [fact.validation_status, fact.section_reference, fact.fact_id === fact.proposal_id, Array.isArray(fact.components) && fact.components.length > 0]), [['INVALID', '3.14', true, true]]);
   assert.equal(preview.section_count, 1);
   assert.ok(preview.facts.every((fact) => fact.fact_id === fact.proposal_id && fact.section_reference === '3.14'));
   assert.ok(preview.facts.every((fact) => preview.sectionTextByFactId.get(fact.fact_id)?.exact_text === SECTION_TEXT));

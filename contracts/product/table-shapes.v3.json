@@ -556,7 +556,7 @@
             "CVR_COMPONENT",
             "CONSIDERATION_PACKAGE"
           ],
-          "guidance": "One row per form of per-share consideration, named by the form code (Cash, Parent stock, CVR, each side of an election), from the conversion clause and the Merger Consideration definition only: what each share is converted into the right to receive, the amount or ratio, the \"per\" basis, any contingency and the defined term. Exchange-fund, deposit, payment, surrender and certificate mechanics are EXCHANGE_MECHANICS and never a row here, whatever cash or CVR words they contain. The conversion of Merger Sub's shares into shares of the Surviving Corporation is a MERGER_STRUCTURE_CLOSING/LEGAL_EFFECT fact, never a row here.",
+          "guidance": "One row per form of per-share consideration, named by the form code (Cash, Parent stock, CVR, each side of an election), from the conversion clause and the Merger Consideration definition only: what each share is converted into the right to receive, the amount or ratio, the \"per\" basis, any contingency and the defined term. Exchange-fund, deposit, payment, surrender and certificate mechanics are EXCHANGE_MECHANICS and never a row here, whatever cash or CVR words they contain. The conversion of Merger Sub's shares into shares of the Surviving Corporation is a MERGER_STRUCTURE_CLOSING/LEGAL_EFFECT fact, never a row here. The election forms (Cash election, Stock election) are for a deal whose holders elect between forms of consideration only; in any other deal code the form itself (Cash, Acquirer stock).",
           "fixed_row_labels": [
             "Cash",
             "Parent stock",
@@ -578,6 +578,13 @@
             "subtype_key": "CONSIDERATION_PACKAGE",
             "label": "Combined definition",
             "term_words": "Consideration$"
+          },
+          "election_forms": {
+            "options_table_key": "consideration-election-options",
+            "plain_form_by_code": {
+              "CASH_ELECTION": "CASH",
+              "STOCK_ELECTION": "PARENT_STOCK"
+            }
           }
         },
         {
@@ -598,12 +605,13 @@
             "Stock election",
             "Mixed election"
           ],
+          "absent_row_label": "Not a deal feature",
           "subtype_keys": [
             "CASH_COMPONENT",
             "STOCK_COMPONENT",
             "ELECTION"
           ],
-          "guidance": "Only for a deal whose holders elect between forms of consideration; never a row when the agreement has no election. One row per option a holder may elect (cash only, stock only, a stated mix), from the conversion clause: the exchange ratio (Parent shares per Company share) and the cash per share that option receives, and the defined term the agreement gives it. A no-election default is the election mechanics table's \"If no election\" row, never an option here. The page fills an empty ratio or cash cell from the agreement's own definition of a term the option names when that definition is a bare number (a \"Cash Exchange Ratio\" that \"means 0.1371\").",
+          "guidance": "Only for a deal whose holders elect between forms of consideration; never a row when the agreement has no election. One row per option a holder may elect (cash only, stock only, a stated mix), from the conversion clause: the exchange ratio (Parent shares per Company share) and the cash per share that option receives, and the defined term the agreement gives it. A no-election default is the election mechanics table's \"If no election\" row, never an option here. The page fills an empty ratio or cash cell from the agreement's own definition of a term the option names when that definition is a bare number (a \"Cash Exchange Ratio\" that \"means 0.1371\"), links every value term whose definition names the option's term or ratio term, and shows an option no fact is for as \"Not a deal feature\".",
           "columns": [
             {
               "column_id": "exchangeRatio",
@@ -628,6 +636,18 @@
               ],
               "addition": true,
               "reason": "Work package 13 (c), 2026-10-18 (plan finding (79), NCS generation 5, 2.1): the cash each Company share receives under the option, as stated."
+            },
+            {
+              "column_id": "valuePerShare",
+              "header": "Value per share",
+              "render": "value",
+              "value_kind": "AMOUNT",
+              "fill_from": [
+                "AMOUNT",
+                "THRESHOLD"
+              ],
+              "addition": true,
+              "reason": "Work package 16, 2026-10-18 (plan finding (85), Ben on the election options table): the value per share the agreement states for the option, as a number: a linked value term whose definition is a bare number (the manager, 18:05 UTC: \"in the value-per-share cell when the definition is a bare number\"); a value defined as a formula is a Value terms entry."
             },
             {
               "column_id": "valueTerms",
@@ -675,7 +695,9 @@
             "cash_column": "cashPerShare",
             "terms_column": "valueTerms",
             "term_column": "definedAs",
-            "value_terms": "(?:Consideration|Value|Amount|Price|Ratio)$"
+            "value_terms": "(?:Consideration|Value|Amount|Price|Ratio)$",
+            "value_column": "valuePerShare",
+            "held_row_label": "Held: this option's fact is held by validation"
           }
         },
         {
