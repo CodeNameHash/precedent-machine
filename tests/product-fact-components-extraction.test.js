@@ -487,6 +487,8 @@ test('the V9 request carries the value-column, party, label and DEFINED_TERM rul
   assert.match(request.conclusion_instruction, /A table with footer_subtype_keys shows facts of those subtypes as drafted beneath it, never as rows: give such a fact the row_label the table's guidance names, or no conclusions when its subtype is in no_conclusions_subtype_keys\./);
   assert.match(request.component_instruction, /never a tag such as "Subject:", "Operation:" or "Actor:"/);
   assert.match(request.component_instruction, /resolves_to whose text is the definition's own words/);
+  // Work package 20 (b): the extractor quotes across an SEC page footer (generation 5 stopped 42 quotes at one).
+  assert.match(request.component_instruction, /a page number on a line of its own between two words of a sentence is an SEC page footer, not part of the words: quote across it with the number left out, never stop a quote at it/);
   // headline.summary on every proposal (Ben, 2026-09-14: "it needs to be a
   // summary of the provision on the right etc - like in the normal course.
   // Not just a sec ref...!"; "1. for now - yes").
@@ -680,7 +682,7 @@ test('a component quote on an unknown span is taken from the one closure span it
   assert.equal(ambiguous.proposals[0].validation_status, 'VALID', 'two candidate spans: the inherited component is dropped, the fact kept');
   assert.equal(ambiguous.issues.some((issue) => issue.code === 'INVALID_FACT_COMPONENTS'), false);
   assert.equal(ambiguous.issues.some((issue) => issue.code === 'COMPONENT_SPAN_RELOCATED'), false);
-  const droppedUnknown = ambiguous.issues.find((issue) => issue.code === 'INHERITED_COMPONENT_DROPPED');
+  const droppedUnknown = ambiguous.issues.find((issue) => issue.code === 'CONTEXT_COMPONENT_DROPPED');
   assert.ok(droppedUnknown && droppedUnknown.kind === 'NOTE');
   assert.deepEqual(JSON.parse(droppedUnknown.message).dropped.map((entry) => [entry.origin, entry.reason, entry.source_span_id]), [['INTRO', 'UNKNOWN_SOURCE_COMPONENT', wrongId]]);
   assert.deepEqual(ambiguous.proposals[0].components.map((component) => component.label), ['authority']);
@@ -876,7 +878,7 @@ test('an inherited-origin quote cited on a known span that lacks it is taken fro
   assert.deepEqual(ambiguous.proposals[0].components.map((component) => component.text), ownComponents.map((component) => component.quote), 'the unresolved inherited component is gone, the own words kept');
   assert.equal(ambiguous.issues.some((issue) => issue.code === 'COMPONENT_SPAN_RELOCATED'), false);
   assert.equal(ambiguous.issues.some((issue) => issue.code === 'INVALID_FACT_COMPONENTS'), false);
-  const droppedNote = ambiguous.issues.find((issue) => issue.code === 'INHERITED_COMPONENT_DROPPED');
+  const droppedNote = ambiguous.issues.find((issue) => issue.code === 'CONTEXT_COMPONENT_DROPPED');
   assert.ok(droppedNote && droppedNote.kind === 'NOTE');
   assert.deepEqual(JSON.parse(droppedNote.message), { client_ref: 'p1', dropped: [{ path: '0', kind: 'ACTOR', origin: 'INTRO', label: 'representing parties', quote: quotes[2], source_span_id: iiiSpan.span_id, reason: 'NOT_EXACT_CONTIGUOUS_SOURCE_TEXT' }] });
   // Own words cited on a known span that lacks them stay as they are.
@@ -1142,7 +1144,7 @@ test('an evidence quote cited on a context span that lacks it is relocated by th
   const dropped = wp20Compile({ canonical, reference: '4.7', sectionText: section, contextSpans: [iiiSpan, ivSpan, twin], proposals: [proposal()] });
   assert.equal(dropped.proposals[0].validation_status, 'VALID', issueLines(dropped));
   assert.equal(dropped.issues.some((issue) => issue.code === 'PROPOSAL_EVIDENCE_NOT_EXACT'), false);
-  const droppedNote = dropped.issues.find((issue) => issue.code === 'INHERITED_EVIDENCE_DROPPED');
+  const droppedNote = dropped.issues.find((issue) => issue.code === 'CONTEXT_EVIDENCE_DROPPED');
   assert.ok(droppedNote && droppedNote.kind === 'NOTE', issueLines(dropped));
   assert.deepEqual(JSON.parse(droppedNote.message), { dropped: [{ quote: introQuote, source_span_id: iiiSpan.span_id, span_kind: 'CHAPEAU', reason: 'NOT_EXACT_CONTIGUOUS_SOURCE_TEXT' }] });
   assert.deepEqual(dropped.proposals[0].dropped_evidence.map((item) => item.quote), [introQuote]);
@@ -1150,7 +1152,7 @@ test('an evidence quote cited on a context span that lacks it is relocated by th
   const ownMissing = wp20Compile({ canonical, reference: '4.7', sectionText: section, contextSpans: [iiiSpan, ivSpan, twin], proposals: [proposal('words not in the agreement')] });
   assert.equal(ownMissing.proposals[0].validation_status, 'INVALID');
   assert.ok(ownMissing.issues.some((issue) => issue.code === 'PROPOSAL_EVIDENCE_NOT_EXACT'));
-  assert.equal(ownMissing.issues.some((issue) => issue.code === 'INHERITED_EVIDENCE_DROPPED'), false, 'nothing is dropped when no own evidence is exact');
+  assert.equal(ownMissing.issues.some((issue) => issue.code === 'CONTEXT_EVIDENCE_DROPPED'), false, 'nothing is dropped when no own evidence is exact');
 });
 
 // (c) NCS generation 5, 3.27 and 4.13: "has taken any action or knows of
@@ -1203,53 +1205,58 @@ test('two predicates of one subject joined by "or" in a representation are noted
 test('an enumerated exception of a representation cut as its own fact is held; the representation that carries the exception is not', () => {
   const fullId = 'x'.repeat(64);
   const own = wp20Own(fullId);
-  const canonical = 'Section 3.5 Consents and Approvals. (b) Except as set forth in Section 3.5(b) of the Company Disclosure Letter, no consent, approval, order or authorization of, or registration, declaration, filing with or notice to, any Governmental Entity is required by or with respect to the Company in connection with the execution of this Agreement, except for (i) such filings and reports as may be required pursuant to the Exchange Act, (ii) the filing of the Certificate of Merger with the Delaware Secretary of State and (iii) such other consents the failure of which to obtain would not reasonably be expected to have a Material Adverse Effect.\n';
-  const subject = 'no consent, approval, order or authorization of, or registration, declaration, filing with or notice to, any Governmental Entity';
-  const predicate = 'is required by or with respect to the Company in connection with the execution of this Agreement';
+  // 3.5(b) as stored for the run, page footer ("16") included.
+  const canonical = 'Section 3.5 Consents and Approvals; No Violations. (b) Except as set forth in Section 3.5(b) of the Company Disclosure Letter, no consent, approval, order or authorization of, or registration, declaration, filing with or notice to, any federal, state, local or foreign government or subdivision thereof or any other governmental, administrative, judicial, arbitrator or arbitral panel (public or private),\n16\nlegislative, executive, regulatory or self-regulatory authority, instrumentality, agency, commission or body (each, a “Governmental Entity”) is required by or with respect to the Company or any of its Subsidiaries in connection with the execution, delivery and performance of this Agreement by the Company or the consummation by the Company of the Transactions or compliance with the provisions hereof, except for (i) such filings and reports as may be required pursuant to the applicable requirements of the Securities Act of 1933, as amended (the “Securities Act”), the Securities Exchange Act of 1934, as amended (the “Exchange Act”), and any other applicable state or federal securities, takeover and “blue sky” laws, (ii) the filing of the Certificate of Merger with the Delaware Secretary of State as required by the DGCL, (iii) any filings or approvals required under the rules and regulations of any stock exchange (including the Nasdaq Capital Market) and (iv) such other consents, approvals, orders, authorizations, registrations, declarations, filings or notices the failure of which to be obtained or made, individually or in the aggregate, have not had and would not reasonably be expected to have a Material Adverse Effect.\n';
+  const subject = 'no consent, approval, order or authorization of, or registration, declaration, filing with or notice to, any federal, state, local or foreign government or subdivision thereof';
+  const predicate = 'is required by or with respect to the Company or any of its Subsidiaries in connection with the execution, delivery and performance of this Agreement by the Company or the consummation by the Company of the Transactions or compliance with the provisions hereof';
+  const exceptions = canonical.slice(canonical.indexOf('except for (i)'), canonical.indexOf(' a Material Adverse Effect.') + ' a Material Adverse Effect'.length);
+  const first = '(i) such filings and reports as may be required pursuant to the applicable requirements of the Securities Act of 1933, as amended (the “Securities Act”), the Securities Exchange Act of 1934, as amended (the “Exchange Act”), and any other applicable state or federal securities, takeover and “blue sky” laws';
   const proposals = [
     {
       subtype_key: 'NEGATIVE_REPRESENTATION',
-      statement: 'Except as set forth in the Company Disclosure Letter, no Governmental Entity consent or filing is required for the Agreement, except for the enumerated filings.',
+      statement: 'Except as set forth in the Company Disclosure Letter, no Governmental Entity consent or filing is required for the Agreement, except for the enumerated filings and consents.',
       evidence_quotes: [{ quote: subject, source_span_id: fullId, occurrence: 0 }],
       components: [
         own('c1', 'EXCEPTION', 'disclosure letter exception', 'Except as set forth in Section 3.5(b) of the Company Disclosure Letter,'),
         own('c2', 'OBJECT', 'consents and filings', subject),
         own('c3', 'OPERATION', 'none required', predicate),
-        own('c4', 'EXCEPTION', 'enumerated exceptions', 'except for (i) such filings and reports as may be required pursuant to the Exchange Act, (ii) the filing of the Certificate of Merger with the Delaware Secretary of State and (iii) such other consents the failure of which to obtain would not reasonably be expected to have a Material Adverse Effect'),
+        own('c4', 'EXCEPTION', 'enumerated exceptions', exceptions),
       ],
     },
     {
+      // The stored 1907c534: the predicate as a QUALIFIER and the (i) exception, nothing else.
       subtype_key: 'COMPLIANCE_REPRESENTATION',
-      statement: 'The representation that no Governmental Entity consent or filing is required excepts such filings and reports as may be required pursuant to the Exchange Act.',
-      evidence_quotes: [{ quote: '(i) such filings and reports as may be required pursuant to the Exchange Act', source_span_id: fullId, occurrence: 0 }],
+      statement: 'The Company\'s representation to Parent and Merger Sub that no Governmental Entity consent, approval, order, authorization, registration, declaration, filing or notice is required excepts such filings and reports as may be required under the securities laws.',
+      evidence_quotes: [{ quote: first, source_span_id: fullId, occurrence: 0 }],
       components: [
         own('c1', 'QUALIFIER', 'requirement', predicate),
-        own('c2', 'EXCEPTION', 'Exchange Act filings', '(i) such filings and reports as may be required pursuant to the Exchange Act'),
+        own('c2', 'EXCEPTION', 'securities law filings', first),
       ],
     },
     {
+      // 4.4(b)'s shape: the shared subject, the introducer, the enumerated item as an OBJECT.
       subtype_key: 'COMPLIANCE_REPRESENTATION',
-      statement: 'The representation that no Governmental Entity consent or filing is required excepts the filing of the Certificate of Merger.',
-      evidence_quotes: [{ quote: '(ii) the filing of the Certificate of Merger with the Delaware Secretary of State', source_span_id: fullId, occurrence: 0 }],
+      statement: 'The Company\'s representation to Parent and Merger Sub that no Governmental Entity consent or filing is required excepts the filing of the Certificate of Merger with the Delaware Secretary of State.',
+      evidence_quotes: [{ quote: '(ii) the filing of the Certificate of Merger with the Delaware Secretary of State as required by the DGCL', source_span_id: fullId, occurrence: 0 }],
       components: [
         own('c1', 'QUALIFIER', 'consents and filings', subject),
         own('c2', 'EXCEPTION', 'introducer', 'except for'),
-        own('c3', 'OBJECT', 'Certificate of Merger filing', '(ii) the filing of the Certificate of Merger with the Delaware Secretary of State'),
+        own('c3', 'OBJECT', 'Certificate of Merger filing', '(ii) the filing of the Certificate of Merger with the Delaware Secretary of State as required by the DGCL'),
       ],
     },
   ];
   const result = wp20Compile({ canonical, reference: '3.5', proposals });
-  const [representation, first, second] = result.proposals;
+  const [representation, filings, certificate] = result.proposals;
   assert.equal(representation.validation_status, 'VALID', issueLines(result));
-  assert.equal(first.validation_status, 'INVALID', 'the (i) exception alone is not a fact');
-  assert.equal(second.validation_status, 'INVALID', 'the (ii) exception alone is not a fact');
+  assert.equal(filings.validation_status, 'INVALID', 'the (i) exception alone is not a fact');
+  assert.equal(certificate.validation_status, 'INVALID', 'the (ii) exception alone is not a fact');
   const holds = result.issues.filter((issue) => issue.code === 'REPRESENTATION_EXCEPTION_NOT_A_FACT');
   assert.equal(holds.length, 2, issueLines(result));
   assert.ok(holds.every((issue) => issue.kind === 'VALIDATION'));
   const parsed = holds.map((issue) => JSON.parse(issue.message));
   assert.deepEqual(parsed.map((entry) => entry.client_ref), ['p2', 'p3']);
   assert.match(parsed[0].exception, /^\(i\) such filings and reports/);
-  assert.deepEqual(parsed[0].shared_context, [predicate]);
+  assert.deepEqual(parsed[0].shared_context, [predicate.slice(0, 120)]);
   assert.match(parsed[1].exception, /^except for \(ii\) the filing of the Certificate of Merger/);
   assert.match(parsed[0].rule, /EXCEPTION component of the representation/);
   // The article introduction's own qualification is an exception by design.

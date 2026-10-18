@@ -6067,13 +6067,13 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       dropUnresolvedInherited: an inherited context component (origin
       INTRO, CHAPEAU, DEFINITION or CROSS_REFERENCE) that resolves
       nowhere after the relocation rules is dropped from the tree with
-      the note INHERITED_COMPONENT_DROPPED (path, kind, origin, label,
+      the note CONTEXT_COMPONENT_DROPPED (path, kind, origin, label,
       quote, the id cited, the reason), never holding a fact whose own
       words resolved; an own word that fails, or a fact with no resolved
       own word, holds as before. The same at the evidence level: an
       evidence quote cited on a context span (chapeau, definition,
       cross-reference) that resolves nowhere is dropped with
-      INHERITED_EVIDENCE_DROPPED when the own evidence is exact. And the
+      CONTEXT_EVIDENCE_DROPPED when the own evidence is exact. And the
       missing half of 18 (a): an evidence quote cited on a context span
       that does not hold it is relocated by the cited span's kind
       (CONTEXT_SPAN_RELOCATION), noted EVIDENCE_SPAN_RELOCATED; own words
@@ -6133,9 +6133,50 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       (d), for the manager: a representation whose own verb the model
       labelled QUALIFIER and whose exception facts copy its words could
       be held with them; the hold is a VALIDATION issue carrying the
-      rule, reviewable, and the layer rule reduces the shape. No decision
-      of Ben's needed; nothing submitted, woken or retried. Commits named
-      in the next finding with npm run test:active.
+      rule, reviewable, and the layer rule reduces the shape. The
+      manager's formal message (21:40 UTC, read at 23:55 after the work
+      was built on (168)'s terms) reconciled: its note name is used,
+      CONTEXT_COMPONENT_DROPPED (the component tree) and
+      CONTEXT_EVIDENCE_DROPPED (the evidence quotes), each naming the
+      quote, the span cited and the reason; its finding number (98) was
+      already (98), work package 19, when the message arrived, so (99a)
+      stays, the plan owner's to renumber; its (b) asks that "the fact's
+      byte ranges then exclude the footer", which a component cannot do:
+      a component is one half-open byte range and rule R1 (contract
+      FACT_COMPONENTS/V2) requires its text to be those bytes, so a quote
+      across a footer has the footer inside its range and its text, and
+      every place the words are shown hides it (hidePageFooters: the
+      tables, the tree, the sidebar, the clause). Splitting the component
+      in two at the footer would make one word run two components; the
+      manager decides if the range is to be cut another way. Counts from
+      the preview branch's rows, generation 5 (run 51577c57): (a) 13 held
+      facts have inherited components that resolve nowhere beside
+      resolved own words (3.4's ten, 4.7's three), and the same three of
+      4.7 at the evidence level (their two chapeau quotes are the only
+      unmatched evidence on a context span in the run); on the next
+      extraction the 4.7 quotes relocate (one Article IV chapeau span
+      holds them) and 3.4's resolve by work package 13 (a), the drop the
+      backstop for a quote no span holds. (b) Of the run's 5,439 resolved
+      components, none spans a footer: 42 end mid-sentence at a footer
+      and 27 begin right after one (4.14 six, 4.4 and 4.6 five each,
+      4.5 four, 5.14 and 5.17 three each, 5.4 two, the Article IV
+      introduction two, ten sections one), the model stopping its quote
+      where the page ends; of the 13 held facts' unmatched quotes, none
+      is a footer case. So the matcher changes no stored fact by itself
+      and the extractor is now told, in the component instruction, that a
+      page number on a line of its own between two words is a footer to
+      quote across with the number left out, never to stop at; the
+      matcher then takes the quote. (c) three facts (3.27 twice, 4.13
+      once). (d) twelve facts (3.5(b) four, 3.7 four, 4.4(b) four). No
+      decision of Ben's needed; nothing submitted, woken or retried. Two
+      commits on the shared branch, "Work package 20: inherited
+      components dropped not held, quotes across page footers, fused and
+      exception-only representations" and "Work package 20 reconciled
+      with the manager's message: note names, the extractor's footer
+      line, the counts", after git fetch and merge of origin (B's (106)
+      production-move files came in, no conflict); npm run test:active
+      on the final tree: 778 of 779, the one failure the known
+      Codex-client final-message test.
       (120) 2026-10-18 19:10 to 19:45 UTC (implementer C), Q5: the limb
       names harvested. `scripts/product/harvest-rep-limbs.js` (library
       `lib/product/rep-limb-harvest.js`, `tests/product-rep-limb-harvest.test.js`)
