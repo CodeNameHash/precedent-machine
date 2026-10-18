@@ -5835,6 +5835,95 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       touched; the preview API was not called; detail_labels_by_row,
       the closure builder and the draft's issue message are unchanged,
       proposed only.
+      (125) 2026-10-18 20:55 to 21:30 UTC (implementer C), the design
+      note for the Query on layered facts, no code:
+      docs/codex-program/notes/QUERY-ON-LAYERED-FACTS-DESIGN-2026-10-18.md,
+      on finding (163)'s brief and Ben's words ("probably the first
+      thing we build as it will drive the side bar etc"). What it
+      holds: the questions Ben's review put to the corpus (the fee's
+      triggers, the 48-hour notice, the pandemic carve-out with its
+      carve-back, the 3.1 "lines of separation" across deals, the reps
+      and their bring-down, a category for every boilerplate rule),
+      each with the shape of its answer, which sort into three kinds
+      (find deals by a coded answer, compare a provision across deals,
+      read one deal's provision with its evidence); what the conclusions
+      cells already give as filter axes (30 sections, 49 tables, 66
+      vocabulary columns with 449 codes, 34 value columns, 46 fixed row
+      lists, the cited words on every coded cell), reaching V9 runs
+      only and, for the limbs, waiting on Q5; what the sidebar on a hit
+      needs (the fact with its tree and offsets, the section text the
+      offsets point into, the matching cell with its component_refs,
+      the agreement's identity, the review trail), read from
+      EvidenceSidebar's props; what the published-facts read lacks,
+      in the order a build meets it: any release (zero heads on the
+      branch), the conclusions cells in the release (compileReviewSummary
+      writes components, headline, coverage_only and section_reference
+      and nothing else; "conclusions" appears in none of review-state,
+      release-candidate or phase-3-store), the section text, indexes
+      (none on table_key, row_label or a cell), the codes across shape
+      versions, the deal's name (no product table holds the parties),
+      and filters beyond family and subtype. The build order: step 1,
+      a week, the cell query over READY draft runs on the provisions
+      page's own reads (table, row, column, code or number; the results
+      as the provisions page's tables with the matching rows and the
+      existing sidebar); step 2, after the first release, the same
+      query on the release pointer with the cells published or joined;
+      step 3, after four or five releases and Q5, the compare view
+      with the limbs aligned by canonical name, the rail and the code
+      map per shape version, at which point legacy Compare's job is
+      done. Eight questions for Ben (Q-A to Q-H: drafts first or
+      releases only; a form or a sentence; matching rows or the whole
+      table; deals as columns or as row groups; cells published into
+      the release or read from the run; the deal's name from the filing
+      or typed; re-publish or a code map when a vocabulary changes;
+      whether held facts are ever queryable), written as questions, not
+      choices.
+      (126) 2026-10-18 21:30 UTC (implementer C), Q5's AI pass, built
+      and dry-run, no live call. `scripts/product/propose-rep-limb-canon.js`
+      (library `lib/product/rep-limb-canon.js`,
+      `tests/product-rep-limb-canon.test.js`, in test:active) takes the
+      harvest JSON of finding (120) and asks, one request per
+      representation row, for the canonical limb list with
+      sub-representations grouped under a category where the names
+      share a subject (Ben: "we need to get to canonical (and perhaps
+      some of them are sub reps under a category) - wait untiil we have
+      a few deals and see if we can AI it?"), every harvested name
+      mapped to one proposed limb, a decided name kept exactly, a doubt
+      written as a question for Ben. The request carries fixed
+      instructions and a response contract, the row, the decided names
+      and every harvested name with its count, its cluster and one
+      example summary, and is keyed by the shared adapter's call key,
+      so a recorded answer replays exactly (lib/product/model-adapter.js
+      createRecordedModelAdapter); it goes through the Anthropic API
+      provider's adapter at the extraction tier (call kind EXTRACTION,
+      claude-opus-5 at high effort; the shared call-kind map, which the
+      hosted worker compares against every run's stored config, is not
+      widened). Every answer is checked against its request (the row
+      copied, each name mapped once, no invented name, each decided
+      name kept) and kept with its problems named. Three modes:
+      --dry-run (the default) writes the requests and the estimate and
+      makes no call; --recorded <file> answers from a recording (the
+      tests' path); --live calls the API and writes recording.json so
+      the pass replays without a second call. On the harvest in hand
+      (Metsera 8 and NCS 5): 43 requests (the nine rows with no limb
+      name, Brokers; Finders among them, get none), 53,708 input tokens
+      and 20,720 output tokens estimated at four bytes a token and 40
+      tokens a name, $0.79 at the pricing table (input $0.27, output
+      $0.52), uncached; with Olaplex and Apogee in, about twice the
+      names, so about $1.60. The command the manager runs once the two
+      deals are READY under V2, on a machine with ANTHROPIC_API_KEY
+      (and ANTHROPIC_WORKSPACE_ID) and the branch's database keys:
+      `node scripts/product/harvest-rep-limbs.js --run 72d94dd2-cb59-49cf-8f46-c89d161b7769 --run 51577c57-41b1-4b75-bcdf-c84ef2558589 --run <olaplex V2 run> --run <apogee V2 run> --out docs/codex-program/notes/Q5-REPRESENTATION-LIMB-NAMES-PROPOSAL-<date>.md --json /tmp/q5-harvest.json`
+      then
+      `node scripts/product/propose-rep-limb-canon.js --harvest /tmp/q5-harvest.json --out-dir /tmp/q5-canon --live`
+      (a dry run first without `--live` prints the estimate for that
+      harvest); the proposal is `/tmp/q5-canon/proposal.md`, to be
+      copied beside the harvest note for Ben, and
+      `/tmp/q5-canon/recording.json` replays it with `--recorded`.
+      Ben decides the names; the script writes nothing into the table
+      shapes. npm run test:active: 766 of 767, the one failure the
+      known Codex-client final-message test. No run, worker or sandbox
+      touched; no live model call made.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
@@ -5868,7 +5957,11 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       docs/codex-program/notes/Q5-REPRESENTATION-LIMB-NAMES-PROPOSAL-2026-10-18.md
       from Metsera generation 8 and NCS generation 5, rerun by
       `scripts/product/harvest-rep-limbs.js` as Olaplex and Apogee
-      finish; waits on Ben's names.
+      finish; waits on Ben's names. The AI pass Ben asked for
+      (finding (126)): `scripts/product/propose-rep-limb-canon.js`,
+      built and dry-run, the live command and its cost (about $0.79 on
+      the two deals in hand) recorded there for the manager to run once
+      Olaplex and Apogee are READY under V2.
 - [ ] Q4 Decide with Ben whether legacy Query and Compare migrate to this
       read or are retired. Evidence 2026-10-18 (finding (121)):
       docs/codex-program/notes/Q4-LEGACY-QUERY-COMPARE-EVIDENCE-2026-10-18.md;
