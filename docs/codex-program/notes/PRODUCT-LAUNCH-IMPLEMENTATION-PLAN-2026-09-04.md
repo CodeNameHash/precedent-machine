@@ -6570,6 +6570,77 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       headline figures (equity, or EV where marked), not read from the
       agreements; the agreements' consideration is what the intake
       will extract. No run, worker or sandbox touched.
+      (107) 2026-10-18 22:15 to 23:59 UTC (implementer B), work package
+      B4 on the manager's message of 22:15 UTC: the Lilly / Verve
+      structure failure ((170): the intake failed twice at structure
+      build with STRUCTURE_PARENT_SPAN), reproduced locally through
+      the intake's own path (the exhibit's 600,983 bytes served to
+      createSecIntakeAdapter's fetch, then buildAgreementStructure; no
+      database, no model), fixed for every agreement, pinned. The
+      clause: "Annex I / CONDITIONS TO THE OFFER", the tender offer's
+      conditions annex after the signature pages (canonical bytes
+      292,387 to 297,901 of 369,081). lib/parser-v2/structural.js
+      gives that annex section articleNumber "I" (the annex's own
+      numeral, from "Annex I"), and the sectionizer
+      (lib/canonical-v2/native-producer/deterministic-sectionizer.js)
+      parented every section by that numeral alone, so the annex
+      became a child of the main agreement's ARTICLE I (bytes 9,504 to
+      26,625), 265 kB before it, and the structure builder refused the
+      child outside its parent's span. The rule missed it because it
+      never asked whether the article's span held the section; a
+      letter-numbered annex ("Annex A") never collided, "Annex I" did
+      whenever the agreement has an ARTICLE I. Two rules, both for
+      every agreement: (a) an article is a section's parent only when
+      its span holds the section; an annex is never an article's
+      child; a numbered section whose numeral's article does not hold
+      it goes to the article whose span does, else to the root; (b)
+      the last main-agreement article ends at the first retained
+      exhibit scope or the first annex after the article's start,
+      whichever comes first (before, only an EXHIBIT scope bounded it,
+      so ARTICLE IX's span covered the annex, and in two agreements
+      the last section's limb walk claimed the annex's own limbs:
+      Merck KGaA / SpringWorks' 9.13 carried the definitions annex's
+      MAE limbs as 9.13(i) to (xi), Novartis / Tourmaline's 8.13(k)
+      carried Annex I's conditions as 8.13(k)(a) to (h) beside the
+      annex's own Annex-I(a) and (b); those duplicates are gone, 413
+      to 402 and 362 to 350 nodes, every other node unchanged). Pinned
+      in tests/product-phase-1.test.js ("a trailing annex after the
+      signature pages bounds the last article and is never its child")
+      on the exhibit's own bytes: tests/fixtures/product/verve-annex-i-
+      boundary.v1.json holds the canonical text from the last
+      signature page through Annex I's conditions (a) and (b) (2,448
+      bytes at canonical offset 291,629, the annex heading at 292,387,
+      the whole text's sha256 90242bd6 recorded), appended to a
+      synthetic nine-article main agreement; the test asserts the
+      annex hangs from the agreement, starts on its heading and runs
+      to the end, ARTICLE IX ends where the annex begins, the last
+      section never reaches into it, the conditions are the annex's
+      limbs and not the last section's, and every node lies inside
+      its parent. The sweep the manager asked for, the same path on
+      every URL of docs/codex-program/notes/BIOPHARMA-DEALS-OVER-1BN-
+      2026-10-18.md (42 fetched: the 34 agreements, the four it lists
+      below the line and four press releases): before the fix 35 of 42
+      built and 7 failed with STRUCTURE_PARENT_SPAN, all two-step
+      tender offers with a trailing conditions annex (Verve, GSK /
+      Nuvalent, Sanofi / Blueprint, Genmab / Merus, Merck / Terns,
+      Neurocrine / Soleno, Merck KGaA / Bio-Techne); after it 42 of
+      42 build (Verve 336 nodes); of the 35 that built before, 33 are
+      unchanged and the two above lose only their duplicates.
+      The repository already carried the defect's trace: the
+      sectionizer's own corpus test (tests/canonical-v2-native-
+      sectionizer.test.js, not in test:active) failed on the head with
+      "topbuild: ARTICLE VII [381113,412860) overlaps its next sibling
+      Annex-C [406279,412860)" in two tests; both pass now; its one
+      remaining failure (the LONE_CANDIDATE tripwire) fails on the head
+      before this change and is not this work's. No intake submitted,
+      no run or sandbox touched; Verve's two failed runs stay as they
+      are for the manager (finding (170): Ben, "I don't think we
+      intake until E is done and we have reduced cost"). Ben's rule
+      kept ("everything to be driven by coding and not just a layer on
+      top so all edits need to be repeatable across corpus"): the fix
+      is in the one sectionizer every intake runs, not a Verve
+      special case. npm run test:active: 774 of 775, the one failure
+      the known Codex-client final-message test.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).

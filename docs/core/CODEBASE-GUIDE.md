@@ -24,7 +24,7 @@ Phases 0 to 3 define the contracts, durable intake path, three-family draft anal
 
 ## Structure and context
 
-- `lib/canonical-v2/native-producer/deterministic-sectionizer.js`: the shared pure parser reused by the active product structure builder.
+- `lib/canonical-v2/native-producer/deterministic-sectionizer.js`: the shared pure parser reused by the active product structure builder. An article parents a section only when its span holds it, an annex is never an article's child, and the last main-agreement article ends at the first exhibit scope or trailing annex (plan finding (107), Lilly / Verve; pinned on the exhibit's bytes in `tests/fixtures/product/verve-annex-i-boundary.v1.json` through `tests/product-phase-1.test.js`).
 - `lib/product/agreement-structure.js`: the only active structure builder and contract. It builds `AgreementStructure` once from canonical source text and exposes source-ordered nodes, source-derived identity, UTF-8 spans, parser residual diagnostics and deterministic annotations.
 - `lib/product/source-context.js`: builds a complete, cycle-safe source closure for each substantive section. It includes operative text, chapeau text, definitions, transitive cross-references, the full section and SEC mapping.
 - `lib/canonical-v2/agreement-index.js`: historical Stage 2Y compatibility wrapper. Do not use it in the active path because it requires policy and digest bindings.
