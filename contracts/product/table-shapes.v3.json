@@ -4079,6 +4079,10 @@
                 "Information parity with Parent": [
                   "YES",
                   "NO"
+                ],
+                "Fiduciary actions are not a breach": [
+                  "YES",
+                  "NO"
                 ]
               },
               "fill_from": [
@@ -4130,6 +4134,12 @@
                     "code": "IS_A_SUPERIOR_PROPOSAL",
                     "words": "(?:is|constitutes) a Superior Proposal"
                   }
+                ],
+                "Fiduciary actions are not a breach": [
+                  {
+                    "code": "YES",
+                    "words": "not\\s+(?:be\\s+deemed|constitute|be)[\\s\\S]{0,40}(?:breach|violation)"
+                  }
                 ]
               }
             },
@@ -4158,12 +4168,20 @@
             "Unsolicited proposal required",
             "No breach of the no-shop required",
             "Acceptable confidentiality agreement required",
-            "Information parity with Parent"
+            "Information parity with Parent",
+            "Fiduciary actions are not a breach"
           ],
           "subtype_keys": [
             "EXCEPTION_PREREQUISITE"
           ],
-          "guidance": "The conditions on which the Company may engage with a bidder (EXCEPTION_PREREQUISITE facts): the standard the proposal must meet (Engagement standard), the board's determination standard, and whether the proposal must be unsolicited, must not result from a breach, must be under an acceptable confidentiality agreement, and whether Parent must receive the same information (Information parity). Each is its own fact and row. Board determination standard: always one code, from the words of the standard: \"would be, or would be reasonably likely to be, inconsistent with its fiduciary duties\" is REASONABLY_LIKELY_TO_BE_INCONSISTENT_WITH_FIDUCIARY_DUTIES; \"inconsistent with its fiduciary duties\" alone is INCONSISTENT_WITH_FIDUCIARY_DUTIES; \"would violate\" WOULD_VIOLATE_FIDUCIARY_DUTIES; \"required by\" REQUIRED_BY_FIDUCIARY_DUTIES; never a readout without the code (generation 8, 5.02(f): the row read with no code). Engagement standard: also the permission to negotiate with (or furnish information to) the Person making a Qualifying Company Takeover Proposal or a proposal that constitutes or could reasonably be expected to lead to a Superior Proposal, the code the standard the proposal must meet (work package 7, 2026-10-18).",
+          "guidance": "The conditions on which the Company may engage with a bidder (EXCEPTION_PREREQUISITE facts): the standard the proposal must meet (Engagement standard), the board's determination standard, and whether the proposal must be unsolicited, must not result from a breach, must be under an acceptable confidentiality agreement, and whether Parent must receive the same information (Information parity). Each is its own fact and row. Fiduciary actions are not a breach: the savings clause, YES when the agreement says that a determination or action by the Company or its Board under the fiduciary exception shall not be deemed to be, or shall not constitute, a breach of the no-shop (work package 17, 2026-10-18); never the prerequisite that the proposal did not result from a breach, which is its own row. Board determination standard: always one code, from the words of the standard: \"would be, or would be reasonably likely to be, inconsistent with its fiduciary duties\" is REASONABLY_LIKELY_TO_BE_INCONSISTENT_WITH_FIDUCIARY_DUTIES; \"inconsistent with its fiduciary duties\" alone is INCONSISTENT_WITH_FIDUCIARY_DUTIES; \"would violate\" WOULD_VIOLATE_FIDUCIARY_DUTIES; \"required by\" REQUIRED_BY_FIDUCIARY_DUTIES; never a readout without the code (generation 8, 5.02(f): the row read with no code). Engagement standard: also the permission to negotiate with (or furnish information to) the Person making a Qualifying Company Takeover Proposal or a proposal that constitutes or could reasonably be expected to lead to a Superior Proposal, the code the standard the proposal must meet (work package 7, 2026-10-18).",
+          "words_rows": [
+            {
+              "row_label": "Fiduciary actions are not a breach",
+              "when": "(?:shall|will|does|do|is|are)\\s+not\\s+(?:be\\s+deemed\\s+(?:to\\s+be\\s+|to\\s+constitute\\s+)?|constitute\\s+|be\\s+)(?:a\\s+|an\\s+)?(?:breach|violation)",
+              "code": "YES"
+            }
+          ],
           "fact_type_rows": {
             "EXCEPTION_PREREQUISITE": "Engagement standard"
           },
