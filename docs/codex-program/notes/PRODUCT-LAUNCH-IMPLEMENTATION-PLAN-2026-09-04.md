@@ -5065,7 +5065,7 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       new test does. Environment: the cloud container has no Postgres
       binary; an embedded Postgres run as a non-root user under
       /home/user/.cache served the database tests. npm run test:active
-      with the two new files: 711 of 712, the one failure the known Codex-client final-message test. One commit for code, tests,
+      with the two new files: 711 of 712 before the merge with the other tracks' pushes and 752 of 753 after it, the one failure the known Codex-client final-message test; the database test passed again on the merged tree with its 42 migrations. One commit for code, tests,
       the evidence note, the guide lines and these findings.
       (90) 2026-10-18 19:17 to 19:36 UTC (implementer A), work package 17
       on the manager's message of 19:10, three rules for every agreement.
