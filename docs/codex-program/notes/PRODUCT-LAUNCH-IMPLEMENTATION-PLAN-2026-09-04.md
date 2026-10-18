@@ -3239,6 +3239,18 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       2.02's transfer-tax allocation fact is on no page at all: a Tax
       Matters section and a Financing section with rows from the
       subtype, page defaults for the stored facts.
+      (54) 2026-10-18 04:00 UTC, generation 8 at 26 of 85 (3.06 to 3.16
+      added; 332 proposals, 328 VALID; no failed section). Work package 5
+      (finding (53)) merged: generation 8's 2.02 transfer-tax fact now
+      sits on the Tax Matters row; suite still running at the time of writing. 3.06 to 3.16 read as
+      generation 7's did (the material contracts list at 23 categories,
+      3.09's limb (a), 3.11's plans and definitions). Two gaps to work
+      package 6 (finding (55)): 3.13(b) and (c)'s representations about
+      the material contracts (validity, no default, the disclosure list)
+      have no row (sub-items of the reps table's Material Contracts row);
+      and a second definition fact for a term already entered is dropped
+      by the Defined Terms dedup (3.11's Company Benefit Plan exclusion,
+      3.09's Tax).
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
