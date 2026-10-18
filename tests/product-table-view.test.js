@@ -138,8 +138,10 @@ test('a fact with conclusions but no table_key is placed by matching row_label a
   assert.equal(byColumn.amount.label, '$50,000,000');
   assert.equal(byColumn.payer.kind, 'pill');
   assert.equal(byColumn.payer.tone, 'seller');
-  assert.equal(byColumn.trigger.kind, 'dash');
-  assert.equal(byColumn.provision.kind, 'dash');
+  // Work package 12: a column no line of the table fills is not rendered.
+  assert.equal(byColumn.trigger, undefined);
+  assert.equal(byColumn.provision, undefined);
+  assert.deepEqual(terminationFees.hidden_columns.map((column) => `${column.column_id}:${column.reason}`), ['provision:empty', 'trigger:empty']);
 
   // The fixture's own termination-fee-trigger fact has no conclusions: it is
   // never a row, and is listed under the section as evidence without a readout.
@@ -259,7 +261,8 @@ test('a representation fact never fills the derived bring-down column itself', (
   fact.conclusions.cells.push({ column_id: 'bringdown', code: 'TRUE_EXCEPT_NO_MAE', component_ids: ['r-3-std'] });
   const view = buildTableView({ facts: [fact], tableShapes, legalSchema });
   const reps = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'representations-qualifiers-table');
-  assert.equal(reps.rows[0].cells.find((cell) => cell.column_id === 'bringdown').kind, 'dash');
+  assert.equal(reps.rows[0].cells.find((cell) => cell.column_id === 'bringdown'), undefined, 'empty on every row: not rendered (work package 12)');
+  assert.ok(reps.hidden_columns.some((column) => column.column_id === 'bringdown' && column.reason === 'empty'));
 });
 
 test('a general covenant row is named from the fact\'s subtype; the model\'s own label becomes the sub-item', () => {
@@ -1452,7 +1455,7 @@ test('the page reads a deemed period as the deemed value and leaves a two-period
   const cellOf = (view, id) => view.sections.flatMap((section) => section.tables).find((table) => table.table_key === 'nosol-superior-matching-rights')
     .rows.find((row) => row.backing_facts.some((entry) => entry.fact_id === id)).cells.find((cell) => cell.column_id === 'period');
   assert.equal(cellOf(buildTableView({ facts: [deemed], tableShapes, legalSchema }), 'deemed').label, '2 business days');
-  assert.equal(cellOf(buildTableView({ facts: [twoPeriods], tableShapes, legalSchema }), 'two').kind, 'dash');
+  assert.equal(cellOf(buildTableView({ facts: [twoPeriods], tableShapes, legalSchema }), 'two'), undefined, 'the one row leaves the column empty, so the column is not rendered (work package 12)');
 });
 
 // Work package 7 (b): a definition fact whose readout named the retired

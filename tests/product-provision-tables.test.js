@@ -74,8 +74,10 @@ test('an empty table view renders nothing', () => {
   assert.equal(html, '');
 });
 
+// Work package 12: the pills come up behind "Show codes"; these renders
+// open with the codes shown to test the pills themselves.
 test('pills carry fact and component ids as data-testid="table-pill" buttons', () => {
-  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView, facts }));
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { initialShowCodes: true, tableView, facts }));
   assert.match(html, /data-testid="table-pill"/);
   assert.match(html, /Material</);
 });
@@ -170,7 +172,7 @@ test('a one-per-agreement table renders as an attribute grid, one line per colum
   const structureFact = { ...require('./fixtures/product/metsera-v9-structure-fact.v1.json') };
   structureFact.fact_id = structureFact.proposal_id;
   const view = buildTableView({ facts: [structureFact], tableShapes, legalSchema });
-  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts: [structureFact] }));
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { initialShowCodes: true, tableView: view, facts: [structureFact] }));
   assert.match(html, /data-layout="attribute-grid"/);
   assert.match(html, /data-column-id="effectsOfMerger"/);
   assert.match(html, />DGCL</);
@@ -186,13 +188,13 @@ test('the attribute grid shows step-2 lines only for a double merger', () => {
   const structureFact = { ...require('./fixtures/product/metsera-v9-structure-fact.v1.json') };
   structureFact.fact_id = structureFact.proposal_id;
   const oneStep = { ...structureFact, conclusions: { ...structureFact.conclusions, cells: [...structureFact.conclusions.cells, { column_id: 'dealStructure', code: 'ONE_STEP_MERGER', component_ids: ['874bb170b1e89d2d6e5eec061acf9652d163eea6d75d942c74a7d0568a6e3897'] }] } };
-  const oneStepHtml = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: buildTableView({ facts: [oneStep], tableShapes, legalSchema }), facts: [oneStep] }));
+  const oneStepHtml = renderToStaticMarkup(React.createElement(ProvisionTables, { initialShowCodes: true, tableView: buildTableView({ facts: [oneStep], tableShapes, legalSchema }), facts: [oneStep] }));
   assert.doesNotMatch(oneStepHtml, /data-column-id="mergerFormStep2"/);
   assert.match(oneStepHtml, /data-column-id="mergerFormStep1"/);
   assert.doesNotMatch(oneStepHtml, /\(Step 1\)/);
   assert.match(oneStepHtml, />One-step merger</);
   const double = { ...structureFact, conclusions: { ...structureFact.conclusions, cells: [...structureFact.conclusions.cells, { column_id: 'dealStructure', code: 'DOUBLE_MERGER', component_ids: ['874bb170b1e89d2d6e5eec061acf9652d163eea6d75d942c74a7d0568a6e3897'] }] } };
-  const doubleHtml = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: buildTableView({ facts: [double], tableShapes, legalSchema }), facts: [double] }));
+  const doubleHtml = renderToStaticMarkup(React.createElement(ProvisionTables, { initialShowCodes: true, tableView: buildTableView({ facts: [double], tableShapes, legalSchema }), facts: [double] }));
   assert.match(doubleHtml, /data-column-id="mergerFormStep2"/);
   assert.match(doubleHtml, /\(Step 1\)/);
 });
@@ -202,13 +204,13 @@ test('the attribute grid shows step-2 lines only for a double merger', () => {
   structureFact.fact_id = structureFact.proposal_id;
   const withStructure = (code) => ({ ...structureFact, conclusions: { ...structureFact.conclusions, cells: [...structureFact.conclusions.cells, { column_id: 'dealStructure', code, component_ids: ['874bb170b1e89d2d6e5eec061acf9652d163eea6d75d942c74a7d0568a6e3897'] }] } });
   const oneStep = withStructure('ONE_STEP_MERGER');
-  const oneStepHtml = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: buildTableView({ facts: [oneStep], tableShapes, legalSchema }), facts: [oneStep] }));
+  const oneStepHtml = renderToStaticMarkup(React.createElement(ProvisionTables, { initialShowCodes: true, tableView: buildTableView({ facts: [oneStep], tableShapes, legalSchema }), facts: [oneStep] }));
   assert.doesNotMatch(oneStepHtml, /data-column-id="mergerFormStep2"/);
   assert.match(oneStepHtml, /data-column-id="mergerFormStep1"/);
   assert.doesNotMatch(oneStepHtml, /\(Step 1\)/);
   assert.match(oneStepHtml, />One-step merger</);
   const double = withStructure('DOUBLE_MERGER');
-  const doubleHtml = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: buildTableView({ facts: [double], tableShapes, legalSchema }), facts: [double] }));
+  const doubleHtml = renderToStaticMarkup(React.createElement(ProvisionTables, { initialShowCodes: true, tableView: buildTableView({ facts: [double], tableShapes, legalSchema }), facts: [double] }));
   assert.match(doubleHtml, /data-column-id="mergerFormStep2"/);
   assert.match(doubleHtml, /\(Step 1\)/);
 });
@@ -438,7 +440,7 @@ test('a one-per-agreement table renders its other provisions as a collapsed Term
 // is the same"): every px scaled by 0.58. Then "sidebar width now good but
 // font size not good": font sizes raised by 1.3, layout unchanged.
 test('sections are Storylines cards with a tinted header band, pills are tinted chips, nothing casts a shadow', () => {
-  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView, facts }));
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { initialShowCodes: true, tableView, facts }));
   assert.match(html, /<section class="bg-white border border-\[#dcdcdc\] rounded-\[2px\] overflow-hidden" data-testid="provision-section"/);
   assert.match(html, /data-testid="section-heading"[^>]*>/);
   assert.match(html, /<button[^>]*class="[^"]*bg-\[#e8f3ee\][^"]*text-\[#2f7a5b\][^"]*"[^>]*data-testid="section-heading"/);
@@ -486,14 +488,14 @@ const maeProng = (id, party) => ({
 });
 
 test('cells no longer render an inline definition link; the MAE link travels with the selection', () => {
-  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView, facts }));
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { initialShowCodes: true, tableView, facts }));
   assert.doesNotMatch(html, /data-testid="definition-link"/);
   assert.doesNotMatch(html, />definition</);
   const repView = { defined_terms: [], sections: [{ section_key: 'representations-qualifiers', title: 'Reps', facts_without_readout: [], tables: [{
     table_key: 'representations-qualifiers-table', group_header: null, layout: 'rows', term_column: { header: 'Term', source: 'subject' }, columns: [{ column_id: 'materiality', header: 'Qualifiers' }],
     rows: [{ subject: 'Organization', cells: [{ column_id: 'materiality', kind: 'pill', label: 'MAE (aggregate)', code: 'MAE_AGGREGATE', tone: 'standard', component_ids: ['r-c'], fact_ids: ['r'], link_section: 'mae-definitions' }], backing_facts: [{ fact_id: 'r' }] }],
   }] }] };
-  const repHtml = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: repView, facts: [] }));
+  const repHtml = renderToStaticMarkup(React.createElement(ProvisionTables, { initialShowCodes: true, tableView: repView, facts: [] }));
   assert.doesNotMatch(repHtml, /data-testid="definition-link"/);
   assert.match(repHtml, /data-testid="table-pill"[^>]*>MAE \(aggregate\)</);
 });
@@ -819,4 +821,97 @@ test('a reparsed value cell carries data-reparsed and a title saying the words w
   assert.match(html, /title="Re-read from the cited words; the stored number differed"/);
   assert.match(html, /2 business days/);
   assert.doesNotMatch(html, /4 business days/);
+});
+
+// Work package 12 (plan finding (76)). Ben, 2026-10-17: "I know the pills are
+// likely helpful for background comparison work etc but do we need to show
+// them here? Consider this more generally on the UI pills etc."
+test('by default a coded cell shows the words it was read from, the pills come up behind one page-wide "Show codes" control', () => {
+  const { SHOW_CODES_BY_DEFAULT } = require('../lib/product/table-view');
+  assert.equal(SHOW_CODES_BY_DEFAULT, false, 'the proposed default: words first; Ben decides');
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView, facts }));
+  assert.match(html, /data-testid="provision-tables"[^>]*data-show-codes="false"/);
+  assert.match(html, /data-testid="codes-toggle"[^>]*>Show codes</);
+  assert.doesNotMatch(html, /data-testid="table-pill"/, 'no pill while the codes are hidden');
+  assert.match(html, /data-testid="table-words"/);
+  // The material-contracts qualifier cell was read from "any real property
+  // lease": those words show, the code label rides on the title.
+  assert.match(html, /data-testid="table-words"[^>]*title="Coded: Material"[^>]*>any real property lease</);
+  const shown = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView, facts, initialShowCodes: true }));
+  assert.match(shown, /data-show-codes="true"/);
+  assert.match(shown, /data-testid="codes-toggle"[^>]*>Hide codes</);
+  assert.match(shown, /data-testid="table-pill"[^>]*>Material</);
+  assert.doesNotMatch(shown, /data-testid="table-words"/);
+});
+
+test('the cited words ride on every coded cell and trailing detail; a cell without cited words keeps its label as words', () => {
+  const material = tableView.sections.flatMap((section) => section.tables).find((table) => table.table_key === 'material-contracts-table');
+  const row = material.rows.find((candidate) => candidate.subject === 'Real estate leases');
+  const qualifier = row.cells.find((cell) => cell.column_id === 'qualifier');
+  assert.equal(qualifier.words, 'any real property lease');
+  // A trailing detail folded from a coded column shows its words too.
+  const folded = {
+    sections: [{ section_key: 's', title: 'S', tables: [{
+      table_key: 't', layout: 'rows', term_column: { header: 'Term' }, columns: [{ column_id: 'a', header: 'A' }],
+      rows: [
+        { subject: 'One', cells: [{ column_id: 'a', kind: 'pill', label: 'Yes', code: 'YES', tone: 'neutral', component_ids: ['c1'], fact_ids: ['f1'] }], backing_facts: [{ fact_id: 'f1' }],
+          trailing_details: [{ column_id: 'p', header: 'Period', label: 'Period Required promptly', cell: { column_id: 'p', kind: 'pill', label: 'Required promptly', code: 'PROMPTLY', words: 'promptly (and in any event within 48 hours)', component_ids: ['c2'], fact_ids: ['f1'] } }] },
+      ],
+    }] }],
+    defined_terms: [],
+  };
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: folded, facts: [] }));
+  assert.match(html, /data-testid="trailing-detail"[^>]*>· promptly \(and in any event within 48 hours\)</, 'the detail shows the words');
+  assert.match(html, /data-testid="table-words"[^>]*>Yes</, 'no cited words: the label, as words');
+  const shown = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: folded, facts: [], initialShowCodes: true }));
+  assert.match(shown, /data-testid="trailing-detail"[^>]*>· Period Required promptly</);
+});
+
+// Ben, 2026-10-17: "why do we have a summary column here? Also 'period' as a
+// column is wasteful as it only applies to one provision? Consider that
+// point generally?"
+test('a column no row fills is not rendered and is named on the table; an as-drafted column that only repeats the row label is not rendered', () => {
+  const { pruneEmptyColumns } = require('../lib/product/table-view');
+  const table = {
+    table_key: 't', layout: 'rows', term_column: { header: 'Term' },
+    columns: [{ column_id: 'provision', header: 'Provision' }, { column_id: 'period', header: 'Period' }, { column_id: 'asDrafted', header: 'As drafted', display: 'fact_text' }],
+    rows: [
+      { subject: 'Initial notice', cells: [{ column_id: 'provision', kind: 'pill', label: 'Required' }, { column_id: 'period', kind: 'dash' }, { column_id: 'asDrafted', kind: 'text', label: 'Initial notice' }], backing_facts: [] },
+      { subject: 'Ongoing updates', cells: [{ column_id: 'provision', kind: 'pill', label: 'Required promptly' }, { column_id: 'period', kind: 'dash' }, { column_id: 'asDrafted', kind: 'text', label: 'Ongoing updates.' }], backing_facts: [],
+        sub_rows: [{ subject: 'Terms', cells: [{ column_id: 'provision', kind: 'dash' }, { column_id: 'period', kind: 'dash' }, { column_id: 'asDrafted', kind: 'dash' }], backing_facts: [] }] },
+    ],
+  };
+  const pruned = pruneEmptyColumns(table);
+  assert.deepEqual(pruned.columns.map((column) => column.column_id), ['provision']);
+  assert.deepEqual(pruned.hidden_columns, [
+    { column_id: 'period', header: 'Period', reason: 'empty' },
+    { column_id: 'asDrafted', header: 'As drafted', reason: 'summary_is_label' },
+  ]);
+  assert.deepEqual(pruned.rows[1].sub_rows[0].cells.map((cell) => cell.column_id), ['provision']);
+  // A summary that says more than the label keeps the column.
+  const telling = { ...table, rows: table.rows.map((row, index) => (index ? { ...row, cells: row.cells.map((cell) => (cell.column_id === 'asDrafted' ? { ...cell, label: 'The Company tells Parent within 48 hours' } : cell)) } : row)) };
+  assert.deepEqual(pruneEmptyColumns(telling).columns.map((column) => column.column_id), ['provision', 'asDrafted']);
+  // A table with every column filled somewhere is returned as it was.
+  const full = { ...telling, rows: telling.rows.map((row) => ({ ...row, cells: row.cells.map((cell) => (cell.column_id === 'period' ? { ...cell, kind: 'value', label: '48 hours' } : cell)) })) };
+  assert.equal(pruneEmptyColumns(full), full);
+  assert.equal('hidden_columns' in pruneEmptyColumns(full), false);
+  // An attribute grid is left to its own line rules.
+  const grid = { ...table, layout: 'attribute grid' };
+  assert.equal(pruneEmptyColumns(grid), grid);
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: { sections: [{ section_key: 's', title: 'S', tables: [pruned] }], defined_terms: [] }, facts: [] }));
+  assert.doesNotMatch(html, />Period<\/th>|>As drafted<\/th>/);
+  assert.match(html, />Provision<\/th>/);
+});
+
+test('the Other provisions table renders its Summary column only when a summary says more than its term', () => {
+  const groups = (text) => [{ subtype_key: 'X', span_id: 's1', term: 'Certificate of Merger filing', common_text: text, branches: [{ fact_id: 'f1', term: 'Certificate of Merger filing', text, section_reference: '1.03' }] }];
+  const view = (text) => ({ sections: [{ section_key: 's', title: 'S', tables: [{ table_key: 't', layout: 'rows', term_column: { header: 'Term' }, columns: [{ column_id: 'a', header: 'A' }], rows: [{ subject: 'One', cells: [{ column_id: 'a', kind: 'pill', label: 'Yes', component_ids: [], fact_ids: ['f1'] }], backing_facts: [{ fact_id: 'f1' }] }], other_provisions: groups(text) }] }], defined_terms: [] });
+  const repeats = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view('Certificate of Merger filing.'), facts: [] }));
+  assert.match(repeats, /data-testid="other-provisions-table"[^>]*data-summary-column="false"/);
+  assert.doesNotMatch(repeats, />Summary<\/th>/);
+  assert.match(repeats, /<button[^>]*data-testid="other-provision-term"[^>]*>Certificate of Merger filing</, 'the term alone opens the fact');
+  const says = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view('The Company files the Certificate of Merger with the Secretary of State'), facts: [] }));
+  assert.match(says, /data-summary-column="true"/);
+  assert.match(says, />Summary<\/th>/);
+  assert.match(says, /data-testid="other-provision-line"[^>]*>The Company files the Certificate of Merger/);
 });

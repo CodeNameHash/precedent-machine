@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react';
+import { createContext, useContext, useMemo, useState } from 'react';
 import EvidenceSidebar from './EvidenceSidebar';
-import { factIdOf, factSummaryText } from '../../lib/product/table-view';
+import { SHOW_CODES_BY_DEFAULT, factIdOf, factSummaryText } from '../../lib/product/table-view';
 import { walk } from '../../lib/product/fact-components';
 
 // Ben, 2026-09-14, on the scaled page: "sidebar width now good but font
@@ -88,7 +88,19 @@ function toneClass(tone) {
   return TONE_CLASSES[tone] || TONE_CLASSES.neutral;
 }
 
+// Work package 12 (plan finding (76)). Ben, 2026-10-17: "odd under ongoing
+// updates to have required within a stated period and required promptly.
+// Also weird to have the 48 hours there. I know the pills are likely
+// helpful for background comparison work etc but do we need to show them
+// here? Consider this more generally on the UI pills etc." One page-wide
+// setting: with codes hidden (the default, SHOW_CODES_BY_DEFAULT in
+// lib/product/table-view.js, Ben's to decide) a coded cell shows the words
+// it was read from, quietly, and still opens the sidebar; "Show codes"
+// brings the pills up. Values and as-drafted text are words already.
+const CodesContext = createContext(true);
+
 function Cell({ cell, tableKey, rowIndex, subIndex = null, selected, onSelect }) {
+  const showCodes = useContext(CodesContext);
   if (cell.kind === 'dash') {
     return <span className="text-inkFaint" data-testid="table-dash" aria-hidden="true">—</span>;
   }
@@ -102,11 +114,17 @@ function Cell({ cell, tableKey, rowIndex, subIndex = null, selected, onSelect })
     );
   }
   const isPill = cell.kind === 'pill';
-  const testId = isPill ? 'table-pill' : (cell.kind === 'value' ? 'table-value' : 'table-text');
+  const asWords = isPill && !showCodes;
+  const testId = asWords ? 'table-words' : isPill ? 'table-pill' : (cell.kind === 'value' ? 'table-value' : 'table-text');
   const canSelect = (cell.component_ids || []).length > 0 || (cell.fact_ids || []).length > 0;
-  const baseClass = isPill
-    ? `${BADGE} ${toneClass(cell.tone)}`
-    : (cell.kind === 'value' ? `text-left font-ui ${TEXT}` : `text-left font-body ${TEXT}`);
+  const baseClass = asWords
+    ? `text-left font-body ${TEXT}`
+    : isPill
+      ? `${BADGE} ${toneClass(cell.tone)}`
+      : (cell.kind === 'value' ? `text-left font-ui ${TEXT}` : `text-left font-body ${TEXT}`);
+  // The words the code was read from; a cell with no cited words (a
+  // default, a presence) keeps its label, set as words.
+  const shown = asWords ? (cell.words || cell.label) : cell.label;
   // The selected pill is outlined in the accent, as the selected card in
   // Deal Storylines is (Ben, 2026-09-14: "I prefer this side bar behavior").
   const selectedClass = selected ? 'ring-2 ring-accent' : '';
@@ -116,9 +134,10 @@ function Cell({ cell, tableKey, rowIndex, subIndex = null, selected, onSelect })
   // the MAE definition summary which you can click through to get the full
   // definition". No inline "definition" link: the cell carries its
   // link_section on the selection and the sidebar pins the summary.
-  if (!canSelect) return <span className={baseClass}>{cell.label}</span>;
+  if (!canSelect) return <span className={baseClass} data-testid={asWords ? 'table-words' : undefined} data-code={asWords ? cell.code : undefined}>{shown}</span>;
   const title = cell.defaulted ? 'Not stated for this row; shown as the column\'s default'
-    : (cell.reparsed ? 'Re-read from the cited words; the stored number differed' : undefined);
+    : (cell.reparsed ? 'Re-read from the cited words; the stored number differed'
+      : (asWords && cell.words ? `Coded: ${cell.label}` : undefined));
   return (
     <button
       type="button"
@@ -138,8 +157,9 @@ function Cell({ cell, tableKey, rowIndex, subIndex = null, selected, onSelect })
       title={title}
       data-defaulted={cell.defaulted || undefined}
       data-reparsed={cell.reparsed || undefined}
+      data-code={asWords ? cell.code : undefined}
     >
-      {cell.label}
+      {shown}
     </button>
   );
 }
@@ -149,6 +169,7 @@ function Cell({ cell, tableKey, rowIndex, subIndex = null, selected, onSelect })
 // "you should be able to see the side bar and sourcing not just by
 // clicking the pills").
 function TermCell({ row, tableKey, rowIndex, subIndex = null, onSelect, detail = null }) {
+  const showCodes = useContext(CodesContext);
   const first = row.backing_facts[0] || null;
   // Ben, 2026-09-14: "I don't like the 'see provision' behaviour - it
   // shouldn't show the provision x-refs but instead should open the side
@@ -174,7 +195,7 @@ function TermCell({ row, tableKey, rowIndex, subIndex = null, onSelect, detail =
           onClick={() => onSelect({ tableKey, rowIndex, subIndex, columnId: detail.column_id, componentId: (detail.cell.component_ids || [])[0] || null, componentIds: detail.cell.component_ids || [], factId: (detail.cell.fact_ids || [])[0] || first?.fact_id || null, linkSection: detail.cell.link_section || null })}
           className={`ml-[4.5px] text-left font-ui ${TEXT} underline-offset-2 hover:underline`}
         >
-          {`· ${detail.label}`}
+          {`· ${!showCodes && detail.cell?.kind === 'pill' && detail.cell.words ? detail.cell.words : detail.label}`}
         </button>
       ))}
       {first ? (
@@ -289,9 +310,19 @@ function AttributeTerm({ header, backing, tableKey, onSelect }) {
 // group (table-view groupOtherProvisions): the words the group shares, then
 // its branches indented, one per fact. Every line opens its own fact in the
 // evidence sidebar the way a backing fact does.
+// Work package 12 (plan finding (76)). Ben, 2026-10-17: "why do we have a
+// summary column here?" The Summary column is rendered only when some
+// line's summary says more than its term (not empty, not the term again);
+// otherwise the term alone opens the fact.
+function summarySaysMore(lines) {
+  const normalise = (text) => String(text || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  return lines.some(([term, text]) => normalise(text) && normalise(text) !== normalise(term));
+}
+
 function OtherProvisions({ groups, tableKey, onSelect, label = 'Other provisions' }) {
   const [open, setOpen] = useState(false);
   const count = groups.reduce((total, group) => total + group.branches.length, 0);
+  const withSummary = summarySaysMore(groups.flatMap((group) => [[group.term, group.common_text], ...group.branches.map((branch) => [branch.term, branch.text])]));
   const select = (factId) => onSelect({ tableKey, rowIndex: 0, columnId: null, componentId: null, componentIds: [], factId });
   // Ben, 2026-09-14, on the first rendering (a list of lines with § marks):
   // "It should look like the rest of the table structure etc and for now no
@@ -309,11 +340,11 @@ function OtherProvisions({ groups, tableKey, onSelect, label = 'Other provisions
         <span className="text-inkFaint">{open ? '▾' : '▸'}</span>
       </button>
       {(
-        <table className="w-full border-collapse text-left" data-testid="other-provisions-table" hidden={!open}>
+        <table className="w-full border-collapse text-left" data-testid="other-provisions-table" data-summary-column={withSummary ? 'true' : 'false'} hidden={!open}>
           <thead>
             <tr>
-              <th className={`w-[111.5px] ${TH}`}>Term</th>
-              <th className={TH}>Summary</th>
+              <th className={withSummary ? `w-[111.5px] ${TH}` : TH}>Term</th>
+              {withSummary ? <th className={TH}>Summary</th> : null}
             </tr>
           </thead>
           <tbody>
@@ -323,21 +354,23 @@ function OtherProvisions({ groups, tableKey, onSelect, label = 'Other provisions
               const line = (
                 <tr key={key} className={ROW} data-testid="other-provision" data-branches={group.branches.length > 1 ? group.branches.length : undefined}>
                   <td className={`${TD} ${SUBJECT}`}>
-                    <span data-testid="other-provision-term">{group.term || ''}</span>
+                    {withSummary
+                      ? <span data-testid="other-provision-term">{group.term || ''}</span>
+                      : <button type="button" data-testid="other-provision-term" onClick={() => select(lead.fact_id)} className="text-left underline-offset-2 hover:underline">{group.term || ''}</button>}
                     {lead.section_reference ? <span className={`ml-[4.5px] ${QUIET}`} data-testid="other-provision-ref">§ {lead.section_reference}</span> : null}
                   </td>
-                  <td className={TD}>
+                  {withSummary ? <td className={TD}>
                     <button type="button" data-testid="other-provision-line" onClick={() => select(lead.fact_id)} className={`text-left font-body underline-offset-2 hover:underline ${TEXT}`}>{group.common_text}</button>
-                  </td>
+                  </td> : null}
                 </tr>
               );
               if (group.branches.length === 1) return [line];
               return [line, ...group.branches.map((branch, branchIndex) => (
                 <tr key={`${key}-${branchIndex}`} className={ROW} data-testid="other-provision-branch-row">
-                  <td className={`${TD} pl-[18.5px] font-ui text-[12.5px] text-inkMid`} data-testid="other-provision-branch-term">{branch.term || ''}</td>
-                  <td className={`${TD} pl-[18.5px]`}>
+                  <td className={`${TD} pl-[18.5px] font-ui text-[12.5px] text-inkMid`} data-testid="other-provision-branch-term">{withSummary ? (branch.term || '') : <button type="button" onClick={() => select(branch.fact_id)} className="text-left underline-offset-2 hover:underline">{branch.term || ''}</button>}</td>
+                  {withSummary ? <td className={`${TD} pl-[18.5px]`}>
                     <button type="button" data-testid="other-provision-branch" onClick={() => select(branch.fact_id)} className="text-left font-body text-[12.5px] leading-relaxed text-inkMid underline-offset-2 hover:underline">{branch.text}</button>
-                  </td>
+                  </td> : null}
                 </tr>
               ))];
             })}
@@ -642,7 +675,11 @@ export default function ProvisionTables({
   // A selection to open with (static renders and tests; the page starts
   // with none).
   initialSelection = null,
+  // Work package 12: whether the code pills show (one page-wide setting);
+  // the default is SHOW_CODES_BY_DEFAULT, Ben's to decide.
+  initialShowCodes = SHOW_CODES_BY_DEFAULT,
 }) {
+  const [showCodes, setShowCodes] = useState(initialShowCodes);
   const factsById = useMemo(() => new Map((facts || []).map((fact) => [factIdOf(fact), fact])), [facts]);
   const [selection, setSelection] = useState(initialSelection);
   // Each section collapses on its heading; the bar above offers collapse /
@@ -683,7 +720,8 @@ export default function ProvisionTables({
   const TAB = 'rounded-[2px] border px-[12px] py-[7px] text-[13px] font-ui leading-none transition-colors';
   const tabClass = (current) => `${TAB} ${current ? 'border-[#dcdcdc] bg-[#f3f3f3] text-[#1f1f1f]' : 'border-transparent text-[#6b6b6b] hover:text-[#1f1f1f]'}`;
   return (
-    <div className="flex flex-wrap gap-[18.5px] lg:flex-nowrap" data-testid="provision-tables">
+    <CodesContext.Provider value={showCodes}>
+    <div className="flex flex-wrap gap-[18.5px] lg:flex-nowrap" data-testid="provision-tables" data-show-codes={showCodes ? 'true' : 'false'}>
       {/* The sidebar is fixed to the viewport's right edge (Deal Storylines;
           Ben, 2026-09-14) and the page keeps its width when it opens. The
           tables used to take 406px of right padding while a fact was
@@ -697,6 +735,7 @@ export default function ProvisionTables({
         <div className="flex items-center gap-[4.5px]" data-testid="section-toggles">
           <button type="button" onClick={() => setAll(false)} disabled={collapsed.size === 0} className={tabClass(collapsed.size === 0)}>Expand all</button>
           <button type="button" onClick={() => setAll(true)} disabled={allCollapsed} className={tabClass(allCollapsed)}>Collapse all</button>
+          <button type="button" onClick={() => setShowCodes((current) => !current)} aria-pressed={showCodes} className={`ml-auto ${tabClass(showCodes)}`} data-testid="codes-toggle">{showCodes ? 'Hide codes' : 'Show codes'}</button>
         </div>
         {tableView.sections.map((section) => {
           const isCollapsed = collapsed.has(section.section_key);
@@ -746,5 +785,6 @@ export default function ProvisionTables({
         />
       ) : null}
     </div>
+    </CodesContext.Provider>
   );
 }
