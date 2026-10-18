@@ -202,19 +202,24 @@ test('several text blocks that do not join into one JSON object fail as truncate
 });
 
 // Work package 9 (plan finding (62)): generation 8's 9.03 timed out after
-// 30 minutes with nothing in the attempt history to say how much had
-// arrived. The failure now says what the CLI had streamed.
+// 30 minutes, then twice passed the output cap, with nothing in the attempt
+// history to say how much had arrived. The failure now says what the CLI
+// had streamed; a second answer object fails the call at once as the cap.
 test('a CLI failure names the output received before it, and the summary reads a partial stream', async () => {
-  const { summariseReceivedClaudeOutput, describeReceivedClaudeOutput } = require('../lib/llm-cli-client');
+  const { summariseReceivedClaudeOutput, describeReceivedClaudeOutput, outputCapReason } = require('../lib/llm-cli-client');
   const partial = [
     JSON.stringify({ type: 'system', subtype: 'init' }),
-    JSON.stringify({ type: 'assistant', message: { content: [{ type: 'text', text: '{"proposals":[' }] } }),
-    JSON.stringify({ type: 'assistant', message: { content: [{ type: 'thinking', thinking: 'x' }, { type: 'text', text: '{"a":1}' }] } }),
+    JSON.stringify({ type: 'assistant', message: { usage: { output_tokens: 40 }, content: [{ type: 'text', text: '{"proposals":[' }] } }),
+    JSON.stringify({ type: 'assistant', message: { usage: { output_tokens: 90 }, content: [{ type: 'thinking', thinking: 'x' }, { type: 'text', text: '{"a":1}' }] } }),
     '{"type":"assistant","message":{"content":[{"type":"text","te',
   ].join('\n');
-  assert.deepEqual(summariseReceivedClaudeOutput(partial), { stream_events: 3, assistant_text_blocks: 2, text_characters: 21, result_event: false, output_tokens: null });
-  assert.equal(describeReceivedClaudeOutput(partial), 'received before the failure: 3 stream events, 2 text blocks, 21 characters of text, no result event');
-  assert.deepEqual(summariseReceivedClaudeOutput(''), { stream_events: 0, assistant_text_blocks: 0, text_characters: 0, result_event: false, output_tokens: null });
+  assert.deepEqual(summariseReceivedClaudeOutput(partial), { stream_events: 3, assistant_text_blocks: 2, text_characters: 21, result_event: false, output_tokens: null, last_reported_output_tokens: 90, answer_objects: 1 });
+  assert.equal(describeReceivedClaudeOutput(partial), 'received before the failure: 3 stream events, 2 text blocks, 21 characters of text, 90 output tokens reported, no result event');
+  assert.equal(outputCapReason(partial), null, 'a continuation block is not a second answer');
+  assert.deepEqual(summariseReceivedClaudeOutput(''), { stream_events: 0, assistant_text_blocks: 0, text_characters: 0, result_event: false, output_tokens: null, last_reported_output_tokens: null, answer_objects: 0 });
+  // Generation 8, 9.03: the answer passed the cap and the model began a second object.
+  const resumed = `${partial.split('\n').slice(0, 3).join('\n')}\n${JSON.stringify({ type: 'assistant', message: { usage: { output_tokens: 115712 }, content: [{ type: 'text', text: '{"resume_note":"Continuing","proposals":[' }] } })}`;
+  assert.match(outputCapReason(resumed), /^CLAUDE_OUTPUT_TRUNCATED: a second answer object began after 62 characters of text \(the CLI's output cap; 3 text blocks, 115,712 output tokens reported so far\)$/);
   // A fake claude that streams two events and then hangs: the timeout names what arrived.
   const fs = require('node:fs');
   const os = require('node:os');
@@ -226,4 +231,25 @@ test('a CLI failure names the output received before it, and the summary reads a
     assert.match(error.message, /claude timed out after 400ms \(received before the failure: 2 stream events, 1 text blocks, 14 characters of text, no result event\)/);
     return true;
   });
+  // A fake claude that begins a second answer object and would run on: the call fails at once as the cap, well inside its timeout.
+  const capDir = fs.mkdtempSync(path.join(os.tmpdir(), 'pm-fake-claude-cap-'));
+  fs.writeFileSync(path.join(capDir, 'claude'), '#!/bin/sh\ncat >/dev/null &\necho \'{"type":"assistant","message":{"usage":{"output_tokens":100},"content":[{"type":"text","text":"{\\"proposals\\":[{\\"a\\":1}"}]}}\'\necho \'{"type":"assistant","message":{"usage":{"output_tokens":200},"content":[{"type":"text","text":"{\\"resume_note\\":\\"Continuing\\",\\"proposals\\":["}]}}\'\nsleep 30\n', { mode: 0o755 });
+  const capClient = createClaudeCliProductClient({ model: 'claude-opus-5', effort: 'low', timeoutMs: 20000, env: { PATH: `${capDir}:/bin:/usr/bin`, CLAUDE_CODE_OAUTH_TOKEN: 't'.repeat(40) } });
+  const started = Date.now();
+  await assert.rejects(capClient.messages.create({ messages: [{ role: 'user', content: '{}' }] }), (error) => {
+    assert.match(error.message, /^CLAUDE_OUTPUT_TRUNCATED: a second answer object began after 62 characters of text \(the CLI's output cap; 2 text blocks, 200 output tokens reported so far\)$/);
+    return true;
+  });
+  assert.ok(Date.now() - started < 10000, 'the cap fails the call long before the timeout');
+});
+
+test('the product model names the section and its size in a failure reason', async () => {
+  const response = completed('{"proposals":[');
+  response.claude_completion.text_blocks = 2;
+  const model = createClaudeCliProductModel({ clientFactory: () => ({ messages: { create: async () => response } }) });
+  const request = { source_closure: { section_reference: '9.03', full_section: { start_byte: 1000, end_byte: 62042 }, operative: [], extraction_part: { part: 2, of: 5 } } };
+  await assert.rejects(model.complete({ call_kind: 'EXTRACTION', prompt_version: 'E1', request }), /CLAUDE_OUTPUT_TRUNCATED: 2 text blocks \(3 output tokens\) do not join into one JSON object \[section 9\.03: 61,042 bytes, 0 operative spans, part 2 of 5\]/);
+  const { attachReceivedClaudeOutput: attach } = require('../lib/llm-cli-client');
+  const failing = createClaudeCliProductModel({ clientFactory: () => ({ messages: { create: async () => { throw attach(new Error('claude timed out after 1800000ms'), '{"type":"system"}'); } } }) });
+  await assert.rejects(failing.complete({ call_kind: 'EXTRACTION', prompt_version: 'E1', request }), /claude timed out after 1800000ms \[section 9\.03: 61,042 bytes, 0 operative spans, part 2 of 5\]/);
 });

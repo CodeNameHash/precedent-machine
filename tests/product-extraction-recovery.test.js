@@ -684,3 +684,60 @@ test('an extraction with no proposals and NOT_FOUND coverage is an answer, not a
   const section = await buildAgreementSectionDraft({ sourceDocument, agreementStructure, legalSchema: schema, model, node });
   assert.equal(section.proposals.length, 0);
 });
+
+// Work package 9 (plan finding (62)): a limbless long section is extracted
+// in paragraph parts. A part's proposal that cites words absent from the
+// section stays INVALID on its own while the other parts' proposals survive,
+// as a limb part's would.
+test('a paragraph part with an unknown citation holds only its own proposal; the other paragraph parts survive', async () => {
+  const sourceDocument = await conchoSource();
+  const agreementStructure = buildAgreementStructure({
+    agreement_id: sourceDocument.source_document_id,
+    canonical_text: sourceDocument.canonical_text,
+    canonical_text_sha256: sourceDocument.canonical_text_sha256,
+  });
+  const node = substantiveSections(agreementStructure).find((item) => item.reference === '6.1');
+  const requests = [];
+  const model = {
+    async complete({ call_kind: kind, request }) {
+      let response;
+      if (kind === 'ROUTING') {
+        const others = (request.deterministic_family_evidence || []).map((evidence) => evidence.section_family).filter((family) => family && family !== 'NO_SHOP');
+        response = { families: ['NO_SHOP'], disposition: 'FAMILY_ASSIGNED', rationale: 'no-shop', deterministic_disagreements: [...new Set(others)].map((family) => ({ family_key: family, reason: 'synthetic test model routes the no-shop family only' })) };
+      } else if (kind === 'RESIDUAL') {
+        response = { paragraphs: request.paragraphs.map((paragraph) => ({ source_span_id: paragraph.source_span_id, disposition: 'KNOWN_FAMILY', family_keys: ['NO_SHOP'], rationale: 'covered' })) };
+      } else {
+        requests.push(request);
+        const part = request.source_closure.extraction_part.part;
+        const span = request.source_closure.operative[0];
+        const words = span.exact_text.split(/\s+/).filter(Boolean).slice(1, 8).join(' ');
+        const quote = span.exact_text.slice(span.exact_text.indexOf(words), span.exact_text.indexOf(words) + words.length);
+        const unknown = part === 2;
+        response = {
+          proposals: [{
+            client_ref: 'p-1', group_ref: 'g-1', family_key: 'NO_SHOP', subtype_key: 'PROHIBITED_ACTION', fact_type: 'PROHIBITED_ACTION',
+            statement: `Part ${part}: ${quote}`, roles: { covenant_obligor: 'Company', prohibited_action: quote }, value: null,
+            evidence_quotes: [unknown
+              ? { quote: `${quote} (words not in the section)`, source_span_id: 'unknown-paragraph-from-provider', occurrence: 0 }
+              : { quote, source_span_id: span.span_id, occurrence: 0 }],
+          }],
+          groups: [{ client_ref: 'g-1', family_key: 'NO_SHOP', subtype_key: 'PROHIBITED_ACTION' }],
+          links: [],
+          coverage: { NO_SHOP: 'FOUND' },
+          fact_type_coverage: { NO_SHOP: Object.fromEntries(schema.families.find((family) => family.family_key === 'NO_SHOP').required_fact_types.map((factType) => [factType, factType === 'PROHIBITED_ACTION' ? 'FOUND' : 'NOT_FOUND'])) },
+        };
+      }
+      return { provider_id: 'SYNTHETIC_TEST_PROVIDER', model_id: 'SYNTHETIC_LEGAL_MODEL/V1', raw_request: request, raw_response: response, response, input_tokens: 10, output_tokens: 5, cost_microusd: 1, duration_ms: 1 };
+    },
+  };
+  const { LONG_SECTION_SPLIT } = require('../lib/product/agreement-draft');
+  const section = await buildAgreementSectionDraft({ sourceDocument, agreementStructure, legalSchema: schema, model, node, longSectionSplit: LONG_SECTION_SPLIT });
+  assert.ok(requests.length > 2, `paragraph parts: ${requests.length}`);
+  assert.ok(requests.every((request) => request.source_closure.extraction_part.mode === 'paragraphs'));
+  const byPart = (part) => section.proposals.find((proposal) => proposal.statement.startsWith(`Part ${part}:`));
+  assert.ok(byPart(2), 'the part with the unknown citation keeps its proposal');
+  assert.equal(byPart(2).validation_status, 'INVALID', 'the unknown citation holds its own proposal');
+  assert.ok(section.issues.some((issue) => issue.code === 'UNKNOWN_SOURCE_COMPONENT' && issue.proposal_id === byPart(2).proposal_id));
+  for (const part of [1, 3]) assert.equal(byPart(part).validation_status, 'VALID', `part ${part} survives`);
+  assert.ok(section.issues.some((issue) => issue.code === 'LONG_SECTION_SPLIT' && /"mode":"paragraphs"/.test(issue.message)));
+});

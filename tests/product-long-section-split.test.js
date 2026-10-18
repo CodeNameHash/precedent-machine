@@ -200,12 +200,15 @@ test('a limbless long section is extracted in paragraph parts and the parts merg
   for (const request of model.extractionRequests) {
     assert.ok(request.source_closure.operative.every((span) => span.kind === 'RESIDUAL_PARAGRAPH' && span.exact_text), 'each part carries its paragraphs\' words');
     assert.equal(request.source_closure.extraction_part.mode, 'paragraphs');
-    assert.equal(request.source_closure.extraction_part.covers_chapeau, false);
+    assert.equal(request.source_closure.extraction_part.covers_chapeau, request.source_closure.extraction_part.part === 1, 'part 1 carries the opening words');
     assert.match(request.part_instruction, /has no lettered limbs, so it is extracted in \d+ parts by its paragraphs/);
+    assert.match(request.part_instruction, /definitions in other parts are extracted elsewhere, cite them as context only/);
+    assert.doesNotMatch(request.part_instruction, /opening words/);
     assert.equal(request.source_closure.full_section.exact_text, '', 'the whole section is not resent with each part');
   }
   const splitIssue = section.issues.find((issue) => issue.code === 'LONG_SECTION_SPLIT');
   assert.match(splitIssue.message, /"mode":"paragraphs"/);
+  assert.match(splitIssue.message, /"chapeau_in_part":1/);
   assert.equal(section.model_calls.length, 2 + parts, 'routing, residual and one extraction call per part');
   assert.equal(section.proposals.length, parts, 'one proposal per part, each quoting its own paragraph');
 });
