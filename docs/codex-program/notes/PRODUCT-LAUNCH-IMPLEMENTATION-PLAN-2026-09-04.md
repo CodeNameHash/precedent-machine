@@ -4136,6 +4136,18 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       122 together; npm run test:active: 689 tests, 688 pass, the one
       failure the known Codex-client final-message test. Guide line updated.
       Commit af97f4e (code and tests), then the plan and guide.
+      (78) 2026-10-18 15:10 UTC: work package 12 (finding (76)) accepted
+      and merged (c4b3cfe6, a fast-forward; the table-view and
+      provision-tables suites 107 of 107 here; its suite 688 of 689 with
+      the known failure). Four of Ben's six points were already answered
+      by work package 2 and hold on a re-read; two are new code: a
+      column no row fills is not rendered and is named on the table, and
+      the coded pills sit behind one page-wide "Show codes" control with
+      the cited words first. Put to Ben for decision: the sidebar
+      wordings ("How Corpus read it"; "Source text · Section 5.02(f)"),
+      the codes-hidden default, and renaming the `provision` column's
+      "Summary" header. NCS generation 5 at 15:05 UTC: RUNNING, 14 of
+      104, no failure since the retry, $16.40 spent; the worker alive.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
