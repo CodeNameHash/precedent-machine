@@ -29,7 +29,10 @@ const NODE = '1'.repeat(64);
 const CLOSURE = 'c'.repeat(64);
 const SPAN = 's'.repeat(64);
 const actor = 'lawyer@example.test';
-const clock = () => new Date('2026-10-18T20:00:00.000Z');
+// One instant after the review session's own start (the handler stamps it
+// with the real clock), so the review timing is measurable.
+const reviewInstant = new Date(Date.now() + (60 * 60_000));
+const clock = () => reviewInstant;
 
 function layeredProposal(id, label, start, end) {
   return {
