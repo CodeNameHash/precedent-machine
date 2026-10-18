@@ -5072,6 +5072,103 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       without a readout) and a definition fact that enters Defined Terms
       alone with no row (tests/product-table-view.test.js, 75 of 75). No
       code change; the test commit alone.
+      (93) 2026-10-18 20:02 UTC (implementer A): the NCS read after
+      finding (91), from the stored rows on the preview branch (no run
+      touched); the run at 80 of 104 complete, 0 failed, 24 open.
+      Complete since: 5.16 (24 facts), 5.17 (41), 5.18 (5), 5.19 (9),
+      5.20 (1), 6.1 (11); every fact VALID, nothing held. 5.16, employee
+      matters: fourteen facts on employee-benefits-other-protections
+      rows (401(k) termination, vesting, contributions, rollover,
+      service crediting, waiting-period waiver, deductible credit, no
+      third-party beneficiaries, no plan amendment, right to amend) and
+      ten on employee-benefits-table rows with comparison and standard
+      codes; right. Two summaries dropped for naming the section
+      ("Section 5.16 confers no rights on employees"); their rows carry
+      the meaning. 5.18, payoff letters: four facts on "Payoff letters"
+      REQUIRED and one on "Cost and risk allocation" PARENT_BEARS_COSTS
+      (Parent repays the Company Indebtedness at Closing). 5.19, the
+      Rewind novation: seven facts on "Assignment", two on
+      "Construction"; the coverage flag UNRESOLVED_UNUSUAL_PROVISION
+      stands beside them, right. 5.20, the Canadian tax deposit: one fact
+      on "Special tax mechanic". 6.1, mutual conditions: ten facts on
+      their conditions-table rows (Written Consent obtained and not
+      revoked, HSR, the Disclosure Letter approvals, no Law, no
+      injunction, S-4 effective, no stop order, Nasdaq listing); two
+      quotes cited on an unknown span relocated to the section span
+      (COMPONENT_SPAN_RELOCATED, work package 13 (a)); the eleventh fact
+      (f54d1f70, "Information Statement mailed to Company stockholders at
+      least 20 Business Days before Closing", PERIOD 20 BUSINESS_DAY)
+      has no readout (CONCLUSIONS_MISSING): the mutual table is a fixed
+      list with no open row and GENERAL_CLOSING_CONDITION names a row
+      only on the party tables (BRINGDOWN), so it shows under 6.1
+      "without a readout". The run's 86 CONCLUSIONS_MISSING over 19
+      sections are, by fact type: 49 PER_SHARE_CASH_CONSIDERATION
+      (exchange mechanics, 2.2, 2.3, 2.5, expected per finding (160)'s
+      line), 24 OTHER_DEFINED_TERM_RECORDED (Defined Terms entries), 7
+      MERGER_STRUCTURE_MECHANIC_PRESENT, 4 MAE_CARVEOUT (3.1, 4.1), this
+      one condition and one NO_SHOP EXCEPTION_PREREQUISITE (5.2).
+      5.17, the Specified Stockholders' registration rights, is the
+      section to act on. The catalogue has no registration-rights
+      family: fifteen of the section's limbs are flagged
+      UNRESOLVED_UNUSUAL_PROVISION and the extractor still returned 41
+      facts. 32 are GENERAL_COVENANT_PRESENT on the general covenants
+      table, but the rows are wrong: 13 sit on the fixed row "General
+      notification" (the shelf filing or Rule 424(b)(7) supplement,
+      keeping the Registration Statement effective, filing amendments,
+      Rule 144 current-information compliance, timely Exchange Act
+      reports, the prospectus correction duty, naming the Specified
+      Stockholders as selling securityholders), 3 on "Access to
+      information" (the stockholders' approval of their disclosures, the
+      filing bar without it, the information they furnish), 3 on "Stock
+      exchange listing" (Nasdaq listing maintenance, DTC eligibility), 1
+      on "Litigation notification" (Nasdaq or SEC proceedings), 9 on an
+      open row "Registration rights indemnification" (Parent's indemnity
+      and reimbursement, the stockholders' several indemnity capped at
+      net proceeds, survival, the furnished-information scope), 2 on an
+      open row "Registration rights" (legend removal, Rule 144 resales)
+      and 1 on "Registration expenses". Three further defects on these
+      rows: (i) the Specified Stockholders' own covenants (their several
+      indemnity, reimbursement, information cooperation, the filing-bar
+      approval right) have no obligor cell, the vocabulary being COMPANY,
+      PARENT, EACH_PARTY; (ii) the 424(b)(7) filing reads standard
+      PROMPTLY and its outside date, PERIOD "no later than two Business
+      Days thereafter" { 2, BUSINESS_DAY }, reaches no cell, the as-
+      drafted column citing OPERATION, OBJECT, CONDITION, STANDARD,
+      EXCEPTION and QUALIFIER and never TRIGGER or PERIOD (5.18's payoff
+      letter lead time, PERIOD { 3, BUSINESS_DAY } on a fact type named
+      for it, is lost the same way on the financing table); (iii) the
+      other 9 facts are CAPITALISATION_VALID_ISSUANCE_STATUS and
+      CAPITALISATION_RESERVED_OR_ISSUABLE_SECURITIES on the
+      capitalization table's "Parent Ordinary Shares" row (duly
+      authorized and nonassessable, free of Liens and preemptive rights,
+      newly issued or treasury, not initially registered, Section
+      4(a)(2) reliance, "restricted securities" under Rule 144, the Rule
+      144(d) holding period from the Closing Date, no contractual
+      transfer restrictions), so 5.17 shows a Capitalization table of
+      securities-law statements about the stock consideration beside its
+      covenants. Proposed as work package 18 items (e) to (g), for the
+      manager and Ben; (a) to (d) of finding (91) stand. (e) Code, the
+      mechanism exists: a words_rows rule on the general covenants table
+      (work package 17's rule) placing a covenant whose words name the
+      Registration Statement, Registrable Securities, a prospectus, Rule
+      144 or Rule 415 on one row, "Registration rights", with
+      sub-items by words (Resale registration; Effectiveness and
+      amendments; Stockholder information and approval; Indemnification;
+      Expenses; Rule 144 and legend removal; Listing and reporting);
+      the code proposes the labels, Ben names them, and the 13 facts
+      leave "General notification". (f) Shape questions for Ben: an
+      obligor code for a party that is neither Company nor Parent (the
+      Specified Stockholders here; a sponsor or guarantor elsewhere),
+      and whether the as-drafted column of covenant tables cites TRIGGER
+      and PERIOD so a deadline shows on the row, or a "By when" value
+      column shows it; (g) a lawyer question for Ben: where the
+      securities-law status statements about the stock consideration
+      belong (a Registration rights row of the covenants table, a
+      Consideration row, or the Capitalization table as the model chose).
+      (h) For the mutual conditions table, one more shape question: an
+      open row for a mutual condition the fixed list does not name (the
+      Information Statement mailing period here), or the "without a
+      readout" list as now. No code changed for this finding.
       (120) 2026-10-18 19:10 to 19:45 UTC (implementer C), Q5: the limb
       names harvested. `scripts/product/harvest-rep-limbs.js` (library
       `lib/product/rep-limb-harvest.js`, `tests/product-rep-limb-harvest.test.js`)
