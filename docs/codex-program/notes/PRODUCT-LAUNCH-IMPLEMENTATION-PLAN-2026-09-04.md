@@ -3392,6 +3392,30 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       with Cloudflare 520s during finalisation; both succeeded on retry.
       Next: the NCS run on the Anthropic API after a prompt-cache
       breakpoint (finding (46)), then Olaplex and Apogee.
+      (68) 2026-10-18 11:50 UTC, work package 10 (finding (67)) accepted
+      and merged (1e49fd2, a fast-forward; its 13 provider tests pass
+      here; its suite 678 of 679 with the known failure). Read against
+      the brief: the model reads the same words in a new order (the
+      closure after the contracts) plus one layout sentence in the system
+      prompt, recorded in the stored request; the cache keyed per routed
+      family set, the whole-schema alternative rejected for widening what
+      the model reads; the 1-hour lifetime from generation 8's call gaps
+      ($6.64 saved against $3.07 for 5 minutes); writes and reads priced
+      from the message's own breakdown. The honest estimate replaces
+      finding (46)'s: on generation 8's profile $144.99 uncached, $138.36
+      with the cache (output is 62 per cent of the bill and never
+      cached); on NCS generation 4's own profile (326 calls, 5.61m input,
+      1.24m output under the older bundle) $59.12. Both inside Ben's
+      $200 with a retry's margin ("you now have $200 of API tokens you
+      can use if you want to preseve subscription capcaity"). Submitted:
+      the sandbox worker at 1e49fd2, the preview alias serving it, the
+      NCS intake (idempotency key ncs-gen5-api-2026-10-18,
+      explicitGeneration 4, provider ANTHROPIC_API) created run
+      51577c57-41b1-4b75-bcdf-c84ef2558589 as source generation 5, 104
+      sections, woken at 11:48 UTC. The run's cost is priced from its
+      own cache reads and writes at the end
+      (`estimate-run-cost.js --run 51577c57-41b1-4b75-bcdf-c84ef2558589`).
+      Olaplex and Apogee follow the NCS read.
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
