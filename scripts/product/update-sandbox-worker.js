@@ -15,7 +15,14 @@
 // commit the sandbox is on before and after. Exits non-zero if the sandbox
 // checkout is not a git repository, so nothing is half-updated.
 
-const { SANDBOX_NAME, SANDBOX_WORKDIR, sandboxCredentials } = require('../../lib/product/sandbox-wake');
+const { SANDBOX_NAME, SANDBOX_WORKDIR, isSandboxGone, sandboxCredentials } = require('../../lib/product/sandbox-wake');
+
+// Work package 4 (plan finding (49)): a sandbox that no longer resumes is
+// not updated, it is re-created; the message says which script does that.
+function resumeFailureMessage(error) {
+  if (!isSandboxGone(error)) return null;
+  return `sandbox ${SANDBOX_NAME} no longer resumes (${String(error.message || error).slice(0, 160)}); re-create it with node scripts/product/create-sandbox-worker.js --provider <hosted provider id>`;
+}
 
 const REPO = 'https://github.com/CodeNameHash/precedent-machine.git';
 const branch = process.argv[2] || 'codex/product-implementation-plan-20260904';
@@ -34,9 +41,17 @@ async function run(sandbox, cmd, args) {
   return stdout.trim();
 }
 
-(async () => {
+async function main() {
   const { Sandbox } = await import('@vercel/sandbox');
-  const sandbox = await Sandbox.get({ name: SANDBOX_NAME, resume: true, ...sandboxCredentials() });
+  let sandbox;
+  try {
+    sandbox = await Sandbox.get({ name: SANDBOX_NAME, resume: true, ...sandboxCredentials() });
+  } catch (error) {
+    const gone = resumeFailureMessage(error);
+    if (!gone) throw error;
+    console.error(gone);
+    process.exit(1);
+  }
   const isGit = await run(sandbox, 'sh', ['-c', `test -d ${SANDBOX_WORKDIR}/.git && echo yes || echo no`]);
   if (isGit !== 'yes') {
     // The checkout lost its .git directory (seen 2026-09-12 after the
@@ -57,7 +72,13 @@ async function run(sandbox, cmd, args) {
   const check = await run(sandbox, 'node', ['-e', "require('./lib/product/legal-schema-selection'); require('./lib/product/fact-components'); console.log('modules load')"]);
   console.log(check);
   console.log(`done: ${SANDBOX_NAME} now runs ${branch} at ${after}`);
-})().catch((error) => {
-  console.error(error.message || error);
-  process.exit(1);
-});
+}
+
+if (require.main === module) {
+  main().catch((error) => {
+    console.error(error.message || error);
+    process.exit(1);
+  });
+}
+
+module.exports = { resumeFailureMessage };
