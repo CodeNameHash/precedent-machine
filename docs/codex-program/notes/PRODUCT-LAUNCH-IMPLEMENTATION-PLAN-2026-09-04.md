@@ -4345,6 +4345,35 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       above; the single-form Metsera row is unchanged as asked. The
       preview is not downloaded; the stored rows on the preview branch
       are the evidence.
+      (81) 2026-10-18 17:20 UTC: work package 13 (finding (80)) accepted
+      and merged (d384c74a, a fast-forward; its four suites 169 of 169
+      here; its suite 694 of 695 with the known failure). The span
+      relocation, the Defined Terms rule and the election options table
+      apply to the page at once and to extraction from the next run;
+      NCS 3.4's ten held facts stay held in this run (extracted before
+      the rule). Four questions on the election table put to Ben. NCS
+      generation 5 at 17:10 UTC: RUNNING, 50 of 104, 0 failed, $64.54
+      (projection about $134). Read against the text, 3.18 to 4.6:
+      3.19's seven intellectual property representations on their
+      qualifier rows with the January 1, 2024 look-back and the MAE
+      and material qualifiers (the section generation 8 held entirely;
+      here no component cited the introduction); 4.1's Parent MAE
+      carve-outs on their fixed rows with the disproportionality
+      answers, the Rewind consummation and seasonal fluctuations as
+      Other carve-outs, the underlying-cause proviso as the footer, and
+      the Parent organisation representations on the Parent qualifiers
+      table. One shared defect, three held facts, to work package 14: a
+      count stated in words is not parsed. 3.2 "no shares of Company
+      Preferred Stock were issued and outstanding" and 4.2 "(ii) no
+      Parent Ordinary Shares" hold their capitalization facts on "AMOUNT
+      needs a canonical value" ("no" is zero); 2.1's cash leg holds on
+      "“Cash Consideration” means cash in an amount equal to the product
+      of (x) the Cash Exchange Ratio, multiplied by (y) the Parent
+      Closing Price", a formula that has no scalar and should not hold
+      the fact. Rule: a count component whose words are "no"/"none"/
+      "zero" of the counted thing is 0; an AMOUNT whose words define it
+      as a product, sum or ratio of defined terms carries no canonical
+      value and a note, and the fact stays VALID with its components.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
