@@ -4666,6 +4666,32 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       TRIGGER and PERIOD; the registration-rights facts as a table at
       the bottom of the Consideration section, not on the covenants
       table; (h) stays as it is.
+      (164) 2026-10-18 20:50 UTC: implementer A's (94) and implementer
+      B's (100) to (104) merged to the working branch (fast-forward from
+      origin; the active suite on the merged tree in the next finding).
+      Read, not just counted. (94) (c): Metsera 6.08's seven
+      model-written details become five lines in the shared vocabulary
+      with nothing lost (the consent and its standard on one line; the
+      consultation and the review-and-comment duty on one line), and
+      NCS 5.14's twelve facts read as eight sub-items; improved, accepted.
+      The ten publicity labels are proposals for Ben ("he decides the
+      names; the code only proposes"); put to him with this check-in.
+      (94) (a) and (b) are finalisation rules: NCS generation 5's worker
+      runs the code of its wake (18:55 UTC), so 4.7's three inherited
+      quotes and 5.11's reference premium stay held in that run and are
+      VALID on the next generation; the generation 5 audit says so.
+      Manager answers to B: (100) the released Review for this internal
+      launch runs on the preview branch behind deal-corpus-preview;
+      the production project is a later cutover that only Ben approves
+      (his standing rule), nothing built for it; (103) option (a), the
+      rollback drill runs on the second release, after Ben's first
+      correction, no migration; (104) accepted, work package D2 to
+      implementer D (every CI database test on the full migration list;
+      the workflow also on pushes to the two working branches). Work
+      package B2 to implementer B: the NCS comparison regenerated with
+      generation 5 once READY, and the 102 V1 facts without a
+      counterpart read one by one into a ranked list of V2 extraction
+      defects with the rule or prompt line for each (finding (105)).
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
