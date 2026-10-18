@@ -4551,6 +4551,80 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       updates the sandbox worker to this branch's tip; the run route
       needs no redeploy for it. Commits: the code and tests commit and
       this plan and guide commit.
+      (86) 2026-10-18 18:25 to 18:40 UTC (implementer), work package 16
+      on finding (85), Ben's four answers on the election options table,
+      each in code for every agreement, his words in the shape
+      generator's comment. No run submitted or touched; no live API
+      call. (1) "STOCK": the row stays "Stock election" (built so in
+      (80); recorded). (2) "I'D SAY \"NOT A DEAL FEATURE\"": the options
+      table has absent_row_label "Not a deal feature", shown for a fixed
+      row no fact fills once the table has a filled row (the existing
+      rule, so a deal without an election shows no table and no
+      "feature" line). The manager's qualification, "a held fact is
+      'held', never 'not a feature'": the preview skipped every
+      non-VALID proposal (lib/product/provisions-preview.js), so a held
+      fact never reached the tables; a held V2 proposal keeps its
+      component tree in its payload (checked on the preview branch: NCS
+      2.1's held cash leg 608d3d2b has eight components with their words,
+      "with respect to which an election to receive mixed consideration
+      ...", "the Cash Consideration", the Cash Consideration formula).
+      previewFactsFromWorkspace now returns `held_facts` (layered,
+      non-VALID, not rejected), the provisions page hands them to
+      PublishedSummary and buildTableView takes `heldFacts`, read by the
+      election options rule alone: a held fact is placed on its option
+      by the same words rule (it has no readout); an option with no
+      filled row and a held fact is a row reading the rule's
+      held_row_label, "Held: this option's fact is held by validation",
+      its held fact cited (data-held on the page); a held fact of a
+      filled option backs that row, marked held. (3) "KEEP ELECTIONS BUT
+      ONLY WHEN THERE IS AN ELECTIOB": the per-share table's
+      `election_forms` (CASH_ELECTION to CASH, STOCK_ELECTION to
+      PARENT_STOCK) and `foldElectionForms`: when the options table has
+      no filled row, a per-share row coded as an election form folds
+      into its plain form's row (cells merged, the form cell recoded with
+      folded_from); with an election the rows stay; the table's guidance
+      tells the extractor the election forms are for an election deal
+      only. (4) "WHAT DO YOU MEAN MINE TO SAY? SHOYUULDN'T ALL THE INFO BE
+      LINKED/ACCURTE?": the link through the definitions, mechanical as
+      the manager put it. Each option row keeps its own term and the
+      numeric terms its facts name (its ratio or cash terms); every value
+      term whose definition fact's own words (not its summary) name one
+      of them is linked to the row, with the longest defined term matched
+      first over all terms (the first render linked the mixed terms to
+      the stock row because "Share Consideration Exchange Ratio" sits
+      inside "Mixed Share Consideration Exchange Ratio"; fixed before
+      commit). A linked term matching the rule's value_term ("Value$")
+      goes under a new Value per share column, any other under Value
+      terms, each cell marked derived 'definition_link' with `via` the
+      term that links it and citing the definition; the numeric terms the
+      definition names in turn are listed after it. NCS 2.1 as the page
+      now reads it, from the stored facts with the held cash leg: Cash
+      election: Not a deal feature. Stock election [Share Consideration]:
+      Exchange ratio 0.5537. Mixed election [Mixed Share Consideration]:
+      Exchange ratio 0.2392; Value per share "Mixed Share Consideration
+      Value means the mixed exchange ratio times the Parent Closing
+      Price" (linked via Mixed Share Consideration Exchange Ratio; the
+      text is the Defined Terms entry's, the model's summary, which
+      paraphrases "the mixed exchange ratio"); Value terms "Cash
+      Consideration means the Cash Exchange Ratio multiplied by the
+      Parent Closing Price", "Cash Exchange Ratio: 0.1371"; the held cash
+      leg backs the mixed row; Cash per share hidden. The per-share table
+      keeps Stock election 0.5537 and Acquirer stock 0.2392. Metsera
+      generation 8 (thirteen held facts passed): no election table, the
+      per-share rows unchanged. Observed, for the manager: the linked
+      text is the Defined Terms entry's text, so where the model's
+      summary paraphrases the words the cell paraphrases too; reading the
+      definition fact's own words instead would change every Defined
+      Terms entry and is a separate decision. Tests: the shape and its
+      validation (tests/product-table-shapes.test.js), the absent and
+      held rows, the link and its longest match, the fold with and
+      without an election (tests/product-table-view.test.js), the held
+      row's label and data-held (tests/product-provision-tables.test.js),
+      held_facts from the preview (tests/product-provisions-preview.test.js).
+      npm run test:active: 702 of 703, the one failure the known
+      Codex-client final-message test. The page changes apply on the
+      branch's next deploy; nothing in the worker changes. Commits: the
+      code and tests commit and this plan and guide commit.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
