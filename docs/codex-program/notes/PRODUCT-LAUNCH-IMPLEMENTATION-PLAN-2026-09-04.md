@@ -5494,6 +5494,118 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       docs/core/CODEBASE-GUIDE.md updated. npm run test:active: the known
       failure only (the count in the commit). Nothing submitted or
       retried.
+      (95) 2026-10-18 21:05 UTC (implementer A), work package 18 items
+      (d) and (e) (the manager's message of 20:28, finding (93) accepted
+      as (162)). (d) The general covenants table has a fixed "Registration
+      rights" row (scripts/product/table-shapes-decision-34.js
+      REGISTRATION_ROW, REGISTRATION_WORDS, REGISTRATION_DETAILS,
+      REGISTRATION_DETAIL_WORDS; the contract regenerated). Its words_rows
+      rule, "Registration Statement", "Registrable Securities", a
+      prospectus, "Rule 144" or "Rule 415", is marked over_readout, a new
+      flag lib/product/table-shapes.js validates: lib/product/
+      fact-conclusions.js rowFromWords moves a fact whose readout is on
+      another row of the same table to the rule's row when its own
+      components (else its statement and summary) match, or when the open
+      row the model wrote begins with the rule's row label ("Registration
+      rights indemnification" is "Registration rights"; the survival and
+      reimbursement limbs name none of the words); the readout-less case
+      stays with defaultConclusions. Applied at extraction (agreement-
+      draft, note ROW_FROM_WORDS naming from and to, before the sub-item
+      rule) and to stored facts in buildTableView (page_rule 'words_rows',
+      row_from), so NCS generation 5's rows read this way without a run.
+      The sub-items, proposed for Ben to name, in the order they show:
+      Resale registration; Effectiveness and amendments; Stockholder
+      information and approval; Indemnification; Expenses; Rule 144 and
+      legend removal; Listing and reporting. The rules read the indemnity
+      and its mechanics first (its limbs name a prospectus), then
+      expenses, then listing and reporting before Rule 144 (the reporting
+      covenant names Rule 144 too), then the stockholders' approval right
+      before the resale filing it governs, then effectiveness and
+      amendments last. On NCS 5.17's 32 general-covenant facts, checked
+      against the stored rows with the same patterns: 29 move to
+      Registration rights (Resale registration 3: the Rule 424(b)(7)
+      supplement, the Rule 415 shelf alternative, the selling
+      securityholders; Effectiveness and amendments 5: keeping the
+      statement effective, the amendments, the SEC's requests, the
+      misstatement notice, the prospectus correction; Stockholder
+      information and approval 4: review and approval of their
+      disclosures, the filing bar without it, the information they
+      furnish, the furnished-information scope; Indemnification 8:
+      Parent's indemnity for untrue statements and for omissions, its
+      carve-out for furnished information, its expense reimbursement,
+      the stockholders' several indemnity, their reimbursement, the net-
+      proceeds cap, survival; Expenses 1; Rule 144 and legend removal 3:
+      legend removal, Rule 144 resales, Rule 144(c)(1) compliance;
+      Listing and reporting 5: Nasdaq listing, Nasdaq compliance, DTC
+      eligibility, the two reporting covenants); 3 stay where they are,
+      the Nasdaq notices (deficiency notices and delisting events on
+      "General notification", Nasdaq or SEC proceedings on "Litigation
+      notification"), which name none of the words and are notification
+      covenants. The nine CAPITALISATION facts are not on this table
+      (question (g) is with Ben). Metsera generation 8: no general-
+      covenant fact names any of the words, so nothing moves. Pinned in
+      tests/product-table-view.test.js with fifteen of the facts' own
+      words (the seven sub-items, the notice that stays, the survival
+      limb that comes by its label), tests/product-table-shapes.test.js
+      (the row, the rule, the labels, a non-boolean over_readout fails)
+      and tests/product-fact-components-extraction.test.js (a General
+      notification readout moves at extraction with both notes). (e)
+      lib/product/source-context.js resolveReferencedNode: a reference
+      inside an exhibit or annex resolves within the exhibit first: to a
+      node of the exhibit's own when the exhibit's sections have nodes
+      (the phase-1 fixture's Exhibit-A::10.02; unchanged), else to the
+      exhibit itself when a heading of the exhibit's text starts with the
+      number as the reference writes it (exhibitHoldsReference: "2.2" is
+      the CVR Agreement's own "2.2 Nontransferable", "2.01(b)" is not,
+      since the exhibit writes 2.1, so "Section 2.01(b) of the Merger
+      Agreement" still reaches the main agreement); such a reference is a
+      cross-reference to the exhibit's own words (the exhibit node is the
+      target, its CROSS_REFERENCE span the exhibit) and is recorded in
+      context_diagnostics.exhibit_internal_section_references, a key
+      present only when non-empty so every other closure's identity is as
+      it was; a number the exhibit does not hold goes to the main
+      agreement as before. The extraction gate in agreement-draft
+      (traversal complete and nothing unresolved) is unchanged and now
+      passes for the exhibit. On the Metsera filing as fetched
+      (tests/fixtures/canonical-v2/metsera-first-live-run), Exhibit-B's
+      closure: unresolved none (was six), internal 24 (2.2, 2.4, 2.4(a),
+      2.4(e), 2.4(i), 2.6, 3.2, 3.3, 3.4, 4.2, 4.3(a) to (d), 5.1,
+      5.1(a), 5.2(a), 5.3, 6.12, 6.2, 6.5, 6.6(a), 6.8, 6.9), cross-scope
+      into the main agreement 2.01(b) and 2.03 (was seventeen),
+      traversal complete, 17 spans (6 definition spans, 7 cross-reference
+      spans). Exhibit-A (the Form of Support Agreement) has no section
+      references and is unchanged. tests/product-exhibit-references.test.js
+      pins this on the fixture beside the main agreement's 6.03, which
+      resolves as before; tests/product-phase-1.test.js's exhibit-scope
+      test still passes. The families Exhibit-B would be extracted for
+      are the thirteen its generation 8 routing holds: CONSIDERATION,
+      DNO_INDEMNIFICATION, EMPLOYEE_MATTERS, GENERAL_COVENANTS,
+      KEY_DEFINED_TERMS, MISC_BOILERPLATE, REPRESENTATIONS, TAX_MATTERS
+      and TERMINATION from the router, CAPITALISATION, DIVIDENDS,
+      MERGER_STRUCTURE_CLOSING and SPECIFIC_PERFORMANCE_REMEDIES widened
+      from the residual pass. What the next Metsera run would carry, by
+      that routing's own reading of the exhibit: the CVR consideration
+      (the per-CVR milestone payment amounts, the milestone payment
+      dates and the payment procedure of 2.4, the exchange and payment
+      mechanics, the abandonment right of 2.6), the defined terms
+      (Acting Holders, Change of Control, Commercially Reasonable,
+      Permitted Transfer, the milestones), the CVR covenants (the
+      development spend commitment, the anti-avoidance covenant, the
+      assumption on a Change of Control, direction and control of the
+      business), withholding and the intended tax treatment, the Rights
+      Agent's indemnification and expense reimbursement, Parent's
+      authority and no-conflict representations, the Equity Award
+      Holders' payment timing, 6.12's termination and the boilerplate;
+      the generation 3 audit's missing milestones and payment dates
+      among them, as facts rather than the nine unusual-provision flags
+      that are their only trace today. Whether they land on tables
+      depends on the shapes (the CVR row of the consideration table and
+      the general covenants "CVR Agreement" row exist); the facts will
+      exist either way. The seventy-seven-kilobyte exhibit has no child
+      limbs, so it is extracted by its paragraphs under the long-section
+      rule. docs/core/CODEBASE-GUIDE.md updated. npm run test:active: the
+      known failure only (the count in the commit). Nothing submitted or
+      retried.
       (120) 2026-10-18 19:10 to 19:45 UTC (implementer C), Q5: the limb
       names harvested. `scripts/product/harvest-rep-limbs.js` (library
       `lib/product/rep-limb-harvest.js`, `tests/product-rep-limb-harvest.test.js`)
