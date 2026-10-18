@@ -12,6 +12,12 @@ if [[ "${SUPABASE_URL:-}" != 'https://ecrtoofsyxozazkvsvcl.supabase.co' || -z "$
   exit 78
 fi
 
+# The CLIs the create script installs live in pm-cli (work package 4,
+# 2026-10-18): on PATH before any path checks for its binary. Generation
+# 8's first wakes exited 78 (PRODUCT_HOSTED_CLAUDE_CLI_REQUIRED) because
+# the check ran before this line.
+export PATH="/vercel/sandbox/pm-cli/bin:$PATH"
+
 # Ben, 2026-09-14: "Can you flip the codex cli to Claude cli?" The wake names
 # the provider; each path checks its own login and nothing else.
 case "${PRODUCT_MODEL_PROVIDER:-OPENAI_CODEX_CLI_SUBSCRIPTION}" in
@@ -45,7 +51,6 @@ case "${PRODUCT_MODEL_PROVIDER:-OPENAI_CODEX_CLI_SUBSCRIPTION}" in
     ;;
 esac
 
-export PATH="/vercel/sandbox/pm-cli/bin:$PATH"
 # No path sees another path's credential: the API key stays only for the
 # API provider.
 unset OPENAI_API_KEY CODEX_API_KEY CODEX_ACCESS_TOKEN
