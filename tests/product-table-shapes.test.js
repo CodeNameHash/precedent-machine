@@ -1023,3 +1023,29 @@ test('the fiduciary-out table has the savings-clause row, placed by words_rows, 
   doc = broken(); tableOf(doc).words_rows = [{ row_label: 'Fiduciary actions are not a breach', when: 'x', code: 'MAYBE' }];
   assert.throws(() => validateTableShapesV3(doc, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_WORDS_ROWS_CODE_UNKNOWN/);
 });
+
+// Work package 18 (c) (plan finding (91); NCS generation 5, 5.14): the
+// publicity row's sub-items, by detail labels and words rules.
+test('the general covenants table names the publicity sub-items and the words that place a fact on each; a rule naming no label fails validation', () => {
+  const table = findTableV3(findSectionV3('general-covenants'), 'general-covenants-table');
+  assert.deepEqual(table.detail_labels_by_row['Public announcements'], [
+    'Announcement release', 'Consent to releases', 'Consultation and review', 'Consistent with prior statements',
+    'Carve-out: ordinary course', 'Carve-out: employees', 'Carve-out: disputes', 'Carve-out: investor and media communications', 'Carve-out: sponsor disclosure', 'Law or exchange exception',
+  ]);
+  const rules = table.detail_from_words_by_row['Public announcements'];
+  assert.equal(rules.length, 10);
+  for (const rule of rules) {
+    assert.ok(table.detail_labels_by_row['Public announcements'].includes(rule.detail), rule.detail);
+    assert.doesNotThrow(() => new RegExp(rule.words, 'i'));
+  }
+  assert.deepEqual(rules.slice(0, 5).map((rule) => rule.detail), ['Carve-out: sponsor disclosure', 'Carve-out: employees', 'Carve-out: disputes', 'Carve-out: investor and media communications', 'Carve-out: ordinary course'], 'the carve-outs are read before the duties they qualify');
+  assert.equal(rules[rules.length - 1].detail, 'Law or exchange exception', 'the exception every duty repeats is read last');
+  assert.match(table.guidance, /Public announcements: every publicity fact is on this row/);
+  const broken = structuredClone(tableShapesV3);
+  const brokenTable = findTableV3(broken.sections.find((s) => s.section_key === 'general-covenants'), 'general-covenants-table');
+  brokenTable.detail_from_words_by_row['Public announcements'].push({ detail: 'Not a label', words: 'press' });
+  assert.throws(() => validateTableShapesV3(broken, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_DETAIL_FROM_WORDS_DETAIL_UNKNOWN/);
+  brokenTable.detail_from_words_by_row['Public announcements'].pop();
+  brokenTable.detail_from_words_by_row['Access to information'] = [{ detail: 'Data room', words: 'data room' }];
+  assert.throws(() => validateTableShapesV3(broken, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_DETAIL_FROM_WORDS_ROW_WITHOUT_LABELS/);
+});

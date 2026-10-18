@@ -744,3 +744,162 @@ test('a count of none and a formula amount compile as VALID facts; the formula i
   assert.deepEqual(parsed.formulas.map((entry) => [entry.path, entry.text]), [['0', formulaQuote]]);
   assert.equal(parsed.formulas[0].component_id, formula.proposals[0].components[0].component_id);
 });
+
+// Work package 18 (b) (plan finding (91), NCS generation 5, 5.11): the D&O
+// tail premium cap, "the last aggregate annual premium paid by the Company
+// prior to the date hereof", is a reference quantity with no number by
+// design; the fact was held on "AMOUNT needs a canonical value".
+test('an amount that names a reference quantity compiles as a VALID fact with a VALUE_IS_REFERENCE note; prose still holds', () => {
+  const dno = 'Section 5.11 Indemnification. In no event shall the Company commit or spend on such premiums an amount in excess of 300% of the last aggregate annual premium paid by the Company prior to the date hereof for the Company’s current policies of directors’ and officers’ liability insurance (the “Base Amount”), or any other fee.';
+  const doc = { source_document_id: 'e'.repeat(64), canonical_text: dno };
+  const sectionNode = 'k'.repeat(64);
+  const span = { span_id: 'k1'.repeat(32), kind: 'FULL_SECTION', structure_node_id: sectionNode, start_byte: 0, end_byte: bytes(dno), exact_text: dno };
+  const dnoClosure = { source_closure_id: 'k2'.repeat(32), structure_node_id: sectionNode, section_node_id: sectionNode, section_reference: '5.11', full_section_span_id: span.span_id, spans: [span] };
+  const dnoNode = { node_id: sectionNode, reference: '5.11', kind: 'SECTION' };
+  const own = (ref, kind, label, quote) => ({ ref, kind, label, quote, source_span_id: span.span_id, occurrence: 0, origin: 'OWN', children: [] });
+  const bodyWith = (components) => ({
+    proposals: [{ client_ref: 'p1', group_ref: 'g1', family_key: 'DNO_INDEMNIFICATION', subtype_key: 'INDEMNIFICATION_AND_EXCULPATION', fact_type: 'TAIL_PREMIUM_CAP_OFF_AGREEMENT',
+      statement: 'The Company shall not spend more than 300% of the last aggregate annual premium paid on the tail policy.',
+      roles: { LEGAL_ACTOR_OR_SUBJECT: 'the Company', LEGAL_OPERATION: 'shall not commit or spend', OPERATIVE_OBJECT: 'an amount in excess of 300% of the last aggregate annual premium' },
+      value: null, evidence_quotes: [{ quote: 'the last aggregate annual premium paid by the Company prior to the date hereof', source_span_id: span.span_id, occurrence: 0 }],
+      headline: { label: 'Base Amount', distinguishing_refs: ['c1'], summary: 'Base Amount is the last aggregate annual premium paid before signing' }, components }],
+    groups: [{ client_ref: 'g1', family_key: 'DNO_INDEMNIFICATION', subtype_key: 'INDEMNIFICATION_AND_EXCULPATION' }],
+    links: [],
+  });
+  const compileDno = (body) => compileExtraction({ sourceDocument: doc, legalSchema: legalSchemaV2, node: dnoNode, closure: dnoClosure, call, routedFamilies: ['DNO_INDEMNIFICATION'], ownedNodeIds: new Set([sectionNode]), response: body });
+  const referenceQuote = 'the last aggregate annual premium paid by the Company prior to the date hereof';
+  const reference = compileDno(bodyWith([own('c1', 'AMOUNT', 'Base Amount', referenceQuote), own('c2', 'OPERATION', 'spending cap', 'shall the Company commit or spend')]));
+  assert.equal(reference.proposals.length, 1);
+  assert.equal(reference.proposals[0].validation_status, 'VALID', reference.issues.map((issue) => `${issue.code}: ${issue.message}`).join('\n'));
+  assert.deepEqual(reference.proposals[0].components[0].value, { canonical: null, unit: null, form: 'REFERENCE' });
+  const note = reference.issues.find((issue) => issue.code === 'VALUE_IS_REFERENCE');
+  assert.ok(note && note.kind === 'NOTE', 'the reference is a note, not a hold');
+  const parsed = JSON.parse(note.message);
+  assert.equal(parsed.client_ref, 'p1');
+  assert.deepEqual(parsed.references.map((entry) => [entry.path, entry.text]), [['0', referenceQuote]]);
+  assert.equal(parsed.references[0].component_id, reference.proposals[0].components[0].component_id);
+  assert.equal(reference.issues.some((issue) => issue.code === 'VALUE_IS_FORMULA'), false);
+  // Prose that is neither a number, a count in words, a formula nor a reference still holds.
+  const prose = compileDno(bodyWith([own('c1', 'AMOUNT', 'a fee', 'any other fee'), own('c2', 'OPERATION', 'spending cap', 'shall the Company commit or spend')]));
+  assert.equal(prose.proposals[0].validation_status, 'INVALID');
+  assert.ok(prose.issues.some((issue) => issue.code === 'INVALID_FACT_COMPONENTS' && /needs a canonical value|no parsable value/.test(issue.message)));
+  assert.equal(prose.issues.some((issue) => issue.code === 'VALUE_IS_REFERENCE'), false);
+});
+
+// Work package 18 (a) (plan finding (91), NCS generation 5, 4.7; 2026-10-18):
+// the model cut the Article IV introduction's words (origin INTRO) and cited
+// them on the Article III chapeau span, a span the closure knows that does
+// not hold them; three of four facts were held "byte range missing". The
+// words below are the two chapeaus and 4.7 as stored for the run.
+test('an inherited-origin quote cited on a known span that lacks it is taken from the one closure span its origin allows, with a note; two candidates or own words keep the hold', () => {
+  const articleIII = 'ARTICLE III\nREPRESENTATIONS AND WARRANTIES OF THE COMPANY\nExcept as set forth in (a) any Company SEC Document filed with or furnished to the Securities and Exchange Commission (the “SEC”) and available on EDGAR on or after January 1, 2026 and at least 24 hours prior to the date hereof ((i) without giving effect to any disclosure set forth in any Company SEC Document or any amendment to any Company SEC Document in each case filed on or after such time and (ii) other than any disclosures contained under the captions “Risk Factors” or “Forward-Looking Statements,” and any other disclosures that are primarily predictive, cautionary or forward-looking in nature), but it being understood that this clause (a) shall not be applicable to Section 3.2 (Capital Stock) and Section 3.25 (Brokers) or (b) the disclosure letter delivered by the Company to Parent immediately prior to or simultaneously with the execution of this Agreement (the “Company Disclosure Letter”), the Company represents and warrants to Parent and Merger Sub as follows:\n';
+  const articleIV = 'ARTICLE IV\nREPRESENTATIONS AND WARRANTIES OF PARENT AND MERGER SUB\nExcept as set forth in (a) any Parent SEC Document filed with or furnished to the SEC and available on EDGAR on or after January 1, 2026 and at least 24 hours prior to the date hereof ((i) without giving effect to any disclosure set forth in any Parent SEC Document or any amendment to any Parent SEC Document in each case filed on or after such time and (ii) other than any disclosures contained under the captions “Risk Factors” or “Forward-Looking Statements,” and any other disclosures that are primarily predictive, cautionary or forward-looking in nature) or (b) the disclosure letter delivered by Parent to the Company immediately prior to or simultaneously with the execution of this Agreement (the “Parent Disclosure Letter”), Parent and Merger Sub represent and warrant to the Company as follows:\n34\n';
+  const section = 'Section 4.7 Certain Information. None of the information supplied or to be supplied by or on behalf of Parent or Merger Sub for inclusion or incorporation by reference in (a) the Form S-4 will, at the time the Form S-4 becomes effective under the Securities Act, contain any untrue statement of a material fact or omit to state any material fact required to be stated therein or necessary to make the statements therein not misleading or (b) the Information Statement will, on the date it is first mailed to the stockholders of the Company, contain any untrue statement of a material fact or omit to state any material fact required to be stated therein or necessary in order to make the statements therein, in light of the circumstances under which they are made, not misleading. Subject to the first sentence of Section 3.8, the Form S-4 and the Information Statement will comply as to form in all material respects with the provisions of the Exchange Act and the rules and regulations thereunder. Notwithstanding the foregoing, neither Parent nor Merger Sub makes any representation or warranty with respect to statements included or incorporated by reference in the Form S-4 or the Information Statement based on information supplied by or on behalf of the Company specifically for inclusion or incorporation by reference therein.\n';
+  const canonical = `${articleIII}${articleIV}${section}`;
+  const iiiNode = 'h'.repeat(64);
+  const ivNode = 'i'.repeat(64);
+  const sectionNode = 's'.repeat(64);
+  const iiiSpan = { span_id: 'a'.repeat(64), kind: 'CHAPEAU', structure_node_id: iiiNode, start_byte: 0, end_byte: bytes(articleIII), exact_text: articleIII };
+  const ivSpan = { span_id: 'b'.repeat(64), kind: 'CHAPEAU', structure_node_id: ivNode, start_byte: bytes(articleIII), end_byte: bytes(articleIII) + bytes(articleIV), exact_text: articleIV };
+  const full = { span_id: 'c'.repeat(64), kind: 'FULL_SECTION', structure_node_id: sectionNode, start_byte: bytes(articleIII) + bytes(articleIV), end_byte: bytes(canonical), exact_text: section };
+  const closureWith = (spans) => ({
+    source_closure_id: 'd'.repeat(64), structure_node_id: sectionNode, section_node_id: sectionNode, section_reference: '4.7', full_section_span_id: full.span_id,
+    chapeau_span_ids: spans.filter((span) => span.kind === 'CHAPEAU').map((span) => span.span_id), spans,
+  });
+  const doc = { source_document_id: 'e'.repeat(64), canonical_text: canonical };
+  const sectionNodeEntry = { node_id: sectionNode, reference: '4.7', kind: 'SECTION' };
+  const own = (ref, kind, label, quote) => ({ ref, kind, label, quote, source_span_id: full.span_id, occurrence: 0, origin: 'OWN', children: [] });
+  const intro = (ref, kind, label, quote, origin = 'INTRO') => ({ ref, kind, label, quote, source_span_id: iiiSpan.span_id, occurrence: 0, origin, children: [] });
+  const ownComponents = [
+    own('c4', 'OBJECT', 'the documents', 'the Form S-4 and the Information Statement'),
+    own('c5', 'OPERATION', 'form compliance', 'will comply as to form'),
+    own('c6', 'MATERIALITY_QUALIFIER', 'materiality', 'in all material respects'),
+  ];
+  const proposalWith = (components) => ({
+    proposals: [{
+      client_ref: 'p1', group_ref: 'g1', family_key: 'REPRESENTATIONS', subtype_key: 'STATUS_REPRESENTATION', fact_type: 'REPRESENTATION_ACCURACY_STANDARD',
+      statement: 'The Form S-4 and the Information Statement will comply as to form in all material respects with the Exchange Act.',
+      roles: { LEGAL_ACTOR_OR_SUBJECT: 'Parent and Merger Sub', LEGAL_OPERATION: 'represent and warrant', OPERATIVE_OBJECT: 'the Form S-4 and the Information Statement' },
+      value: null,
+      evidence_quotes: [{ quote: 'the Form S-4 and the Information Statement will comply as to form in all material respects', source_span_id: full.span_id, occurrence: 0 }],
+      headline: { label: 'Form S-4 and Information Statement', distinguishing_refs: ['c5'], summary: 'Form S-4 and Information Statement will comply as to form with the Exchange Act' },
+      components,
+    }],
+    groups: [{ client_ref: 'g1', family_key: 'REPRESENTATIONS', subtype_key: 'STATUS_REPRESENTATION' }],
+    links: [],
+  });
+  const compile47 = (body, closure = closureWith([iiiSpan, ivSpan, full])) => compileExtraction({ sourceDocument: doc, legalSchema: legalSchemaV2, node: sectionNodeEntry, closure, call, response: body, routedFamilies: ['REPRESENTATIONS'], ownedNodeIds: new Set([sectionNode]) });
+  const quotes = [
+    'Except as set forth in (a) any Parent SEC Document filed with or furnished to the SEC and available on EDGAR on or after January 1, 2026 and at least 24 hours prior to the date hereof',
+    'the disclosure letter delivered by Parent to the Company immediately prior to or simultaneously with the execution of this Agreement',
+    'Parent and Merger Sub represent and warrant to the Company as follows',
+  ];
+  const relocated = compile47(proposalWith([
+    intro('c1', 'EXCEPTION', 'SEC documents exception', quotes[0]),
+    intro('c2', 'EXCEPTION', 'disclosure letter exception', quotes[1]),
+    intro('c3', 'ACTOR', 'representing parties', quotes[2]),
+    ...ownComponents,
+  ]));
+  const [fact] = relocated.proposals;
+  assert.equal(fact.validation_status, 'VALID', relocated.issues.map((issue) => `${issue.code}: ${issue.message}`).join('\n'));
+  for (const [index, quote] of quotes.entries()) {
+    const component = fact.components[index];
+    assert.equal(component.start_byte, Buffer.byteLength(canonical.slice(0, canonical.indexOf(quote)), 'utf8'), `${quote.slice(0, 30)} is placed in the Article IV chapeau`);
+    assert.equal(component.origin_structure_node_id, ivNode);
+    assert.notEqual(component.source_span_id, iiiSpan.span_id, 'the component cites the span it was found in');
+  }
+  const note = relocated.issues.find((issue) => issue.code === 'COMPONENT_SPAN_RELOCATED');
+  assert.ok(note && note.kind === 'NOTE', 'the relocation is a note, not a hold');
+  const parsed = JSON.parse(note.message);
+  assert.equal(parsed.client_ref, 'p1');
+  assert.equal(parsed.relocated.length, 3);
+  for (const [index, entry] of parsed.relocated.entries()) {
+    const { to_span_id: usedSpan, ...named } = entry;
+    assert.equal(usedSpan, fact.components[index].source_span_id);
+    assert.deepEqual(named, { quote: quotes[index], from_span_id: iiiSpan.span_id, to_closure_span_id: ivSpan.span_id, to_span_kind: 'CHAPEAU', to_structure_node_id: ivNode, known_span: true }, 'the id written, the closure span used, and that the id was a known span');
+  }
+  // Two chapeau spans holding the words: the hold stands.
+  const twin = { ...ivSpan, span_id: 'f'.repeat(64), structure_node_id: 'g'.repeat(64) };
+  const ambiguous = compile47(proposalWith([intro('c3', 'ACTOR', 'representing parties', quotes[2]), ...ownComponents]), closureWith([iiiSpan, ivSpan, twin, full]));
+  assert.equal(ambiguous.proposals[0].validation_status, 'INVALID', 'two candidate spans keep the hold');
+  assert.ok(ambiguous.issues.some((issue) => issue.code === 'INVALID_FACT_COMPONENTS' && /byte range missing/.test(issue.message)));
+  assert.equal(ambiguous.issues.some((issue) => issue.code === 'COMPONENT_SPAN_RELOCATED'), false);
+  // Own words cited on a known span that lacks them stay as they are.
+  const ownWords = compile47(proposalWith([intro('c3', 'ACTOR', 'representing parties', quotes[2], 'OWN'), ...ownComponents]));
+  assert.equal(ownWords.proposals[0].validation_status, 'INVALID', 'own words are not relocated across spans');
+  assert.equal(ownWords.issues.some((issue) => issue.code === 'COMPONENT_SPAN_RELOCATED'), false);
+});
+
+// Work package 18 (c) (plan finding (91); NCS generation 5, 5.14): at
+// extraction the publicity row's words rules name the sub-item, over the
+// detail the model wrote, and the change is noted.
+test('a publicity proposal takes its sub-item from its words at extraction; the model\'s own detail gives way with a note', () => {
+  const publicity = 'Section 5.14 Public Announcements. The press release announcing the execution and delivery of this Agreement shall be a joint release of Parent and the Company.';
+  const doc = { source_document_id: 'e'.repeat(64), canonical_text: publicity };
+  const sectionNode = 'p'.repeat(64);
+  const span = { span_id: 'p1'.repeat(32), kind: 'FULL_SECTION', structure_node_id: sectionNode, start_byte: 0, end_byte: bytes(publicity), exact_text: publicity };
+  const publicityClosure = { source_closure_id: 'p2'.repeat(32), structure_node_id: sectionNode, section_node_id: sectionNode, section_reference: '5.14', full_section_span_id: span.span_id, spans: [span] };
+  const publicityNode = { node_id: sectionNode, reference: '5.14', kind: 'SECTION' };
+  const own = (ref, kind, label, quote) => ({ ref, kind, label, quote, source_span_id: span.span_id, occurrence: 0, origin: 'OWN', children: [] });
+  const compiled = compileExtraction({
+    sourceDocument: doc, legalSchema: legalSchemaV2, node: publicityNode, closure: publicityClosure, call, routedFamilies: ['GENERAL_COVENANTS'], ownedNodeIds: new Set([sectionNode]), tableShapes,
+    response: {
+      proposals: [{ client_ref: 'p1', group_ref: 'g1', family_key: 'GENERAL_COVENANTS', subtype_key: 'PUBLICITY', fact_type: 'GENERAL_COVENANT_PRESENT',
+        statement: 'The announcement press release is a joint release of Parent and the Company.',
+        roles: { LEGAL_ACTOR_OR_SUBJECT: 'Parent and the Company', LEGAL_OPERATION: 'shall be a joint release of', OPERATIVE_OBJECT: 'The press release announcing the execution and delivery of this Agreement' },
+        value: null, evidence_quotes: [{ quote: 'The press release announcing the execution and delivery of this Agreement shall be a joint release of Parent and the Company.', source_span_id: span.span_id, occurrence: 0 }],
+        headline: { label: 'Publicity', distinguishing_refs: ['c2'], summary: 'Announcement press release must be a joint release of Parent and the Company' },
+        components: [own('c1', 'OBJECT', 'the release', 'The press release announcing the execution and delivery of this Agreement'), own('c2', 'OPERATION', 'joint release', 'shall be a joint release of'), own('c3', 'ACTOR', 'parties', 'Parent and the Company')],
+        conclusions: { table_key: 'general-covenants-table', row_label: 'Public announcements', row_detail: 'Joint release', cells: [{ column_id: 'obligor', code: 'EACH_PARTY', component_refs: ['c3'] }, { column_id: 'asDrafted', text: 'shall be a joint release of', component_refs: ['c1', 'c2', 'c3'] }] } }],
+      groups: [{ client_ref: 'g1', family_key: 'GENERAL_COVENANTS', subtype_key: 'PUBLICITY' }],
+      links: [],
+    },
+  });
+  assert.equal(compiled.proposals.length, 1);
+  assert.equal(compiled.proposals[0].validation_status, 'VALID', compiled.issues.map((issue) => `${issue.code}: ${issue.message}`).join('\n'));
+  assert.equal(compiled.proposals[0].conclusions.row_label, 'Public announcements');
+  assert.equal(compiled.proposals[0].conclusions.row_detail, 'Announcement release');
+  const note = compiled.issues.find((issue) => issue.code === 'ROW_DETAIL_FROM_WORDS');
+  assert.ok(note && note.kind === 'NOTE');
+  assert.deepEqual(JSON.parse(note.message), { client_ref: 'p1', from: 'Joint release', row_label: 'Public announcements', to: 'Announcement release' });
+});

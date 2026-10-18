@@ -7569,7 +7569,65 @@
             "CVR": "CVR Agreement",
             "LISTING": "Stock exchange listing"
           },
-          "guidance": "One row per covenant, named as the precedent would (fixed_row_labels), with a new name only when none fits. Each limb of a covenant is a sub-item (row_detail) with the same columns; the covenant's line gives the overview. The subject of the row is the covenant, never a party or a pronoun; the obligor is a coded cell. The covenant as drafted replaces the scope and exceptions fragments."
+          "guidance": "One row per covenant, named as the precedent would (fixed_row_labels), with a new name only when none fits. Each limb of a covenant is a sub-item (row_detail) with the same columns; the covenant's line gives the overview. The subject of the row is the covenant, never a party or a pronoun; the obligor is a coded cell. The covenant as drafted replaces the scope and exceptions fragments. Public announcements: every publicity fact is on this row, one fact per operative unit (the announcement release and its approval; the consent, consultation and review duties; the consistency proviso; each carve-out; the Law, court-process or listing-agreement exception), each a sub-item with row_detail from the row's detail_labels_by_row; the code names the sub-item from the fact's own words when a label's words are present (work package 18, 2026-10-18).",
+          "detail_labels_by_row": {
+            "Public announcements": [
+              "Announcement release",
+              "Consent to releases",
+              "Consultation and review",
+              "Consistent with prior statements",
+              "Carve-out: ordinary course",
+              "Carve-out: employees",
+              "Carve-out: disputes",
+              "Carve-out: investor and media communications",
+              "Carve-out: sponsor disclosure",
+              "Law or exchange exception"
+            ]
+          },
+          "detail_from_words_by_row": {
+            "Public announcements": [
+              {
+                "detail": "Carve-out: sponsor disclosure",
+                "words": "Specified\\s+Stockholders?|limited\\s+partners|investment\\s+funds?|\\bsponsors?\\b"
+              },
+              {
+                "detail": "Carve-out: employees",
+                "words": "\\bemployees\\b"
+              },
+              {
+                "detail": "Carve-out: disputes",
+                "words": "\\bdisputes?\\b|\\blitigation\\b"
+              },
+              {
+                "detail": "Carve-out: investor and media communications",
+                "words": "\\banalysts\\b|\\binvestors\\b|\\bmedia\\b"
+              },
+              {
+                "detail": "Carve-out: ordinary course",
+                "words": "ordinary\\s+course"
+              },
+              {
+                "detail": "Consistent with prior statements",
+                "words": "consistent\\s+with\\s+(?:prior|previous)|previously\\s+(?:approved|issued|made)|substantially\\s+similar\\s+to"
+              },
+              {
+                "detail": "Announcement release",
+                "words": "press\\s+release\\s+announcing|initial\\s+(?:press\\s+)?release|joint\\s+(?:press\\s+)?release|(?:execution|signing)\\s+(?:and\\s+delivery\\s+)?of\\s+this\\s+Agreement"
+              },
+              {
+                "detail": "Consent to releases",
+                "words": "prior\\s+written\\s+consent|consent\\s+shall\\s+not\\s+be\\s+unreasonably"
+              },
+              {
+                "detail": "Consultation and review",
+                "words": "\\bconsult|opportunity\\s+to\\s+review|review\\s+and\\s+comment"
+              },
+              {
+                "detail": "Law or exchange exception",
+                "words": "required\\s+by\\s+(?:applicable\\s+)?Law|listing\\s+agreement|court\\s+process|securities\\s+exchange"
+              }
+            ]
+          }
         }
       ],
       "print_pages": [

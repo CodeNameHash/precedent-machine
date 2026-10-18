@@ -2065,3 +2065,71 @@ test('a non-definition fact with resolved defined terms keeps its row and adds t
   assert.equal(terms['Consent Time'].definition, 'Consent Time means 11:59 p.m. Central Time on the day following the date hereof');
   assert.equal(view.sections.flatMap((section) => section.tables).flatMap((table) => table.rows).some((row) => row.backing_facts.some((entry) => entry.fact_id === 'def-consent-time')), false, 'a definition fact has no row');
 });
+
+// Work package 18 (c) (plan finding (91); NCS generation 5, 5.14; 2026-10-18):
+// twelve publicity facts on one "Public announcements" row were "correct and
+// unreadable". The row's detail_from_words_by_row names each fact's sub-item
+// from its own words; the words below are the facts' own components as
+// stored for NCS generation 5 (5.14) and Metsera generation 8 (6.08).
+test('publicity facts become sub-items of Public announcements named from their words, in the labels\' order; the model\'s own details give way', () => {
+  const publicityFact = (id, section, texts, rowDetail) => ({
+    fact_id: id, proposal_id: id, family_key: 'GENERAL_COVENANTS', subtype_key: 'PUBLICITY', section_reference: section, structure_node_id: `n-${section}`,
+    headline: { label: 'Publicity', distinguishing_component_ids: [`${id}-0`], summary: '' },
+    components: texts.map((text, index) => ({ component_id: `${id}-${index}`, kind: index === 0 ? 'ACTOR' : 'OPERATION', label: 'words', text, origin: 'OWN', source_span_id: 's', start_byte: index * 10, end_byte: index * 10 + 5, gap_before: false, children: [] })),
+    conclusions: { table_key: 'general-covenants-table', row_label: 'Public announcements', ...(rowDetail ? { row_detail: rowDetail } : {}), cells: [{ column_id: 'obligor', code: 'EACH_PARTY', component_ids: [`${id}-0`] }] },
+  });
+  const ncs = [
+    publicityFact('f146fe1b', '5.14', ['Each of Parent and Merger Sub, on the one hand, and the Company, on the other hand', 'shall not issue', 'any such press release or make any public announcement', 'prior to such consultation and review', 'except as may be required by applicable Law, court process or by obligations pursuant to any', 'listing agreement with any national securities exchange or national securities quotation system']),
+    publicityFact('feaaade2', '5.14', ['Each of Parent and Merger Sub, on the one hand, and the Company, on the other hand', 'any such press release or make any public announcement', 'except as may be required by applicable Law, court process or by obligations pursuant to any', 'listing agreement with any national securities exchange or national securities quotation system']),
+    publicityFact('2638bc7f', '5.14', ['Each of Parent and Merger Sub, on the one hand, and the Company, on the other hand', 'shall consult with each other', 'before issuing, and give each other a reasonable opportunity to review and comment upon', 'any press release or other public statements with respect to this Agreement and the Transactions', 'except as may be required by applicable Law, court process or by obligations pursuant to any', 'listing agreement with any national securities exchange or national securities quotation system']),
+    publicityFact('8f0d0e3f', '5.14', ['notwithstanding the foregoing', 'a Party', 'may, without providing the other Parties the opportunity for such consultation and review, issue', 'a press release or make a public statement', 'that is consistent with prior press releases or public statements made in compliance with this Section 5.14']),
+    publicityFact('8b186e37', '5.14', ['(ii) be deemed to restrict the ability of', 'any Party', 'to communicate to its employees or Representatives', 'in a manner that would not reasonably be expected to require public disclosure by the disclosing Party']),
+    publicityFact('7fc3bd21', '5.14', ['(iii) prevent', 'Parent or the Company', 'from making any public statement', 'in connection with any dispute among the Parties regarding this Agreement, the Merger or the Transactions']),
+    publicityFact('43418351', '5.14', ['(iv) prevent', 'the Specified Stockholders or their respective Affiliates', '(A) communicating with the current or prospective limited partners of the investment funds managed by such parties or their respective Affiliates', '(provided that such existing and prospective limited partners and Affiliates are subject to customary confidentiality obligations)', 'respectively, regarding this Agreement or the transactions contemplated by this Agreement']),
+    publicityFact('1e936ecc', '5.14', ['(i) prevent', 'Parent or the Company', 'from issuing any press release or making any public statement', 'in the ordinary course', 'that does not relate specifically to this Agreement or the Transactions']),
+    publicityFact('9a2072b9', '5.14', ['(iv) prevent', 'the Specified Stockholders or their respective Affiliates', '(B) disclosing the consummation of the Transactions', 'without disclosing the economic terms', 'on its website and otherwise in the ordinary course of their business']),
+    publicityFact('6de494c5', '5.14', ['the Specified Stockholders or their respective Affiliates', 'provided that any such disclosure contemplated by this clause (iv)', 'shall be consistent with', 'the content of any press release or public announcement that has been made pursuant to, and is permitted by, this Section 5.14']),
+    publicityFact('ee882a8c', '5.14', ['The press release announcing the execution and delivery of this Agreement', 'shall not be issued', 'prior to the approval of each of, the Company and Parent']),
+    publicityFact('3dbfb012', '5.14', ['The press release announcing the execution and delivery of this Agreement', 'shall be a joint release of', 'Parent and the Company']),
+  ];
+  const ncsView = buildTableView({ facts: ncs, tableShapes, legalSchema });
+  const ncsTable = ncsView.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'general-covenants-table');
+  assert.equal(ncsTable.rows.length, 1);
+  assert.equal(ncsTable.rows[0].subject, 'Public announcements');
+  assert.deepEqual(ncsTable.rows[0].sub_rows.map((row) => [row.subject, row.backing_facts.map((entry) => entry.fact_id).sort()]), [
+    ['Announcement release', ['3dbfb012', 'ee882a8c']],
+    ['Consultation and review', ['2638bc7f', 'f146fe1b']],
+    ['Consistent with prior statements', ['8f0d0e3f']],
+    ['Carve-out: ordinary course', ['1e936ecc']],
+    ['Carve-out: employees', ['8b186e37']],
+    ['Carve-out: disputes', ['7fc3bd21']],
+    ['Carve-out: sponsor disclosure', ['43418351', '6de494c5', '9a2072b9']],
+    ['Law or exchange exception', ['feaaade2']],
+  ]);
+  assert.equal(ncsView.sections.flatMap((section) => section.without_readout || []).length, 0);
+  // Metsera generation 8, 6.08: the model wrote seven details of its own;
+  // the rule reads them into the same vocabulary.
+  const metsera = [
+    publicityFact('1c12f7b0', '6.08', ['Parent and Merger Sub, on the one hand, and the Company, on the other hand', 'shall consult with each other', 'before issuing', 'any press release or other public statements with respect to the Merger and the other Transactions', 'except as may be required by applicable Law, court process or by obligations pursuant to any listing agreement with any national securities exchange', 'except as contemplated, permitted or required by Section 5.02'], 'Consultation before issuance'),
+    publicityFact('f1df5e86', '6.08', ['Notwithstanding the foregoing', 'without prior consent of the other parties hereto', 'each party hereto', 'communicate information that is not confidential information of any other party with financial analysts, investors and media representatives', 'information that is not confidential information of any other party', 'in a manner consistent with its past practice and in compliance with applicable Law'], 'Permitted communications with analysts, investors and media'),
+    publicityFact('8c69f6c9', '6.08', ['Parent and Merger Sub, on the one hand, and the Company, on the other hand', 'provide each other the opportunity to review and comment upon', 'any press release or other public statements with respect to the Merger and the other Transactions', 'except as may be required by applicable Law, court process or by obligations pursuant to any listing agreement with any national securities exchange', 'except as contemplated, permitted or required by Section 5.02'], 'Review and comment opportunity'),
+    publicityFact('7b325f09', '6.08', ['Parent and Merger Sub, on the one hand, and the Company, on the other hand', 'shall not issue any such press release or make any such public statement', 'any press release or other public statements with respect to the Merger and the other Transactions', 'without the prior written consent of the other party', 'except as may be required by applicable Law, court process or by obligations pursuant to any listing agreement with any national securities exchange', 'except as contemplated, permitted or required by Section 5.02'], 'Prior written consent requirement'),
+    publicityFact('6ace2dde', '6.08', ['the other party', 'the prior written consent of the other party', '(which consent shall not be unreasonably withheld, conditioned or delayed)'], 'Consent standard'),
+    publicityFact('8bf2ac0d', '6.08', ['The parties', 'agree that the initial press release to be issued with respect to the Transactions shall be in the form heretofore agreed to by the parties', 'the initial press release to be issued with respect to the Transactions'], 'Initial press release'),
+    publicityFact('11bb2b85', '6.08', ['Notwithstanding the foregoing', 'without prior consent of the other parties hereto', 'each party hereto', 'may (a) disseminate information substantially similar to information included in a press release or other document previously approved for public distribution by the other parties hereto', 'information substantially similar to information included in a press release or other document previously approved for public distribution by the other parties hereto'], 'Permitted dissemination of previously approved information'),
+  ];
+  const metseraView = buildTableView({ facts: metsera, tableShapes, legalSchema });
+  const metseraTable = metseraView.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'general-covenants-table');
+  assert.deepEqual(metseraTable.rows[0].sub_rows.map((row) => [row.subject, row.backing_facts.map((entry) => entry.fact_id).sort()]), [
+    ['Announcement release', ['8bf2ac0d']],
+    ['Consent to releases', ['6ace2dde', '7b325f09']],
+    ['Consultation and review', ['1c12f7b0', '8c69f6c9']],
+    ['Consistent with prior statements', ['11bb2b85']],
+    ['Carve-out: investor and media communications', ['f1df5e86']],
+  ]);
+  // A fact no rule names keeps the detail the model wrote.
+  const other = publicityFact('other', '6.08', ['The parties', 'shall file a Current Report on Form 8-K', 'within four Business Days'], 'Form 8-K filing');
+  const otherView = buildTableView({ facts: [other], tableShapes, legalSchema });
+  const otherTable = otherView.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'general-covenants-table');
+  assert.deepEqual(otherTable.rows[0].sub_rows.map((row) => row.subject), ['Form 8-K filing']);
+});

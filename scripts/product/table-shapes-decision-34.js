@@ -1455,6 +1455,44 @@ function applyCapitalization(doc) {
 // Votes, general covenants and the advisers section: no fragment columns.
 // ==========================================================================
 
+// Work package 18 (c) (plan finding (91); NCS generation 5, 5.14;
+// 2026-10-18): twelve GENERAL_COVENANTS/PUBLICITY facts landed on one
+// "Public announcements" row, "correct and unreadable". The row's sub-items,
+// named by the facts' own words (detail_from_words_by_row, first match
+// wins), so a sponsor-backed seller's carve-outs read as a line of their
+// own. The labels are the code's proposal; Ben names them ("he decides the
+// names; the code only proposes"). Order of the rules: the carve-outs and
+// the consistency proviso before the duties they qualify, so "without
+// providing ... the opportunity for such consultation and review, issue a
+// press release ... consistent with prior press releases" is the
+// consistency line, not consultation; the Law or exchange exception last,
+// since every duty repeats it.
+const PUBLICITY_ROW = 'Public announcements';
+const PUBLICITY_DETAILS = [
+  'Announcement release',
+  'Consent to releases',
+  'Consultation and review',
+  'Consistent with prior statements',
+  'Carve-out: ordinary course',
+  'Carve-out: employees',
+  'Carve-out: disputes',
+  'Carve-out: investor and media communications',
+  'Carve-out: sponsor disclosure',
+  'Law or exchange exception',
+];
+const PUBLICITY_WORDS = [
+  { detail: 'Carve-out: sponsor disclosure', words: 'Specified\\s+Stockholders?|limited\\s+partners|investment\\s+funds?|\\bsponsors?\\b' },
+  { detail: 'Carve-out: employees', words: '\\bemployees\\b' },
+  { detail: 'Carve-out: disputes', words: '\\bdisputes?\\b|\\blitigation\\b' },
+  { detail: 'Carve-out: investor and media communications', words: '\\banalysts\\b|\\binvestors\\b|\\bmedia\\b' },
+  { detail: 'Carve-out: ordinary course', words: 'ordinary\\s+course' },
+  { detail: 'Consistent with prior statements', words: 'consistent\\s+with\\s+(?:prior|previous)|previously\\s+(?:approved|issued|made)|substantially\\s+similar\\s+to' },
+  { detail: 'Announcement release', words: 'press\\s+release\\s+announcing|initial\\s+(?:press\\s+)?release|joint\\s+(?:press\\s+)?release|(?:execution|signing)\\s+(?:and\\s+delivery\\s+)?of\\s+this\\s+Agreement' },
+  { detail: 'Consent to releases', words: 'prior\\s+written\\s+consent|consent\\s+shall\\s+not\\s+be\\s+unreasonably' },
+  { detail: 'Consultation and review', words: '\\bconsult|opportunity\\s+to\\s+review|review\\s+and\\s+comment' },
+  { detail: 'Law or exchange exception', words: 'required\\s+by\\s+(?:applicable\\s+)?Law|listing\\s+agreement|court\\s+process|securities\\s+exchange' },
+];
+
 function applyVotesAndCovenants(doc) {
   const why = `${BEN}: no column shows a cited fragment.`;
   const votesSection = findSection(doc, 'votes-approvals-meeting');
@@ -1504,6 +1542,9 @@ function applyVotesAndCovenants(doc) {
   standard.guidance = 'The efforts or conduct standard the covenant states, coded; the words themselves are in the as-drafted column.';
   covenants.columns = [findColumn(covenants, 'obligor'), standard, asDrafted(why)];
   covenants.guidance = `${covenants.guidance} The covenant as drafted replaces the scope and exceptions fragments.`;
+  covenants.detail_labels_by_row = { ...(covenants.detail_labels_by_row || {}), [PUBLICITY_ROW]: [...PUBLICITY_DETAILS] };
+  covenants.detail_from_words_by_row = { ...(covenants.detail_from_words_by_row || {}), [PUBLICITY_ROW]: PUBLICITY_WORDS.map((rule) => ({ ...rule })) };
+  covenants.guidance = `${covenants.guidance} ${PUBLICITY_ROW}: every publicity fact is on this row, one fact per operative unit (the announcement release and its approval; the consent, consultation and review duties; the consistency proviso; each carve-out; the Law, court-process or listing-agreement exception), each a sub-item with row_detail from the row's detail_labels_by_row; the code names the sub-item from the fact's own words when a label's words are present (work package 18, 2026-10-18).`;
 
   removeSection(doc, 'advisers-fees-expenses');
 }
