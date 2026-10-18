@@ -2231,3 +2231,39 @@ test('the financing table reads the payoff letter lead time into Period and does
   assert.ok(period && /3/.test(period.label) && /business day/i.test(period.label), JSON.stringify(period));
   assert.equal(table.columns.some((column) => column.column_id === 'byWhen'), false, 'nothing is left for By when once Period has the number');
 });
+
+// Work package 19 (g) (manager finding (165): the row move "does not happen
+// on the stored rows", read from a preview deployed before the rule; Ben's
+// (166): one line, no sub-items). NCS generation 5's 32 general-covenant
+// facts of 5.17 as stored (tests/fixtures/product/ncs-generation-5-5-17-
+// general-covenants.json: ids shortened, components flattened), through
+// buildTableView with the contract as generated.
+test('NCS 5.17 as stored: 29 registration-rights covenants gather on the one Registration rights line under Consideration, three Nasdaq notices stay, no sub-items', () => {
+  const stored = require('./fixtures/product/ncs-generation-5-5-17-general-covenants.json');
+  assert.equal(stored.length, 32);
+  const view = buildTableView({ facts: stored, tableShapes, legalSchema });
+  const consideration = view.sections.find((section) => section.section_key === 'consideration-hero');
+  const table = consideration.tables[consideration.tables.length - 1];
+  assert.equal(table.table_key, 'consideration-registration-rights');
+  assert.deepEqual(table.rows.map((row) => [row.subject, row.backing_facts.length, row.sub_rows]), [['Registration rights', 29, undefined]]);
+  const covenants = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'general-covenants-table');
+  assert.deepEqual(covenants.rows.map((row) => [row.subject, row.backing_facts.map((entry) => entry.fact_id).sort()]), [
+    ['Litigation notification', ['52e8af75']],
+    ['General notification', ['31da8ce7', '369c5c72']],
+  ]);
+  assert.equal(view.sections.flatMap((section) => section.without_readout || []).length, 0);
+  // (f): the stockholders' obligations read in their words; Parent's
+  // obligor readings are stated in the summaries and kept under
+  // stated_in_summary (work package B4's rule).
+  const obligor = table.rows[0].cells.find((cell) => cell.column_id === 'obligor');
+  assert.deepEqual(obligor.values.map((value) => [value.code, value.label]).sort(), [
+    ['OTHER_PARTY', 'Each Specified Stockholder'], ['OTHER_PARTY', 'Parent and each Specified Stockholder'], ['OTHER_PARTY', 'the Specified Stockholders'],
+  ]);
+  assert.deepEqual(obligor.stated_in_summary, ['PARENT']);
+  // (g): the deadlines and timing triggers, never a bare event trigger.
+  const byWhen = table.rows[0].cells.find((cell) => cell.column_id === 'byWhen');
+  const labels = byWhen.values.map((value) => value.label);
+  assert.ok(labels.includes('Promptly following the Closing Date (and in any event no later than two Business Days thereafter)'), labels.join(' | '));
+  assert.ok(labels.includes('After the Registration Statement becomes effective'));
+  assert.equal(labels.some((label) => /upon the discovery|insofar as such losses|as such expenses are incurred/.test(label)), false, 'event triggers are not deadlines');
+});
