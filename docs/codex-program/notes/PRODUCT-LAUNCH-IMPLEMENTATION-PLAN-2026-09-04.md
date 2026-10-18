@@ -3492,6 +3492,58 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       Generation 8's stored facts take the rows and codes on the next
       page render; no re-run. npm run test:active: 669 tests, 668 pass,
       the one failure the known Codex-client final-message test.
+      (60) 2026-10-18 (implementer), work package 8 on the manager's
+      message of 06:33 UTC. (1) The page re-reads a stored value cell
+      from its cited words: in table-view's contract cells, a value cell
+      whose cited component parses under the current parser to a value
+      other than the stored canonical shows the parsed value, with
+      reparsed: true and stored_value beside it (the table cell carries
+      data-reparsed and the title "Re-read from the cited words; the
+      stored number differed", for the sidebar to pick up); a cell whose
+      cited words do not parse keeps the stored value. Asserted with the
+      "deemed two (2) business days" component (stored 4, shown 2
+      business days), a plain "four (4) business days" (unchanged, not
+      marked) and unparsable words (stored value kept). The manager's
+      gen8-preview.json is on the manager's side; the fixture here is
+      the same shape of fact, and the row reads 2 business days through
+      buildTableView and the rendered table; please confirm on the
+      preview. (2) 8.02(a)'s willful-breach definition: a KEY_DEFINED_TERMS
+      fact whose readout lands on no row (an unknown or retired table, a
+      table of a section without the family, or a row a fixed-list table
+      without open rows does not have: readoutLandsOnRow) has its readout
+      treated as none in applyPageRules, so collectDefinitionFact takes
+      it as a Defined Terms entry (term from the quoted name, definition
+      the summary) and it is on no row and in no without-a-readout list;
+      asserted for all three cases, and a readout on a row the shapes
+      have is kept. (3) The sandbox session: @vercel/sandbox 3.2.1's
+      Sandbox.get takes a name and resolves credentials (a token with
+      team and project, else the deployment's OIDC token) for every call,
+      and sets no identity or credential inside the sandbox, so the
+      worker cannot extend its own session without carrying a Vercel
+      credential the launcher deliberately keeps out of it (it unsets
+      every credential but the provider's). So the route: POST
+      /api/product/analysis/<run>/run with { keepalive: true } (same
+      origin or the internal bearer, as any run call) resumes the named
+      sandbox and extends its session back to MINIMUM_SESSION_MS (four
+      hours) when it has less, launching nothing; it answers 200 with
+      { keepalive: { session_created_at, remaining_before_ms,
+      extended_ms, remaining_after_ms } } and 503 PRODUCT_SANDBOX_GONE as
+      the wake does. The monitor pattern: call it on each check (every
+      check, since a check is well under four hours apart), before
+      reading the run; a wake is still what starts a worker. Nothing in
+      the worker changed. The launcher's flock: `exec flock --wait 3600
+      --conflict-exit-code 75 .../pm-worker.lock` runs the one worker
+      command, so a wake that finds a live worker waits on the lock
+      (never a second worker beside it; after an hour it exits 75, and a
+      queued wake runs when the live worker ends, finding the run READY
+      or the sections it left); asserted on the launcher text. Not done:
+      an in-worker extension, for the reason above. Tests: table-view
+      (the three value cases; the three no-row cases and the kept one),
+      provision-tables (the rendered marker), sandbox-worker-scripts
+      (keepalive's extension, the no-extension case, the gone sandbox,
+      the route action with no wake, the launcher's lock). npm run
+      test:active: 675 tests, 674 pass, the one failure the known
+      Codex-client final-message test.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
