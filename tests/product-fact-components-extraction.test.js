@@ -674,8 +674,16 @@ test('a component quote on an unknown span is taken from the one closure span it
     { ref: 'c1', kind: 'ACTOR', label: 'representing party', quote: 'the Company represents and warrants to Parent and Merger Sub as follows:', source_span_id: wrongId, occurrence: 0, origin: 'INTRO', children: [] },
     own('c2', 'OPERATION', 'authority', 'has all necessary corporate power and authority to execute this Agreement'),
   ]), routedFamilies: ['REPRESENTATIONS'], ownedNodeIds: new Set([sectionNode]) });
-  assert.equal(ambiguous.proposals[0].validation_status, 'INVALID', 'two candidate spans: unknown stays unknown');
-  assert.ok(ambiguous.issues.some((issue) => issue.code === 'INVALID_FACT_COMPONENTS' && /UNKNOWN_SOURCE_COMPONENT/.test(issue.message)));
+  // Work package 20 (a) (implementer B's rule, finding (105); the manager's
+  // (168)): the unknown inherited component is dropped with a note and the
+  // fact, whose own words resolved, stays VALID.
+  assert.equal(ambiguous.proposals[0].validation_status, 'VALID', 'two candidate spans: the inherited component is dropped, the fact kept');
+  assert.equal(ambiguous.issues.some((issue) => issue.code === 'INVALID_FACT_COMPONENTS'), false);
+  assert.equal(ambiguous.issues.some((issue) => issue.code === 'COMPONENT_SPAN_RELOCATED'), false);
+  const droppedUnknown = ambiguous.issues.find((issue) => issue.code === 'INHERITED_COMPONENT_DROPPED');
+  assert.ok(droppedUnknown && droppedUnknown.kind === 'NOTE');
+  assert.deepEqual(JSON.parse(droppedUnknown.message).dropped.map((entry) => [entry.origin, entry.reason, entry.source_span_id]), [['INTRO', 'UNKNOWN_SOURCE_COMPONENT', wrongId]]);
+  assert.deepEqual(ambiguous.proposals[0].components.map((component) => component.label), ['authority']);
   // An OWN quote on an unknown span resolves through the section only; words that are not the section's stay unknown.
   const ownUnknown = compileAuthority(proposalWith([
     { ref: 'c1', kind: 'ACTOR', label: 'representing party', quote: 'the Company represents and warrants to Parent and Merger Sub as follows:', source_span_id: wrongId, occurrence: 0, origin: 'OWN', children: [] },
@@ -858,12 +866,19 @@ test('an inherited-origin quote cited on a known span that lacks it is taken fro
     assert.equal(usedSpan, fact.components[index].source_span_id);
     assert.deepEqual(named, { quote: quotes[index], from_span_id: iiiSpan.span_id, to_closure_span_id: ivSpan.span_id, to_span_kind: 'CHAPEAU', to_structure_node_id: ivNode, known_span: true }, 'the id written, the closure span used, and that the id was a known span');
   }
-  // Two chapeau spans holding the words: the hold stands.
+  // Two chapeau spans holding the words: no relocation. Work package 20
+  // (a) (implementer B's rule, finding (105); the manager's (168)): the
+  // inherited component that resolves nowhere is dropped with a note and
+  // the fact, whose own words resolved, stays VALID.
   const twin = { ...ivSpan, span_id: 'f'.repeat(64), structure_node_id: 'g'.repeat(64) };
   const ambiguous = compile47(proposalWith([intro('c3', 'ACTOR', 'representing parties', quotes[2]), ...ownComponents]), closureWith([iiiSpan, ivSpan, twin, full]));
-  assert.equal(ambiguous.proposals[0].validation_status, 'INVALID', 'two candidate spans keep the hold');
-  assert.ok(ambiguous.issues.some((issue) => issue.code === 'INVALID_FACT_COMPONENTS' && /byte range missing/.test(issue.message)));
+  assert.equal(ambiguous.proposals[0].validation_status, 'VALID', ambiguous.issues.map((issue) => `${issue.code}: ${issue.message}`).join('\n'));
+  assert.deepEqual(ambiguous.proposals[0].components.map((component) => component.text), ownComponents.map((component) => component.quote), 'the unresolved inherited component is gone, the own words kept');
   assert.equal(ambiguous.issues.some((issue) => issue.code === 'COMPONENT_SPAN_RELOCATED'), false);
+  assert.equal(ambiguous.issues.some((issue) => issue.code === 'INVALID_FACT_COMPONENTS'), false);
+  const droppedNote = ambiguous.issues.find((issue) => issue.code === 'INHERITED_COMPONENT_DROPPED');
+  assert.ok(droppedNote && droppedNote.kind === 'NOTE');
+  assert.deepEqual(JSON.parse(droppedNote.message), { client_ref: 'p1', dropped: [{ path: '0', kind: 'ACTOR', origin: 'INTRO', label: 'representing parties', quote: quotes[2], source_span_id: iiiSpan.span_id, reason: 'NOT_EXACT_CONTIGUOUS_SOURCE_TEXT' }] });
   // Own words cited on a known span that lacks them stay as they are.
   const ownWords = compile47(proposalWith([intro('c3', 'ACTOR', 'representing parties', quotes[2], 'OWN'), ...ownComponents]));
   assert.equal(ownWords.proposals[0].validation_status, 'INVALID', 'own words are not relocated across spans');
@@ -1014,4 +1029,237 @@ test('a cross-reference to "this Article VI" resolves to the article node and th
     },
   });
   assert.equal(unresolved.proposals[0].validation_status, 'INVALID');
+});
+
+// Work package 20 (implementer B's defects (5) to (7) and rule, finding
+// (105); the manager's (168); 2026-10-18). The fixtures below are cut from
+// the NCS filing as stored for generation 5.
+function wp20Compile({ canonical, reference, contextSpans = [], proposals, sectionText = canonical }) {
+  const sectionNode = 'w'.repeat(64);
+  const sectionStart = bytes(canonical) - bytes(sectionText);
+  const full = { span_id: 'x'.repeat(64), kind: 'FULL_SECTION', structure_node_id: sectionNode, start_byte: sectionStart, end_byte: bytes(canonical), exact_text: sectionText };
+  const spans = [...contextSpans, full];
+  const closure = {
+    source_closure_id: 'y'.repeat(64), structure_node_id: sectionNode, section_node_id: sectionNode, section_reference: reference, full_section_span_id: full.span_id,
+    chapeau_span_ids: spans.filter((span) => span.kind === 'CHAPEAU').map((span) => span.span_id), spans,
+  };
+  const doc = { source_document_id: 'z'.repeat(64), canonical_text: canonical };
+  const built = proposals.map((proposal, index) => ({
+    client_ref: `p${index + 1}`, group_ref: `g${index + 1}`, family_key: 'REPRESENTATIONS', subtype_key: 'STATUS_REPRESENTATION', fact_type: 'REPRESENTATION_ACCURACY_STANDARD',
+    roles: { LEGAL_ACTOR_OR_SUBJECT: 'the Company', LEGAL_OPERATION: 'represents and warrants', OPERATIVE_OBJECT: 'the matter' },
+    value: null,
+    headline: { label: 'Representation', distinguishing_refs: [proposal.components[0].ref], summary: 'The Company represents the matter stated in the section' },
+    ...proposal,
+  }));
+  const body = {
+    proposals: built,
+    groups: built.map((proposal) => ({ client_ref: proposal.group_ref, family_key: proposal.family_key, subtype_key: proposal.subtype_key })),
+    links: [],
+  };
+  const result = compileExtraction({ sourceDocument: doc, legalSchema: legalSchemaV2, node: { node_id: sectionNode, reference, kind: 'SECTION' }, closure, call, response: body, routedFamilies: ['REPRESENTATIONS'], ownedNodeIds: new Set([sectionNode]) });
+  return { ...result, full, doc };
+}
+const wp20Own = (fullSpanId) => (ref, kind, label, quote, extra = {}) => ({ ref, kind, label, quote, source_span_id: fullSpanId, occurrence: 0, origin: 'OWN', children: [], ...extra });
+const issueLines = (result) => result.issues.map((issue) => `${issue.code}: ${issue.message}`).join('\n');
+
+// (b) NCS generation 5, 5.4: "any information relating to the Transactions,
+// \n49\nthe Company or Parent" runs across a page footer; the model's
+// TRIGGER stopped at the footer. A quote across the footer is matched with
+// the footer line skipped; its bytes include the footer and its text is
+// those bytes, which the page shows without the footer.
+test('a quote across an SEC page footer is matched with the footer skipped, with or without the page number in the quote; whitespace alone never relaxes the verbatim rule', () => {
+  const { hidePageFooters } = require('../lib/product/source-display');
+  const canonical = 'Section 5.4 Preparation of Form S-4. If, at any time prior to the Effective Time, any information relating to the Transactions,\n49\nthe Company or Parent, or any of their respective Affiliates, should be discovered by the Company or Parent, the Party that discovers such information shall promptly notify the other Parties.\n';
+  const fullId = 'x'.repeat(64);
+  const own = wp20Own(fullId);
+  const trigger = 'If, at any time prior to the Effective Time, any information relating to the Transactions, the Company or Parent, or any of their respective Affiliates, should be discovered by the Company or Parent';
+  const components = (triggerQuote) => [
+    own('c1', 'TRIGGER', 'discovery', triggerQuote),
+    own('c2', 'ACTOR', 'discovering party', 'the Party that discovers such information'),
+    own('c3', 'OPERATION', 'notice', 'shall promptly notify the other Parties'),
+  ];
+  const proposal = (triggerQuote, evidenceQuote) => ({
+    statement: 'The Party that discovers information requiring an amendment shall promptly notify the other Parties.',
+    evidence_quotes: [{ quote: evidenceQuote, source_span_id: fullId, occurrence: 0 }],
+    components: components(triggerQuote),
+  });
+  const skipped = wp20Compile({ canonical, reference: '5.4', proposals: [proposal(trigger, 'relating to the Transactions, 49 the Company or Parent')] });
+  const [fact] = skipped.proposals;
+  assert.equal(fact.validation_status, 'VALID', issueLines(skipped));
+  const [component] = fact.components;
+  const start = bytes(canonical.slice(0, canonical.indexOf('If, at any time')));
+  const end = bytes(canonical.slice(0, canonical.indexOf(', the Party that discovers')));
+  assert.equal(component.start_byte, start);
+  assert.equal(component.end_byte, end, 'the byte range runs across the footer');
+  assert.equal(component.text, canonical.slice(canonical.indexOf('If, at any time'), canonical.indexOf(', the Party that discovers')), 'the text is the canonical bytes, footer included');
+  assert.match(component.text, /Transactions,\n49\nthe Company/);
+  assert.equal(hidePageFooters(component.text), trigger, 'the page shows the words without the footer');
+  assert.equal(fact.source_span_ids.length, 1, 'the evidence quote with the page number as a word matched too');
+  // The footer is not a licence for other whitespace differences.
+  const loose = wp20Compile({ canonical, reference: '5.4', proposals: [proposal('If, at any time prior to the  Effective Time', 'the Party that discovers such information')] });
+  assert.equal(loose.proposals[0].validation_status, 'INVALID');
+  assert.ok(loose.issues.some((issue) => issue.code === 'INVALID_FACT_COMPONENTS' && /byte range missing/.test(issue.message)), issueLines(loose));
+});
+
+// (a) The evidence-quote side of work packages 13 (a) and 18 (a), and B's
+// rule. NCS generation 5, 4.7: the three facts cited the Article IV
+// introduction's words on the Article III chapeau span (in 4.7's closure
+// through its reference to Section 3.8) as evidence quotes, which carry no
+// origin, and were held PROPOSAL_EVIDENCE_NOT_EXACT while their components
+// relocated. The cited span's kind stands for the origin; an inherited
+// quote that resolves nowhere is dropped with a note when the own words
+// resolved; own words that do not resolve still hold.
+test('an evidence quote cited on a context span that lacks it is relocated by the span kind; an unresolvable one is dropped with a note when the own evidence is exact', () => {
+  const articleIII = 'ARTICLE III\nExcept as set forth in the Company Disclosure Letter, the Company represents and warrants to Parent and Merger Sub as follows:\n';
+  const articleIV = 'ARTICLE IV\nExcept as set forth in the Parent Disclosure Letter, Parent and Merger Sub represent and warrant to the Company as follows:\n';
+  const section = 'Section 4.7 Certain Information. Subject to the first sentence of Section 3.8, the Form S-4 and the Information Statement will comply as to form in all material respects with the provisions of the Exchange Act.\n';
+  const canonical = `${articleIII}${articleIV}${section}`;
+  const iiiSpan = { span_id: 'a'.repeat(64), kind: 'CHAPEAU', structure_node_id: 'h'.repeat(64), start_byte: 0, end_byte: bytes(articleIII), exact_text: articleIII };
+  const ivSpan = { span_id: 'b'.repeat(64), kind: 'CHAPEAU', structure_node_id: 'i'.repeat(64), start_byte: bytes(articleIII), end_byte: bytes(articleIII) + bytes(articleIV), exact_text: articleIV };
+  const twin = { ...ivSpan, span_id: 'f'.repeat(64), structure_node_id: 'g'.repeat(64) };
+  const fullId = 'x'.repeat(64);
+  const own = wp20Own(fullId);
+  const introQuote = 'Parent and Merger Sub represent and warrant to the Company as follows';
+  const proposal = (ownQuote = 'will comply as to form in all material respects') => ({
+    statement: 'The Form S-4 and the Information Statement will comply as to form in all material respects with the Exchange Act.',
+    evidence_quotes: [
+      { quote: ownQuote, source_span_id: fullId, occurrence: 0 },
+      { quote: introQuote, source_span_id: iiiSpan.span_id, occurrence: 0 },
+    ],
+    components: [
+      own('c1', 'OBJECT', 'the documents', 'the Form S-4 and the Information Statement'),
+      own('c2', 'OPERATION', 'form compliance', 'will comply as to form'),
+      own('c3', 'MATERIALITY_QUALIFIER', 'materiality', 'in all material respects'),
+    ],
+  });
+  const relocated = wp20Compile({ canonical, reference: '4.7', sectionText: section, contextSpans: [iiiSpan, ivSpan], proposals: [proposal()] });
+  assert.equal(relocated.proposals[0].validation_status, 'VALID', issueLines(relocated));
+  assert.equal(relocated.proposals[0].unmatched_evidence, undefined);
+  const relocationNote = relocated.issues.find((issue) => issue.code === 'EVIDENCE_SPAN_RELOCATED');
+  assert.ok(relocationNote && relocationNote.kind === 'NOTE', issueLines(relocated));
+  assert.deepEqual(JSON.parse(relocationNote.message), { relocated: [{ quote: introQuote, from_span_id: iiiSpan.span_id, to_closure_span_id: ivSpan.span_id, to_span_kind: 'CHAPEAU', to_structure_node_id: ivSpan.structure_node_id }] });
+  // Two chapeau spans holding the words: the inherited quote is dropped, the fact stays VALID.
+  const dropped = wp20Compile({ canonical, reference: '4.7', sectionText: section, contextSpans: [iiiSpan, ivSpan, twin], proposals: [proposal()] });
+  assert.equal(dropped.proposals[0].validation_status, 'VALID', issueLines(dropped));
+  assert.equal(dropped.issues.some((issue) => issue.code === 'PROPOSAL_EVIDENCE_NOT_EXACT'), false);
+  const droppedNote = dropped.issues.find((issue) => issue.code === 'INHERITED_EVIDENCE_DROPPED');
+  assert.ok(droppedNote && droppedNote.kind === 'NOTE', issueLines(dropped));
+  assert.deepEqual(JSON.parse(droppedNote.message), { dropped: [{ quote: introQuote, source_span_id: iiiSpan.span_id, span_kind: 'CHAPEAU', reason: 'NOT_EXACT_CONTIGUOUS_SOURCE_TEXT' }] });
+  assert.deepEqual(dropped.proposals[0].dropped_evidence.map((item) => item.quote), [introQuote]);
+  // Own words that are not in the section still hold the fact.
+  const ownMissing = wp20Compile({ canonical, reference: '4.7', sectionText: section, contextSpans: [iiiSpan, ivSpan, twin], proposals: [proposal('words not in the agreement')] });
+  assert.equal(ownMissing.proposals[0].validation_status, 'INVALID');
+  assert.ok(ownMissing.issues.some((issue) => issue.code === 'PROPOSAL_EVIDENCE_NOT_EXACT'));
+  assert.equal(ownMissing.issues.some((issue) => issue.code === 'INHERITED_EVIDENCE_DROPPED'), false, 'nothing is dropped when no own evidence is exact');
+});
+
+// (c) NCS generation 5, 3.27 and 4.13: "has taken any action or knows of
+// any fact, agreement, plan or other circumstance that would reasonably be
+// expected to prevent ..." as one fact. Two predicates of one subject
+// joined by "or" are a reviewer note; "and" between a status and its
+// consequence (3.17) is not.
+test('two predicates of one subject joined by "or" in a representation are noted as fused limbs; a predicate joined by "and" is not', () => {
+  const fullId = 'x'.repeat(64);
+  const own = wp20Own(fullId);
+  const canonical = 'Section 3.27 Reorganization Qualification. Neither the Company nor any of its Subsidiaries has taken any action or knows of any fact, agreement, plan or other circumstance that would reasonably be expected to prevent or preclude the Merger from qualifying for the Intended Tax Treatment.\n';
+  const fused = wp20Compile({ canonical, reference: '3.27', proposals: [{
+    subtype_key: 'NEGATIVE_REPRESENTATION',
+    statement: 'The Company represents and warrants that neither it nor any Subsidiary has taken any action or knows of any fact that would reasonably be expected to prevent the Intended Tax Treatment.',
+    evidence_quotes: [{ quote: 'has taken any action or knows of any fact', source_span_id: fullId, occurrence: 0 }],
+    components: [
+      own('c1', 'ACTOR', 'subject', 'Neither the Company nor any of its Subsidiaries'),
+      own('c2', 'OPERATION', 'no action taken', 'has taken any action'),
+      own('c3', 'QUALIFIER', 'no knowledge', 'knows of any fact, agreement, plan or other circumstance'),
+      own('c4', 'STANDARD', 'standard', 'would reasonably be expected to'),
+      own('c5', 'OBJECT', 'tax treatment', 'prevent or preclude the Merger from qualifying for the Intended Tax Treatment'),
+    ],
+  }] });
+  assert.equal(fused.proposals[0].validation_status, 'VALID', issueLines(fused));
+  const note = fused.issues.find((issue) => issue.code === 'FUSED_REPRESENTATION_LIMBS');
+  assert.ok(note && note.kind === 'NOTE', issueLines(fused));
+  const parsed = JSON.parse(note.message);
+  assert.deepEqual(parsed.limbs, [{ first: 'has taken any action', second: 'knows of any fact, agreement, plan or other circumstance', joined_by: 'or' }]);
+  const breach = 'Section 3.17 Material Contracts. Neither the Company nor any of its Subsidiaries is in material breach or default, and has not taken any action or failed to take any action which would constitute a default under any Material Contract.\n';
+  const conjoined = wp20Compile({ canonical: breach, reference: '3.17', proposals: [{
+    subtype_key: 'CONTRACT_REPRESENTATION',
+    statement: 'The Company represents and warrants that neither it nor any Subsidiary is in material breach or default under any Material Contract.',
+    evidence_quotes: [{ quote: 'is in material breach or default', source_span_id: fullId, occurrence: 0 }],
+    components: [
+      own('c1', 'ACTOR', 'subject', 'Neither the Company nor any of its Subsidiaries'),
+      own('c2', 'OPERATION', 'no breach', 'is in material breach or default'),
+      own('c3', 'QUALIFIER', 'no action', 'has not taken any action or failed to take any action which would constitute a default'),
+    ],
+  }] });
+  assert.equal(conjoined.proposals[0].validation_status, 'VALID', issueLines(conjoined));
+  assert.equal(conjoined.issues.some((issue) => issue.code === 'FUSED_REPRESENTATION_LIMBS'), false);
+});
+
+// (d) NCS generation 5, 3.5(b) and 4.4(b) (3.7 the same): the consents
+// representation's "except for (i) ..., (ii) ..., (iii) ..." cut as one
+// fact per item beside the representation. The representations table has
+// no row per exception: an exception-only proposal is held, the
+// representation with its exception stays VALID, and the article
+// introduction's qualification is never held.
+test('an enumerated exception of a representation cut as its own fact is held; the representation that carries the exception is not', () => {
+  const fullId = 'x'.repeat(64);
+  const own = wp20Own(fullId);
+  const canonical = 'Section 3.5 Consents and Approvals. (b) Except as set forth in Section 3.5(b) of the Company Disclosure Letter, no consent, approval, order or authorization of, or registration, declaration, filing with or notice to, any Governmental Entity is required by or with respect to the Company in connection with the execution of this Agreement, except for (i) such filings and reports as may be required pursuant to the Exchange Act, (ii) the filing of the Certificate of Merger with the Delaware Secretary of State and (iii) such other consents the failure of which to obtain would not reasonably be expected to have a Material Adverse Effect.\n';
+  const subject = 'no consent, approval, order or authorization of, or registration, declaration, filing with or notice to, any Governmental Entity';
+  const predicate = 'is required by or with respect to the Company in connection with the execution of this Agreement';
+  const proposals = [
+    {
+      subtype_key: 'NEGATIVE_REPRESENTATION',
+      statement: 'Except as set forth in the Company Disclosure Letter, no Governmental Entity consent or filing is required for the Agreement, except for the enumerated filings.',
+      evidence_quotes: [{ quote: subject, source_span_id: fullId, occurrence: 0 }],
+      components: [
+        own('c1', 'EXCEPTION', 'disclosure letter exception', 'Except as set forth in Section 3.5(b) of the Company Disclosure Letter,'),
+        own('c2', 'OBJECT', 'consents and filings', subject),
+        own('c3', 'OPERATION', 'none required', predicate),
+        own('c4', 'EXCEPTION', 'enumerated exceptions', 'except for (i) such filings and reports as may be required pursuant to the Exchange Act, (ii) the filing of the Certificate of Merger with the Delaware Secretary of State and (iii) such other consents the failure of which to obtain would not reasonably be expected to have a Material Adverse Effect'),
+      ],
+    },
+    {
+      subtype_key: 'COMPLIANCE_REPRESENTATION',
+      statement: 'The representation that no Governmental Entity consent or filing is required excepts such filings and reports as may be required pursuant to the Exchange Act.',
+      evidence_quotes: [{ quote: '(i) such filings and reports as may be required pursuant to the Exchange Act', source_span_id: fullId, occurrence: 0 }],
+      components: [
+        own('c1', 'QUALIFIER', 'requirement', predicate),
+        own('c2', 'EXCEPTION', 'Exchange Act filings', '(i) such filings and reports as may be required pursuant to the Exchange Act'),
+      ],
+    },
+    {
+      subtype_key: 'COMPLIANCE_REPRESENTATION',
+      statement: 'The representation that no Governmental Entity consent or filing is required excepts the filing of the Certificate of Merger.',
+      evidence_quotes: [{ quote: '(ii) the filing of the Certificate of Merger with the Delaware Secretary of State', source_span_id: fullId, occurrence: 0 }],
+      components: [
+        own('c1', 'QUALIFIER', 'consents and filings', subject),
+        own('c2', 'EXCEPTION', 'introducer', 'except for'),
+        own('c3', 'OBJECT', 'Certificate of Merger filing', '(ii) the filing of the Certificate of Merger with the Delaware Secretary of State'),
+      ],
+    },
+  ];
+  const result = wp20Compile({ canonical, reference: '3.5', proposals });
+  const [representation, first, second] = result.proposals;
+  assert.equal(representation.validation_status, 'VALID', issueLines(result));
+  assert.equal(first.validation_status, 'INVALID', 'the (i) exception alone is not a fact');
+  assert.equal(second.validation_status, 'INVALID', 'the (ii) exception alone is not a fact');
+  const holds = result.issues.filter((issue) => issue.code === 'REPRESENTATION_EXCEPTION_NOT_A_FACT');
+  assert.equal(holds.length, 2, issueLines(result));
+  assert.ok(holds.every((issue) => issue.kind === 'VALIDATION'));
+  const parsed = holds.map((issue) => JSON.parse(issue.message));
+  assert.deepEqual(parsed.map((entry) => entry.client_ref), ['p2', 'p3']);
+  assert.match(parsed[0].exception, /^\(i\) such filings and reports/);
+  assert.deepEqual(parsed[0].shared_context, [predicate]);
+  assert.match(parsed[1].exception, /^except for \(ii\) the filing of the Certificate of Merger/);
+  assert.match(parsed[0].rule, /EXCEPTION component of the representation/);
+  // The article introduction's own qualification is an exception by design.
+  const intro = 'ARTICLE III\nExcept as set forth in the Company Disclosure Letter, the Company represents and warrants to Parent and Merger Sub as follows:\n';
+  const qualification = wp20Compile({ canonical: intro, reference: 'III-INTRO', proposals: [{
+    subtype_key: 'REPRESENTATION_QUALIFICATION',
+    statement: 'The representations are given except as set forth in the Company Disclosure Letter.',
+    evidence_quotes: [{ quote: 'Except as set forth in the Company Disclosure Letter', source_span_id: fullId, occurrence: 0 }],
+    components: [own('c1', 'EXCEPTION', 'disclosure letter', 'Except as set forth in the Company Disclosure Letter')],
+  }] });
+  assert.equal(qualification.proposals[0].validation_status, 'VALID', issueLines(qualification));
+  assert.equal(qualification.issues.some((issue) => issue.code === 'REPRESENTATION_EXCEPTION_NOT_A_FACT'), false);
 });

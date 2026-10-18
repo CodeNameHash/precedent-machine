@@ -6016,6 +6016,99 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       notification 2 (the Nasdaq deficiency notice and the delisting
       event), Litigation notification 1 (Nasdaq or SEC proceedings);
       nothing without a readout. Nothing submitted, woken or retried.
+      (99a) 2026-10-18 22:55 to 23:50 UTC (implementer A), work package 20
+      on the manager's (168) (begun on its decided terms; the formal
+      message had not arrived by the push). Numbered (99a) because A's
+      range (90) to (99) is spent; the plan owner's to renumber. Read
+      first, from the preview branch's tables: 4.7's three facts were
+      not a page-footer case. Their held evidence quotes cite the Article
+      IV introduction's words on the Article III chapeau span (3d0f7a06,
+      in 4.7's closure through its reference to Section 3.8); the Article
+      IV chapeau span c0b36c15 holds both quotes verbatim, with the
+      footer ("34") after "as follows:", outside them. Work package 18
+      (a)'s relocation did not reach them because evidence_quotes carry no
+      origin, and the rule keyed on the origin; the components of the
+      same facts, with origin INTRO, were relocated. 5.4 is a footer case:
+      "any information relating to the Transactions,\n49\nthe Company or
+      Parent", where the model's TRIGGER stopped at the footer, VALID but
+      short; the NCS text has 87 bare page-number lines and no "-N-"
+      footers, which source-display.js did not know. Built, each as a
+      rule across the corpus with tests (tests/product-fact-components-
+      extraction.test.js, the work package 20 block; the page footers
+      test in tests/product-table-view.test.js; tests/product-legal-
+      schema-v2.test.js): (a) B's rule, lib/product/agreement-draft.js
+      dropUnresolvedInherited: an inherited context component (origin
+      INTRO, CHAPEAU, DEFINITION or CROSS_REFERENCE) that resolves
+      nowhere after the relocation rules is dropped from the tree with
+      the note INHERITED_COMPONENT_DROPPED (path, kind, origin, label,
+      quote, the id cited, the reason), never holding a fact whose own
+      words resolved; an own word that fails, or a fact with no resolved
+      own word, holds as before. The same at the evidence level: an
+      evidence quote cited on a context span (chapeau, definition,
+      cross-reference) that resolves nowhere is dropped with
+      INHERITED_EVIDENCE_DROPPED when the own evidence is exact. And the
+      missing half of 18 (a): an evidence quote cited on a context span
+      that does not hold it is relocated by the cited span's kind
+      (CONTEXT_SPAN_RELOCATION), noted EVIDENCE_SPAN_RELOCATED; own words
+      are never relocated across spans. The two earlier tests that pinned
+      "two candidate spans keep the hold" (13 (a), 18 (a)) now pin the
+      drop and the note. On the stored 4.7 facts the relocation applies
+      (one Article IV chapeau span holds the words), so the next
+      extraction of 4.7 gives three VALID facts with the note. (b)
+      footerTolerantMatches in resolveEvidenceQuote: when a quote has no
+      verbatim match in its span, its words in order, with any whitespace
+      between them, may enclose exactly a footer line (FOOTER_GAP from
+      source-display.js: "-43-", "-ii-" or a bare page number on its own
+      line); a match without a footer inside is not taken, so whitespace
+      alone never relaxes the verbatim rule (pinned). The span's bytes
+      include the footer and its text is those bytes (rule R1 holds); the
+      context records page_footer_skipped; a quote that copies the page
+      number as a word ("the Transactions, 49 the Company") matches too.
+      PAGE_FOOTER now hides a bare page-number line; between single
+      newlines (NCS's layout) a footer at a paragraph boundary keeps one
+      newline, otherwise a space; Metsera's blank-line layout is
+      unchanged. (c) lib/product/representation-limbs.js fusedLimbs: on
+      a REPRESENTATIONS fact, or any fact stated as a representation
+      (3.27's TAX_MATTERS fact says "represents and warrants"), an own
+      component opening on a finite verb that follows an own OPERATION
+      with only "or" or "nor" between them in the source is the note
+      FUSED_REPRESENTATION_LIMBS (the two predicates, the joining word, the
+      one-effect rule); "and" is not (3.17: "is in material breach or
+      default, and has not taken any action" is one status and its
+      consequence). (d) exceptionOnlyRepresentation: a REPRESENTATIONS
+      fact (never REPRESENTATION_QUALIFICATION, never from an article
+      introduction) whose own words are an enumerated exception is held
+      REPRESENTATION_EXCEPTION_NOT_A_FACT: the exception words are an own
+      EXCEPTION opening on an enumerator, "except for", "other than" or
+      "save for" (never "except as set forth in", the disclosure
+      exception), or an own component governed by an EXCEPTION introducer
+      earlier in the fact; every own component before them is shared
+      verbatim with another proposal of the same call (the sentence they
+      were all cut from, a non-generic shared context required); no own
+      OPERATION or EFFORTS_STANDARD before them; no operative kind from
+      them on. The REPRESENTATIONS layer rule (scripts/product/build-
+      legal-schema-v2.js, the schema regenerated) tells the extractor both
+      shapes: predicates joined by "or" are two facts; an enumerated
+      exception is an EXCEPTION component, a LIST with a LIST_ELEMENT per
+      item, since the representations table has no row per exception
+      (MAE_DEFINITION's carve-outs keep their facts, as (168) says). Both
+      detectors run over the 278 stored generation-5 representation
+      facts before the rules went in (scratch script, bytes only; the
+      "or" gaps confirmed from the canonical text): (c) fires on exactly
+      the three fused facts (3.27 twice, 4.13 once) and on nothing else;
+      (d) on exactly twelve facts, 3.5(b)'s four, 4.4(b)'s four and
+      3.7's four ("except (a) to the extent accrued ..., (b) for
+      liabilities in the ordinary course ..."), none other of the 278.
+      Plan evidence: B's "(7) ten facts of 3.5, 4.4 and 5.1" is twelve of
+      3.5, 3.7 and 4.4 on this read; 5.1 has no representation facts
+      (its EXCEPTION facts are the covenant's general exceptions, cells
+      of the interim operating table, which has them). Residual risk of
+      (d), for the manager: a representation whose own verb the model
+      labelled QUALIFIER and whose exception facts copy its words could
+      be held with them; the hold is a VALIDATION issue carrying the
+      rule, reviewable, and the layer rule reduces the shape. No decision
+      of Ben's needed; nothing submitted, woken or retried. Commits named
+      in the next finding with npm run test:active.
       (120) 2026-10-18 19:10 to 19:45 UTC (implementer C), Q5: the limb
       names harvested. `scripts/product/harvest-rep-limbs.js` (library
       `lib/product/rep-limb-harvest.js`, `tests/product-rep-limb-harvest.test.js`)
