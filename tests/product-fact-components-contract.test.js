@@ -186,7 +186,7 @@ test('renderLayer hides a page footer in a component\'s words', () => {
 // defined terms carries no canonical value and a note, and the fact stays
 // VALID with its components". The three held facts' own words.
 test('a count of none is 0 and a formula amount is valid without a number; prose without either is still held', () => {
-  const { buildComponentTree, validateFactComponents, isFormulaValue } = require('../lib/product/fact-components');
+  const { buildComponentTree, validateFactComponents, isFormulaValue, isReferenceValue } = require('../lib/product/fact-components');
   const resolve = (raw) => ({ span: { source_span_id: 's', span_id: 's', start_byte: 0, end_byte: Buffer.byteLength(raw.quote, 'utf8') }, context: { component_kind: 'FULL_SECTION' } });
   const contentId = (kind, parts) => `${parts.path.join('.')}-${parts.kind}`;
   const tree = buildComponentTree({
@@ -213,4 +213,51 @@ test('a count of none is 0 and a formula amount is valid without a number; prose
   assert.equal(isFormulaValue('the sum of the Closing Amount plus the CVR'), true);
   assert.equal(isFormulaValue('an amount equal to the Termination Fee'), false);
   assert.equal(isFormulaValue('the product of 0.1371 and the Parent Closing Price'), false);
+  // Work package 18 (b) (NCS generation 5, 5.11): a reference quantity
+  // names a quantity and where it is set forth or the payment it was,
+  // with no number of its own; a section citation is not a number.
+  assert.equal(isReferenceValue('the last aggregate annual premium paid by the Company prior to the date hereof'), true);
+  assert.equal(isReferenceValue('the amount set forth in Section 5.11(b) of the Company Disclosure Letter'), true);
+  assert.equal(isReferenceValue('an amount equal to the Termination Fee'), false, 'a defined term alone is neither a number nor a reference');
+  assert.equal(isReferenceValue('a fee'), false);
+  assert.equal(isReferenceValue('the premium of $750,000 set forth in Section 5.11(b)'), false, 'a stated number is parsed, not referenced');
+  assert.equal(isReferenceValue('two hundred percent of the annual premium paid'), false, 'a count in words is a number');
+  assert.equal(isReferenceValue('the sum of the Closing Amount plus the CVR'), false, 'a formula is a formula');
+  const referenceTree = buildComponentTree({
+    modelComponents: [
+      { kind: 'AMOUNT', label: 'premium cap', quote: 'the last aggregate annual premium paid by the Company prior to the date hereof', origin: 'OWN', children: [] },
+      { kind: 'AMOUNT', label: 'a fee', quote: 'a fee', origin: 'OWN', children: [] },
+    ],
+    resolve, factId: 'f', contentId,
+  });
+  assert.deepEqual(referenceTree.components.map((component) => component.value), [{ canonical: null, unit: null, form: 'REFERENCE' }, null]);
+  assert.deepEqual(referenceTree.references, [{ path: '0', component_id: '0-AMOUNT', text: 'the last aggregate annual premium paid by the Company prior to the date hereof' }]);
+  assert.deepEqual(referenceTree.formulas, []);
+  assert.deepEqual(referenceTree.problems, ['1: no parsable value in "a fee"']);
+  const referenceFact = { headline: { label: 'Values', distinguishing_component_ids: ['0-AMOUNT'] }, components: referenceTree.components.slice(0, 1) };
+  assert.deepEqual(validateFactComponents(referenceFact).filter((problem) => /canonical/.test(problem)), [], 'a reference is a valid value');
+});
+
+// Work package 19 (b) and (c) (NCS generation 5, 6.2 and 6.4; plan finding
+// (165)): a LIST of resolved cross-references is a list; a reference to the
+// words' own article or agreement needs no resolution.
+test('a LIST of cross-reference children is valid, and "this Article VI" needs no resolution; a LIST of plain terms and an unresolved section reference still do not pass', () => {
+  const { buildComponentTree } = require('../lib/product/fact-components');
+  const resolve = (raw) => ({ span: { source_span_id: 's', span_id: 's', start_byte: 0, end_byte: Buffer.byteLength(raw.quote, 'utf8') }, context: { component_kind: 'FULL_SECTION' } });
+  const contentId = (kind, parts) => `${parts.path.join('.')}-${parts.kind}`;
+  const reference = (quote, title) => ({ kind: 'CROSS_REFERENCE', label: quote, quote, origin: 'OWN', children: [], resolves_to: { structure_node_id: 'n'.repeat(64), text: title } });
+  const tree = buildComponentTree({
+    modelComponents: [
+      { kind: 'ACTOR', label: 'representations', quote: 'Each of the representations and warranties of the Company', origin: 'OWN', children: [] },
+      { kind: 'LIST', label: 'covered sections', quote: 'Section 3.9(c), Section 3.20, Section 3.21', origin: 'OWN', children: [reference('Section 3.9(c)', 'Section 3.9 Absence of Certain Changes'), reference('Section 3.20', 'Section 3.20 State Takeover Statutes'), reference('Section 3.21', 'Section 3.21 No Rights Plan')] },
+      { kind: 'OPERATION', label: 'reliance', quote: 'may rely on the failure of any condition set forth in this Article VI', origin: 'OWN', children: [{ kind: 'CROSS_REFERENCE', label: 'this Article', quote: 'this Article VI', origin: 'OWN', children: [] }] },
+      { kind: 'LIST', label: 'plain terms', quote: 'apples, pears', origin: 'OWN', children: [{ kind: 'TERM', label: 'a', quote: 'apples', origin: 'OWN', children: [] }, { kind: 'TERM', label: 'b', quote: 'pears', origin: 'OWN', children: [] }] },
+      { kind: 'CROSS_REFERENCE', label: 'elsewhere', quote: 'Section 7.1(b)', origin: 'OWN', children: [] },
+    ],
+    resolve, factId: 'f', contentId,
+  });
+  const fact = { headline: { label: 'Bring-down', distinguishing_component_ids: ['1-LIST'] }, components: tree.components };
+  const problems = validateFactComponents(fact);
+  assert.deepEqual(problems.filter((problem) => /LIST without LIST_ELEMENT/.test(problem)), ['3: LIST without LIST_ELEMENT children'], 'only the list of plain terms is held');
+  assert.deepEqual(problems.filter((problem) => /must resolve/.test(problem)), ['4: CROSS_REFERENCE must resolve'], 'only the reference elsewhere must resolve');
 });

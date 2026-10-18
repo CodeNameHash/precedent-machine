@@ -131,6 +131,20 @@ export function ProvisionsPreviewBody({ workspace, runId }) {
                   it": the reader sees which sections this generation did not
                   ask about a fact type, instead of reading their silence as
                   coverage. */}
+              {/* Work package 18 (e) as revised (2026-10-18): an exhibit that
+                  is a separate agreement is out of this product's scope and
+                  was not extracted; one quiet line names it. Ben: "For CVRs -
+                  I want to build a separate product for that os I'd leave
+                  those". */}
+              {(preview.out_of_scope || []).length > 0 ? (
+                <div className="mt-[7px] space-y-[2px]" data-testid="preview-out-of-scope">
+                  {preview.out_of_scope.map((entry) => (
+                    <p key={entry.issue_id} className="text-[9.5px] font-ui text-[#6b6b6b]" data-testid="preview-out-of-scope-line">
+                      {`Out of scope: ${entry.section_reference.replace(/-/g, ' ')}${entry.title ? `, ${entry.title}` : ''}, a separate agreement; not extracted in this product.`}
+                    </p>
+                  ))}
+                </div>
+              ) : null}
               {preview.schema_drift.length > 0 ? (
                 <div className="mt-[7px] space-y-[2px]" data-testid="preview-schema-drift">
                   {preview.schema_drift.map((entry) => (

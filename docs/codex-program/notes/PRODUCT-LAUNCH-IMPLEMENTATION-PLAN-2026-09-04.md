@@ -4666,6 +4666,103 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       TRIGGER and PERIOD; the registration-rights facts as a table at
       the bottom of the Consideration section, not on the covenants
       table; (h) stays as it is.
+      (164) 2026-10-18 20:50 UTC: implementer A's (94) and implementer
+      B's (100) to (104) merged to the working branch (fast-forward from
+      origin; the active suite on the merged tree in the next finding).
+      Read, not just counted. (94) (c): Metsera 6.08's seven
+      model-written details become five lines in the shared vocabulary
+      with nothing lost (the consent and its standard on one line; the
+      consultation and the review-and-comment duty on one line), and
+      NCS 5.14's twelve facts read as eight sub-items; improved, accepted.
+      The ten publicity labels are proposals for Ben ("he decides the
+      names; the code only proposes"); put to him with this check-in.
+      (165) 2026-10-18 21:00 UTC: NCS generation 5 (run 51577c57) READY
+      at 20:48 UTC: 1,037 proposals, 1,015 VALID, 22 held, 104 sections,
+      393 model calls, 12.79m input (6.37m uncached, 4.68m cache reads,
+      1.73m cache writes) and 3.80m output tokens, the pipeline's stored
+      cost $145.68 (Ben's $200 credit; the projection of (160) was $150).
+      Read, not just counted, in docs/codex-program/notes/
+      NCS-GENERATION-5-AUDIT-2026-10-18.md: against generation 4's 850
+      VALID and 145 held, every hold has a reason and a code rule (3.4's
+      ten status representations cite the Article III chapeau on a span
+      id one hex character from the closure's, the model's slip; 6.2's
+      two bring-down tiers list cross-references; 6.4's three frustration
+      facts cite "this Article VI" unresolved; the rest are work
+      packages 14 and 18 (a) and (b), merged after this worker's wake);
+      eight VALID facts have no readout (subtypes without a row); 25
+      unusual provisions, ten of them genuinely unusual for Ben (the
+      Tolling Period, the novation, the tax-deposit condition, the VAT
+      warranty and mandatory election, Rewind). Work package 19 to
+      implementer A: (a) to (d) the four rules above, (f) the
+      registration rights as a table at the bottom of the Consideration
+      section per Ben's (163), (g) finding (95)'s row move does not
+      happen on the stored rows (29 facts stay on "General notification"
+      with the sub-items; no "Registration rights" row), a defect to fix
+      with the real rows pinned. The active suite on the merged head
+      b77da65e: 757 of 758, the known failure only. The sandbox released
+      (release_sandbox); pm-codex-preview-worker updated to b77da65e;
+      pm-codex-preview-worker-2 created for the subscription provider
+      (claude 2.1.302). Olaplex and Apogee generation 2 intakes on the
+      environment's default provider: runs 686c3bf2 (1974640) and
+      f1e2493f (1786205), QUEUED, woken next on the pool, per Ben's
+      "Olaplex and Apogee run on the subscription, back to back/parallel".
+      (166) 2026-10-18 21:05 UTC, Ben's decisions, verbatim. On the
+      publicity sub-item names: "all sounds fine" (the ten labels of
+      (167) 2026-10-18 21:15 UTC, Ben, verbatim: "do you think it is
+      worth spooling an ageng to look at the cost of extractions/number
+      of runs because it seems SO high ... I'm thinking like a 10-100x
+      reduciton in cost"; then "I agree but I'd say get AS much cost
+      reduction and increase in speed as possible." Applied: a fifth
+      implementer, E (findings from (180)), on work package E1: the
+      cost and time ledger from product_model_calls for NCS generation
+      5 and Metsera generation 8, reconciled to the console's billed
+      usage; the levers ranked by measured dollars and minutes (quotes
+      as byte offsets, the cache, a cheaper model for routing and
+      residual calls, the Batch API, max_tokens and part sizing,
+      concurrency across sections and the pool, the idle gaps), proven
+      on three NCS sections against the facts on the bytes before any
+      deal; a replay harness that finalises a run from its stored
+      responses with no model call (the "number of runs" answer); a
+      cost and time gate per run. The manager's prior estimate, for
+      the record: 10x is plausible from those levers; 100x is not while
+      a frontier model reads every byte, and the finding must say what
+      the next 10x would cost in facts.
+      (94) (c) are final). On the registration-rights sub-items: "are
+      these from a reg rights agreement? I wouldn't go into anywhere near
+      this depth in this product" (they are NCS 5.17, a registration
+      covenant inside the merger agreement, not a separate agreement;
+      applied: registration rights is one row at the bottom of the
+      Consideration section, present or absent with the as-drafted
+      summary and its facts behind it, no sub-items; the seven labels of
+      (95) are withdrawn). On the ten unusual provisions: "not a fact
+      type today". On the production project: "I'm not sure what you
+      mean but I don't care boaut the old site, you can move over whener
+      you like" (applied: the move of the product schema and the
+      reviewed rows to the production project is approved in principle;
+      implementer B prepares it as a script with a dry run and a report,
+      the manager runs it after reading the dry run; the released Review
+      still publishes only a review every item of which Ben decided).
+      On the next deals: "btw let's do major biopharma deals as the
+      basi sfor the build out of next searches, starting > $1bn"
+      (applied: after Olaplex and Apogee, the intakes are public-target
+      biopharma merger agreements over $1bn; implementer C compiles the
+      candidate list with each Exhibit 2.1 URL for Ben to order).
+      (94) (a) and (b) are finalisation rules: NCS generation 5's worker
+      runs the code of its wake (18:55 UTC), so 4.7's three inherited
+      quotes and 5.11's reference premium stay held in that run and are
+      VALID on the next generation; the generation 5 audit says so.
+      Manager answers to B: (100) the released Review for this internal
+      launch runs on the preview branch behind deal-corpus-preview;
+      the production project is a later cutover that only Ben approves
+      (his standing rule), nothing built for it; (103) option (a), the
+      rollback drill runs on the second release, after Ben's first
+      correction, no migration; (104) accepted, work package D2 to
+      implementer D (every CI database test on the full migration list;
+      the workflow also on pushes to the two working branches). Work
+      package B2 to implementer B: the NCS comparison regenerated with
+      generation 5 once READY, and the 102 V1 facts without a
+      counterpart read one by one into a ranked list of V2 extraction
+      defects with the rule or prompt line for each (finding (105)).
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
@@ -5404,6 +5501,369 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       open row for a mutual condition the fixed list does not name (the
       Information Statement mailing period here), or the "without a
       readout" list as now. No code changed for this finding.
+      (94) 2026-10-18 20:40 UTC (implementer A), work package 18 (the
+      manager's message of 20:05 accepting finding (91)'s proposal; the
+      message says "finding (93) in your range", which the NCS read of
+      20:02 had taken, so this is (94)). (a) A quote of inherited origin
+      (INTRO, CHAPEAU, DEFINITION, CROSS_REFERENCE) cited on a span the
+      closure knows that does not hold it is taken from the one closure
+      span of a kind its origin allows that holds it verbatim
+      (lib/product/agreement-draft.js resolveEvidenceQuote, after the
+      full-section scan: the matching loop is now matchesWithin(span);
+      the known-span case sets the same context as work package 13 (a),
+      so the COMPONENT_SPAN_RELOCATED note is the same note, its entry
+      carrying known_span: true to say the id written was a known span);
+      two candidates or none keep the hold ("byte range missing"); own
+      words are never moved across spans. Test with NCS 4.7's real words:
+      the Article III and IV chapeau spans and 4.7 as stored for the run,
+      the three INTRO quotes cited on the Article III span relocate to
+      the Article IV chapeau at their byte offsets, VALID with the note;
+      a twin chapeau span keeps the hold; an OWN quote on the known span
+      keeps the hold. Every stored fact the rule would have kept VALID,
+      from the rows on the preview branch (every non-VALID fact of NCS
+      generation 5 and Metsera generation 8 with a top-level component of
+      inherited origin on a known span lacking its quote, counted against
+      the closure's spans of the allowed kind): NCS 4.7's three
+      (24a5363e, a8752fe4, 0adef215; nine components, each with exactly
+      one holder, the Article IV chapeau c0b36c15); Metsera generation 8:
+      none. (b) An AMOUNT whose words name a reference quantity and state
+      no number carries { canonical: null, unit: null, form: 'REFERENCE' }
+      and a VALUE_IS_REFERENCE note (lib/product/fact-components.js
+      isReferenceValue: a quantity noun (amount, premium, price, fee,
+      sum, cost, value, consideration, payment, expense, salary,
+      compensation, rate, balance) with where it is set forth
+      ("set forth in", "specified in", "described in" ...) or the payment
+      it was ("last ... paid", "most recent ... payable", "current ... in
+      effect"); a Section, Schedule or Rule citation is not a number; a
+      digit, a count in words or a formula is not a reference;
+      buildComponentTree returns references beside formulas, the
+      validator accepts the form, the extractor notes it; contract R6
+      says so). Evidence: NCS 5.11's aeb3313d, "the last aggregate annual
+      premium paid by the Company prior to the date hereof", the one
+      stored fact of either run the rule keeps VALID (the other four
+      AMOUNT holds in the stored rows are work package 14's none-counts
+      and formula, held before that package reached the deploy). Tests:
+      the unit cases, the tree, and a compiled 5.11 fact VALID with the
+      note beside a prose amount that still holds. (c) The publicity
+      row's sub-items: the general covenants table's "Public
+      announcements" row carries detail_labels_by_row and a new
+      detail_from_words_by_row (scripts/product/table-shapes-decision-34.js
+      PUBLICITY_DETAILS and PUBLICITY_WORDS; lib/product/table-shapes.js
+      validates each rule's detail against the row's labels and each
+      pattern; the contract regenerated, 49 tables, 158 columns). The
+      rule, lib/product/fact-conclusions.js detailFromWords: the first
+      rule matching the fact's own components, else its statement and
+      summary, names the sub-item; the rule wins over the detail the
+      model wrote so a corpus reads in one vocabulary, a fact no rule
+      names keeps the model's detail. Applied at extraction
+      (agreement-draft, note ROW_DETAIL_FROM_WORDS naming from and to) and
+      to stored facts in buildTableView, so NCS generation 5's rows read
+      this way without a run. The labels, proposed for Ben to name, in
+      the order the sub-items show: Announcement release; Consent to
+      releases; Consultation and review; Consistent with prior
+      statements; Carve-out: ordinary course; Carve-out: employees;
+      Carve-out: disputes; Carve-out: investor and media communications;
+      Carve-out: sponsor disclosure; Law or exchange exception. The rules
+      read the carve-outs and the consistency proviso before the duties
+      they qualify (NCS's "without providing the other Parties the
+      opportunity for such consultation and review, issue a press release
+      ... consistent with prior press releases" is the consistency line)
+      and the Law or exchange exception last, since every duty repeats
+      it. On NCS 5.14's twelve stored facts: Announcement release 2 (the
+      joint release; its approval), Consultation and review 2 (the
+      consult-and-review duty; the no-issuance-before-consultation duty),
+      Consistent with prior statements 1, Carve-out: ordinary course 1,
+      employees 1, disputes 1, sponsor disclosure 3 (limited partners;
+      the website posting; the sponsor consistency proviso), Law or
+      exchange exception 1. On Metsera generation 8's publicity row (6.08,
+      seven stored facts with seven model-written details, not five):
+      Announcement release (the initial press release), Consent to
+      releases (the prior written consent; its not-unreasonably-withheld
+      standard), Consultation and review (consult; review and comment),
+      Consistent with prior statements (previously approved information),
+      Carve-out: investor and media communications (analysts, investors
+      and media): five lines in the shared vocabulary where the model had
+      seven of its own; the manager judges whether that is improved. Both
+      deals pinned in tests/product-table-view.test.js with the facts'
+      own words; the shape pinned in tests/product-table-shapes.test.js
+      (labels, rule order, a rule naming no label fails validation); the
+      extraction path in tests/product-fact-components-extraction.test.js.
+      docs/core/CODEBASE-GUIDE.md updated. npm run test:active: the known
+      failure only (the count in the commit). Nothing submitted or
+      retried.
+      (95) 2026-10-18 21:05 UTC (implementer A), work package 18 items
+      (d) and (e) (the manager's message of 20:28, finding (93) accepted
+      as (162)). (d) The general covenants table has a fixed "Registration
+      rights" row (scripts/product/table-shapes-decision-34.js
+      REGISTRATION_ROW, REGISTRATION_WORDS, REGISTRATION_DETAILS,
+      REGISTRATION_DETAIL_WORDS; the contract regenerated). Its words_rows
+      rule, "Registration Statement", "Registrable Securities", a
+      prospectus, "Rule 144" or "Rule 415", is marked over_readout, a new
+      flag lib/product/table-shapes.js validates: lib/product/
+      fact-conclusions.js rowFromWords moves a fact whose readout is on
+      another row of the same table to the rule's row when its own
+      components (else its statement and summary) match, or when the open
+      row the model wrote begins with the rule's row label ("Registration
+      rights indemnification" is "Registration rights"; the survival and
+      reimbursement limbs name none of the words); the readout-less case
+      stays with defaultConclusions. Applied at extraction (agreement-
+      draft, note ROW_FROM_WORDS naming from and to, before the sub-item
+      rule) and to stored facts in buildTableView (page_rule 'words_rows',
+      row_from), so NCS generation 5's rows read this way without a run.
+      The sub-items, proposed for Ben to name, in the order they show:
+      Resale registration; Effectiveness and amendments; Stockholder
+      information and approval; Indemnification; Expenses; Rule 144 and
+      legend removal; Listing and reporting. The rules read the indemnity
+      and its mechanics first (its limbs name a prospectus), then
+      expenses, then listing and reporting before Rule 144 (the reporting
+      covenant names Rule 144 too), then the stockholders' approval right
+      before the resale filing it governs, then effectiveness and
+      amendments last. On NCS 5.17's 32 general-covenant facts, checked
+      against the stored rows with the same patterns: 29 move to
+      Registration rights (Resale registration 3: the Rule 424(b)(7)
+      supplement, the Rule 415 shelf alternative, the selling
+      securityholders; Effectiveness and amendments 5: keeping the
+      statement effective, the amendments, the SEC's requests, the
+      misstatement notice, the prospectus correction; Stockholder
+      information and approval 4: review and approval of their
+      disclosures, the filing bar without it, the information they
+      furnish, the furnished-information scope; Indemnification 8:
+      Parent's indemnity for untrue statements and for omissions, its
+      carve-out for furnished information, its expense reimbursement,
+      the stockholders' several indemnity, their reimbursement, the net-
+      proceeds cap, survival; Expenses 1; Rule 144 and legend removal 3:
+      legend removal, Rule 144 resales, Rule 144(c)(1) compliance;
+      Listing and reporting 5: Nasdaq listing, Nasdaq compliance, DTC
+      eligibility, the two reporting covenants); 3 stay where they are,
+      the Nasdaq notices (deficiency notices and delisting events on
+      "General notification", Nasdaq or SEC proceedings on "Litigation
+      notification"), which name none of the words and are notification
+      covenants. The nine CAPITALISATION facts are not on this table
+      (question (g) is with Ben). Metsera generation 8: no general-
+      covenant fact names any of the words, so nothing moves. Pinned in
+      tests/product-table-view.test.js with fifteen of the facts' own
+      words (the seven sub-items, the notice that stays, the survival
+      limb that comes by its label), tests/product-table-shapes.test.js
+      (the row, the rule, the labels, a non-boolean over_readout fails)
+      and tests/product-fact-components-extraction.test.js (a General
+      notification readout moves at extraction with both notes). (e)
+      lib/product/source-context.js resolveReferencedNode: a reference
+      inside an exhibit or annex resolves within the exhibit first: to a
+      node of the exhibit's own when the exhibit's sections have nodes
+      (the phase-1 fixture's Exhibit-A::10.02; unchanged), else to the
+      exhibit itself when a heading of the exhibit's text starts with the
+      number as the reference writes it (exhibitHoldsReference: "2.2" is
+      the CVR Agreement's own "2.2 Nontransferable", "2.01(b)" is not,
+      since the exhibit writes 2.1, so "Section 2.01(b) of the Merger
+      Agreement" still reaches the main agreement); such a reference is a
+      cross-reference to the exhibit's own words (the exhibit node is the
+      target, its CROSS_REFERENCE span the exhibit) and is recorded in
+      context_diagnostics.exhibit_internal_section_references, a key
+      present only when non-empty so every other closure's identity is as
+      it was; a number the exhibit does not hold goes to the main
+      agreement as before. The extraction gate in agreement-draft
+      (traversal complete and nothing unresolved) is unchanged and now
+      passes for the exhibit. On the Metsera filing as fetched
+      (tests/fixtures/canonical-v2/metsera-first-live-run), Exhibit-B's
+      closure: unresolved none (was six), internal 24 (2.2, 2.4, 2.4(a),
+      2.4(e), 2.4(i), 2.6, 3.2, 3.3, 3.4, 4.2, 4.3(a) to (d), 5.1,
+      5.1(a), 5.2(a), 5.3, 6.12, 6.2, 6.5, 6.6(a), 6.8, 6.9), cross-scope
+      into the main agreement 2.01(b) and 2.03 (was seventeen),
+      traversal complete, 17 spans (6 definition spans, 7 cross-reference
+      spans). Exhibit-A (the Form of Support Agreement) has no section
+      references and is unchanged. tests/product-exhibit-references.test.js
+      pins this on the fixture beside the main agreement's 6.03, which
+      resolves as before; tests/product-phase-1.test.js's exhibit-scope
+      test still passes. The families Exhibit-B would be extracted for
+      are the thirteen its generation 8 routing holds: CONSIDERATION,
+      DNO_INDEMNIFICATION, EMPLOYEE_MATTERS, GENERAL_COVENANTS,
+      KEY_DEFINED_TERMS, MISC_BOILERPLATE, REPRESENTATIONS, TAX_MATTERS
+      and TERMINATION from the router, CAPITALISATION, DIVIDENDS,
+      MERGER_STRUCTURE_CLOSING and SPECIFIC_PERFORMANCE_REMEDIES widened
+      from the residual pass. What the next Metsera run would carry, by
+      that routing's own reading of the exhibit: the CVR consideration
+      (the per-CVR milestone payment amounts, the milestone payment
+      dates and the payment procedure of 2.4, the exchange and payment
+      mechanics, the abandonment right of 2.6), the defined terms
+      (Acting Holders, Change of Control, Commercially Reasonable,
+      Permitted Transfer, the milestones), the CVR covenants (the
+      development spend commitment, the anti-avoidance covenant, the
+      assumption on a Change of Control, direction and control of the
+      business), withholding and the intended tax treatment, the Rights
+      Agent's indemnification and expense reimbursement, Parent's
+      authority and no-conflict representations, the Equity Award
+      Holders' payment timing, 6.12's termination and the boilerplate;
+      the generation 3 audit's missing milestones and payment dates
+      among them, as facts rather than the nine unusual-provision flags
+      that are their only trace today. Whether they land on tables
+      depends on the shapes (the CVR row of the consideration table and
+      the general covenants "CVR Agreement" row exist); the facts will
+      exist either way. The seventy-seven-kilobyte exhibit has no child
+      limbs, so it is extracted by its paragraphs under the long-section
+      rule. docs/core/CODEBASE-GUIDE.md updated. npm run test:active: the
+      known failure only (the count in the commit). Nothing submitted or
+      retried.
+      (96) 2026-10-18 21:30 UTC (implementer A), work package 18 as
+      revised by the manager's message of 20:48 on Ben's answers in
+      finding (163); (95)'s (d) and (e) are superseded by this finding.
+      Ben's words, verbatim, now in the code comments where a change
+      answers them: "For CVRs - I want to build a separate product for
+      that os I'd leave those"; "on A - if the shareholders have to do
+      something, okay for them to be an obligor. Ok on ETA on covenants.
+      reg rights I think goes with consideration (but at bottom)". (a),
+      (b), (c) stand as delivered in (94). (d) revised: the general
+      covenants table no longer has a Registration rights row; a table
+      consideration-registration-rights is the last table of the
+      Consideration section (scripts/product/table-shapes-decision-34.js
+      REGISTRATION_TABLE_KEY; one fixed row, the seven sub-items by
+      words as before, accepts_families GENERAL_COVENANTS, which
+      lib/product/table-shapes.js validates and lib/product/
+      fact-conclusions.js tableForFact honours). The covenants table's
+      words_rows rule carries table_key (validated at document level:
+      the table exists and holds the row), and rowFromWords moves a fact
+      across tables as across rows (a fact on the model's open
+      "Registration rights" row of the covenants table moves too); the
+      extractor's ROW_FROM_WORDS note names from_table_key and
+      to_table_key, the page's page_rule 'words_rows' carries the new
+      table_key. On NCS 5.17's 32 covenant facts the outcome of (95)
+      holds, now under Consideration: 29 on the registration table's one
+      row (Resale registration 3, Effectiveness and amendments 5,
+      Stockholder information and approval 4, Indemnification 8,
+      Expenses 1, Rule 144 and legend removal 3, Listing and reporting
+      5), the three Nasdaq notices where they were. Metsera generation
+      8: no covenant names the words, so no such table. (e) revised: the
+      exhibit-internal reference resolver of (95) is reverted
+      (lib/product/source-context.js restored as at 858bd92,
+      tests/product-exhibit-references.test.js removed; nothing of it
+      remains). In its place, lib/product/agreement-draft.js
+      outOfScopeExhibit: an exhibit or annex whose own text is an
+      agreement (a "Form of ... Agreement" title, or "THIS ... AGREEMENT
+      is made and entered into") with three or more articles or
+      sections of its own is a separate agreement and out of scope.
+      buildAgreementSectionDraft, after the routing and residual calls
+      (the routing stays as evidence of what the exhibit holds), records
+      one OUT_OF_SCOPE_EXHIBIT note on the node (section_reference,
+      title, own_headings, routed_families, reason), coverage NOT_FOUND
+      for the section, every family and the routed families' fact types
+      (never UNRESOLVED), and makes no extraction call. On the Metsera
+      filing as fetched: Exhibit-B is detected (title "Form of CVR
+      Agreement", 33 headings of its own), Exhibit-A (the Certificate of
+      Incorporation of the Surviving Corporation, 100 bytes) and 6.03
+      are not; the draft of Exhibit-B with a model that answers routing
+      and the residual pass and would throw on extraction makes those
+      two calls only, holds one note, no proposals, no UNRESOLVED
+      assertion (tests/product-out-of-scope-exhibit.test.js). On the next
+      Metsera run the 51 REQUIRED_FACT_TYPE_UNRESOLVED issues from
+      Exhibit-B become this one note; the residual pass still runs on
+      the exhibit, so its unusual-provision flags remain as they are
+      (the manager may want them silenced too; not changed here). The
+      provisions page lists the exhibit under a quiet line in the style
+      of the schema-drift lines ("Out of scope: Exhibit B, Form of CVR
+      Agreement, a separate agreement; not extracted in this product.";
+      lib/product/provisions-preview.js out_of_scope,
+      pages/review/product/[id]/provisions.js, data-testid
+      preview-out-of-scope; tests/product-provisions-preview.test.js).
+      (f) OTHER_PARTY: the obligor vocabulary of the general covenants
+      and registration-rights tables has OTHER_PARTY ("Other party
+      (named in the words)"), the column's other_party_code names it,
+      the guidance tells the extractor to cite the party's own words;
+      the page shows those words in the cell (lib/product/table-view.js
+      otherPartyWords: the cited component else the fact's own ACTOR)
+      and derives the cell for a stored fact whose obligor is empty and
+      whose ACTOR is neither the Company, Parent, Merger Sub nor "each
+      party" (otherPartyCell, derived 'other_party'). On NCS 5.17's
+      several indemnity (37ea48cb, "Each Specified Stockholder ...
+      indemnify and hold harmless") the Indemnification sub-item's
+      obligor reads "Each Specified Stockholder" beside Parent's;
+      pinned in tests/product-table-view.test.js. (g) By when: a
+      verbatim column byWhen (fill_from TRIGGER and PERIOD,
+      fill_from_components, validated) on the general covenants,
+      registration-rights and financing tables, before the as-drafted
+      column, which on those tables cites TRIGGER and PERIOD too; the
+      page fills it from the fact's own components in source order when
+      the readout has no cell (fillFromComponentsCell, derived
+      'fill_from_components'), never repeating a component a value
+      column of the same table reads, and pruneEmptyColumns hides it
+      when no row fills it. On NCS 5.17's Rule 424(b)(7) filing
+      (2bf58d52) the Resale registration line reads "Promptly following
+      the Closing Date (and in any event no later than two Business Days
+      thereafter)"; on a covenants table no row of which states a
+      deadline the column is hidden. On NCS 5.18's payoff letter the
+      financing table's Period column already reads 3 business days
+      from the PERIOD component (work package 7's rule), so By when
+      shows nothing there and is hidden, the as-drafted words now citing
+      the period; a By when that repeated the Period number would have
+      been the duplication Ben's column rule forbids. The Decision 34
+      test that no fact table carries a free-text column admits the By
+      when column alone, on Ben's words. Shapes regenerated: 30
+      sections, 50 tables, 164 columns. docs/core/CODEBASE-GUIDE.md
+      updated. npm run test:active: the known failure only (the count in
+      the commit). Nothing submitted or retried.
+      (97) 2026-10-18 21:55 UTC (implementer A), Ben's (166) applied and
+      work package 19 from the manager's (165). Ben on the registration
+      sub-items, verbatim: "are these from a reg rights agreement? I
+      wouldn't go into anywhere near this depth in this product": the
+      consideration-registration-rights table is now no_sub_items (a new
+      table flag, validated), one line, present or absent, its facts
+      behind it; a fact's row_detail is dropped at extraction and on the
+      page; the seven labels of (95) and (96) are withdrawn from the
+      shape (fb98374). Ben on the publicity labels: "all sounds fine";
+      nothing changes. Work package 19: (a) 3.4's ten status
+      representations cite the Article III chapeau on a span id one hex
+      character off: work package 13 (a)'s rule, already in the code,
+      VALID on the next generation. (b) 6.2's two bring-down tiers
+      (7c534651, d2f8a9b9) list the representations they cover as a LIST
+      of CROSS_REFERENCE children, each resolved to its section, and
+      were held "LIST without LIST_ELEMENT children": a LIST whose
+      children are all CROSS_REFERENCE or DEFINED_TERM components is a
+      list of references and valid (lib/product/fact-components.js);
+      a list of plain terms still needs its elements. (c) 6.4's three
+      frustration facts (78926bd5, 7589b03e, fc6c34bd) cite "this
+      Article VI" as a CROSS_REFERENCE with nothing to resolve to: a
+      reference to the words' own article, section or agreement ("this
+      Article VI", "this Section 5.2", "this Agreement", "hereof") needs
+      no resolution (SELF_REFERENCE, beside the statute exemption). Both
+      pinned in tests/product-fact-components-contract.test.js; the
+      five facts are VALID on the next generation. (d) The rest of the
+      holds are work packages 14 and 18 (a) and (b), in the code since
+      their merges. (f) The registration-rights table at the bottom of
+      Consideration: (96) and fb98374. (g) The manager's reading that
+      the row move "does not happen on the stored rows (29 facts stay on
+      General notification with the sub-items)" was of a preview
+      deployed before the rule: the deployment of 532ca9f, which carried
+      it, was created at 20:50:39 UTC (Vercel deployment
+      dpl_3kPAHeNCx78v6EXjwPg1btdz8WsV), and the generation 5 audit's
+      preview read fell between the run's READY at 20:48 and that
+      deploy's readiness. On the real rows it does happen: the 32
+      general-covenant facts of 5.17 as stored (read from the preview
+      branch; ids shortened, components flattened), through
+      buildTableView with the generated contract, give one Registration
+      rights line under Consideration with 29 facts, no sub-rows, and the
+      three Nasdaq notices on General notification (two) and Litigation
+      notification (one); nothing without a readout. Pinned with those
+      rows in tests/fixtures/product/ncs-generation-5-5-17-general-
+      covenants.json and tests/product-table-view.test.js. Two things the
+      real rows showed that the fixtures had not, fixed and pinned: the
+      page's derived OTHER_PARTY obligor took the model's ACTOR
+      "Statement (or any prospectus or prospectus supplement forming a
+      part of such Registration Statement), as initially filed" for a
+      party, so the words must now name a person or body (PARTY_NOUN); and
+      By when took every TRIGGER, including "upon the discovery of the
+      happening of any event", "insofar as such losses ... arise out of"
+      and "as such expenses are incurred", so a TRIGGER fills it only
+      when it states a time (TIMING_WORDS: days, dates, the Closing,
+      promptly, within, prior to, following, after, until ...); a PERIOD
+      always does. On the line as it now reads: obligor "the Specified
+      Stockholders", "Each Specified Stockholder" and "Parent and each
+      Specified Stockholder" shown, Parent's own readings stated in the
+      summaries and kept under stated_in_summary by work package B4's
+      rule; By when seven readings, the Rule 424(b)(7) deadline first;
+      standards six codes. One line carrying 29 facts' readings is what
+      Ben asked for; if it reads as too much, the as-drafted summaries
+      behind it are the next layer and the manager decides. Metsera
+      generation 8: unchanged, no such table. docs/core/CODEBASE-GUIDE.md
+      updated. npm run test:active: the known failure only (the count in
+      the commit). Nothing submitted or retried.
       (120) 2026-10-18 19:10 to 19:45 UTC (implementer C), Q5: the limb
       names harvested. `scripts/product/harvest-rep-limbs.js` (library
       `lib/product/rep-limb-harvest.js`, `tests/product-rep-limb-harvest.test.js`)
@@ -5683,6 +6143,95 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       table row lists its V1 counterparts once each, strongest first,
       three shown and the rest counted; a V1 fact V1 held is no
       counterpart; a long statement keeps its head and tail.
+      (125) 2026-10-18 20:55 to 21:30 UTC (implementer C), the design
+      note for the Query on layered facts, no code:
+      docs/codex-program/notes/QUERY-ON-LAYERED-FACTS-DESIGN-2026-10-18.md,
+      on finding (163)'s brief and Ben's words ("probably the first
+      thing we build as it will drive the side bar etc"). What it
+      holds: the questions Ben's review put to the corpus (the fee's
+      triggers, the 48-hour notice, the pandemic carve-out with its
+      carve-back, the 3.1 "lines of separation" across deals, the reps
+      and their bring-down, a category for every boilerplate rule),
+      each with the shape of its answer, which sort into three kinds
+      (find deals by a coded answer, compare a provision across deals,
+      read one deal's provision with its evidence); what the conclusions
+      cells already give as filter axes (30 sections, 49 tables, 66
+      vocabulary columns with 449 codes, 34 value columns, 46 fixed row
+      lists, the cited words on every coded cell), reaching V9 runs
+      only and, for the limbs, waiting on Q5; what the sidebar on a hit
+      needs (the fact with its tree and offsets, the section text the
+      offsets point into, the matching cell with its component_refs,
+      the agreement's identity, the review trail), read from
+      EvidenceSidebar's props; what the published-facts read lacks,
+      in the order a build meets it: any release (zero heads on the
+      branch), the conclusions cells in the release (compileReviewSummary
+      writes components, headline, coverage_only and section_reference
+      and nothing else; "conclusions" appears in none of review-state,
+      release-candidate or phase-3-store), the section text, indexes
+      (none on table_key, row_label or a cell), the codes across shape
+      versions, the deal's name (no product table holds the parties),
+      and filters beyond family and subtype. The build order: step 1,
+      a week, the cell query over READY draft runs on the provisions
+      page's own reads (table, row, column, code or number; the results
+      as the provisions page's tables with the matching rows and the
+      existing sidebar); step 2, after the first release, the same
+      query on the release pointer with the cells published or joined;
+      step 3, after four or five releases and Q5, the compare view
+      with the limbs aligned by canonical name, the rail and the code
+      map per shape version, at which point legacy Compare's job is
+      done. Eight questions for Ben (Q-A to Q-H: drafts first or
+      releases only; a form or a sentence; matching rows or the whole
+      table; deals as columns or as row groups; cells published into
+      the release or read from the run; the deal's name from the filing
+      or typed; re-publish or a code map when a vocabulary changes;
+      whether held facts are ever queryable), written as questions, not
+      choices.
+      (126) 2026-10-18 21:30 UTC (implementer C), Q5's AI pass, built
+      and dry-run, no live call. `scripts/product/propose-rep-limb-canon.js`
+      (library `lib/product/rep-limb-canon.js`,
+      `tests/product-rep-limb-canon.test.js`, in test:active) takes the
+      harvest JSON of finding (120) and asks, one request per
+      representation row, for the canonical limb list with
+      sub-representations grouped under a category where the names
+      share a subject (Ben: "we need to get to canonical (and perhaps
+      some of them are sub reps under a category) - wait untiil we have
+      a few deals and see if we can AI it?"), every harvested name
+      mapped to one proposed limb, a decided name kept exactly, a doubt
+      written as a question for Ben. The request carries fixed
+      instructions and a response contract, the row, the decided names
+      and every harvested name with its count, its cluster and one
+      example summary, and is keyed by the shared adapter's call key,
+      so a recorded answer replays exactly (lib/product/model-adapter.js
+      createRecordedModelAdapter); it goes through the Anthropic API
+      provider's adapter at the extraction tier (call kind EXTRACTION,
+      claude-opus-5 at high effort; the shared call-kind map, which the
+      hosted worker compares against every run's stored config, is not
+      widened). Every answer is checked against its request (the row
+      copied, each name mapped once, no invented name, each decided
+      name kept) and kept with its problems named. Three modes:
+      --dry-run (the default) writes the requests and the estimate and
+      makes no call; --recorded <file> answers from a recording (the
+      tests' path); --live calls the API and writes recording.json so
+      the pass replays without a second call. On the harvest in hand
+      (Metsera 8 and NCS 5): 43 requests (the nine rows with no limb
+      name, Brokers; Finders among them, get none), 53,708 input tokens
+      and 20,720 output tokens estimated at four bytes a token and 40
+      tokens a name, $0.79 at the pricing table (input $0.27, output
+      $0.52), uncached; with Olaplex and Apogee in, about twice the
+      names, so about $1.60. The command the manager runs once the two
+      deals are READY under V2, on a machine with ANTHROPIC_API_KEY
+      (and ANTHROPIC_WORKSPACE_ID) and the branch's database keys:
+      `node scripts/product/harvest-rep-limbs.js --run 72d94dd2-cb59-49cf-8f46-c89d161b7769 --run 51577c57-41b1-4b75-bcdf-c84ef2558589 --run <olaplex V2 run> --run <apogee V2 run> --out docs/codex-program/notes/Q5-REPRESENTATION-LIMB-NAMES-PROPOSAL-<date>.md --json /tmp/q5-harvest.json`
+      then
+      `node scripts/product/propose-rep-limb-canon.js --harvest /tmp/q5-harvest.json --out-dir /tmp/q5-canon --live`
+      (a dry run first without `--live` prints the estimate for that
+      harvest); the proposal is `/tmp/q5-canon/proposal.md`, to be
+      copied beside the harvest note for Ben, and
+      `/tmp/q5-canon/recording.json` replays it with `--recorded`.
+      Ben decides the names; the script writes nothing into the table
+      shapes. npm run test:active: 766 of 767, the one failure the
+      known Codex-client final-message test. No run, worker or sandbox
+      touched; no live model call made.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
@@ -5716,7 +6265,11 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       docs/codex-program/notes/Q5-REPRESENTATION-LIMB-NAMES-PROPOSAL-2026-10-18.md
       from Metsera generation 8 and NCS generation 5, rerun by
       `scripts/product/harvest-rep-limbs.js` as Olaplex and Apogee
-      finish; waits on Ben's names.
+      finish; waits on Ben's names. The AI pass Ben asked for
+      (finding (126)): `scripts/product/propose-rep-limb-canon.js`,
+      built and dry-run, the live command and its cost (about $0.79 on
+      the two deals in hand) recorded there for the manager to run once
+      Olaplex and Apogee are READY under V2.
 - [ ] Q4 Decide with Ben whether legacy Query and Compare migrate to this
       read or are retired. Evidence 2026-10-18 (finding (121)):
       docs/codex-program/notes/Q4-LEGACY-QUERY-COMPARE-EVIDENCE-2026-10-18.md;

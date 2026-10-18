@@ -251,3 +251,31 @@ test('previewFactsFromWorkspace attaches held_reason to each held fact from the 
   assert.equal(preview.held_facts.length, 1);
   assert.match(preview.held_facts[0].held_reason, /could not be placed in the source text/);
 });
+
+// Work package 18 (e) as revised (2026-10-18): an out-of-scope exhibit (a
+// separate agreement such as Metsera's Form CVR Agreement) is one quiet
+// line under the title. Ben: "For CVRs - I want to build a separate product
+// for that os I'd leave those".
+test('an out-of-scope exhibit is one quiet line under the title, and absent when the draft recorded none', () => {
+  const nodes = [
+    { node_id: NODE, reference: '3.14', authored_order: 1 },
+    { node_id: 'node-exhibit-b', reference: 'Exhibit-B', authored_order: 283 },
+  ];
+  const issues = [{
+    schema_version: 'PRODUCT_ISSUE/V1', issue_id: 'i-oos', kind: 'NOTE', code: 'OUT_OF_SCOPE_EXHIBIT', family_key: null, subtype_key: null,
+    structure_node_id: 'node-exhibit-b', proposal_id: null, source_closure_id: null, source_span_ids: [],
+    message: JSON.stringify({ section_reference: 'Exhibit-B', title: 'Form of CVR Agreement', own_headings: 33, routed_families: ['CONSIDERATION'], reason: 'a separate agreement with its own articles and sections; not extracted' }), state: 'OPEN',
+  }];
+  const preview = previewFactsFromWorkspace(workspace({ issues, nodes }));
+  assert.deepEqual(preview.out_of_scope, [{ issue_id: 'i-oos', structure_node_id: 'node-exhibit-b', section_reference: 'Exhibit-B', title: 'Form of CVR Agreement' }]);
+  assert.equal(preview.facts.length, fixture.facts.length, 'the line takes nothing off the tables');
+  const html = renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: workspace({ issues, nodes }), runId: 'run-1' }));
+  const line = html.match(/data-testid="preview-out-of-scope-line">([^<]*)<\/p>/);
+  assert.ok(line, 'the out-of-scope line renders');
+  assert.equal(line[1], 'Out of scope: Exhibit B, Form of CVR Agreement, a separate agreement; not extracted in this product.');
+  assert.ok(html.indexOf('</h1>') < html.indexOf('data-testid="preview-out-of-scope"'));
+  assert.ok(html.indexOf('data-testid="preview-out-of-scope"') < html.indexOf('data-testid="preview-rule"'));
+  const quiet = renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: workspace(), runId: 'run-1' }));
+  assert.doesNotMatch(quiet, /preview-out-of-scope/);
+  assert.deepEqual(previewFactsFromWorkspace(workspace()).out_of_scope, []);
+});

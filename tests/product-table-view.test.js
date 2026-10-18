@@ -2065,3 +2065,205 @@ test('a non-definition fact with resolved defined terms keeps its row and adds t
   assert.equal(terms['Consent Time'].definition, 'Consent Time means 11:59 p.m. Central Time on the day following the date hereof');
   assert.equal(view.sections.flatMap((section) => section.tables).flatMap((table) => table.rows).some((row) => row.backing_facts.some((entry) => entry.fact_id === 'def-consent-time')), false, 'a definition fact has no row');
 });
+
+// Work package 18 (c) (plan finding (91); NCS generation 5, 5.14; 2026-10-18):
+// twelve publicity facts on one "Public announcements" row were "correct and
+// unreadable". The row's detail_from_words_by_row names each fact's sub-item
+// from its own words; the words below are the facts' own components as
+// stored for NCS generation 5 (5.14) and Metsera generation 8 (6.08).
+test('publicity facts become sub-items of Public announcements named from their words, in the labels\' order; the model\'s own details give way', () => {
+  const publicityFact = (id, section, texts, rowDetail) => ({
+    fact_id: id, proposal_id: id, family_key: 'GENERAL_COVENANTS', subtype_key: 'PUBLICITY', section_reference: section, structure_node_id: `n-${section}`,
+    headline: { label: 'Publicity', distinguishing_component_ids: [`${id}-0`], summary: '' },
+    components: texts.map((text, index) => ({ component_id: `${id}-${index}`, kind: index === 0 ? 'ACTOR' : 'OPERATION', label: 'words', text, origin: 'OWN', source_span_id: 's', start_byte: index * 10, end_byte: index * 10 + 5, gap_before: false, children: [] })),
+    conclusions: { table_key: 'general-covenants-table', row_label: 'Public announcements', ...(rowDetail ? { row_detail: rowDetail } : {}), cells: [{ column_id: 'obligor', code: 'EACH_PARTY', component_ids: [`${id}-0`] }] },
+  });
+  const ncs = [
+    publicityFact('f146fe1b', '5.14', ['Each of Parent and Merger Sub, on the one hand, and the Company, on the other hand', 'shall not issue', 'any such press release or make any public announcement', 'prior to such consultation and review', 'except as may be required by applicable Law, court process or by obligations pursuant to any', 'listing agreement with any national securities exchange or national securities quotation system']),
+    publicityFact('feaaade2', '5.14', ['Each of Parent and Merger Sub, on the one hand, and the Company, on the other hand', 'any such press release or make any public announcement', 'except as may be required by applicable Law, court process or by obligations pursuant to any', 'listing agreement with any national securities exchange or national securities quotation system']),
+    publicityFact('2638bc7f', '5.14', ['Each of Parent and Merger Sub, on the one hand, and the Company, on the other hand', 'shall consult with each other', 'before issuing, and give each other a reasonable opportunity to review and comment upon', 'any press release or other public statements with respect to this Agreement and the Transactions', 'except as may be required by applicable Law, court process or by obligations pursuant to any', 'listing agreement with any national securities exchange or national securities quotation system']),
+    publicityFact('8f0d0e3f', '5.14', ['notwithstanding the foregoing', 'a Party', 'may, without providing the other Parties the opportunity for such consultation and review, issue', 'a press release or make a public statement', 'that is consistent with prior press releases or public statements made in compliance with this Section 5.14']),
+    publicityFact('8b186e37', '5.14', ['(ii) be deemed to restrict the ability of', 'any Party', 'to communicate to its employees or Representatives', 'in a manner that would not reasonably be expected to require public disclosure by the disclosing Party']),
+    publicityFact('7fc3bd21', '5.14', ['(iii) prevent', 'Parent or the Company', 'from making any public statement', 'in connection with any dispute among the Parties regarding this Agreement, the Merger or the Transactions']),
+    publicityFact('43418351', '5.14', ['(iv) prevent', 'the Specified Stockholders or their respective Affiliates', '(A) communicating with the current or prospective limited partners of the investment funds managed by such parties or their respective Affiliates', '(provided that such existing and prospective limited partners and Affiliates are subject to customary confidentiality obligations)', 'respectively, regarding this Agreement or the transactions contemplated by this Agreement']),
+    publicityFact('1e936ecc', '5.14', ['(i) prevent', 'Parent or the Company', 'from issuing any press release or making any public statement', 'in the ordinary course', 'that does not relate specifically to this Agreement or the Transactions']),
+    publicityFact('9a2072b9', '5.14', ['(iv) prevent', 'the Specified Stockholders or their respective Affiliates', '(B) disclosing the consummation of the Transactions', 'without disclosing the economic terms', 'on its website and otherwise in the ordinary course of their business']),
+    publicityFact('6de494c5', '5.14', ['the Specified Stockholders or their respective Affiliates', 'provided that any such disclosure contemplated by this clause (iv)', 'shall be consistent with', 'the content of any press release or public announcement that has been made pursuant to, and is permitted by, this Section 5.14']),
+    publicityFact('ee882a8c', '5.14', ['The press release announcing the execution and delivery of this Agreement', 'shall not be issued', 'prior to the approval of each of, the Company and Parent']),
+    publicityFact('3dbfb012', '5.14', ['The press release announcing the execution and delivery of this Agreement', 'shall be a joint release of', 'Parent and the Company']),
+  ];
+  const ncsView = buildTableView({ facts: ncs, tableShapes, legalSchema });
+  const ncsTable = ncsView.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'general-covenants-table');
+  assert.equal(ncsTable.rows.length, 1);
+  assert.equal(ncsTable.rows[0].subject, 'Public announcements');
+  assert.deepEqual(ncsTable.rows[0].sub_rows.map((row) => [row.subject, row.backing_facts.map((entry) => entry.fact_id).sort()]), [
+    ['Announcement release', ['3dbfb012', 'ee882a8c']],
+    ['Consultation and review', ['2638bc7f', 'f146fe1b']],
+    ['Consistent with prior statements', ['8f0d0e3f']],
+    ['Carve-out: ordinary course', ['1e936ecc']],
+    ['Carve-out: employees', ['8b186e37']],
+    ['Carve-out: disputes', ['7fc3bd21']],
+    ['Carve-out: sponsor disclosure', ['43418351', '6de494c5', '9a2072b9']],
+    ['Law or exchange exception', ['feaaade2']],
+  ]);
+  assert.equal(ncsView.sections.flatMap((section) => section.without_readout || []).length, 0);
+  // Metsera generation 8, 6.08: the model wrote seven details of its own;
+  // the rule reads them into the same vocabulary.
+  const metsera = [
+    publicityFact('1c12f7b0', '6.08', ['Parent and Merger Sub, on the one hand, and the Company, on the other hand', 'shall consult with each other', 'before issuing', 'any press release or other public statements with respect to the Merger and the other Transactions', 'except as may be required by applicable Law, court process or by obligations pursuant to any listing agreement with any national securities exchange', 'except as contemplated, permitted or required by Section 5.02'], 'Consultation before issuance'),
+    publicityFact('f1df5e86', '6.08', ['Notwithstanding the foregoing', 'without prior consent of the other parties hereto', 'each party hereto', 'communicate information that is not confidential information of any other party with financial analysts, investors and media representatives', 'information that is not confidential information of any other party', 'in a manner consistent with its past practice and in compliance with applicable Law'], 'Permitted communications with analysts, investors and media'),
+    publicityFact('8c69f6c9', '6.08', ['Parent and Merger Sub, on the one hand, and the Company, on the other hand', 'provide each other the opportunity to review and comment upon', 'any press release or other public statements with respect to the Merger and the other Transactions', 'except as may be required by applicable Law, court process or by obligations pursuant to any listing agreement with any national securities exchange', 'except as contemplated, permitted or required by Section 5.02'], 'Review and comment opportunity'),
+    publicityFact('7b325f09', '6.08', ['Parent and Merger Sub, on the one hand, and the Company, on the other hand', 'shall not issue any such press release or make any such public statement', 'any press release or other public statements with respect to the Merger and the other Transactions', 'without the prior written consent of the other party', 'except as may be required by applicable Law, court process or by obligations pursuant to any listing agreement with any national securities exchange', 'except as contemplated, permitted or required by Section 5.02'], 'Prior written consent requirement'),
+    publicityFact('6ace2dde', '6.08', ['the other party', 'the prior written consent of the other party', '(which consent shall not be unreasonably withheld, conditioned or delayed)'], 'Consent standard'),
+    publicityFact('8bf2ac0d', '6.08', ['The parties', 'agree that the initial press release to be issued with respect to the Transactions shall be in the form heretofore agreed to by the parties', 'the initial press release to be issued with respect to the Transactions'], 'Initial press release'),
+    publicityFact('11bb2b85', '6.08', ['Notwithstanding the foregoing', 'without prior consent of the other parties hereto', 'each party hereto', 'may (a) disseminate information substantially similar to information included in a press release or other document previously approved for public distribution by the other parties hereto', 'information substantially similar to information included in a press release or other document previously approved for public distribution by the other parties hereto'], 'Permitted dissemination of previously approved information'),
+  ];
+  const metseraView = buildTableView({ facts: metsera, tableShapes, legalSchema });
+  const metseraTable = metseraView.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'general-covenants-table');
+  assert.deepEqual(metseraTable.rows[0].sub_rows.map((row) => [row.subject, row.backing_facts.map((entry) => entry.fact_id).sort()]), [
+    ['Announcement release', ['8bf2ac0d']],
+    ['Consent to releases', ['6ace2dde', '7b325f09']],
+    ['Consultation and review', ['1c12f7b0', '8c69f6c9']],
+    ['Consistent with prior statements', ['11bb2b85']],
+    ['Carve-out: investor and media communications', ['f1df5e86']],
+  ]);
+  // A fact no rule names keeps the detail the model wrote.
+  const other = publicityFact('other', '6.08', ['The parties', 'shall file a Current Report on Form 8-K', 'within four Business Days'], 'Form 8-K filing');
+  const otherView = buildTableView({ facts: [other], tableShapes, legalSchema });
+  const otherTable = otherView.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'general-covenants-table');
+  assert.deepEqual(otherTable.rows[0].sub_rows.map((row) => row.subject), ['Form 8-K filing']);
+});
+
+// Work package 18 (d) (plan finding (93); NCS generation 5, 5.17; 2026-10-18):
+// the registration-rights covenants the model spread over "General
+// notification", "Access to information", "Stock exchange listing" and
+// three open rows gather on "Registration rights", each a sub-item from its
+// words; a notice covenant that names none of the words stays where it was.
+// The words are the facts' own components as stored for the run.
+test('registration-rights covenants gather on the one Registration rights line under Consideration; a Nasdaq notice stays on General notification', () => {
+  const covenant = (id, row, texts, rowDetail) => ({
+    fact_id: id, proposal_id: id, family_key: 'GENERAL_COVENANTS', subtype_key: 'OTHER_COVENANT', section_reference: '5.17', structure_node_id: 'n-5-17',
+    headline: { label: 'Covenant', distinguishing_component_ids: [`${id}-0`], summary: '' },
+    components: texts.map((entry, index) => {
+      const [kind, text] = Array.isArray(entry) ? entry : [index === 0 ? 'ACTOR' : 'OPERATION', entry];
+      return { component_id: `${id}-${index}`, kind, label: 'words', text, origin: 'OWN', source_span_id: 's', start_byte: index * 10, end_byte: index * 10 + 5, gap_before: false, children: [] };
+    }),
+    conclusions: { table_key: 'general-covenants-table', row_label: row, ...(rowDetail ? { row_detail: rowDetail } : {}), cells: [{ column_id: 'obligor', code: 'PARENT', component_ids: [`${id}-0`] }] },
+  });
+  const facts = [
+    covenant('2bf58d52', 'General notification', [['TRIGGER', 'Promptly following the Closing Date'], ['PERIOD', '(and in any event no later than two Business Days thereafter)'], ['ACTOR', 'Parent'], ['OPERATION', 'shall either (a) file with the SEC'], ['OBJECT', 'a prospectus supplement to the Registration Statement on Form S-3 (SEC file number 333-288045), filed June 13, 2025, pursuant to Rule 424(b)(7) under the Securities Act'], ['QUALIFIER', 'or (b) file with the SEC a Registration Statement pursuant to Rule 415 under the Securities Act']]),
+    covenant('8a57ad66', 'General notification', ['Statement (or any prospectus or prospectus supplement forming a part of such Registration Statement), as initially filed', 'shall include the Registrable Securities of the Specified Stockholders and any permitted transferee thereof', 'and name the Specified Stockholders or any permitted transferees as selling securityholders', '(subject to receipt of information reasonably requested by Parent necessary to complete such prospectus supplement)']),
+    covenant('5de42e39', 'General notification', ['Parent', 'shall use its reasonable best efforts', 'to keep such Registration Statement continuously effective under the Securities Act', 'until the date on which all Registrable Securities covered by such Registration Statement have been sold']),
+    covenant('009dfdb5', 'General notification', ['Parent', 'shall use reasonable best efforts', 'to prepare and file with the SEC such amendments and supplements to the Registration Statement and the prospectus used in connection therewith', 'as may be reasonably necessary', 'to keep the Registration Statement effective and to comply with the provisions of the Securities Act with respect to the disposition of all Registrable Securities covered by the Registration Statement']),
+    covenant('ee197fc0', 'General notification', ['Parent', 'shall notify the Specified Stockholders', 'promptly upon discovery', 'upon the discovery of the happening of any event as a result of which', 'the Registration Statement or any supplement to any prospectus forming a part of the Registration Statement contains an untrue statement of a material fact or omits any fact necessary to make the statements therein not misleading in the light of the circumstances under which they were made']),
+    covenant('43e27ac9', 'Access to information', ['Parent', 'shall not file such Registration Statement, prospectus or prospectus supplement', 'unless such disclosures have been approved in writing by the Specified Stockholders', '(such approval not to be unreasonably withheld, conditioned or delayed)']),
+    covenant('a01a67c4', 'Access to information', ['Prior to the Closing Date and until the date on which all Registrable Securities covered by such Registration Statement have been sold', 'the Specified Stockholders', 'shall cooperate with Parent and use reasonable best efforts to', 'promptly furnish to Parent all information concerning it', 'as is required by the SEC to be included in the Registration Statement']),
+    covenant('f598ad96', 'Registration rights indemnification', ['Parent', 'hereby agrees to indemnify and hold harmless', 'to the fullest extent permitted by Law', 'each Specified Stockholder, and their respective Affiliates, directors, officers, employees, partners, equityholders, managers and each other Person, if any, who controls such Specified Stockholder within the meaning of the Securities Act', '(x) any untrue statement or alleged untrue statement of any material fact contained in the Registration Statement or, in the light of the circumstances under which such statements were made, in any preliminary, final or summary prospectus contained therein'], 'Untrue statements in the Registration Statement'),
+    covenant('a47dc26b', 'Registration rights indemnification', ['provided, however', 'the aggregate amount which any such Specified Stockholder shall be required to pay pursuant to this Section 5.17(l)', 'shall in no case be greater than', 'the amount of the net proceeds actually received by such Specified Stockholder upon the sale of the Registrable Securities pursuant to the registration statement giving rise to such Claim'], 'Cap on liability'),
+    covenant('95c2cf94', 'Registration expenses', ['All expenses incurred in connection with any registration of Registrable Securities pursuant to this Agreement', 'including all SEC fees, blue sky registration and filing fees, listing notices and filing fees, printing fees and expenses, transfer agents’ and registrars’ fees and expenses and all fees and expenses of Parent’s outside counsel and independent accountants of Parent', 'shall be paid by Parent', 'Parent']),
+    covenant('50ba52cb', 'Registration rights', ['Upon the written request of a Specified Stockholder', 'Parent', 'shall promptly facilitate', 'the removal of any restrictive legends with respect to any Parent Ordinary Shares', 'in connection with a sale under the Registration Statement or when such Parent Ordinary Shares are eligible for resale under Rule 144 under the Securities Act'], 'Legend removal'),
+    covenant('eb3ace36', 'General notification', ['From and after the Closing Date and until the date on which all Registrable Securities covered by such Registration Statement have been sold', 'Parent', 'shall use its commercially reasonable efforts to', '(d) remain in compliance with the current public', 'information requirements of Rule 144(c)(1) under the Securities Act']),
+    covenant('f45fa9c4', 'Stock exchange listing', ['From and after the Closing Date and until the date on which all Registrable Securities covered by such Registration Statement have been sold', 'Parent', 'shall use its commercially reasonable efforts to', '(a) maintain the listing of the Parent Ordinary Shares on Nasdaq Global Select']),
+    covenant('199b43b6', 'General notification', ['From and after the Closing Date and until the date on which all Registrable Securities covered by such Registration Statement have been sold', 'Parent', 'shall use its commercially reasonable efforts to', '(c) timely file all reports required to be filed with the SEC pursuant to the Exchange Act']),
+    covenant('31da8ce7', 'General notification', ['Parent', 'shall promptly notify the Specified Stockholders in writing of', '(x) any notice of deficiency or non-compliance received from Nasdaq']),
+    // The survival limb names none of the words; the open row the model
+    // wrote for it begins with the row's label, so it comes along.
+    covenant('add29195', 'Registration rights indemnification', ['Such indemnity and reimbursement of expenses', 'shall remain in full force and effect', 'regardless of any investigation made by or on behalf of such indemnified party', 'shall survive the transfer of such securities by such holder'], 'Survival'),
+  ];
+  // (f) Ben: "on A - if the shareholders have to do something, okay for them
+  // to be an obligor": the stockholders' several indemnity, no obligor cell.
+  facts.push({
+    ...covenant('37ea48cb', 'Registration rights indemnification', ['Each Specified Stockholder', 'severally and not jointly', 'indemnify and hold harmless', 'with respect to any untrue statement or alleged untrue statement of any material fact in, or omission or alleged omission of any material fact from, the Registration Statement'], 'Specified Stockholder indemnity'),
+    conclusions: { table_key: 'general-covenants-table', row_label: 'Registration rights indemnification', row_detail: 'Specified Stockholder indemnity', cells: [{ column_id: 'standard', code: 'UNQUALIFIED_OBLIGATION', component_ids: ['37ea48cb-2'] }] },
+  });
+  const view = buildTableView({ facts, tableShapes, legalSchema });
+  const covenantsTable = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'general-covenants-table');
+  assert.deepEqual(covenantsTable.rows.map((row) => [row.subject, row.backing_facts.length]), [['General notification', 1]]);
+  assert.deepEqual(covenantsTable.rows[0].backing_facts.map((entry) => entry.fact_id), ['31da8ce7'], 'the Nasdaq notice names none of the words and stays');
+  // Ben: "reg rights I think goes with consideration (but at bottom)".
+  const consideration = view.sections.find((section) => section.section_key === 'consideration-hero');
+  assert.ok(consideration, 'the registration rights show under Consideration');
+  const table = consideration.tables[consideration.tables.length - 1];
+  assert.equal(table.table_key, 'consideration-registration-rights');
+  assert.deepEqual(table.rows.map((row) => [row.subject, row.backing_facts.length]), [['Registration rights', 16]]);
+  // Ben, 2026-10-18 (plan finding (166)): "are these from a reg rights
+  // agreement? I wouldn't go into anywhere near this depth in this
+  // product": one line, the facts behind it, the model's own details
+  // ("Survival", "Legend removal") dropped too.
+  assert.equal(table.rows[0].sub_rows, undefined);
+  assert.equal(view.sections.flatMap((section) => section.tables).some((candidate) => candidate.rows.some((row) => ['Registration rights indemnification', 'Registration expenses', 'Access to information', 'Stock exchange listing'].includes(row.subject))), false);
+  // (f): the several indemnity's obligor is the stockholders, in their words.
+  const obligor = table.rows[0].cells.find((cell) => cell.column_id === 'obligor');
+  const obligorValues = obligor.values || [obligor];
+  assert.ok(obligorValues.some((value) => value.code === 'OTHER_PARTY' && value.label === 'Each Specified Stockholder'), JSON.stringify(obligorValues));
+  assert.ok(obligorValues.some((value) => value.code === 'PARENT'), 'Parent\'s indemnity keeps its obligor');
+  // (g) Ben: "Ok on ETA on covenants": the 424(b)(7) filing's trigger and
+  // outside date in By when, from its TRIGGER and PERIOD components.
+  const byWhen = table.rows[0].cells.find((cell) => cell.column_id === 'byWhen');
+  const byWhenValues = byWhen.values || [byWhen];
+  assert.ok(byWhenValues.some((value) => value.label === 'Promptly following the Closing Date (and in any event no later than two Business Days thereafter)' && value.derived === 'fill_from_components'), JSON.stringify(byWhenValues));
+  assert.ok(table.columns.some((column) => column.column_id === 'byWhen'), 'By when shows when a row fills it');
+  // A covenants table no row of which states a deadline hides By when.
+  assert.ok((covenantsTable.hidden_columns || []).some((column) => column.column_id === 'byWhen'), JSON.stringify(covenantsTable.hidden_columns));
+});
+
+// Work package 18 (g) on the financing table (Ben: "Ok on ETA on covenants"):
+// NCS 5.18's payoff letter, "at least three (3) Business Days prior to the
+// Closing Date": the Period column reads the number from the PERIOD
+// component, the as-drafted words cite it, and By when does not repeat a
+// component the Period column already reads.
+test('the financing table reads the payoff letter lead time into Period and does not repeat it in By when', () => {
+  const fact = {
+    fact_id: 'payoff', proposal_id: 'payoff', family_key: 'FINANCING_COVENANTS', subtype_key: 'PAYOFF', section_reference: '5.18', structure_node_id: 'n-5-18',
+    headline: { label: 'Payoff letters', distinguishing_component_ids: ['payoff-4'], summary: 'Company uses reasonable best efforts to deliver Parent a payoff letter three Business Days pre-Closing' },
+    components: [
+      ['ACTOR', 'The Company'], ['EFFORTS_STANDARD', 'shall use reasonable best efforts'], ['OPERATION', 'to deliver to Parent'],
+      ['PERIOD', 'at least three (3) Business Days prior to the Closing Date'], ['OBJECT', 'a copy of a payoff letter'],
+    ].map(([kind, text], index) => ({ component_id: `payoff-${index}`, kind, label: 'words', text, origin: 'OWN', source_span_id: 's', start_byte: index * 10, end_byte: index * 10 + 5, gap_before: false, children: [], ...(kind === 'PERIOD' ? { value: { canonical: 3, unit: 'BUSINESS_DAY' } } : {}) })),
+    conclusions: { table_key: 'financing-table', row_label: 'Payoff letters', cells: [{ column_id: 'provision', code: 'REQUIRED', component_ids: ['payoff-2'] }, { column_id: 'asDrafted', text: 'to deliver to Parent', component_ids: ['payoff-2'] }] },
+  };
+  const view = buildTableView({ facts: [fact], tableShapes, legalSchema });
+  const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'financing-table');
+  const row = table.rows.find((candidate) => candidate.subject === 'Payoff letters');
+  const line = [row, ...(row.sub_rows || [])].find((candidate) => (candidate.cells || []).some((cell) => cell.column_id === 'period' && cell.kind !== 'dash'))
+    || row;
+  const period = line.cells.find((cell) => cell.column_id === 'period');
+  assert.ok(period && /3/.test(period.label) && /business day/i.test(period.label), JSON.stringify(period));
+  assert.equal(table.columns.some((column) => column.column_id === 'byWhen'), false, 'nothing is left for By when once Period has the number');
+});
+
+// Work package 19 (g) (manager finding (165): the row move "does not happen
+// on the stored rows", read from a preview deployed before the rule; Ben's
+// (166): one line, no sub-items). NCS generation 5's 32 general-covenant
+// facts of 5.17 as stored (tests/fixtures/product/ncs-generation-5-5-17-
+// general-covenants.json: ids shortened, components flattened), through
+// buildTableView with the contract as generated.
+test('NCS 5.17 as stored: 29 registration-rights covenants gather on the one Registration rights line under Consideration, three Nasdaq notices stay, no sub-items', () => {
+  const stored = require('./fixtures/product/ncs-generation-5-5-17-general-covenants.json');
+  assert.equal(stored.length, 32);
+  const view = buildTableView({ facts: stored, tableShapes, legalSchema });
+  const consideration = view.sections.find((section) => section.section_key === 'consideration-hero');
+  const table = consideration.tables[consideration.tables.length - 1];
+  assert.equal(table.table_key, 'consideration-registration-rights');
+  assert.deepEqual(table.rows.map((row) => [row.subject, row.backing_facts.length, row.sub_rows]), [['Registration rights', 29, undefined]]);
+  const covenants = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'general-covenants-table');
+  assert.deepEqual(covenants.rows.map((row) => [row.subject, row.backing_facts.map((entry) => entry.fact_id).sort()]), [
+    ['Litigation notification', ['52e8af75']],
+    ['General notification', ['31da8ce7', '369c5c72']],
+  ]);
+  assert.equal(view.sections.flatMap((section) => section.without_readout || []).length, 0);
+  // (f): the stockholders' obligations read in their words; Parent's
+  // obligor readings are stated in the summaries and kept under
+  // stated_in_summary (work package B4's rule).
+  const obligor = table.rows[0].cells.find((cell) => cell.column_id === 'obligor');
+  assert.deepEqual(obligor.values.map((value) => [value.code, value.label]).sort(), [
+    ['OTHER_PARTY', 'Each Specified Stockholder'], ['OTHER_PARTY', 'Parent and each Specified Stockholder'], ['OTHER_PARTY', 'the Specified Stockholders'],
+  ]);
+  assert.deepEqual(obligor.stated_in_summary, ['PARENT']);
+  // (g): the deadlines and timing triggers, never a bare event trigger.
+  const byWhen = table.rows[0].cells.find((cell) => cell.column_id === 'byWhen');
+  const labels = byWhen.values.map((value) => value.label);
+  assert.ok(labels.includes('Promptly following the Closing Date (and in any event no later than two Business Days thereafter)'), labels.join(' | '));
+  assert.ok(labels.includes('After the Registration Statement becomes effective'));
+  assert.equal(labels.some((label) => /upon the discovery|insofar as such losses|as such expenses are incurred/.test(label)), false, 'event triggers are not deadlines');
+});

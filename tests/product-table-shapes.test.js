@@ -593,7 +593,10 @@ test('Decision 34: no fact table carries a free-text column that is not the fact
     if (section.excluded_from_fact_tables) continue;
     for (const table of section.tables) {
       for (const column of table.columns) {
-        if (column.render === 'verbatim') assert.ok(['fact_text', 'resolved_reference'].includes(column.display), `${table.table_key}.${column.column_id} is a verbatim column without as-drafted display`);
+        // Work package 18 (g) (Ben, 2026-10-18: "Ok on ETA on covenants"): a
+        // By when column filled from the covenant's own TRIGGER and PERIOD
+        // components is the one verbatim column that is neither.
+        if (column.render === 'verbatim') assert.ok(['fact_text', 'resolved_reference'].includes(column.display) || (column.fill_from_components === true && column.column_id === 'byWhen'), `${table.table_key}.${column.column_id} is a verbatim column without as-drafted display`);
       }
     }
   }
@@ -935,7 +938,8 @@ test('work package 7: codes from words on the Board determination standard rows,
 // carries a number".
 test('the consideration election options table names its rows, columns and page rule', () => {
   const section = findSectionV3('consideration-hero');
-  assert.deepEqual(section.tables.map((table) => table.table_key), ['consideration-structure', 'consideration-components', 'consideration-election-options', 'consideration-hero-election-mechanics']);
+  // Work package 18 (d) (Ben, 2026-10-18: "reg rights I think goes with consideration (but at bottom)"): the registration-rights table is last.
+  assert.deepEqual(section.tables.map((table) => table.table_key), ['consideration-structure', 'consideration-components', 'consideration-election-options', 'consideration-hero-election-mechanics', 'consideration-registration-rights']);
   const options = findTableV3(section, 'consideration-election-options');
   assert.equal(options.rows_are, 'fixed list');
   assert.deepEqual(options.fixed_row_labels, ['Cash election', 'Stock election', 'Mixed election']);
@@ -1022,4 +1026,85 @@ test('the fiduciary-out table has the savings-clause row, placed by words_rows, 
   assert.throws(() => validateTableShapesV3(doc, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_WORDS_ROWS/);
   doc = broken(); tableOf(doc).words_rows = [{ row_label: 'Fiduciary actions are not a breach', when: 'x', code: 'MAYBE' }];
   assert.throws(() => validateTableShapesV3(doc, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_WORDS_ROWS_CODE_UNKNOWN/);
+});
+
+// Work package 18 (c) (plan finding (91); NCS generation 5, 5.14): the
+// publicity row's sub-items, by detail labels and words rules.
+test('the general covenants table names the publicity sub-items and the words that place a fact on each; a rule naming no label fails validation', () => {
+  const table = findTableV3(findSectionV3('general-covenants'), 'general-covenants-table');
+  assert.deepEqual(table.detail_labels_by_row['Public announcements'], [
+    'Announcement release', 'Consent to releases', 'Consultation and review', 'Consistent with prior statements',
+    'Carve-out: ordinary course', 'Carve-out: employees', 'Carve-out: disputes', 'Carve-out: investor and media communications', 'Carve-out: sponsor disclosure', 'Law or exchange exception',
+  ]);
+  const rules = table.detail_from_words_by_row['Public announcements'];
+  assert.equal(rules.length, 10);
+  for (const rule of rules) {
+    assert.ok(table.detail_labels_by_row['Public announcements'].includes(rule.detail), rule.detail);
+    assert.doesNotThrow(() => new RegExp(rule.words, 'i'));
+  }
+  assert.deepEqual(rules.slice(0, 5).map((rule) => rule.detail), ['Carve-out: sponsor disclosure', 'Carve-out: employees', 'Carve-out: disputes', 'Carve-out: investor and media communications', 'Carve-out: ordinary course'], 'the carve-outs are read before the duties they qualify');
+  assert.equal(rules[rules.length - 1].detail, 'Law or exchange exception', 'the exception every duty repeats is read last');
+  assert.match(table.guidance, /Public announcements: every publicity fact is on this row/);
+  const broken = structuredClone(tableShapesV3);
+  const brokenTable = findTableV3(broken.sections.find((s) => s.section_key === 'general-covenants'), 'general-covenants-table');
+  brokenTable.detail_from_words_by_row['Public announcements'].push({ detail: 'Not a label', words: 'press' });
+  assert.throws(() => validateTableShapesV3(broken, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_DETAIL_FROM_WORDS_DETAIL_UNKNOWN/);
+  brokenTable.detail_from_words_by_row['Public announcements'].pop();
+  brokenTable.detail_from_words_by_row['Access to information'] = [{ detail: 'Data room', words: 'data room' }];
+  assert.throws(() => validateTableShapesV3(broken, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_DETAIL_FROM_WORDS_ROW_WITHOUT_LABELS/);
+});
+
+// Work package 18 (d) as revised (Ben, 2026-10-18, plan finding (163): "reg
+// rights I think goes with consideration (but at bottom)"; NCS generation 5,
+// 5.17): the Registration rights table at the bottom of the Consideration
+// section, the covenants table's words rule that sends facts there over the
+// readout, its sub-items, the OTHER_PARTY obligor (f) and the By when
+// column (g).
+test('the registration-rights table sits last under Consideration, takes general covenants by words over the readout as one line, with an other-party obligor and a By when column', () => {
+  const consideration = findSectionV3('consideration-hero');
+  const table = findTableV3(consideration, 'consideration-registration-rights');
+  assert.equal(consideration.tables[consideration.tables.length - 1].table_key, 'consideration-registration-rights');
+  assert.deepEqual(table.accepts_families, ['GENERAL_COVENANTS']);
+  assert.deepEqual(table.fixed_row_labels, ['Registration rights']);
+  assert.deepEqual(table.columns.map((column) => column.column_id), ['obligor', 'standard', 'byWhen', 'asDrafted']);
+  const covenants = findTableV3(findSectionV3('general-covenants'), 'general-covenants-table');
+  assert.equal(covenants.fixed_row_labels.includes('Registration rights'), false, 'the row left the general covenants table');
+  const rule = covenants.words_rows.find((candidate) => candidate.row_label === 'Registration rights');
+  assert.equal(rule.over_readout, true);
+  assert.equal(rule.table_key, 'consideration-registration-rights');
+  const when = new RegExp(rule.when, 'i');
+  for (const words of ['to keep such Registration Statement continuously effective', 'all Registrable Securities covered', 'a prospectus supplement', 'Rule 144(c)(1)', 'pursuant to Rule 415']) assert.ok(when.test(words), words);
+  assert.equal(when.test('any notice of deficiency or non-compliance received from Nasdaq'), false);
+  // Ben, 2026-10-18 (plan finding (166)): "are these from a reg rights agreement? I wouldn't go into anywhere near this depth in this product": one line, no sub-items.
+  assert.equal(table.no_sub_items, true);
+  assert.equal(table.detail_labels_by_row, undefined);
+  assert.equal(table.detail_from_words_by_row, undefined);
+  assert.match(table.reason, /I wouldn't go into anywhere near this depth in this product/);
+  const broken3 = structuredClone(tableShapesV3);
+  findTableV3(broken3.sections.find((s) => s.section_key === 'consideration-hero'), 'consideration-registration-rights').no_sub_items = 'yes';
+  assert.throws(() => validateTableShapesV3(broken3, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_NO_SUB_ITEMS/);
+  // (f) Ben: "on A - if the shareholders have to do something, okay for them to be an obligor".
+  for (const owner of [covenants, table]) {
+    const obligor = owner.columns.find((column) => column.column_id === 'obligor');
+    assert.ok(obligor.vocabulary.some((entry) => entry.code === 'OTHER_PARTY'));
+    assert.equal(obligor.other_party_code, 'OTHER_PARTY');
+  }
+  // (g) Ben: "Ok on ETA on covenants".
+  for (const owner of [covenants, table, findTableV3(findSectionV3('financing'), 'financing-table')]) {
+    const byWhen = owner.columns.find((column) => column.column_id === 'byWhen');
+    assert.deepEqual([byWhen.render, byWhen.fill_from, byWhen.fill_from_components], ['verbatim', ['TRIGGER', 'PERIOD'], true]);
+    const drafted = owner.columns.find((column) => column.column_id === 'asDrafted');
+    assert.ok(drafted.fill_from.includes('TRIGGER') && drafted.fill_from.includes('PERIOD'), owner.table_key);
+    assert.ok(owner.columns.indexOf(byWhen) < owner.columns.indexOf(drafted));
+  }
+  const broken = structuredClone(tableShapesV3);
+  const brokenCovenants = findTableV3(broken.sections.find((s) => s.section_key === 'general-covenants'), 'general-covenants-table');
+  brokenCovenants.words_rows.find((candidate) => candidate.row_label === 'Registration rights').table_key = 'no-such-table';
+  assert.throws(() => validateTableShapesV3(broken, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_WORDS_ROWS_TABLE_UNKNOWN/);
+  brokenCovenants.words_rows.find((candidate) => candidate.row_label === 'Registration rights').table_key = 'consideration-registration-rights';
+  brokenCovenants.words_rows[0].over_readout = 'yes';
+  assert.throws(() => validateTableShapesV3(broken, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_WORDS_ROWS/);
+  const broken2 = structuredClone(tableShapesV3);
+  findTableV3(broken2.sections.find((s) => s.section_key === 'consideration-hero'), 'consideration-registration-rights').accepts_families = ['NOT_A_FAMILY'];
+  assert.throws(() => validateTableShapesV3(broken2, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_ACCEPTS_FAMILIES/);
 });
