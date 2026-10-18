@@ -6156,6 +6156,46 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       shapes. npm run test:active: 766 of 767, the one failure the
       known Codex-client final-message test. No run, worker or sandbox
       touched; no live model call made.
+      (127) 2026-10-18 21:30 to 22:15 UTC (implementer C), work package
+      C3 on finding (166) (Ben: "btw let's do major biopharma deals as
+      the basi sfor the build out of next searches, starting > $1bn"):
+      docs/codex-program/notes/BIOPHARMA-DEALS-OVER-1BN-2026-10-18.md,
+      documentation only, no intake submitted. Thirty-four public-target
+      biopharma and pharma acquisitions announced 2025-01-01 to
+      2026-10-18 at or above about $1bn, each with acquirer, target,
+      announcement date, headline value and its source (four trackers
+      and the parties' releases), the structure read from the
+      agreement's own text (the Offer defined for a tender, Contingent
+      Value Right for a CVR, the Scheme for a UK or Irish scheme) and
+      the EDGAR Exhibit 2.1 URL found by full-text search and fetched
+      in full (every one answered 200; the two scripts are in the
+      session's scratchpad). Three are in the corpus (Metsera, Apogee,
+      Arcellx), 31 are not. By form: 17 two-step tender offers, 15
+      one-step cash mergers, one stock merger (Indivior / Supernus,
+      1.5401 shares per share, the only stock deal), 11 with a CVR,
+      four schemes or Dutch offers filed as Transaction Agreements
+      (Verona, Centessa, Avadel, Merus). Below the line: Regulus,
+      Esperion, Theravance and XOMA (under $1bn upfront); the tools,
+      diagnostics and device deals (Exact Sciences $21bn, Bio-Techne
+      EV $11.3bn, Integer, Personalis, BioLife); the private targets
+      the trackers carry. The intake cannot take Recordati (Italian
+      offer, $12.4bn) or PolyPeptide (Swiss), neither an SEC
+      registrant; it takes the four scheme and Dutch-offer agreements
+      by URL but their mechanics are not the schema's (Court sanction,
+      a Scheme Document, a post-offer reorganisation), so they go after
+      the Delaware deals. Metsera's Amendment No. 1 of 2025-11-07 is
+      listed beside the original (generation 8 is the original). The
+      three to run first, for drafting variety against the corpus's
+      two cash mergers and one CVR tender offer: GSK / Nuvalent (a
+      $10.6bn two-step tender offer without a CVR), Indivior / Supernus
+      (the stock merger of equals, an exchange ratio the consideration
+      tables have never seen) and J&J / Intra-Cellular ($14.6bn, a
+      plain one-step cash merger, the control); fourth, Curium /
+      Lantheus (a one-step merger with a $12 CVR and a private-equity
+      acquirer) or Novo Nordisk / Akero. Values are the trackers'
+      headline figures (equity, or EV where marked), not read from the
+      agreements; the agreements' consideration is what the intake
+      will extract. No run, worker or sandbox touched.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
