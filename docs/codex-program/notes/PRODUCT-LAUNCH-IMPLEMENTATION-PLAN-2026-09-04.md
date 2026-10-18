@@ -6368,11 +6368,12 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       the EDGAR Exhibit 2.1 URL found by full-text search and fetched
       in full (every one answered 200; the two scripts are in the
       session's scratchpad). Three are in the corpus (Metsera, Apogee,
-      Arcellx), 31 are not. By form: 17 two-step tender offers, 15
-      one-step cash mergers, one stock merger (Indivior / Supernus,
-      1.5401 shares per share, the only stock deal), 11 with a CVR,
-      four schemes or Dutch offers filed as Transaction Agreements
-      (Verona, Centessa, Avadel, Merus). Below the line: Regulus,
+      Arcellx), 31 are not. By form: 17 two-step tender offers (the
+      Dutch offer for Merus among them), 13 one-step cash mergers,
+      three schemes (Verona, Centessa, Avadel), one stock merger
+      (Indivior / Supernus, 1.5401 shares per share, the only stock
+      deal); 11 carry a CVR; the three schemes and the Dutch offer are
+      filed as Transaction Agreements. Below the line: Regulus,
       Esperion, Theravance and XOMA (under $1bn upfront); the tools,
       diagnostics and device deals (Exact Sciences $21bn, Bio-Techne
       EV $11.3bn, Integer, Personalis, BioLife); the private targets
