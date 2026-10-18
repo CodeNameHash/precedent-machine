@@ -1396,36 +1396,26 @@ function applyFinancing(doc) {
     code('Best efforts', why, { code: 'BEST_EFFORTS' }),
     code('Commercially reasonable efforts', why, { code: 'COMMERCIALLY_REASONABLE_EFFORTS' }),
   ];
-  const covenants = provisionTable({
-    tableKey: 'financing-covenants-table',
-    groupHeader: 'FINANCING COVENANTS',
+  const required = [code('Required', why, { code: 'REQUIRED' }), code('Not required', why, { code: 'NOT_REQUIRED' })];
+  // One table for the two families (the manager's work package 5 terms):
+  // the financing covenants, then the guaranty and the financing sources'
+  // protections, each row named from the fact's subtype. The period column
+  // is the one number a subtype carries (the payoff letter lead time).
+  const table = provisionTable({
+    tableKey: 'financing-table',
+    groupHeader: 'FINANCING',
     rows: [
       ['Obtain financing', [...efforts, code('No financing covenant', why, { code: 'NO_FINANCING_COVENANT' })]],
-      ['Alternative financing', [code('Required', why, { code: 'REQUIRED' }), code('Not required', why, { code: 'NOT_REQUIRED' })]],
+      ['Alternative financing', required],
       ['Target cooperation', [...efforts, code('Not required', why, { code: 'NOT_REQUIRED' })]],
-      ['Payoff letters', [code('Required', why, { code: 'REQUIRED' }), code('Not required', why, { code: 'NOT_REQUIRED' })]],
+      ['Payoff letters', required],
       ['No financing condition', yesNo(why)],
-      ['Note offer or consent', [code('Required', why, { code: 'REQUIRED' }), code('Not required', why, { code: 'NOT_REQUIRED' })]],
+      ['Note offer or consent', required],
       ['Cost and risk allocation', [
         code('Parent bears financing costs', why, { code: 'PARENT_BEARS_COSTS' }),
         code('Company indemnified for cooperation', why, { code: 'COMPANY_INDEMNIFIED' }),
         code('Shared', why, { code: 'SHARED' }),
       ]],
-    ],
-    numberColumns: [periodColumn('Period', `${why} The payoff letter lead time in business days, or a financing deadline.`)],
-    reason: why,
-    subtypeRows: {
-      OBTAIN_FINANCING: 'Obtain financing', ALTERNATIVE_FINANCING: 'Alternative financing', TARGET_COOPERATION: 'Target cooperation', PAYOFF: 'Payoff letters',
-      NO_FINANCING_CONDITION: 'No financing condition', NOTE_OFFER_OR_CONSENT: 'Note offer or consent', COST_AND_RISK_ALLOCATION: 'Cost and risk allocation',
-    },
-    guidance: 'The financing covenants, the row from the fact\'s subtype (subtype_rows): the efforts to obtain the financing and any alternative financing, the Company\'s cooperation, payoff letters (the lead time in the period column), the acknowledgment that financing is not a condition, note offers or consents, and who bears the costs and risks; the code from that row\'s list, the clause as drafted.',
-  });
-  covenants.fact_type_rows = { FINANCING_OBTAIN_EFFORTS_STANDARD: 'Obtain financing', NO_FINANCING_CONDITION_ACKNOWLEDGMENT: 'No financing condition', PAYOFF_DELIVERY_LEAD_TIME_DAYS: 'Payoff letters' };
-  covenants.default_rows_from_subtype = true;
-  const guaranty = provisionTable({
-    tableKey: 'financing-guaranty-table',
-    groupHeader: 'GUARANTY AND FINANCING SOURCES',
-    rows: [
       ['Performance guaranty', yesNo(why)],
       ['Limited guaranty delivered', yesNo(why)],
       ['Guaranty not in default', yesNo(why)],
@@ -1435,16 +1425,22 @@ function applyFinancing(doc) {
         code('Financing sources as third-party beneficiaries', why, { code: 'FINANCING_SOURCES_THIRD_PARTY_BENEFICIARIES' }),
       ]],
     ],
+    numberColumns: [periodColumn('Period', `${why} The payoff letter lead time in business days, or a financing deadline.`)],
     reason: why,
     subtypeRows: {
+      OBTAIN_FINANCING: 'Obtain financing', ALTERNATIVE_FINANCING: 'Alternative financing', TARGET_COOPERATION: 'Target cooperation', PAYOFF: 'Payoff letters',
+      NO_FINANCING_CONDITION: 'No financing condition', NOTE_OFFER_OR_CONSENT: 'Note offer or consent', COST_AND_RISK_ALLOCATION: 'Cost and risk allocation',
       PERFORMANCE_GUARANTY: 'Performance guaranty', LIMITED_GUARANTY_DELIVERY_OR_STATUS_REP: 'Limited guaranty delivered',
       GUARANTY_NO_DEFAULT_REP: 'Guaranty not in default', FINANCING_SOURCE_PROTECTION: 'Financing source protection',
     },
-    guidance: 'The guaranty and the protections of the financing sources, the row from the fact\'s subtype (subtype_rows): a parent performance guaranty, the limited guaranty\'s delivery and status, the no-default representation, and the provisions protecting the financing sources (no recourse, their forum and jury waiver, their third-party beneficiary rights), one cell per protection; the clause as drafted.',
+    guidance: 'The financing covenants and the guaranty, the row from the fact\'s subtype (subtype_rows): the efforts to obtain the financing and any alternative financing, the Company\'s cooperation, payoff letters (the lead time in the period column), the acknowledgment that financing is not a condition, note offers or consents, who bears the costs and risks; then a parent performance guaranty, the limited guaranty\'s delivery and status, the no-default representation, and the provisions protecting the financing sources (no recourse, their forum and jury waiver, their third-party beneficiary rights), one cell per protection; the code from that row\'s list, the clause as drafted. A deal without financing has no facts here and no section.',
   });
-  guaranty.fact_type_rows = { LIMITED_GUARANTY_DELIVERED: 'Limited guaranty delivered' };
-  guaranty.default_rows_from_subtype = true;
-  subtypeSection(doc, { sectionKey: 'financing', title: 'Financing', familyKeys: ['FINANCING_COVENANTS', 'GUARANTY_FINANCING_PARTY'], tables: [covenants, guaranty] });
+  table.fact_type_rows = {
+    FINANCING_OBTAIN_EFFORTS_STANDARD: 'Obtain financing', NO_FINANCING_CONDITION_ACKNOWLEDGMENT: 'No financing condition', PAYOFF_DELIVERY_LEAD_TIME_DAYS: 'Payoff letters',
+    LIMITED_GUARANTY_DELIVERED: 'Limited guaranty delivered',
+  };
+  table.default_rows_from_subtype = true;
+  subtypeSection(doc, { sectionKey: 'financing', title: 'Financing', familyKeys: ['FINANCING_COVENANTS', 'GUARANTY_FINANCING_PARTY'], tables: [table] });
 }
 
 function applyDecision34(doc) {

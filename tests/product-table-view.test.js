@@ -1339,11 +1339,16 @@ test('readout-less tax and financing facts take their subtype rows in the Tax Ma
   const taxTable = section('tax-matters').tables.find((table) => table.table_key === 'tax-matters-table');
   assert.ok(rowOf(taxTable, 'Transfer tax allocation').backing_facts.some((entry) => entry.fact_id === 'transfer'), 'the fact type names the row');
   assert.ok(rowOf(taxTable, 'Withholding').backing_facts.some((entry) => entry.fact_id === 'withhold'), 'a fact type the shape does not name falls back to the subtype row');
-  const financing = section('financing');
-  assert.ok(rowOf(financing.tables.find((table) => table.table_key === 'financing-covenants-table'), 'Payoff letters').backing_facts.some((entry) => entry.fact_id === 'payoff'));
-  assert.ok(rowOf(financing.tables.find((table) => table.table_key === 'financing-guaranty-table'), 'Limited guaranty delivered').backing_facts.some((entry) => entry.fact_id === 'guaranty'));
+  const financingTable = section('financing').tables.find((table) => table.table_key === 'financing-table');
+  assert.ok(rowOf(financingTable, 'Payoff letters').backing_facts.some((entry) => entry.fact_id === 'payoff'));
+  assert.ok(rowOf(financingTable, 'Limited guaranty delivered').backing_facts.some((entry) => entry.fact_id === 'guaranty'), 'both families share the one table');
   for (const key of ['tax-matters', 'financing']) assert.deepEqual(section(key).facts_without_readout.map((entry) => entry.fact_id), [], `${key} lists nothing as without a readout`);
   // The as-drafted cell shows the fact's own words.
   const transferRow = rowOf(taxTable, 'Transfer tax allocation');
   assert.ok(transferRow.cells.some((cell) => cell.column_id === 'asDrafted' && /transfer/i.test(cell.text || cell.label || '')), JSON.stringify(transferRow.cells));
+  // A deal without financing (or tax facts) has no such section, as a
+  // section whose families returned nothing never renders.
+  const without = buildTableView({ facts: [transfer], tableShapes, legalSchema });
+  assert.equal(without.sections.some((candidate) => candidate.section_key === 'financing'), false);
+  assert.ok(without.sections.some((candidate) => candidate.section_key === 'tax-matters'));
 });

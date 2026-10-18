@@ -815,14 +815,14 @@ test('Tax Matters and Financing sections carry one row per subtype, defaults for
   const financing = findSectionV3('financing');
   assert.deepEqual(financing.v2_family_keys.map((entry) => entry.key), ['FINANCING_COVENANTS', 'GUARANTY_FINANCING_PARTY']);
   assert.equal(financing.rail.group, 'Financing');
-  const covenants = findTableV3(financing, 'financing-covenants-table');
-  assert.deepEqual(Object.keys(covenants.subtype_rows).sort(), legalSchemaV2.families.find((family) => family.family_key === 'FINANCING_COVENANTS').subtypes.map((subtype) => subtype.subtype_key).sort());
-  assert.deepEqual(covenants.fact_type_rows, { FINANCING_OBTAIN_EFFORTS_STANDARD: 'Obtain financing', NO_FINANCING_CONDITION_ACKNOWLEDGMENT: 'No financing condition', PAYOFF_DELIVERY_LEAD_TIME_DAYS: 'Payoff letters' });
-  assert.ok(covenants.columns.some((column) => column.column_id === 'period'), 'payoff lead time and cooperation periods have a column');
-  const guaranty = findTableV3(financing, 'financing-guaranty-table');
-  assert.deepEqual(Object.keys(guaranty.subtype_rows).sort(), legalSchemaV2.families.find((family) => family.family_key === 'GUARANTY_FINANCING_PARTY').subtypes.map((subtype) => subtype.subtype_key).sort());
-  assert.deepEqual(guaranty.fact_type_rows, { LIMITED_GUARANTY_DELIVERED: 'Limited guaranty delivered' });
-  for (const table of [taxTable, covenants, guaranty]) assert.equal(table.default_rows_from_subtype, true, table.table_key);
+  const financingTable = findTableV3(financing, 'financing-table');
+  assert.equal(financing.tables.length, 1, 'one table for the two families');
+  const financingSubtypes = legalSchemaV2.families.filter((family) => ['FINANCING_COVENANTS', 'GUARANTY_FINANCING_PARTY'].includes(family.family_key)).flatMap((family) => family.subtypes.map((subtype) => subtype.subtype_key));
+  assert.deepEqual(Object.keys(financingTable.subtype_rows).sort(), financingSubtypes.sort());
+  assert.deepEqual(financingTable.fact_type_rows, { FINANCING_OBTAIN_EFFORTS_STANDARD: 'Obtain financing', NO_FINANCING_CONDITION_ACKNOWLEDGMENT: 'No financing condition', PAYOFF_DELIVERY_LEAD_TIME_DAYS: 'Payoff letters', LIMITED_GUARANTY_DELIVERED: 'Limited guaranty delivered' });
+  assert.deepEqual(financingTable.columns.filter((column) => column.render === 'value').map((column) => column.column_id), ['period'], 'the payoff lead time is the one number');
+  assert.deepEqual(taxTable.columns.filter((column) => column.render === 'value'), [], 'no tax subtype carries a number');
+  for (const table of [taxTable, financingTable]) assert.equal(table.default_rows_from_subtype, true, table.table_key);
 
   // Every V2 family now has a page.
   const placed = new Set(tableShapesV3.sections.flatMap((section) => (section.v2_family_keys || []).map((entry) => entry.key)));
