@@ -6395,6 +6395,62 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       headline figures (equity, or EV where marked), not read from the
       agreements; the agreements' consideration is what the intake
       will extract. No run, worker or sandbox touched.
+      (128) 2026-10-18 21:55 to 22:45 UTC (implementer C), work package
+      C4, the tender-offer and stock-deal readiness of the schema:
+      docs/codex-program/notes/TENDER-OFFER-AND-STOCK-DEAL-SCHEMA-GAPS-2026-10-18.md.
+      GSK / Nuvalent (a two-step tender offer) and Indivior / Supernus
+      (the stock merger of equals) read in full from their exhibits, no
+      intake, 45 provisions set against the V2 schema, LEGAL-RULES and
+      the table shapes, and against what the extractor did with the
+      corpus's one tender offer (Arcellx: its V2 run filed Article I's
+      Offer under nine families, CONSIDERATION_PACKAGE, DOCUMENT_FILING,
+      OBTAIN_FINANCING and TRANSACTION_STEP among them, and Annex I
+      under BRINGDOWN and GENERAL, because no subtype names the Offer:
+      "offer" is in the schema twice, "tender" never). The count: of 24
+      tender-offer provisions, 11 had no family, subtype or row (the
+      Offer's commencement, expiration, extensions, amendment
+      restrictions and termination; the Minimum Tender Condition and
+      its waiver rule; the Merger's condition that the Offer was
+      consummated; the Section 251(h) merger without a vote; both
+      parties' Offer-failure termination rights); of 21 stock-deal
+      provisions, 5 had no row (fractional shares, the combined-company
+      governance, Parent's reciprocal no-shop, Parent's recommendation-
+      change termination, the second vote's failure). Added, as rows
+      and codes on existing subtypes (decision 34, work package C4,
+      `applyTenderOfferAndStockDealRows`, the contract regenerated,
+      pinned with the agreements' words in
+      tests/product-table-shapes.test.js): conditions-table "Minimum
+      tender condition", "Offer consummated (Acceptance Time)", "Parent
+      stockholder approval" and the vote standard MAJORITY_OF_VOTES_CAST
+      (Supernus 4.27(b): "a majority in voting power of the outstanding
+      Indivior Shares present in person or represented by proxy ... and
+      entitled to vote"); the mutual termination row "Parent stockholder
+      vote not obtained"; Parent's "Offer expired on a failed Offer
+      Condition" (placed before the written-consent rows work package 19
+      (d) pins as last); the Company's "Offer not commenced or not
+      consummated" and "Parent change of recommendation"; the window
+      code BEFORE_ACCEPTANCE_TIME on both termination windows (Nuvalent
+      8.2 to 8.4: "at any time prior to the Acceptance Time"); the
+      votes rows "Merger without a vote (Section 251(h))" and "Parent
+      stockholders' meeting"; the proxy rows "Schedule TO (Offer
+      Documents)", "Schedule 14D-9" and "Registration Statement (Form
+      S-4)"; the consideration row "Cash in lieu of fractional shares";
+      guidance on each table saying which words land where. Every row
+      is reachable now through the readout's row_label. What waits on
+      Ben, proposed in the note and not built: an Offer step (five
+      subtypes: commencement, expiration, extension, amendment
+      restriction, termination, with the Acceptance Time as the first
+      step's closing), a MINIMUM_CONDITION subtype with a value, an
+      OFFER_FAILURE termination subtype, three LEGAL-RULES lines (the
+      Offer as its own step; an Annex I condition as the first step's
+      closing condition; no approval condition or meeting under Section
+      251(h)), the ratio's form and the adjustment clause as grid
+      columns, a combined-company governance table, a Parent no-shop
+      section or obligor axis with Parent's Superior Proposal row, and
+      a Dividends table for the Special Dividend. Not changed: the
+      schema, LEGAL-RULES, any subtype or fact type. npm run
+      test:active: 774 of 775, the one failure the known Codex-client
+      final-message test. No run, worker or sandbox touched.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).

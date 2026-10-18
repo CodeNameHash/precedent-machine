@@ -1135,3 +1135,54 @@ test('the conditions, termination and boilerplate tables name rows for the NCS g
   assert.ok(misc.fixed_row_labels.includes('Cumulative remedies'));
   assert.deepEqual(misc.fact_type_rows, { 'MISC_BOILERPLATE_MECHANIC_PRESENT:CONSTRUCTION': 'Construction', 'SPECIFIC_PERFORMANCE_REMEDY_PRESENT:CUMULATIVE_RIGHTS': 'Cumulative remedies' });
 });
+
+// Work package C4 (plan finding (128)): the rows and codes a two-step tender
+// offer and a stock merger of equals need, pinned with the agreements' own
+// words (GSK / Nuvalent, 2026-06-09; Indivior / Supernus, 2026-08-01).
+test('Work package C4: the conditions, termination, votes, proxy and consideration tables carry the tender-offer and stock-deal rows', () => {
+  const { C4_ROWS, C4_VOTES_CAST_CODE, C4_WINDOW_CODE } = require('../scripts/product/table-shapes-decision-34');
+  const conditions = findTableV3(findSectionV3('conditions'), 'conditions-table');
+  // Nuvalent Annex I 1(a): "represents at least a majority of the Class A Shares outstanding as of the consummation of the Offer (such condition ... the “Minimum Tender Condition”)".
+  assert.ok(conditions.fixed_row_labels.includes('Minimum tender condition'));
+  // Nuvalent 7.1: the Merger waits on the Offer; Supernus 7.1(a): "the Indivior Stockholder Approval shall have been attained".
+  assert.ok(conditions.fixed_row_labels.includes('Offer consummated (Acceptance Time)'));
+  assert.ok(conditions.fixed_row_labels.includes('Parent stockholder approval'));
+  // Supernus 4.27(b): "a majority in voting power of the outstanding Indivior Shares present in person or represented by proxy ... and entitled to vote".
+  assert.ok(conditions.columns.find((c) => c.column_id === 'voteStandard').vocabulary.some((v) => v.code === C4_VOTES_CAST_CODE));
+  assert.equal(C4_VOTES_CAST_CODE, 'MAJORITY_OF_VOTES_CAST');
+
+  const termination = findSectionV3('termination-rights');
+  const mutual = findTableV3(termination, 'termination-rights-mutual');
+  // Supernus 8.1(d)(iv): "the Indivior Stockholder Approval ... shall not have been obtained".
+  assert.ok(mutual.fixed_row_labels.includes('Parent stockholder vote not obtained'));
+  assert.ok(mutual.columns.find((c) => c.column_id === 'voteThreshold').vocabulary.some((v) => v.code === C4_VOTES_CAST_CODE));
+  const buyer = findTableV3(termination, 'termination-rights-buyer-may-terminate');
+  // Nuvalent 8.4(c): "due to the failure of an Offer Condition to be satisfied, the Offer has expired or has been terminated without Purchaser having accepted for purchase the Shares".
+  assert.ok(buyer.fixed_row_labels.includes('Offer expired on a failed Offer Condition'));
+  // Nuvalent 8.4: "at any time prior to the Acceptance Time".
+  assert.ok(buyer.columns.find((c) => c.column_id === 'window').vocabulary.some((v) => v.code === C4_WINDOW_CODE));
+  assert.equal(C4_WINDOW_CODE, 'BEFORE_ACCEPTANCE_TIME');
+  const company = findTableV3(termination, 'termination-rights-company-may-terminate');
+  // Nuvalent 8.3(a)(i) to (iii): "Purchaser fails to timely commence the Offer", "the Offer has expired or has been terminated without Purchaser having accepted for purchase the Shares".
+  assert.ok(company.fixed_row_labels.includes('Offer not commenced or not consummated'));
+  // Supernus 8.1(c)(ii): "the Indivior Board or any committee thereof (A) shall make an Indivior Adverse Recommendation Change".
+  assert.ok(company.fixed_row_labels.includes('Parent change of recommendation'));
+  assert.ok(company.columns.find((c) => c.column_id === 'window').vocabulary.some((v) => v.code === C4_WINDOW_CODE));
+
+  const votesSection = findSectionV3('votes-approvals-meeting');
+  const votes = findTableV3(votesSection, 'votes-approvals-meeting-table');
+  // Nuvalent 2.6: "The Merger will be governed by Section 251(h) of the DGCL ... without a vote of the holders of any Shares".
+  assert.ok(votes.fixed_row_labels.includes('Merger without a vote (Section 251(h))'));
+  // Supernus 6.3(b): "convene and hold a meeting of the Indivior Stockholders ... for the purpose of obtaining the Indivior Stockholder Approval".
+  assert.ok(votes.fixed_row_labels.includes("Parent stockholders' meeting"));
+  assert.ok(votes.columns.find((c) => c.column_id === 'voteStandard').vocabulary.some((v) => v.code === C4_VOTES_CAST_CODE));
+  const proxy = findTableV3(votesSection, 'votes-proxy-sec');
+  // Nuvalent 1.1(c): "a Tender Offer Statement on Schedule TO"; 1.2: "a Solicitation/Recommendation Statement on Schedule 14D-9"; Supernus 6.2(b): "a registration statement on Form S-4, in which the Joint Proxy Statement shall be included".
+  for (const label of ['Schedule TO (Offer Documents)', 'Schedule 14D-9', 'Registration Statement (Form S-4)']) assert.ok(proxy.fixed_row_labels.includes(label), label);
+
+  const components = findTableV3(findSectionV3('consideration-hero'), 'consideration-components');
+  // Supernus 2.8(b): "in lieu of such fraction of a share ... be paid in cash the dollar amount ... determined by multiplying such fraction by the Average Indivior Stock Price".
+  assert.ok(components.fixed_row_labels.includes('Cash in lieu of fractional shares'));
+  assert.equal(Object.keys(C4_ROWS).length, 13);
+  for (const label of Object.values(C4_ROWS)) assert.equal(typeof label, 'string');
+});
