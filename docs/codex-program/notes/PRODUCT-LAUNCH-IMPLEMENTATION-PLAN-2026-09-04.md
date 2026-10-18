@@ -4499,6 +4499,34 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       filled row), else the fixed forms alone; the value-term link
       through the definitions, on the mixed row's Value terms and value
       per share, with the derivation cited.
+      (87) 2026-10-18 18:35 UTC: 5.1 failed its three attempts at the
+      64,000 cap (17:37, 17:55, 18:11) and the run FAILED at 65 of 104
+      ($90.84). Work package 15 (finding (84)) accepted and merged
+      (3c92b1c8; its three suites 37 of 37 here; its suite 698 of 699
+      with the known failure): the API cap at the documented 128,000
+      and a smaller split on each attempt after a cap failure; the
+      sandbox worker updated to it. The retry (ncs-gen5-retry-5) reset
+      5.1 but the wake answered 500 PRODUCT_RUN_MODEL_CONFIG_MISMATCH:
+      the run's stored model_config carries the 64,000 cap it was
+      created with and the deployed config now says 128,000, and the
+      run route compared the whole config. Fixed in code for every run:
+      the output cap is an operational limit, not the model's identity
+      (modelConfigIdentity in product-model-config.js strips it before
+      the comparison; the stored config keeps the cap the run began
+      with as history; the deployed cap is used). The old worker
+      process (old code, the 64,000 cap) was stopped so that it would
+      not spend another attempt on 5.1; the section it was on is
+      reclaimed at its lease's expiry. Then the deploy, the worker
+      update and a plain wake.
+      18:50 UTC: the wake started a worker that refused every section at
+      once (PRODUCT_ANTHROPIC_API_MODEL_CONFIG_UNSUPPORTED, zero tokens):
+      the worker builds the model from the run's stored config and the
+      call-model resolver compared the whole config too. Same rule
+      applied there: the resolver compares identities and the request
+      carries the deployed cap (128,000) whatever cap the stored config
+      names. 5.1 and 846731e1 (the section the stopped worker had
+      held) FAILED on it; retried (ncs-gen5-retry-6) after the worker
+      update.
 
       (84) 2026-10-18 18:05 to 18:20 UTC (implementer), work package 15
       on finding (83)'s terms ("the documented maximum output cap on the

@@ -567,6 +567,10 @@ test('server-side provider selection pins Preview Codex and leaves production on
   assert.throws(() => configuredProductModelConfig({ PRODUCT_MODEL_PROVIDER: 'CLIENT_CHOICE' }), /UNSUPPORTED/);
   assert.doesNotThrow(() => assertRunModelConfig({ model_config: { ...CODEX_MODEL_CONFIG } }, CODEX_MODEL_CONFIG));
   assert.throws(() => assertRunModelConfig({ model_config: ANTHROPIC_MODEL_CONFIG }, CODEX_MODEL_CONFIG), /MISMATCH/);
+  // The output cap is not the model's identity: a run created under a
+  // smaller cap advances under the deployed one (NCS generation 5, 2026-10-18).
+  assert.doesNotThrow(() => assertRunModelConfig({ model_config: { ...CODEX_MODEL_CONFIG, max_output_tokens: 64000 } }, { ...CODEX_MODEL_CONFIG, max_output_tokens: 128000 }));
+  assert.throws(() => assertRunModelConfig({ model_config: { ...CODEX_MODEL_CONFIG, thinking: 'other' } }, CODEX_MODEL_CONFIG), /MISMATCH/);
   assert.doesNotThrow(() => assertConfiguredRunModelConfig({
     run_id: '46c45080-6935-49e5-96ae-b6cb0609a924',
     source_document_id: '238dc3fed996667b9124a853745708a003917bcb28c889bad703f6124d13e721',
