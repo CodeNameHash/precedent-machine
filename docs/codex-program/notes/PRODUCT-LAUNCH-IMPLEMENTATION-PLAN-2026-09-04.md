@@ -4585,6 +4585,24 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       (its family's table, a row by its words or "without a readout")
       and a resolved term adds a Defined Terms entry beside it, never
       instead of it.
+      (161) 2026-10-18 19:58 UTC: implementer A's work package 17 with
+      its item 4 (findings (90) to (92)) and implementer D's parallel
+      hosted workers (finding (140)) accepted and merged (bd14cef6; ten
+      suites 293 of 293 here). D's migration
+      20261018200000_product_run_sandboxes applied to the preview
+      branch before the deploy; its backfill placed NCS generation 5
+      (run 51577c57) on pm-codex-preview-worker, so the running
+      worker's wakes and keepalive keep their sandbox. The second
+      sandbox is created after NCS finishes (create-sandbox-worker.js
+      --name pm-codex-preview-worker-2; D's evidence: no per-sandbox
+      login, the subscription token travels with every wake). A's
+      proposal in (91) becomes work package 18: (a) an inherited quote
+      on a known span that does not hold it relocates like an unknown
+      one (4.7's three held facts); (b) a reference quantity is a VALID
+      component with a note, like a formula (5.11's tail premium cap);
+      (c) the publicity row's twelve facts as sub-items, the labels
+      proposed for Ben. NCS at 19:50 UTC: RUNNING, 81 of 104, 0 failed,
+      $118.85.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
