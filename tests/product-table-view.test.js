@@ -518,10 +518,45 @@ test('defined terms split into the quoted term and its definition, whatever shap
     { component_id: 'bday', kind: 'DEFINED_TERM', label: 'Business day', text: 'A “business day” means any day on which the principal offices of the SEC are open.', origin: 'DEFINITION', source_span_id: 'd', start_byte: 100, end_byte: 180, resolves_to: { text: 'business day' }, children: [] },
   ] };
   const parts = (id) => definedTermParts(fact.components.flatMap((c) => [c, ...(c.children || [])]).find((c) => c.component_id === id), fact);
-  assert.deepEqual(parts('closing-amount'), { term: 'Closing Amount', definition: '$47.50 in cash, without interest' });
-  assert.deepEqual(parts('appraisal-shares'), { term: 'Appraisal Shares', definition: 'shares of Company Common Stock held by any Person who is entitled to demand appraisal' });
-  assert.deepEqual(parts('cvr-agreement'), { term: 'CVR Agreement', definition: 'the Contingent Value Rights Agreement between Parent and the Rights Agent' });
-  assert.deepEqual(parts('bday'), { term: 'business day', definition: 'any day on which the principal offices of the SEC are open' });
+  // Work package 13: each part says where its definition came from; an
+  // inline guess is not a Defined Terms entry on its own.
+  assert.deepEqual(parts('closing-amount'), { term: 'Closing Amount', definition: '$47.50 in cash, without interest', source: 'inline' });
+  assert.deepEqual(parts('appraisal-shares'), { term: 'Appraisal Shares', definition: 'shares of Company Common Stock held by any Person who is entitled to demand appraisal', source: 'inline' });
+  assert.deepEqual(parts('cvr-agreement'), { term: 'CVR Agreement', definition: 'the Contingent Value Rights Agreement between Parent and the Rights Agent', source: 'resolves_to' }, 'the model gave resolves_to: it comes first');
+  assert.deepEqual(parts('bday'), { term: 'business day', definition: 'any day on which the principal offices of the SEC are open', source: 'defines' });
+});
+
+// Work package 13 (plan finding (79)), NCS generation 5, 1.2 and 2.1: the
+// Defined Terms fallback took non-definition facts whose tree carries a
+// DEFINED_TERM component and showed an arbitrary component as the
+// definition ("Tolling Period: shall not occur on any date that falls
+// on..."; "Closing Date: is referred to in this Agreement as").
+test('a non-definition fact enters Defined Terms only through a DEFINED_TERM that resolves to its definition, and the entry is the definition words', () => {
+  const component = (id, kind, text, start, extra = {}) => ({ component_id: id, kind, label: id, text, origin: 'OWN', source_span_id: 's', start_byte: start, end_byte: start + text.length, gap_before: false, children: [], ...extra });
+  const closing = {
+    fact_id: 'closing', proposal_id: 'closing', family_key: 'MERGER_STRUCTURE_CLOSING', subtype_key: 'CLOSING', fact_type: 'CLOSING_TIMING', section_reference: '1.2', structure_node_id: 'n', validation_status: 'VALID',
+    headline: { label: 'Closing', distinguishing_component_ids: [], summary: 'Closing may not occur during the Rewind Tolling Period' },
+    components: [
+      component('c-op', 'OPERATION', 'the Closing shall not occur on any date that falls on, or between, the dates of the Irish High Court hearing', 0, { children: [
+        component('c-term', 'DEFINED_TERM', '(inclusive of both dates) (such period, the “Tolling Period”)', 120, { resolves_to: { structure_node_id: 'n', text: 'any date that falls on, or between, the date(s) of the Irish High Court hearing to sanction the Rewind' } }),
+      ] }),
+    ],
+  };
+  const closingDate = {
+    ...closing, fact_id: 'closing-date', proposal_id: 'closing-date', headline: { label: 'Closing', distinguishing_component_ids: [], summary: 'The date the Closing occurs is the Closing Date' },
+    components: [component('cd-op', 'OPERATION', 'is referred to in this Agreement as', 0), component('cd-term', 'DEFINED_TERM', 'the “Closing Date”', 40, { resolves_to: { structure_node_id: 'n', text: 'The date on which the Closing occurs' } })],
+  };
+  const guessOnly = {
+    ...closing, fact_id: 'guess', proposal_id: 'guess', headline: { label: 'Closing', distinguishing_component_ids: [], summary: 'Default Stock receives the Share Consideration' },
+    components: [component('g-op', 'OPERATION', 'with respect to which no election has been made', 0, { children: [component('g-term', 'DEFINED_TERM', '(the “Default Stock”)', 60)] })],
+  };
+  const view = buildTableView({ facts: [closing, closingDate, guessOnly], tableShapes, legalSchema });
+  const terms = Object.fromEntries(view.defined_terms.map((entry) => [entry.term, entry.definition]));
+  assert.equal(terms['Tolling Period'], 'any date that falls on, or between, the date(s) of the Irish High Court hearing to sanction the Rewind');
+  assert.equal(terms['Closing Date'], 'The date on which the Closing occurs');
+  assert.equal('Default Stock' in terms, false, 'an inline guess is no entry');
+  // The guess-only fact is still the section's evidence, not lost.
+  assert.ok(view.sections.some((section) => section.facts_without_readout.some((entry) => entry.fact_id === 'guess') || section.tables.some((table) => table.rows.some((row) => row.backing_facts.some((entry) => entry.fact_id === 'guess')))));
 });
 
 // Ben, 2026-09-14: "I'd put them under the word 'cash' and 'CVR' in

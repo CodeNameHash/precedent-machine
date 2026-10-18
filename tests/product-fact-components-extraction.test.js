@@ -608,3 +608,73 @@ test('the extraction request carries every footer subtype, from a single subtype
   const definitions = extractionRequestSeen.table_shapes.MAE_DEFINITION.find((entry) => entry.table_key === 'mae-definitions-table');
   assert.equal('footer_subtype_keys' in definitions, false, 'a table without a footer sends none');
 });
+
+// Work package 13 (plan finding (79)): NCS generation 5, 3.4 (and Metsera
+// generation 8's 3.19): every component cut from the Article III
+// introduction (origin INTRO) cited a span id one character off the
+// closure's chapeau span, which holds the words verbatim, and ten of ten
+// facts were held UNKNOWN_SOURCE_COMPONENT.
+test('a component quote on an unknown span is taken from the one closure span its origin allows, with a note; two candidates or an own-words quote stay unknown', () => {
+  const intro = 'ARTICLE III\nREPRESENTATIONS AND WARRANTIES OF THE COMPANY\nExcept as set forth in the Company Disclosure Letter, the Company represents and warrants to Parent and Merger Sub as follows:\n';
+  const section = 'Section 3.4 Authority. The Company has all necessary corporate power and authority to execute this Agreement.';
+  const canonical = `${intro}${section}`;
+  const introNode = 'i'.repeat(64);
+  const sectionNode = 's'.repeat(64);
+  const introSpan = { span_id: 'a'.repeat(64), kind: 'CHAPEAU', structure_node_id: introNode, start_byte: 0, end_byte: bytes(intro), exact_text: intro };
+  const headingSpan = { span_id: 'b'.repeat(64), kind: 'CHAPEAU', structure_node_id: sectionNode, start_byte: bytes(intro), end_byte: bytes(intro) + bytes('Section 3.4 Authority.'), exact_text: 'Section 3.4 Authority.' };
+  const full = { span_id: 'c'.repeat(64), kind: 'FULL_SECTION', structure_node_id: sectionNode, start_byte: bytes(intro), end_byte: bytes(canonical), exact_text: section };
+  const authorityClosure = {
+    source_closure_id: 'd'.repeat(64), structure_node_id: sectionNode, section_node_id: sectionNode, section_reference: '3.4', full_section_span_id: full.span_id,
+    chapeau_span_ids: [introSpan.span_id, headingSpan.span_id], spans: [introSpan, headingSpan, full],
+  };
+  const doc = { source_document_id: 'e'.repeat(64), canonical_text: canonical };
+  const authorityNode = { node_id: sectionNode, reference: '3.4', kind: 'SECTION' };
+  const wrongId = `${'a'.repeat(63)}0`;
+  const own = (ref, kind, label, quote) => ({ ref, kind, label, quote, source_span_id: full.span_id, occurrence: 0, origin: 'OWN', children: [] });
+  const proposalWith = (components) => ({
+    proposals: [{
+      client_ref: 'p1', group_ref: 'g1', family_key: 'REPRESENTATIONS', subtype_key: 'STATUS_REPRESENTATION', fact_type: 'REPRESENTATION_ACCURACY_STANDARD',
+      statement: 'The Company has all necessary corporate power and authority to execute this Agreement.',
+      roles: { LEGAL_ACTOR_OR_SUBJECT: 'the Company', LEGAL_OPERATION: 'represents and warrants', OPERATIVE_OBJECT: 'corporate power and authority' },
+      value: null,
+      evidence_quotes: [{ quote: 'The Company has all necessary corporate power and authority to execute this Agreement.', source_span_id: full.span_id, occurrence: 0 }],
+      headline: { label: 'Authority', distinguishing_refs: ['c2'], summary: 'The Company has corporate power and authority to execute the Agreement' },
+      components,
+    }],
+    groups: [{ client_ref: 'g1', family_key: 'REPRESENTATIONS', subtype_key: 'STATUS_REPRESENTATION' }],
+    links: [],
+  });
+  const compileAuthority = (body) => compileExtraction({ sourceDocument: doc, legalSchema: legalSchemaV2, node: authorityNode, closure: authorityClosure, call, response: body, routedFamilies: ['REPRESENTATIONS'], ownedNodeIds: new Set([sectionNode]) });
+  const relocated = compileAuthority(proposalWith([
+    { ref: 'c1', kind: 'ACTOR', label: 'representing party', quote: 'the Company represents and warrants to Parent and Merger Sub as follows:', source_span_id: wrongId, occurrence: 0, origin: 'INTRO', children: [] },
+    own('c2', 'OPERATION', 'authority', 'has all necessary corporate power and authority to execute this Agreement'),
+  ]));
+  const [fact] = relocated.proposals;
+  assert.equal(fact.validation_status, 'VALID', relocated.issues.map((issue) => `${issue.code}: ${issue.message}`).join('\n'));
+  assert.equal(fact.components[0].source_span_id !== wrongId, true, 'the component cites the span it was found in');
+  assert.equal(fact.components[0].origin_structure_node_id, introNode);
+  assert.equal(fact.components[0].start_byte, intro.indexOf('the Company represents'));
+  const note = relocated.issues.find((issue) => issue.code === 'COMPONENT_SPAN_RELOCATED');
+  assert.ok(note && note.kind === 'NOTE', 'the relocation is a note, not a hold');
+  assert.deepEqual(JSON.parse(note.message), { client_ref: 'p1', relocated: [{ quote: 'the Company represents and warrants to Parent and Merger Sub as follows:', from_span_id: wrongId, to_span_kind: 'CHAPEAU', to_structure_node_id: introNode }] });
+  // Two chapeau spans holding the words: still unknown.
+  const twice = compileAuthority(proposalWith([
+    { ref: 'c1', kind: 'TERM', label: 'heading', quote: 'Section 3.4 Authority.', source_span_id: wrongId, occurrence: 0, origin: 'CHAPEAU', children: [] },
+    own('c2', 'OPERATION', 'authority', 'has all necessary corporate power and authority to execute this Agreement'),
+  ]));
+  // "Section 3.4 Authority." is in the heading chapeau span and in the full section, but only one CHAPEAU span: relocated.
+  assert.equal(twice.proposals[0].validation_status, 'VALID');
+  const ambiguousClosure = { ...authorityClosure, spans: [introSpan, { ...introSpan, span_id: 'f'.repeat(64), structure_node_id: 'g'.repeat(64) }, headingSpan, full] };
+  const ambiguous = compileExtraction({ sourceDocument: doc, legalSchema: legalSchemaV2, node: authorityNode, closure: ambiguousClosure, call, response: proposalWith([
+    { ref: 'c1', kind: 'ACTOR', label: 'representing party', quote: 'the Company represents and warrants to Parent and Merger Sub as follows:', source_span_id: wrongId, occurrence: 0, origin: 'INTRO', children: [] },
+    own('c2', 'OPERATION', 'authority', 'has all necessary corporate power and authority to execute this Agreement'),
+  ]), routedFamilies: ['REPRESENTATIONS'], ownedNodeIds: new Set([sectionNode]) });
+  assert.equal(ambiguous.proposals[0].validation_status, 'INVALID', 'two candidate spans: unknown stays unknown');
+  assert.ok(ambiguous.issues.some((issue) => issue.code === 'INVALID_FACT_COMPONENTS' && /UNKNOWN_SOURCE_COMPONENT/.test(issue.message)));
+  // An OWN quote on an unknown span resolves through the section only; words that are not the section's stay unknown.
+  const ownUnknown = compileAuthority(proposalWith([
+    { ref: 'c1', kind: 'ACTOR', label: 'representing party', quote: 'the Company represents and warrants to Parent and Merger Sub as follows:', source_span_id: wrongId, occurrence: 0, origin: 'OWN', children: [] },
+    own('c2', 'OPERATION', 'authority', 'has all necessary corporate power and authority to execute this Agreement'),
+  ]));
+  assert.equal(ownUnknown.proposals[0].validation_status, 'INVALID');
+});
