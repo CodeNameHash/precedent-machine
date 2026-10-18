@@ -1060,7 +1060,7 @@ test('the general covenants table names the publicity sub-items and the words th
 // section, the covenants table's words rule that sends facts there over the
 // readout, its sub-items, the OTHER_PARTY obligor (f) and the By when
 // column (g).
-test('the registration-rights table sits last under Consideration, takes general covenants by words over the readout, with sub-items, an other-party obligor and a By when column', () => {
+test('the registration-rights table sits last under Consideration, takes general covenants by words over the readout as one line, with an other-party obligor and a By when column', () => {
   const consideration = findSectionV3('consideration-hero');
   const table = findTableV3(consideration, 'consideration-registration-rights');
   assert.equal(consideration.tables[consideration.tables.length - 1].table_key, 'consideration-registration-rights');
@@ -1075,11 +1075,14 @@ test('the registration-rights table sits last under Consideration, takes general
   const when = new RegExp(rule.when, 'i');
   for (const words of ['to keep such Registration Statement continuously effective', 'all Registrable Securities covered', 'a prospectus supplement', 'Rule 144(c)(1)', 'pursuant to Rule 415']) assert.ok(when.test(words), words);
   assert.equal(when.test('any notice of deficiency or non-compliance received from Nasdaq'), false);
-  assert.deepEqual(table.detail_labels_by_row['Registration rights'], ['Resale registration', 'Effectiveness and amendments', 'Stockholder information and approval', 'Indemnification', 'Expenses', 'Rule 144 and legend removal', 'Listing and reporting']);
-  const rules = table.detail_from_words_by_row['Registration rights'];
-  assert.equal(rules.length, 7);
-  for (const detail of rules) assert.ok(table.detail_labels_by_row['Registration rights'].includes(detail.detail), detail.detail);
-  assert.deepEqual(rules.slice(0, 2).map((candidate) => candidate.detail), ['Indemnification', 'Expenses'], 'the indemnity before the filing duties that name a prospectus');
+  // Ben, 2026-10-18 (plan finding (166)): "are these from a reg rights agreement? I wouldn't go into anywhere near this depth in this product": one line, no sub-items.
+  assert.equal(table.no_sub_items, true);
+  assert.equal(table.detail_labels_by_row, undefined);
+  assert.equal(table.detail_from_words_by_row, undefined);
+  assert.match(table.reason, /I wouldn't go into anywhere near this depth in this product/);
+  const broken3 = structuredClone(tableShapesV3);
+  findTableV3(broken3.sections.find((s) => s.section_key === 'consideration-hero'), 'consideration-registration-rights').no_sub_items = 'yes';
+  assert.throws(() => validateTableShapesV3(broken3, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_NO_SUB_ITEMS/);
   // (f) Ben: "on A - if the shareholders have to do something, okay for them to be an obligor".
   for (const owner of [covenants, table]) {
     const obligor = owner.columns.find((column) => column.column_id === 'obligor');

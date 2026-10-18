@@ -907,7 +907,7 @@ test('a publicity proposal takes its sub-item from its words at extraction; the 
 // Work package 18 (d) (plan finding (93); NCS generation 5, 5.17): at
 // extraction a covenant naming the Registration Statement leaves the row
 // the model chose for Registration rights, with its sub-item, both noted.
-test('a registration-rights covenant moves from General notification to Registration rights at extraction, with its sub-item and notes', () => {
+test('a registration-rights covenant moves from General notification to the Registration rights table at extraction, one line, with the note', () => {
   const text = 'Section 5.17 Registration Rights. Parent shall use its reasonable best efforts to keep such Registration Statement continuously effective under the Securities Act until the date on which all Registrable Securities covered by such Registration Statement have been sold.';
   const doc = { source_document_id: 'e'.repeat(64), canonical_text: text };
   const sectionNode = 'r'.repeat(64);
@@ -934,7 +934,8 @@ test('a registration-rights covenant moves from General notification to Registra
   assert.equal(fact.validation_status, 'VALID', compiled.issues.map((issue) => `${issue.code}: ${issue.message}`).join('\n'));
   assert.equal(fact.conclusions.table_key, 'consideration-registration-rights', 'Ben: "reg rights I think goes with consideration (but at bottom)"');
   assert.equal(fact.conclusions.row_label, 'Registration rights');
-  assert.equal(fact.conclusions.row_detail, 'Effectiveness and amendments');
+  // Ben (plan finding (166)): "I wouldn't go into anywhere near this depth in this product": no sub-item.
+  assert.equal(fact.conclusions.row_detail, undefined);
   assert.deepEqual(JSON.parse(compiled.issues.find((issue) => issue.code === 'ROW_FROM_WORDS').message), { client_ref: 'p1', from: 'General notification', from_table_key: 'general-covenants-table', to: 'Registration rights', to_table_key: 'consideration-registration-rights' });
-  assert.deepEqual(JSON.parse(compiled.issues.find((issue) => issue.code === 'ROW_DETAIL_FROM_WORDS').message), { client_ref: 'p1', from: null, row_label: 'Registration rights', to: 'Effectiveness and amendments' });
+  assert.equal(compiled.issues.some((issue) => issue.code === 'ROW_DETAIL_FROM_WORDS'), false);
 });

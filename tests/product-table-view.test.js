@@ -2140,7 +2140,7 @@ test('publicity facts become sub-items of Public announcements named from their 
 // three open rows gather on "Registration rights", each a sub-item from its
 // words; a notice covenant that names none of the words stays where it was.
 // The words are the facts' own components as stored for the run.
-test('registration-rights covenants move to the Registration rights row and take sub-items from their words; a Nasdaq notice stays on General notification', () => {
+test('registration-rights covenants gather on the one Registration rights line under Consideration; a Nasdaq notice stays on General notification', () => {
   const covenant = (id, row, texts, rowDetail) => ({
     fact_id: id, proposal_id: id, family_key: 'GENERAL_COVENANTS', subtype_key: 'OTHER_COVENANT', section_reference: '5.17', structure_node_id: 'n-5-17',
     headline: { label: 'Covenant', distinguishing_component_ids: [`${id}-0`], summary: '' },
@@ -2186,26 +2186,20 @@ test('registration-rights covenants move to the Registration rights row and take
   const table = consideration.tables[consideration.tables.length - 1];
   assert.equal(table.table_key, 'consideration-registration-rights');
   assert.deepEqual(table.rows.map((row) => [row.subject, row.backing_facts.length]), [['Registration rights', 16]]);
-  assert.deepEqual(table.rows[0].sub_rows.map((row) => [row.subject, row.backing_facts.map((entry) => entry.fact_id).sort()]), [
-    ['Resale registration', ['2bf58d52', '8a57ad66']],
-    ['Effectiveness and amendments', ['009dfdb5', '5de42e39', 'ee197fc0']],
-    ['Stockholder information and approval', ['43e27ac9', 'a01a67c4']],
-    ['Indemnification', ['37ea48cb', 'a47dc26b', 'add29195', 'f598ad96']],
-    ['Expenses', ['95c2cf94']],
-    ['Rule 144 and legend removal', ['50ba52cb', 'eb3ace36']],
-    ['Listing and reporting', ['199b43b6', 'f45fa9c4']],
-  ]);
+  // Ben, 2026-10-18 (plan finding (166)): "are these from a reg rights
+  // agreement? I wouldn't go into anywhere near this depth in this
+  // product": one line, the facts behind it, the model's own details
+  // ("Survival", "Legend removal") dropped too.
+  assert.equal(table.rows[0].sub_rows, undefined);
   assert.equal(view.sections.flatMap((section) => section.tables).some((candidate) => candidate.rows.some((row) => ['Registration rights indemnification', 'Registration expenses', 'Access to information', 'Stock exchange listing'].includes(row.subject))), false);
   // (f): the several indemnity's obligor is the stockholders, in their words.
-  const indemnification = table.rows[0].sub_rows.find((row) => row.subject === 'Indemnification');
-  const obligor = indemnification.cells.find((cell) => cell.column_id === 'obligor');
+  const obligor = table.rows[0].cells.find((cell) => cell.column_id === 'obligor');
   const obligorValues = obligor.values || [obligor];
   assert.ok(obligorValues.some((value) => value.code === 'OTHER_PARTY' && value.label === 'Each Specified Stockholder'), JSON.stringify(obligorValues));
   assert.ok(obligorValues.some((value) => value.code === 'PARENT'), 'Parent\'s indemnity keeps its obligor');
   // (g) Ben: "Ok on ETA on covenants": the 424(b)(7) filing's trigger and
   // outside date in By when, from its TRIGGER and PERIOD components.
-  const resale = table.rows[0].sub_rows.find((row) => row.subject === 'Resale registration');
-  const byWhen = resale.cells.find((cell) => cell.column_id === 'byWhen');
+  const byWhen = table.rows[0].cells.find((cell) => cell.column_id === 'byWhen');
   const byWhenValues = byWhen.values || [byWhen];
   assert.ok(byWhenValues.some((value) => value.label === 'Promptly following the Closing Date (and in any event no later than two Business Days thereafter)' && value.derived === 'fill_from_components'), JSON.stringify(byWhenValues));
   assert.ok(table.columns.some((column) => column.column_id === 'byWhen'), 'By when shows when a row fills it');

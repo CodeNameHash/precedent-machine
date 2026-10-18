@@ -1528,28 +1528,11 @@ const REGISTRATION_ROW = 'Registration rights';
 // the covenants table's words rule sends the facts there (table_key).
 const REGISTRATION_TABLE_KEY = 'consideration-registration-rights';
 const REGISTRATION_WORDS = 'Registration\\s+Statement|Registrable\\s+Securities|\\bprospectus|Rule\\s+144|Rule\\s+415';
-const REGISTRATION_DETAILS = [
-  'Resale registration',
-  'Effectiveness and amendments',
-  'Stockholder information and approval',
-  'Indemnification',
-  'Expenses',
-  'Rule 144 and legend removal',
-  'Listing and reporting',
-];
-// First match wins: the indemnity and its mechanics before the filing
-// duties that mention a prospectus, the listing and reporting covenants
-// before Rule 144 (the reporting covenant names Rule 144 too), the
-// stockholders' approval right before the resale filing it governs.
-const REGISTRATION_DETAIL_WORDS = [
-  { detail: 'Indemnification', words: 'indemni|hold\\s+harmless|reimburs|omission\\s+or\\s+alleged\\s+omission|net\\s+proceeds|required\\s+to\\s+pay' },
-  { detail: 'Expenses', words: 'expenses\\s+incurred\\s+in\\s+connection\\s+with\\s+any\\s+registration|registration\\s+expenses|shall\\s+be\\s+paid\\s+by' },
-  { detail: 'Listing and reporting', words: '\\blisting\\b|Nasdaq|delisting|Depository\\s+Trust|reports?\\s+(?:and\\s+other\\s+documents\\s+)?required|timely\\s+file|Exchange\\s+Act\\s+reports?' },
-  { detail: 'Rule 144 and legend removal', words: 'Rule\\s+144|legend' },
-  { detail: 'Stockholder information and approval', words: 'approved\\s+in\\s+writing|written\\s+approval|review\\s+and\\s+approve|opportunity\\s+to\\s+review|furnish|information\\s+concerning' },
-  { detail: 'Resale registration', words: 'Rule\\s+415|\\bshelf\\b|prospectus\\s+supplement\\s+to|424\\(b\\)|selling\\s+securityholders?|include\\s+the\\s+Registrable\\s+Securities' },
-  { detail: 'Effectiveness and amendments', words: 'effective|amend|supplement|untrue\\s+statement|request\\s+by\\s+the\\s+SEC' },
-];
+// Ben, 2026-10-18 (plan finding (166)), on the proposed sub-items: "are
+// these from a reg rights agreement? I wouldn't go into anywhere near this
+// depth in this product". The row is one line: present or absent, the
+// as-drafted summary and its facts behind it, no sub-items (no_sub_items);
+// the seven proposed labels are withdrawn.
 
 function applyVotesAndCovenants(doc) {
   const why = `${BEN}: no column shows a cited fragment.`;
@@ -1632,11 +1615,10 @@ function applyVotesAndCovenants(doc) {
     rows_are: 'fixed list',
     fixed_row_labels: [REGISTRATION_ROW],
     accepts_families: ['GENERAL_COVENANTS'],
-    detail_labels_by_row: { [REGISTRATION_ROW]: [...REGISTRATION_DETAILS] },
-    detail_from_words_by_row: { [REGISTRATION_ROW]: REGISTRATION_DETAIL_WORDS.map((rule) => ({ ...rule })) },
+    no_sub_items: true,
     addition: true,
-    reason: 'Ben, 2026-10-18 (plan finding (163)): "reg rights I think goes with consideration (but at bottom)". NCS generation 5, 5.17: the Specified Stockholders\' registration rights came back as covenants spread over five rows of the general covenants table.',
-    guidance: `Every covenant of a registration-rights package for the stock consideration (the resale registration statement or shelf, keeping it effective and amending it, the holders' information and approval rights, the indemnities and their mechanics, the expenses, Rule 144 and legend removal, the listing and reporting covenants for the resale period) is on this table's one row, one fact per operative unit, each a sub-item with row_detail from the row's detail_labels_by_row; the code moves a general covenant whose words name the Registration Statement, Registrable Securities, a prospectus, Rule 144 or Rule 415 here from the general covenants table and names its sub-item from its words (work package 18, 2026-10-18). A deal without registration rights shows no such table.`,
+    reason: 'Ben, 2026-10-18 (plan finding (163)): "reg rights I think goes with consideration (but at bottom)"; on sub-items (plan finding (166)): "are these from a reg rights agreement? I wouldn\'t go into anywhere near this depth in this product". NCS generation 5, 5.17: the Specified Stockholders\' registration rights came back as covenants spread over five rows of the general covenants table.',
+    guidance: `Every covenant of a registration-rights package for the stock consideration (the resale registration statement or shelf, keeping it effective and amending it, the holders' information and approval rights, the indemnities, the expenses, Rule 144 and legend removal, the listing and reporting covenants for the resale period) is on this table's one row, one fact per operative unit, with no row_detail: the row is present or absent, its facts behind it; the code moves a general covenant whose words name the Registration Statement, Registrable Securities, a prospectus, Rule 144 or Rule 415 here from the general covenants table (work package 18, 2026-10-18). A deal without registration rights shows no such table.`,
   };
   const consideration = findSection(doc, 'consideration-hero');
   consideration.tables = [...consideration.tables.filter((table) => table.table_key !== REGISTRATION_TABLE_KEY), registration];
