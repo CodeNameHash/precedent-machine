@@ -1456,7 +1456,7 @@ Sequence and proof:
       validation rules; `lib/product/fact-components.js` validates a fact
       against it and renders layers. Proof passed 2026-09-12:
       `node --test tests/product-fact-components-contract.test.js`.
-- [ ] 5B.2 Legal schema V2. Draft written 2026-09-12:
+- [x] 5B.2 Legal schema V2. Draft written 2026-09-12:
       `contracts/product/legal-schema.v2.json`, generated deterministically by
       `scripts/product/build-legal-schema-v2.js` from V1 plus an overlay
       carrying Ben's subtype names, per-family headline and layer rules,
@@ -1468,7 +1468,7 @@ Sequence and proof:
       Status DRAFT_FOR_BEN_REVIEW: Ben sees the headline and layer rules for
       the families he reviewed before prompt V7 uses them; the extraction
       still runs on V1 until 5B.3 lands.
-- [ ] 5B.3 Extraction prompt V7 and storage. Extraction half done
+- [x] 5B.3 Extraction prompt V7 and storage. Extraction half done
       2026-09-12: when the legal schema is V2, `agreement-draft.js` sends
       prompt `PRODUCT_ALL_FAMILY_EXTRACTOR/V7` with a component instruction
       and the family layer rules, drops the forced-role sentence, compiles
@@ -1495,7 +1495,7 @@ Sequence and proof:
       replays a real generation 4 extraction call
       (`tests/fixtures/product/ncs-v8-extraction-call.v1.json`) through
       `compileExtraction` (merged from `session_01NoHhHYd1HWTi2qsXK2wb1N`).
-- [ ] 5B.5 Published reader view on layers, built first. Component merged
+- [x] 5B.5 Published reader view on layers, built first. Component merged
       2026-09-12 from the 5B.5 worker: `components/product/PublishedSummary.jsx`
       and `lib/product/published-layers.js` render headline first, click to
       descend, inherited words marked, values beside thresholds, references
@@ -1508,7 +1508,7 @@ Sequence and proof:
       `PublishedSummary` under the run's schema and keeps V1 facts under
       "Facts without layers". Remaining: one browser check on a V2 run
       (blocked on 5B.6).
-- [ ] 5B.4 Review page is the production page plus aids (Ben, 2026-09-12:
+- [x] 5B.4 Review page is the production page plus aids (Ben, 2026-09-12:
       "the next review page I see to be the final production style page just
       with additional things added to aid review"). The focused page renders
       facts exactly as `PublishedSummary` does and adds, per fact, the
@@ -1542,7 +1542,7 @@ Sequence and proof:
       table; antitrust shows every obligation; boilerplate is a collapsed
       section on the published page (`lib/product/published-layers.js`,
       `PublishedSummary.jsx`).
-- [ ] 5B.6 Rerun NCS under V2 as a new generation. Needs two things from
+- [x] 5B.6 Rerun NCS under V2 as a new generation. Needs two things from
       Ben's side. (1) Update the hosted worker's checkout: from a machine
       logged in to Vercel and linked to the deal-corpus project, run
       `node scripts/product/update-sandbox-worker.js` in the repository; it
@@ -1652,7 +1652,7 @@ Sequence and proof:
       review state and the V2 analysis through the same store reads the page
       uses and writes the two comparison files
       (`tests/product-export-review-comparison.test.js`).
-- [ ] 5B.8 Table shapes and coded conclusions on top of the layered facts.
+- [x] 5B.8 Table shapes and coded conclusions on top of the layered facts.
       Ben, 2026-09-12 23:20 to 23:40 UTC, on the Query mockups (comments
       note sections 7 and 8): the published and Query pages show each
       provision as the current review page does, small tables of headline
@@ -1717,7 +1717,7 @@ Sequence and proof:
       components; (e) NCS regeneration under V9 after Ben corrects the
       vocabularies. The layered-fact contract is unchanged; conclusions are
       an additional layer, so generation 4 stays valid evidence.
-- [ ] 5B.7 Metsera under V2, then the Phase 5 exit. Ben, 2026-09-12 23:05
+- [x] 5B.7 Metsera under V2, then the Phase 5 exit. Ben, 2026-09-12 23:05
       UTC, on the proposal of a fresh untouched agreement: "I really don't
       think we need to do that - we can just re-do metsera". Recorded as his
       decision. The plan's rule (a material prompt, model or schema change
@@ -3932,6 +3932,28 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       only). The worker updated; the run retried (ncs-gen5-retry-3).
       Work package 11b (the configuration stop) is still with the
       implementer; its merge follows.
+      (75) 2026-10-18 14:05 UTC, plan state. Ben: "the api looks very
+      expensive vs just using subscription!"; "agree with all"; on the
+      assessment and ETA, "ok". Decisions recorded: NCS generation 5
+      finishes on the API; Olaplex and Apogee run on the subscription,
+      back to back, each read while the next runs; Ben's UI comments go
+      to the implementer in parallel (work package 12); the ETA to the
+      Phase 6 exit is five to seven working days with Ben's live deal.
+      Phase 5B's boxes ticked on the evidence, each long live: 5B.2 the
+      V2 schema is the active schema (LEGAL_SCHEMA/V2.0 on every
+      generation since Metsera 4; Ben's 5B.2a check); 5B.3 prompt V7
+      with the component tree and layer rules is the extraction every
+      run makes (product_model_calls prompt_version); 5B.5 the published
+      reader on layers is components/product/PublishedSummary.jsx; 5B.4
+      the review page renders through it with the decision buttons and
+      component-level edits (lib/product/review-state.js); 5B.6 NCS
+      under V2 ran as generations 2 to 4 and generation 5 is running;
+      5B.8 the table shapes and coded conclusions are contracts/product/
+      table-shapes.v3.json on the provisions page; 5B.7 Metsera under V2
+      is generations 4 to 8 with their audits (an exposed check, as the
+      item says, not blind evidence). Still open on the road to done:
+      Phase 5's sample reconciliation and measure (after Olaplex and
+      Apogee), Q5 and Q4, Phase 6.
       the plan and guide.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
