@@ -4563,6 +4563,28 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       with no fact, held for a held one; election forms fold when the
       deal has no election; value terms linked through the definitions.
       NCS at 19:00 UTC: RUNNING again from 65 of 104 on the 128,000 cap.
+      (160) 2026-10-18 19:20 UTC (the manager's findings number from
+      (160) on while the four tracks run; A keeps (90) to (99), B (100)
+      to (119), C (120) to (139), D (140) to (159)). NCS generation 5:
+      RUNNING, 71 of 104, 0 failed since retry-6, $104.87. 5.1 went out
+      on attempt 4 in four limb parts (work package 15's re-split): part
+      2, the restrictions list, answered 115,352 output tokens and
+      ended cleanly under the 128,000 cap; parts 3 and 4 25,834 and
+      11,332. Read against the text, 5.4 to 5.13: 5.4's Form S-4 and
+      Information Statement mechanics on the SEC filing rows (a written
+      consent deal, no meeting); 5.6's Written Consent delivery by the
+      Consent Time, its DGCL Section 228 effectiveness and the Support
+      Agreement counterparts on the meeting table; 5.9's takeover-law
+      covenants on their rows. One defect, to implementer A: two 5.6
+      facts ("Company submits form of Written Consent to Consenting
+      Stockholders instead of holding a stockholder meeting"; "Company
+      uses reasonable best efforts to obtain Written Consent by the
+      Consent Time") stand only as Defined Terms entries (Consenting
+      Stockholders; Consent Time) because their trees carry a resolved
+      DEFINED_TERM: a non-definition fact must keep its own placement
+      (its family's table, a row by its words or "without a readout")
+      and a resolved term adds a Defined Terms entry beside it, never
+      instead of it.
 
       (84) 2026-10-18 18:05 to 18:20 UTC (implementer), work package 15
       on finding (83)'s terms ("the documented maximum output cap on the
