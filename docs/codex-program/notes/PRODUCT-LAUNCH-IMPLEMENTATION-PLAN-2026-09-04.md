@@ -5780,6 +5780,71 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       sections, 50 tables, 164 columns. docs/core/CODEBASE-GUIDE.md
       updated. npm run test:active: the known failure only (the count in
       the commit). Nothing submitted or retried.
+      (97) 2026-10-18 21:55 UTC (implementer A), Ben's (166) applied and
+      work package 19 from the manager's (165). Ben on the registration
+      sub-items, verbatim: "are these from a reg rights agreement? I
+      wouldn't go into anywhere near this depth in this product": the
+      consideration-registration-rights table is now no_sub_items (a new
+      table flag, validated), one line, present or absent, its facts
+      behind it; a fact's row_detail is dropped at extraction and on the
+      page; the seven labels of (95) and (96) are withdrawn from the
+      shape (fb98374). Ben on the publicity labels: "all sounds fine";
+      nothing changes. Work package 19: (a) 3.4's ten status
+      representations cite the Article III chapeau on a span id one hex
+      character off: work package 13 (a)'s rule, already in the code,
+      VALID on the next generation. (b) 6.2's two bring-down tiers
+      (7c534651, d2f8a9b9) list the representations they cover as a LIST
+      of CROSS_REFERENCE children, each resolved to its section, and
+      were held "LIST without LIST_ELEMENT children": a LIST whose
+      children are all CROSS_REFERENCE or DEFINED_TERM components is a
+      list of references and valid (lib/product/fact-components.js);
+      a list of plain terms still needs its elements. (c) 6.4's three
+      frustration facts (78926bd5, 7589b03e, fc6c34bd) cite "this
+      Article VI" as a CROSS_REFERENCE with nothing to resolve to: a
+      reference to the words' own article, section or agreement ("this
+      Article VI", "this Section 5.2", "this Agreement", "hereof") needs
+      no resolution (SELF_REFERENCE, beside the statute exemption). Both
+      pinned in tests/product-fact-components-contract.test.js; the
+      five facts are VALID on the next generation. (d) The rest of the
+      holds are work packages 14 and 18 (a) and (b), in the code since
+      their merges. (f) The registration-rights table at the bottom of
+      Consideration: (96) and fb98374. (g) The manager's reading that
+      the row move "does not happen on the stored rows (29 facts stay on
+      General notification with the sub-items)" was of a preview
+      deployed before the rule: the deployment of 532ca9f, which carried
+      it, was created at 20:50:39 UTC (Vercel deployment
+      dpl_3kPAHeNCx78v6EXjwPg1btdz8WsV), and the generation 5 audit's
+      preview read fell between the run's READY at 20:48 and that
+      deploy's readiness. On the real rows it does happen: the 32
+      general-covenant facts of 5.17 as stored (read from the preview
+      branch; ids shortened, components flattened), through
+      buildTableView with the generated contract, give one Registration
+      rights line under Consideration with 29 facts, no sub-rows, and the
+      three Nasdaq notices on General notification (two) and Litigation
+      notification (one); nothing without a readout. Pinned with those
+      rows in tests/fixtures/product/ncs-generation-5-5-17-general-
+      covenants.json and tests/product-table-view.test.js. Two things the
+      real rows showed that the fixtures had not, fixed and pinned: the
+      page's derived OTHER_PARTY obligor took the model's ACTOR
+      "Statement (or any prospectus or prospectus supplement forming a
+      part of such Registration Statement), as initially filed" for a
+      party, so the words must now name a person or body (PARTY_NOUN); and
+      By when took every TRIGGER, including "upon the discovery of the
+      happening of any event", "insofar as such losses ... arise out of"
+      and "as such expenses are incurred", so a TRIGGER fills it only
+      when it states a time (TIMING_WORDS: days, dates, the Closing,
+      promptly, within, prior to, following, after, until ...); a PERIOD
+      always does. On the line as it now reads: obligor "the Specified
+      Stockholders", "Each Specified Stockholder" and "Parent and each
+      Specified Stockholder" shown, Parent's own readings stated in the
+      summaries and kept under stated_in_summary by work package B4's
+      rule; By when seven readings, the Rule 424(b)(7) deadline first;
+      standards six codes. One line carrying 29 facts' readings is what
+      Ben asked for; if it reads as too much, the as-drafted summaries
+      behind it are the next layer and the manager decides. Metsera
+      generation 8: unchanged, no such table. docs/core/CODEBASE-GUIDE.md
+      updated. npm run test:active: the known failure only (the count in
+      the commit). Nothing submitted or retried.
       (120) 2026-10-18 19:10 to 19:45 UTC (implementer C), Q5: the limb
       names harvested. `scripts/product/harvest-rep-limbs.js` (library
       `lib/product/rep-limb-harvest.js`, `tests/product-rep-limb-harvest.test.js`)
