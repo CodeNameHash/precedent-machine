@@ -3011,6 +3011,13 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       fact: "shall be converted into the right to receive" above its
       object, "(i) $47.50 in cash" and "(ii) one CVR" as two indented
       lines in the list's place, the defined-term line left-aligned.
+      Work package 2 closed 2026-10-18 00:05 UTC: commits 38ce6f3,
+      4ebe868, 2cc1b74, eade833 and ced5dd0 on the branch; `npm run
+      test:active` 635 of 636, the one failure the known Codex-client
+      final-message test; no run submitted. Open for the manager: the
+      live list of columns B4 folds on generation 7 (read from the page
+      once the branch deploys), and generation 8 under the new shapes
+      and layer rules.
       (44) 2026-10-17 23:45 UTC, Ben, on the two readout-less 5.02
       clauses (the Representative deemed-breach sentence as a sub-item
       "Representative breach is Company breach" under Representative
