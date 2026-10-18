@@ -3955,6 +3955,25 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       item says, not blind evidence). Still open on the road to done:
       Phase 5's sample reconciliation and measure (after Olaplex and
       Apogee), Q5 and Q4, Phase 6.
+      (77) 2026-10-18 14:35 UTC: NCS generation 5 FAILED again at 7 of
+      104 ($3.62 spent): two split sections (nodes 559082cf, 6d802d00)
+      failed three attempts each on "DATABASE_ERROR: invalid product
+      model invocation identity" after their routing, residual and first
+      extraction part had been paid for. Cause in the store, not the
+      model: the admission rule's part reader
+      (product_phase2_model_call_extraction_part) read messages[0].content
+      as one JSON string; the API provider's two-block layout (work
+      package 10) makes it an array, so the part number was never found
+      and the expected identity was derived from the bare attempt token.
+      Migration 20261018143000_product_model_call_part_identity_blocks
+      walks a content array, each text block parsed as JSON and searched
+      for source_closure.extraction_part (top level or under request);
+      a string content reads as before. Applied to the preview branch
+      and verified on four shapes (blocks with a part: 2; string with a
+      part: 3; blocks without a part: null; a block that is not JSON:
+      null). Work package 11b (the stop at a configuration refusal)
+      could not have caught this: a store refusal after paid calls is a
+      section failure by design. Retried (ncs-gen5-retry-4).
       (73) 2026-10-18 13:21 to 13:50 UTC (implementer), work package 11b
       on the manager's message of 13:17 UTC. No run retried; no live
       call. The gap, read in the live path: the worker's loop calls
