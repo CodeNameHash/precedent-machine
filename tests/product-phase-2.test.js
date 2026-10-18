@@ -710,6 +710,24 @@ test('residual pass preserves known replies and completes provider omissions as 
   assert.equal(familySetFirst.residualPass.residual_pass_id, familySetSecond.residualPass.residual_pass_id);
   assert.deepEqual(familySetFirst.residualPass.dispositions[0].family_keys, ['NO_SHOP', 'TERMINATION']);
 
+  // NCS generation 5, 1.2: an unusual paragraph that names the families it
+  // sits near is an answer, not a contradiction; the names stay on the
+  // disposition and in its issue. A known family with no family is still one.
+  const nearFamilies = compileResidualPass({
+    response: { paragraphs: [{
+      source_span_id: paragraphs[0].span_id, disposition: 'UNRESOLVED_UNUSUAL_PROVISION',
+      family_keys: ['TERMINATION', 'MERGER_STRUCTURE_CLOSING'], rationale: 'Tolling Period blackout on Closing.',
+    }] },
+    call, node, closure, paragraphs: [paragraphs[0]],
+  });
+  assert.deepEqual(nearFamilies.residualPass.dispositions[0].family_keys, ['MERGER_STRUCTURE_CLOSING', 'TERMINATION']);
+  assert.equal(nearFamilies.coverage[0].state, 'UNRESOLVED');
+  assert.equal(nearFamilies.issues[0].message, 'Tolling Period blackout on Closing. (near MERGER_STRUCTURE_CLOSING, TERMINATION)');
+  assert.throws(() => compileResidualPass({
+    response: { paragraphs: [{ source_span_id: paragraphs[0].span_id, disposition: 'KNOWN_FAMILY', family_keys: [], rationale: 'None.' }] },
+    call, node, closure, paragraphs: [paragraphs[0]],
+  }), (error) => error.code === 'RESIDUAL_FAMILY_CONSISTENCY');
+
   assert.throws(() => compileResidualPass({
     response: { paragraphs: [
       { source_span_id: paragraphs[0].span_id, disposition: 'IMMATERIAL', family_keys: [], rationale: 'One.' },
