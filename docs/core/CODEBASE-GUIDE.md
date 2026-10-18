@@ -41,7 +41,7 @@ Phases 0 to 3 define the contracts, durable intake path, three-family draft anal
 ## Draft analysis and Review read
 
 - `lib/product/model-adapter.js`: normalises a JSON model provider and replays raw responses only when the complete call request matches a recording.
-- `lib/product/agreement-draft.js`: routes every substantive section, compiles Termination, Termination Fee and No-Shop proposals, groups and links, and validates source spans, values, roles, relationships and four-state coverage.
+- `lib/product/agreement-draft.js`: routes every substantive section, compiles Termination, Termination Fee and No-Shop proposals, groups and links, and validates source spans, values, roles, relationships and four-state coverage. Work package 9 (2026-10-18, plan finding (62)): a long section with fewer operative children than `LONG_SECTION_SPLIT.min_children` is extracted by its paragraphs (`limblessSectionParts`, the residual pass's paragraph spans) in parts of the usual size, each paragraph whole, the issue's `mode` saying `paragraphs`; a Claude CLI failure's message carries what the CLI had streamed before it (`summariseReceivedClaudeOutput`).
 - `lib/product/analysis-runner.js`: claims one section lease at a time, commits each completed section atomically, resumes persisted section results and finalises one coherent draft.
 - `lib/product/phase-2-store.js`: server-only database adapter for section graph commits, draft finalisation and Review reads.
 - `pages/api/product/analysis/[id].js`: authenticated, private, read-only analysis endpoint for Review.
