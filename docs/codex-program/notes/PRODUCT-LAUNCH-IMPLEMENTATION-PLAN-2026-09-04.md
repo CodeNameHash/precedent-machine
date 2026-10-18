@@ -4590,6 +4590,82 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       (its family's table, a row by its words or "without a readout")
       and a resolved term adds a Defined Terms entry beside it, never
       instead of it.
+      (161) 2026-10-18 19:58 UTC: implementer A's work package 17 with
+      its item 4 (findings (90) to (92)) and implementer D's parallel
+      hosted workers (finding (140)) accepted and merged (bd14cef6; ten
+      suites 293 of 293 here). D's migration
+      20261018200000_product_run_sandboxes applied to the preview
+      branch before the deploy; its backfill placed NCS generation 5
+      (run 51577c57) on pm-codex-preview-worker, so the running
+      worker's wakes and keepalive keep their sandbox. The second
+      sandbox is created after NCS finishes (create-sandbox-worker.js
+      --name pm-codex-preview-worker-2; D's evidence: no per-sandbox
+      login, the subscription token travels with every wake). A's
+      proposal in (91) becomes work package 18: (a) an inherited quote
+      on a known span that does not hold it relocates like an unknown
+      one (4.7's three held facts); (b) a reference quantity is a VALID
+      component with a note, like a formula (5.11's tail premium cap);
+      (c) the publicity row's twelve facts as sub-items, the labels
+      proposed for Ben. NCS at 19:50 UTC: RUNNING, 81 of 104, 0 failed,
+      $118.85.
+      (162) 2026-10-18 20:25 UTC: implementer C's findings (120) to
+      (124) accepted and merged (9035e952): the Q5 harvest and its
+      note docs/codex-program/notes/Q5-REPRESENTATION-LIMB-NAMES-PROPOSAL-2026-10-18.md
+      (558 readouts, 489 distinct limb names, 43 folds; the nine seeded
+      rows carry canonical names on 64 of 78 facts, the 43 unseeded
+      rows 442 names for 450 facts: the vocabulary is Ben's to fix);
+      the Q4 note docs/codex-program/notes/Q4-LEGACY-QUERY-COMPARE-EVIDENCE-2026-10-18.md
+      (legacy Query already off at every entry point, Compare reachable
+      only by URL; retire is one deletion of about 36,000 lines, keep
+      unrouted costs nothing now, migrate is a rewrite); the Phase 5
+      reconciliation in one command with three matcher defects fixed
+      (III-INTRO, leading zeros, the section-above rule); the 51
+      UNRESOLVED fact types all from Exhibit-B, the Form CVR Agreement,
+      never extracted because its closure records the exhibit's own
+      section references as unresolved (47 of the 51 types carried
+      VALID elsewhere; four absent as such in a cash deal). A's finding
+      (93): 5.17's registration-rights covenants mis-rowed on the
+      general covenants table and the stock consideration's securities-
+      law statements on the capitalization table. To Ben: Q4 (retire
+      now or keep unrouted; a Query on layered facts as a plan item
+      once releases exist); Q5 (the note, row by row); A's (f) an
+      obligor code for a party that is neither Company nor Parent and a
+      "By when" column for covenant deadlines, (g) where the securities-
+      law statements about the stock consideration belong, (h) an open
+      row for a mutual condition the fixed list lacks. To A as work
+      package 18's items (d) and (e): the Registration rights row with
+      sub-items by words (labels proposed for Ben), and Exhibit-B's
+      closure: references inside an exhibit resolve within the exhibit
+      node (its own numbering) before the main agreement, so the CVR
+      Agreement is extracted. NCS at 20:20 UTC: RUNNING, 85 of 104, 0
+      failed, $127.17.
+      (163) 2026-10-18 20:45 UTC, Ben's decisions, verbatim: "For CVRs
+      - I want to build a separate product for that os I'd leave
+      those"; "For query - we do need to build a query function etc but
+      we should be thoughtful on how we do that once we have solid data
+      we're happy with - add to the future planning (probably the first
+      thing we build as it will drive the side bar etc)"; "Q5 - we need
+      to get to canonical (and perhaps some of them are sub reps under
+      a category) - wait untiil we have a few deals and see if we can
+      AI it?"; "on A - if the shareholders have to do something, okay
+      for them to be an obligor. Ok on ETA on covenants. reg rights I
+      think goes with consideration (but at bottom)". Applied: work
+      package 18 (e) is withdrawn; in its place an exhibit that is a
+      separate agreement (a Form of CVR Agreement) is out of this
+      product's scope: one OUT_OF_SCOPE_EXHIBIT note, no UNRESOLVED
+      fact-type issue per family, no extraction call. Legacy Query and
+      Compare stay unrouted (no deletion now); the Query on layered
+      facts is a plan item under section 7's later features, first
+      after the data is trusted, and implementer C writes its design
+      note for Ben now (what the sidebar needs, the conclusions-cell
+      filter across agreements, no code). Q5 waits for Olaplex and
+      Apogee; then an AI pass proposes canonical names and the
+      sub-representations under a category, for Ben's decision. A: an
+      obligor code for a party that is neither Company nor Parent when
+      the words bind it; a "By when" column on the covenant tables from
+      TRIGGER and PERIOD; the registration-rights facts as a table at
+      the bottom of the Consideration section, not on the covenants
+      table; (h) stays as it is.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
@@ -5604,6 +5680,18 @@ are adapted to the stable accepted-fact contract.
 Add any of these later only when a concrete product need justifies it.
 
 ### Features to improve later
+
+- Query on layered facts (Ben, 2026-10-18: "we do need to build a
+  query function etc but we should be thoughtful on how we do that once
+  we have solid data we're happy with - add to the future planning
+  (probably the first thing we build as it will drive the side bar
+  etc)"): the first feature after the internal release, built on the
+  activated releases' conclusions cells across agreements; its design
+  note is implementer C's (finding (163)); legacy Query and Compare
+  stay unrouted until then.
+- A CVR product of its own (Ben, 2026-10-18: "For CVRs - I want to build
+  a separate product for that"): a Form of CVR Agreement exhibit is out
+  of this product's scope.
 
 This is the future-feature list, not launch work. Update each feature here;
 the online status page displays the same entries. Status starts as Deferred,
