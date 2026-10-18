@@ -7,7 +7,7 @@ const assert = require('node:assert/strict');
 const test = require('node:test');
 
 const { buildAgreementStructure } = require('../lib/product/agreement-structure');
-const { buildAgreementSectionDraft, longSectionGroups, limblessSectionParts, mergePartResponses, LONG_SECTION_SPLIT } = require('../lib/product/agreement-draft');
+const { buildAgreementSectionDraft, longSectionGroups, limblessSectionParts, mergePartResponses, splitForAttempt, LONG_SECTION_SPLIT } = require('../lib/product/agreement-draft');
 const { buildSourceClosure, residualParagraphSpans, substantiveSections } = require('../lib/product/source-context');
 
 process.env.PRODUCT_PHASE2_HELPER_ONLY = '1';
@@ -211,4 +211,45 @@ test('a limbless long section is extracted in paragraph parts and the parts merg
   assert.match(splitIssue.message, /"chapeau_in_part":1/);
   assert.equal(section.model_calls.length, 2 + parts, 'routing, residual and one extraction call per part');
   assert.equal(section.proposals.length, parts, 'one proposal per part, each quoting its own paragraph');
+});
+
+// Work package 15 (plan finding (83), 2026-10-18): NCS generation 5's 5.1
+// lost two attempts to the output cap on part 2 of 3 and each attempt sent
+// the same three parts. The split for an attempt halves the parts for every
+// earlier attempt that ran past an output cap, splits a section that was
+// too short to split before, and leaves any other failure alone.
+test('splitForAttempt halves the parts after an output-cap failure and leaves other failures alone', () => {
+  const split = { min_section_bytes: 5000, min_children: 3, group_bytes: 3500 };
+  assert.equal(splitForAttempt(split, null), split);
+  assert.equal(splitForAttempt(split, { error_history: [] }), split);
+  assert.equal(splitForAttempt(split, { error_history: [{ attempt: 1, error: { message: 'ANTHROPIC_API_JSON: response must be one exact JSON object' } }] }), split, 'a JSON failure is not an output cap');
+  // The messages NCS 5.1's two attempts recorded (no code stored then).
+  const once = splitForAttempt(split, { error_history: [{ attempt: 1, error: { message: 'ANTHROPIC_API_OUTPUT_TRUNCATED: the answer ran past the output cap (64000 output tokens)' } }] });
+  assert.deepEqual(once, { min_section_bytes: 0, min_children: 3, group_bytes: 1750, after_output_cap: 1 });
+  const twice = splitForAttempt(split, { error_history: [
+    { attempt: 1, error: { message: 'ANTHROPIC_API_OUTPUT_TRUNCATED: the answer ran past the output cap (64000 output tokens)' } },
+    { attempt: 2, error: { message: 'ANTHROPIC_API_OUTPUT_TRUNCATED: the answer ran past the output cap (64000 output tokens)', code: 'ANTHROPIC_API_OUTPUT_TRUNCATED' } },
+  ] });
+  assert.deepEqual(twice, { min_section_bytes: 0, min_children: 3, group_bytes: 875, after_output_cap: 2 });
+  // The CLI path's cap, by code; and the floor.
+  assert.equal(splitForAttempt(split, { error_history: [{ error: { code: 'CLAUDE_OUTPUT_TRUNCATED', message: 'x' } }] }).group_bytes, 1750);
+  assert.equal(splitForAttempt(split, { error_history: Array.from({ length: 5 }, () => ({ error: { code: 'CLAUDE_OUTPUT_TRUNCATED', message: 'x' } })) }).group_bytes, 500);
+  assert.equal(splitForAttempt(null, { error_history: [{ error: { code: 'CLAUDE_OUTPUT_TRUNCATED' } }] }), null, 'a caller that extracts whole keeps extracting whole');
+});
+
+test('after an output-cap failure the section is extracted in more, smaller parts and the split issue says so', async () => {
+  const { sourceDocument, agreementStructure, node } = await conchoNoShop();
+  const first = partModel();
+  const usual = { min_section_bytes: 1000, min_children: 3, group_bytes: 6000 };
+  const before = await buildAgreementSectionDraft({ sourceDocument, agreementStructure, legalSchema: schema, model: first, node, longSectionSplit: usual });
+  const retry = partModel();
+  const claim = { error_history: [{ attempt: 1, error: { message: 'ANTHROPIC_API_OUTPUT_TRUNCATED: the answer ran past the output cap (64000 output tokens)' } }] };
+  const after = await buildAgreementSectionDraft({ sourceDocument, agreementStructure, legalSchema: schema, model: retry, node, longSectionSplit: splitForAttempt(usual, claim) });
+  assert.ok(retry.extractionRequests.length > first.extractionRequests.length, `${retry.extractionRequests.length} parts after, ${first.extractionRequests.length} before`);
+  const closure = buildSourceClosure({ sourceDocument, agreementStructure, nodeId: node.node_id });
+  assert.deepEqual(retry.extractionRequests.flatMap((request) => request.source_closure.operative.map((span) => span.span_id)), closure.operative_span_ids, 'every limb still goes to exactly one part, in order');
+  const issue = JSON.parse(after.issues.find((candidate) => candidate.code === 'LONG_SECTION_SPLIT').message);
+  assert.equal(issue.after_output_cap, 1);
+  assert.equal(issue.group_bytes, 3000);
+  assert.equal(JSON.parse(before.issues.find((candidate) => candidate.code === 'LONG_SECTION_SPLIT').message).after_output_cap, undefined);
 });

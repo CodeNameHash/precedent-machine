@@ -50,7 +50,8 @@ function fakeClient(reply, seen = []) {
 
 test('the API provider is a hosted provider at the Claude CLI tier, metered at the published rates', () => {
   assert.equal(ANTHROPIC_API_CALL_KIND_MODELS, CLAUDE_CLI_CALL_KIND_MODELS);
-  assert.equal(ANTHROPIC_API_MODEL_CONFIG.max_output_tokens, 64000, 'a 60,000-token extraction completes');
+  // Work package 15 (plan finding (83)): the documented maximum of the synchronous Messages API for claude-opus-5 ("Max output: 128K tokens", read 2026-10-18).
+  assert.equal(ANTHROPIC_API_MODEL_CONFIG.max_output_tokens, 128000, 'the documented maximum output');
   assert.equal('rates_usd_per_million' in ANTHROPIC_API_MODEL_CONFIG, false, 'prices live in one constant, not in the stored run config');
   assert.equal(ANTHROPIC_API_PRICES.source, 'https://platform.claude.com/docs/en/about-claude/pricing');
   assert.match(ANTHROPIC_API_PRICES.retrieved, /^\d{4}-\d{2}-\d{2}$/);
@@ -83,7 +84,7 @@ test('a call streams one compact-JSON request at the call kind\'s effort under t
   const result = await model.complete({ call_kind: 'EXTRACTION', prompt_version: 'PRODUCT_ALL_FAMILY_EXTRACTOR/V9', request });
   assert.equal(seen.length, 1);
   assert.deepEqual(seen[0], {
-    model: 'claude-opus-5', max_tokens: 64000, output_config: { effort: 'high' }, system: `${SYSTEM_PROMPT} ${REQUEST_LAYOUT_NOTE}`,
+    model: 'claude-opus-5', max_tokens: 128000, output_config: { effort: 'high' }, system: `${SYSTEM_PROMPT} ${REQUEST_LAYOUT_NOTE}`,
     messages: [{ role: 'user', content: [
       { type: 'text', text: JSON.stringify({ call_kind: 'EXTRACTION', prompt_version: 'PRODUCT_ALL_FAMILY_EXTRACTOR/V9', instruction: 'Review', family_contracts: [{ family_key: 'NO_SHOP' }] }), cache_control: { type: 'ephemeral', ttl: '1h' } },
       { type: 'text', text: JSON.stringify({ source_closure: { full_section: '5.02' }, part_instruction: 'part 1 of 2' }) },
