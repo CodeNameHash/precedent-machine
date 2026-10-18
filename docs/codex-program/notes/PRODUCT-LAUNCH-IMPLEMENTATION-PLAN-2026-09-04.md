@@ -4758,6 +4758,66 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       product_phase1_resolve_identity), which needs the identity
       resolution before any wake; Avadel went straight to
       SECTION_ANALYSIS.
+      (171) 2026-10-18 22:15 UTC: implementer B's (106) and implementer
+      C's (128) merged (head 81203646; the active suite in the next
+      finding). Read: the move script applies the 42 migrations to a
+      named target in one transaction against Supabase's own ledger,
+      carries one run's 36 tables in key order idempotently, and proves
+      the three reads equal; its dry run on the preview branch shows
+      each run's analysis and no release row, because no review is
+      published yet. Manager's answer to B's question: the move runs
+      after Ben's first review is published and activated on the
+      preview branch, so it carries a release and not only analyses;
+      Ben reviews on the preview deployment until then (his (166) "you
+      can move over whener you like" stands as the authority for that
+      apply, with --confirm-target). C's tender-offer and stock-deal
+      rows accepted (eleven of 24 tender-offer provisions and five of
+      21 stock-deal provisions had no row; now every one is reachable
+      by row_label); what waits on Ben, put to him with this check-in:
+      an Offer step with five subtypes, a MINIMUM_CONDITION subtype, an
+      OFFER_FAILURE termination subtype, three LEGAL-RULES lines, the
+      ratio's form and adjustment as grid columns, a combined-company
+      governance table, Parent's no-shop, a Dividends table. Next:
+      work package B4 to implementer B, Verve's intake failure
+      (STRUCTURE_PARENT_SPAN on span 4b477bbe at buildAgreementStructure,
+      twice, finding (170)), a structure defect to fix in code with the
+      exhibit's own bytes pinned; work package C5 to implementer C, the
+      DOCUMENT_IDENTITY_REVIEW gate the Crinetics, Centessa and Akero
+      intakes stopped at: the recorded reasons, the resolution the
+      Phase 1 function wants, and whether the page shows them, for the
+      manager to resolve with Ben. Olaplex and Apogee generation 2 at
+      22:12 UTC: 24 of 97 and 21 of 85, no failures.
+      (172) 2026-10-18 22:30 UTC: implementer E's (180), implementer A's
+      (98), (99) and (99a) merged (head 5f1785ca). The ledger read by
+      the manager, not just its totals: the per-call costs reconcile
+      to the published rates to the cent; output is 63 per cent of
+      NCS generation 5's $145.68 (3.69m extraction output tokens at
+      87 a second are 97 per cent of call time), of the visible answer
+      30 per cent is the agreement's words written back twice, 20 per
+      cent 64-hex span ids, 12 per cent the V1 roles the page never
+      shows; fresh input is 20 per cent (every agreement byte sent at
+      least three times, a fifth of the bytes 119 to 277 times each,
+      74 per cent of 16.0m byte-sends); cache writes 12 per cent (51
+      distinct stable blocks, 22 used once); failed attempts 9.5 per
+      cent; 62 of 439 minutes idle. Floor: about $15 to $23 and 13
+      minutes in parallel; actual 6x to 10x the cost floor and 34x the
+      parallel time floor. The manager's (167) estimate holds: 10x is
+      there, 100x is not while a frontier model writes the facts.
+      Direction to E, in order of measured dollars: output (drop the
+      duplicate evidence quotes and the V1 roles, span aliases, quotes
+      as byte offsets, the thinking share measured by effort), then
+      input (one stable block for every call, the definitions article
+      and the most-referred sections as cached context, cross-reference
+      depth capped), then what remains of the failed attempts and the
+      idle, then concurrency; the three-section proof as a script run
+      inside a third sandbox created for experiments, the credentials
+      never read here. Work package 21 to A (findings from (200)): the
+      validator's acceptance of offsets and span aliases, proven on
+      the stored rows. A's (99) corrects (171): the registration row
+      shape the manager saw was real on the deployed code too (the
+      subtype naming overrode the words rule on the same table), fixed
+      and pinned. Olaplex and Apogee generation 2 at 22:12 UTC: 24 of
+      97 and 21 of 85, no failures.
       (95)'s rule reached the deployment (its deploy was created at
       20:50:39 UTC, the read fell between READY at 20:48 and that);
       on the real rows the move happens, now pinned with the stored
@@ -6043,6 +6103,140 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       notification 2 (the Nasdaq deficiency notice and the delisting
       event), Litigation notification 1 (Nasdaq or SEC proceedings);
       nothing without a readout. Nothing submitted, woken or retried.
+      (99a) 2026-10-18 21:45 to 22:25 UTC (implementer A), work package 20
+      on the manager's (168) (begun on its decided terms; the formal
+      message had not arrived by the push). Numbered (99a) because A's
+      range (90) to (99) is spent; the plan owner's to renumber. Read
+      first, from the preview branch's tables: 4.7's three facts were
+      not a page-footer case. Their held evidence quotes cite the Article
+      IV introduction's words on the Article III chapeau span (3d0f7a06,
+      in 4.7's closure through its reference to Section 3.8); the Article
+      IV chapeau span c0b36c15 holds both quotes verbatim, with the
+      footer ("34") after "as follows:", outside them. Work package 18
+      (a)'s relocation did not reach them because evidence_quotes carry no
+      origin, and the rule keyed on the origin; the components of the
+      same facts, with origin INTRO, were relocated. 5.4 is a footer case:
+      "any information relating to the Transactions,\n49\nthe Company or
+      Parent", where the model's TRIGGER stopped at the footer, VALID but
+      short; the NCS text has 87 bare page-number lines and no "-N-"
+      footers, which source-display.js did not know. Built, each as a
+      rule across the corpus with tests (tests/product-fact-components-
+      extraction.test.js, the work package 20 block; the page footers
+      test in tests/product-table-view.test.js; tests/product-legal-
+      schema-v2.test.js): (a) B's rule, lib/product/agreement-draft.js
+      dropUnresolvedInherited: an inherited context component (origin
+      INTRO, CHAPEAU, DEFINITION or CROSS_REFERENCE) that resolves
+      nowhere after the relocation rules is dropped from the tree with
+      the note CONTEXT_COMPONENT_DROPPED (path, kind, origin, label,
+      quote, the id cited, the reason), never holding a fact whose own
+      words resolved; an own word that fails, or a fact with no resolved
+      own word, holds as before. The same at the evidence level: an
+      evidence quote cited on a context span (chapeau, definition,
+      cross-reference) that resolves nowhere is dropped with
+      CONTEXT_EVIDENCE_DROPPED when the own evidence is exact. And the
+      missing half of 18 (a): an evidence quote cited on a context span
+      that does not hold it is relocated by the cited span's kind
+      (CONTEXT_SPAN_RELOCATION), noted EVIDENCE_SPAN_RELOCATED; own words
+      are never relocated across spans. The two earlier tests that pinned
+      "two candidate spans keep the hold" (13 (a), 18 (a)) now pin the
+      drop and the note. On the stored 4.7 facts the relocation applies
+      (one Article IV chapeau span holds the words), so the next
+      extraction of 4.7 gives three VALID facts with the note. (b)
+      footerTolerantMatches in resolveEvidenceQuote: when a quote has no
+      verbatim match in its span, its words in order, with any whitespace
+      between them, may enclose exactly a footer line (FOOTER_GAP from
+      source-display.js: "-43-", "-ii-" or a bare page number on its own
+      line); a match without a footer inside is not taken, so whitespace
+      alone never relaxes the verbatim rule (pinned). The span's bytes
+      include the footer and its text is those bytes (rule R1 holds); the
+      context records page_footer_skipped; a quote that copies the page
+      number as a word ("the Transactions, 49 the Company") matches too.
+      PAGE_FOOTER now hides a bare page-number line; between single
+      newlines (NCS's layout) a footer at a paragraph boundary keeps one
+      newline, otherwise a space; Metsera's blank-line layout is
+      unchanged. (c) lib/product/representation-limbs.js fusedLimbs: on
+      a REPRESENTATIONS fact, or any fact stated as a representation
+      (3.27's TAX_MATTERS fact says "represents and warrants"), an own
+      component opening on a finite verb that follows an own OPERATION
+      with only "or" or "nor" between them in the source is the note
+      FUSED_REPRESENTATION_LIMBS (the two predicates, the joining word, the
+      one-effect rule); "and" is not (3.17: "is in material breach or
+      default, and has not taken any action" is one status and its
+      consequence). (d) exceptionOnlyRepresentation: a REPRESENTATIONS
+      fact (never REPRESENTATION_QUALIFICATION, never from an article
+      introduction) whose own words are an enumerated exception is held
+      REPRESENTATION_EXCEPTION_NOT_A_FACT: the exception words are an own
+      EXCEPTION opening on an enumerator, "except for", "other than" or
+      "save for" (never "except as set forth in", the disclosure
+      exception), or an own component governed by an EXCEPTION introducer
+      earlier in the fact; every own component before them is shared
+      verbatim with another proposal of the same call (the sentence they
+      were all cut from, a non-generic shared context required); no own
+      OPERATION or EFFORTS_STANDARD before them; no operative kind from
+      them on. The REPRESENTATIONS layer rule (scripts/product/build-
+      legal-schema-v2.js, the schema regenerated) tells the extractor both
+      shapes: predicates joined by "or" are two facts; an enumerated
+      exception is an EXCEPTION component, a LIST with a LIST_ELEMENT per
+      item, since the representations table has no row per exception
+      (MAE_DEFINITION's carve-outs keep their facts, as (168) says). Both
+      detectors run over the 278 stored generation-5 representation
+      facts before the rules went in (scratch script, bytes only; the
+      "or" gaps confirmed from the canonical text): (c) fires on exactly
+      the three fused facts (3.27 twice, 4.13 once) and on nothing else;
+      (d) on exactly twelve facts, 3.5(b)'s four, 4.4(b)'s four and
+      3.7's four ("except (a) to the extent accrued ..., (b) for
+      liabilities in the ordinary course ..."), none other of the 278.
+      Plan evidence: B's "(7) ten facts of 3.5, 4.4 and 5.1" is twelve of
+      3.5, 3.7 and 4.4 on this read; 5.1 has no representation facts
+      (its EXCEPTION facts are the covenant's general exceptions, cells
+      of the interim operating table, which has them). Residual risk of
+      (d), for the manager: a representation whose own verb the model
+      labelled QUALIFIER and whose exception facts copy its words could
+      be held with them; the hold is a VALIDATION issue carrying the
+      rule, reviewable, and the layer rule reduces the shape. The
+      manager's formal message (21:40 UTC, read at 22:11 after the work
+      was built on (168)'s terms) reconciled: its note name is used,
+      CONTEXT_COMPONENT_DROPPED (the component tree) and
+      CONTEXT_EVIDENCE_DROPPED (the evidence quotes), each naming the
+      quote, the span cited and the reason; its finding number (98) was
+      already (98), work package 19, when the message arrived, so (99a)
+      stays, the plan owner's to renumber; its (b) asks that "the fact's
+      byte ranges then exclude the footer", which a component cannot do:
+      a component is one half-open byte range and rule R1 (contract
+      FACT_COMPONENTS/V2) requires its text to be those bytes, so a quote
+      across a footer has the footer inside its range and its text, and
+      every place the words are shown hides it (hidePageFooters: the
+      tables, the tree, the sidebar, the clause). Splitting the component
+      in two at the footer would make one word run two components; the
+      manager decides if the range is to be cut another way. Counts from
+      the preview branch's rows, generation 5 (run 51577c57): (a) 13 held
+      facts have inherited components that resolve nowhere beside
+      resolved own words (3.4's ten, 4.7's three), and the same three of
+      4.7 at the evidence level (their two chapeau quotes are the only
+      unmatched evidence on a context span in the run); on the next
+      extraction the 4.7 quotes relocate (one Article IV chapeau span
+      holds them) and 3.4's resolve by work package 13 (a), the drop the
+      backstop for a quote no span holds. (b) Of the run's 5,439 resolved
+      components, none spans a footer: 42 end mid-sentence at a footer
+      and 27 begin right after one (4.14 six, 4.4 and 4.6 five each,
+      4.5 four, 5.14 and 5.17 three each, 5.4 two, the Article IV
+      introduction two, ten sections one), the model stopping its quote
+      where the page ends; of the 13 held facts' unmatched quotes, none
+      is a footer case. So the matcher changes no stored fact by itself
+      and the extractor is now told, in the component instruction, that a
+      page number on a line of its own between two words is a footer to
+      quote across with the number left out, never to stop at; the
+      matcher then takes the quote. (c) three facts (3.27 twice, 4.13
+      once). (d) twelve facts (3.5(b) four, 3.7 four, 4.4(b) four). No
+      decision of Ben's needed; nothing submitted, woken or retried. Two
+      commits on the shared branch, "Work package 20: inherited
+      components dropped not held, quotes across page footers, fused and
+      exception-only representations" and "Work package 20 reconciled
+      with the manager's message: note names, the extractor's footer
+      line, the counts", after git fetch and merge of origin (B's (106)
+      production-move files came in, no conflict); npm run test:active
+      on the final tree: 778 of 779, the one failure the known
+      Codex-client final-message test.
       (120) 2026-10-18 19:10 to 19:45 UTC (implementer C), Q5: the limb
       names harvested. `scripts/product/harvest-rep-limbs.js` (library
       `lib/product/rep-limb-harvest.js`, `tests/product-rep-limb-harvest.test.js`)
