@@ -661,7 +661,7 @@ test('a component quote on an unknown span is taken from the one closure span it
   assert.match(entry.to_span_id, /^[0-9a-f]{64}$/, 'the component\'s own span within the chapeau');
   assert.equal(entry.to_span_id, fact.components[0].source_span_id);
   const { to_span_id: _usedSpan, ...named } = entry;
-  assert.deepEqual(named, { quote: 'the Company represents and warrants to Parent and Merger Sub as follows:', from_span_id: wrongId, to_closure_span_id: introSpan.span_id, to_span_kind: 'CHAPEAU', to_structure_node_id: introNode }, 'the id written, the closure span used');
+  assert.deepEqual(named, { quote: 'the Company represents and warrants to Parent and Merger Sub as follows:', from_span_id: wrongId, to_closure_span_id: introSpan.span_id, to_span_kind: 'CHAPEAU', to_structure_node_id: introNode, unknown_span: true }, 'the id written, the closure span used, and that the id was unknown');
   // Two chapeau spans holding the words: still unknown.
   const twice = compileAuthority(proposalWith([
     { ref: 'c1', kind: 'TERM', label: 'heading', quote: 'Section 3.4 Authority.', source_span_id: wrongId, occurrence: 0, origin: 'CHAPEAU', children: [] },
@@ -938,4 +938,80 @@ test('a registration-rights covenant moves from General notification to the Regi
   assert.equal(fact.conclusions.row_detail, undefined);
   assert.deepEqual(JSON.parse(compiled.issues.find((issue) => issue.code === 'ROW_FROM_WORDS').message), { client_ref: 'p1', from: 'General notification', from_table_key: 'general-covenants-table', to: 'Registration rights', to_table_key: 'consideration-registration-rights' });
   assert.equal(compiled.issues.some((issue) => issue.code === 'ROW_DETAIL_FROM_WORDS'), false);
+});
+
+
+// Work package 19 (c) (manager finding (165); NCS generation 5, 6.4): "this
+// Article VI" resolves to the article node of the structure, so the three
+// frustration facts are VALID and FRUSTRATION_BREACH_STANDARD is found.
+test('a cross-reference to "this Article VI" resolves to the article node and the frustration fact is VALID', () => {
+  const { buildAgreementStructure } = require('../lib/product/agreement-structure');
+  const { buildSourceClosure } = require('../lib/product/source-context');
+  const canonical = [
+    'AGREEMENT AND PLAN OF MERGER',
+    'ARTICLE VI',
+    'CONDITIONS PRECEDENT',
+    'Section 6.1 Conditions to Each Party\'s Obligation.',
+    'The obligations of each Party are subject to the satisfaction of the conditions in this Article VI.',
+    'Section 6.4 Frustration of Closing Conditions.',
+    'None of Parent, Merger Sub or the Company may rely on the failure of any condition set forth in this Article VI to be satisfied if such failure was caused by such Party\'s breach of this Agreement.',
+  ].join('\n');
+  const digest = sha(canonical);
+  const doc = {
+    schema_version: 'SOURCE_DOCUMENT/V1', source_document_id: digest, agreement_id: digest,
+    retrieval_url: 'https://www.sec.gov/Archives/edgar/data/1/000119312525000001/ex21.htm', final_url: 'https://www.sec.gov/Archives/edgar/data/1/000119312525000001/ex21.htm',
+    filing_accession: '0001193125-25-000001', exhibit_filename: 'ex21.htm', source_map_id: digest, canonical_text: canonical, canonical_text_sha256: digest,
+  };
+  const agreementStructure = buildAgreementStructure(doc);
+  const article = agreementStructure.nodes.find((candidate) => candidate.kind === 'ARTICLE' && /ARTICLE VI$/.test(candidate.reference));
+  const frustration = agreementStructure.nodes.find((candidate) => candidate.reference === '6.4');
+  assert.ok(article && frustration);
+  const frustrationClosure = buildSourceClosure({ sourceDocument: doc, agreementStructure, nodeId: frustration.node_id });
+  const span = frustrationClosure.spans.find((candidate) => candidate.span_id === frustrationClosure.full_section_span_id);
+  const own = (ref, kind, label, quote, extra = {}) => ({ ref, kind, label, quote, source_span_id: span.span_id, occurrence: 0, origin: 'OWN', children: [], ...extra });
+  const compiled = compileExtraction({
+    sourceDocument: doc, legalSchema: legalSchemaV2, node: { node_id: frustration.node_id, reference: '6.4', kind: 'SECTION' }, closure: frustrationClosure, call,
+    routedFamilies: ['CLOSING_CONDITIONS'], ownedNodeIds: new Set([frustration.node_id]), agreementStructure,
+    response: {
+      proposals: [{ client_ref: 'p1', group_ref: 'g1', family_key: 'CLOSING_CONDITIONS', subtype_key: 'FRUSTRATION', fact_type: 'FRUSTRATION_BREACH_STANDARD',
+        statement: 'Parent cannot rely on a condition failure its own breach caused.',
+        roles: { LEGAL_ACTOR_OR_SUBJECT: 'Parent', LEGAL_OPERATION: 'may rely on the failure of any condition', OPERATIVE_OBJECT: 'any condition set forth in this Article VI' },
+        value: null, evidence_quotes: [{ quote: 'may rely on the failure of any condition set forth in this Article VI', source_span_id: span.span_id, occurrence: 0 }],
+        headline: { label: 'Frustration of conditions', distinguishing_refs: ['c3'], summary: 'Parent cannot rely on a condition failure its own breach caused' },
+        components: [
+          own('c1', 'ACTOR', 'parties', 'None of Parent, Merger Sub or the Company'),
+          own('c2', 'OPERATION', 'reliance', 'may rely on the failure of any condition set forth in this Article VI', { children: [own('c2a', 'CROSS_REFERENCE', 'this Article', 'this Article VI')] }),
+          own('c3', 'CONDITION', 'own breach', 'if such failure was caused by such Party\'s breach of this Agreement'),
+        ] }],
+      groups: [{ client_ref: 'g1', family_key: 'CLOSING_CONDITIONS', subtype_key: 'FRUSTRATION' }],
+      links: [],
+      coverage: { CLOSING_CONDITIONS: 'FOUND' },
+      fact_type_coverage: { CLOSING_CONDITIONS: { FRUSTRATION_BREACH_STANDARD: 'FOUND' } },
+    },
+  });
+  assert.equal(compiled.proposals.length, 1);
+  const [fact] = compiled.proposals;
+  assert.equal(fact.validation_status, 'VALID', compiled.issues.map((issue) => `${issue.code}: ${issue.message}`).join('\n'));
+  const reference = fact.components[1].children[0];
+  assert.equal(reference.kind, 'CROSS_REFERENCE');
+  assert.equal(reference.resolves_to.structure_node_id, article.node_id, 'the article node of the structure');
+  assert.equal(reference.resolves_to.text, 'ARTICLE VI CONDITIONS PRECEDENT');
+  const frustrationCoverage = compiled.coverage.find((assertion) => assertion.subject_kind === 'FACT_TYPE' && assertion.reason === 'FACT_TYPE:FRUSTRATION_BREACH_STANDARD');
+  if (frustrationCoverage) assert.equal(frustrationCoverage.state, 'FOUND');
+  // Without the structure, the reference still has nothing to resolve to and the fact is held.
+  const unresolved = compileExtraction({
+    sourceDocument: doc, legalSchema: legalSchemaV2, node: { node_id: frustration.node_id, reference: '6.4', kind: 'SECTION' }, closure: frustrationClosure, call,
+    routedFamilies: ['CLOSING_CONDITIONS'], ownedNodeIds: new Set([frustration.node_id]),
+    response: {
+      proposals: [{ client_ref: 'p1', group_ref: 'g1', family_key: 'CLOSING_CONDITIONS', subtype_key: 'FRUSTRATION', fact_type: 'FRUSTRATION_BREACH_STANDARD',
+        statement: 'Parent cannot rely on a condition failure its own breach caused.',
+        roles: { LEGAL_ACTOR_OR_SUBJECT: 'Parent', LEGAL_OPERATION: 'may rely on the failure of any condition', OPERATIVE_OBJECT: 'any condition set forth in this Article VI' },
+        value: null, evidence_quotes: [{ quote: 'may rely on the failure of any condition set forth in this Article VI', source_span_id: span.span_id, occurrence: 0 }],
+        headline: { label: 'Frustration of conditions', distinguishing_refs: ['c3'], summary: 'Parent cannot rely on a condition failure its own breach caused' },
+        components: [own('c2', 'OPERATION', 'reliance', 'may rely on the failure of any condition set forth in this Article VI', { children: [own('c2a', 'CROSS_REFERENCE', 'this Article', 'this Article VI')] })] }],
+      groups: [{ client_ref: 'g1', family_key: 'CLOSING_CONDITIONS', subtype_key: 'FRUSTRATION' }],
+      links: [],
+    },
+  });
+  assert.equal(unresolved.proposals[0].validation_status, 'INVALID');
 });

@@ -1108,3 +1108,30 @@ test('the registration-rights table sits last under Consideration, takes general
   findTableV3(broken2.sections.find((s) => s.section_key === 'consideration-hero'), 'consideration-registration-rights').accepts_families = ['NOT_A_FAMILY'];
   assert.throws(() => validateTableShapesV3(broken2, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_ACCEPTS_FAMILIES/);
 });
+
+
+// Work package 19 (d) (manager finding (165); NCS generation 5): the eight
+// VALID facts without a readout each have a row.
+test('the conditions, termination and boilerplate tables name rows for the NCS generation 5 facts that had none', () => {
+  const mutual = findTableV3(findSectionV3('conditions'), 'conditions-table');
+  assert.ok(mutual.fixed_row_labels.includes('Other mutual conditions'));
+  assert.equal(mutual.fact_type_rows.GENERAL_CLOSING_CONDITION, 'Other mutual conditions');
+  for (const [sectionKey, tableKey] of [['conditions-b', 'conditions-b-table'], ['conditions-s', 'conditions-s-table']]) {
+    const table = findTableV3(findSectionV3(sectionKey), tableKey);
+    for (const label of ['No Material Adverse Effect', 'Tax opinion', 'Other conditions']) assert.ok(table.fixed_row_labels.includes(label), `${tableKey}: ${label}`);
+    assert.equal(table.fact_type_rows['GENERAL_CLOSING_CONDITION:TAX_OPINION'], 'Tax opinion');
+    assert.equal(table.fact_type_rows.GENERAL_CLOSING_CONDITION, 'Other conditions');
+    assert.equal(table.fact_type_rows['GENERAL_CLOSING_CONDITION:BRINGDOWN'], 'Accuracy of Representations');
+  }
+  assert.ok(new RegExp(findTableV3(findSectionV3('conditions-s'), 'conditions-s-table').statement_words, 'i').test("As a condition to the Company's obligation to effect the Merger"));
+  const buyer = findTableV3(findSectionV3('termination-rights'), 'termination-rights-buyer-may-terminate');
+  assert.deepEqual(buyer.fixed_row_labels.slice(-2), ['Written consent not delivered', 'Support agreement not delivered']);
+  assert.equal(buyer.fact_type_rows['TERMINATION_RIGHT:WRITTEN_CONSENT_NOT_DELIVERED'], 'Written consent not delivered');
+  assert.equal(buyer.subtype_rows.SUPPORT_AGREEMENT_NOT_DELIVERED, 'Support agreement not delivered');
+  const effect = findTableV3(findSectionV3('termination-rights'), 'termination-rights-effect');
+  assert.ok(effect.fixed_row_labels.includes('Remedies preserved'));
+  assert.equal(effect.fact_type_rows['TERMINATION_EFFECT:REMEDY_ENTITLEMENT'], 'Remedies preserved');
+  const misc = findTableV3(findSectionV3('misc-boilerplate'), 'misc-boilerplate-table');
+  assert.ok(misc.fixed_row_labels.includes('Cumulative remedies'));
+  assert.deepEqual(misc.fact_type_rows, { 'MISC_BOILERPLATE_MECHANIC_PRESENT:CONSTRUCTION': 'Construction', 'SPECIFIC_PERFORMANCE_REMEDY_PRESENT:CUMULATIVE_RIGHTS': 'Cumulative remedies' });
+});

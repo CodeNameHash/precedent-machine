@@ -612,7 +612,12 @@ test('defaultConclusions gives a fact with no readout the row its fact type name
   assert.deepEqual(seller, { table_key: 'conditions-s-table', row_label: 'Accuracy of Representations', cells: [] });
   const mutual = defaultConclusions({ family_key: 'CLOSING_CONDITIONS', subtype_key: 'STOCKHOLDER_APPROVAL', fact_type: 'STOCKHOLDER_APPROVAL_CONDITION', statement: 'The respective obligation of each party to effect the Merger is subject to the Company Stockholder Approval.' }, tableShapes);
   assert.deepEqual(mutual, { table_key: 'conditions-table', row_label: 'Stockholder Approval', cells: [] });
-  assert.equal(defaultConclusions({ family_key: 'CLOSING_CONDITIONS', subtype_key: 'GENERAL_CLOSING_CONDITION', fact_type: 'GENERAL_CLOSING_CONDITION', statement: 'The obligation of the Company to effect the Merger is subject to a condition.' }, tableShapes), null, 'a general condition that is not a bring-down names no row');
+  // Work package 19 (d) (NCS generation 5, 6.1 and 6.3): a general
+  // condition that is not a bring-down takes the Other conditions row of
+  // the table its statement's words choose, written either way round.
+  assert.deepEqual(defaultConclusions({ family_key: 'CLOSING_CONDITIONS', subtype_key: 'GENERAL_CLOSING_CONDITION', fact_type: 'GENERAL_CLOSING_CONDITION', statement: 'The obligation of the Company to effect the Merger is subject to a condition.' }, tableShapes), { table_key: 'conditions-s-table', row_label: 'Other conditions', cells: [] });
+  assert.equal(defaultConclusions({ family_key: 'CLOSING_CONDITIONS', subtype_key: 'TAX_OPINION', fact_type: 'GENERAL_CLOSING_CONDITION', statement: "As a condition to the Company's obligation to effect the Merger, the Company shall have received an opinion." }, tableShapes).row_label, 'Tax opinion');
+  assert.equal(defaultConclusions({ family_key: 'CLOSING_CONDITIONS', subtype_key: 'GENERAL_CLOSING_CONDITION', fact_type: 'GENERAL_CLOSING_CONDITION', statement: 'The obligation of each Party to effect the Merger is subject to the mailing of the Information Statement.' }, tableShapes).row_label, 'Other mutual conditions');
   assert.equal(defaultConclusions({ family_key: 'CLOSING_CONDITIONS', subtype_key: 'OFFICER_CERTIFICATE', fact_type: 'OFFICER_CERTIFICATE_REQUIRED', statement: 'A certificate is delivered.' }, tableShapes), null, 'no words, no table');
   assert.deepEqual(validateFactConclusions({ ...{ family_key: 'CLOSING_CONDITIONS', subtype_key: 'OFFICER_CERTIFICATE', components: [] }, conclusions: buyer }, { tableShapes }), []);
 });
