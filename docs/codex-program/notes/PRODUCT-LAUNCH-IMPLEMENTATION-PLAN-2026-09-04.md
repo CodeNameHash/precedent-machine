@@ -4608,6 +4608,37 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       (c) the publicity row's twelve facts as sub-items, the labels
       proposed for Ben. NCS at 19:50 UTC: RUNNING, 81 of 104, 0 failed,
       $118.85.
+      (162) 2026-10-18 20:25 UTC: implementer C's findings (120) to
+      (124) accepted and merged (9035e952): the Q5 harvest and its
+      note docs/codex-program/notes/Q5-REPRESENTATION-LIMB-NAMES-PROPOSAL-2026-10-18.md
+      (558 readouts, 489 distinct limb names, 43 folds; the nine seeded
+      rows carry canonical names on 64 of 78 facts, the 43 unseeded
+      rows 442 names for 450 facts: the vocabulary is Ben's to fix);
+      the Q4 note docs/codex-program/notes/Q4-LEGACY-QUERY-COMPARE-EVIDENCE-2026-10-18.md
+      (legacy Query already off at every entry point, Compare reachable
+      only by URL; retire is one deletion of about 36,000 lines, keep
+      unrouted costs nothing now, migrate is a rewrite); the Phase 5
+      reconciliation in one command with three matcher defects fixed
+      (III-INTRO, leading zeros, the section-above rule); the 51
+      UNRESOLVED fact types all from Exhibit-B, the Form CVR Agreement,
+      never extracted because its closure records the exhibit's own
+      section references as unresolved (47 of the 51 types carried
+      VALID elsewhere; four absent as such in a cash deal). A's finding
+      (93): 5.17's registration-rights covenants mis-rowed on the
+      general covenants table and the stock consideration's securities-
+      law statements on the capitalization table. To Ben: Q4 (retire
+      now or keep unrouted; a Query on layered facts as a plan item
+      once releases exist); Q5 (the note, row by row); A's (f) an
+      obligor code for a party that is neither Company nor Parent and a
+      "By when" column for covenant deadlines, (g) where the securities-
+      law statements about the stock consideration belong, (h) an open
+      row for a mutual condition the fixed list lacks. To A as work
+      package 18's items (d) and (e): the Registration rights row with
+      sub-items by words (labels proposed for Ben), and Exhibit-B's
+      closure: references inside an exhibit resolve within the exhibit
+      node (its own numbering) before the main agreement, so the CVR
+      Agreement is extracted. NCS at 20:20 UTC: RUNNING, 85 of 104, 0
+      failed, $127.17.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
