@@ -63,7 +63,10 @@ test('the API provider is a hosted provider at the Claude CLI tier, metered at t
   assert.equal(configuredProductModelConfig({ PRODUCT_MODEL_PROVIDER: ANTHROPIC_API_PROVIDER_ID }), ANTHROPIC_API_MODEL_CONFIG);
   assert.deepEqual(resolveAnthropicApiCallModel(ANTHROPIC_API_MODEL_CONFIG, 'EXTRACTION'), { model: 'claude-opus-5', effort: 'high' });
   assert.throws(() => resolveAnthropicApiCallModel(ANTHROPIC_API_MODEL_CONFIG, 'UNKNOWN'), /CALL_KIND/);
-  assert.throws(() => resolveAnthropicApiCallModel({ ...ANTHROPIC_API_MODEL_CONFIG, max_output_tokens: 1 }, 'ROUTING'), /ANTHROPIC_API_MODEL_CONFIG_UNSUPPORTED/);
+  assert.throws(() => resolveAnthropicApiCallModel({ ...ANTHROPIC_API_MODEL_CONFIG, thinking: 'other' }, 'ROUTING'), /ANTHROPIC_API_MODEL_CONFIG_UNSUPPORTED/);
+  // A run created under an earlier cap resolves under the deployed one
+  // (NCS generation 5, 2026-10-18; plan finding (87)).
+  assert.deepEqual(resolveAnthropicApiCallModel({ ...ANTHROPIC_API_MODEL_CONFIG, max_output_tokens: 64000 }, 'ROUTING'), ANTHROPIC_API_CALL_KIND_MODELS.ROUTING);
   // One million of each kind: $5 fresh input, $6.25 5-minute cache write, $0.50 cache read, $25 output.
   assert.equal(anthropicApiCostMicrousd('claude-opus-5', { input_tokens: 1000000, cache_creation_input_tokens: 1000000, cache_read_input_tokens: 1000000, output_tokens: 1000000 }), 36750000);
   assert.equal(anthropicApiCostMicrousd('claude-opus-5', { input_tokens: 1000, output_tokens: 200 }), 10000);

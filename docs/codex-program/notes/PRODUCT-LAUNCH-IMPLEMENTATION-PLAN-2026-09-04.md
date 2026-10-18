@@ -4518,6 +4518,15 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       not spend another attempt on 5.1; the section it was on is
       reclaimed at its lease's expiry. Then the deploy, the worker
       update and a plain wake.
+      18:50 UTC: the wake started a worker that refused every section at
+      once (PRODUCT_ANTHROPIC_API_MODEL_CONFIG_UNSUPPORTED, zero tokens):
+      the worker builds the model from the run's stored config and the
+      call-model resolver compared the whole config too. Same rule
+      applied there: the resolver compares identities and the request
+      carries the deployed cap (128,000) whatever cap the stored config
+      names. 5.1 and 846731e1 (the section the stopped worker had
+      held) FAILED on it; retried (ncs-gen5-retry-6) after the worker
+      update.
 
       (84) 2026-10-18 18:05 to 18:20 UTC (implementer), work package 15
       on finding (83)'s terms ("the documented maximum output cap on the
