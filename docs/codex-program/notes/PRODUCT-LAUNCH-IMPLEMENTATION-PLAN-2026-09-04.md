@@ -3695,6 +3695,114 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       product-extraction-recovery together 21 of 21, product-claude-cli-
       provider 11 of 11. npm run test:active: 676 tests, 675 pass, the
       one failure the known Codex-client final-message test.
+      (67) 2026-10-18 10:43 to 11:40 UTC (implementer), work package 10
+      on the manager's message of 10:40 UTC: the prompt-cache breakpoint
+      for the ANTHROPIC_API provider. No run submitted; no live API call;
+      no key value anywhere. Evidence read first: the adapter (one user
+      text block holding the request JSON), the three request builders,
+      the price table, and generation 8's 313 stored calls on the preview
+      branch (run 72d94dd2), parsed from their recorded requests.
+      Profile: extraction 130 calls, 9,617,201 input tokens, of which the
+      part that is a function of the schema and the routed family set
+      alone (instruction, scope_instruction, family_contracts,
+      cross_section_target_contracts, response_contract with its per-set
+      allowed maps, component_instruction with the layer rules,
+      table_shapes, conclusion_instruction) is 3,949,927 tokens, 41 per
+      cent; the source closure, the part instruction and the two
+      section-specific instructions are the rest. 40 distinct routed
+      family sets over 83 sections; 90 of the 130 calls repeat a set.
+      Routing 93 calls, 948,288 input, stable (instruction, the 25
+      family routing contracts, response contract) 718,691 tokens, 76 per
+      cent, one set. Residual 90 calls, 312,860 input, stable about 930
+      tokens a call (1,626 bytes), 27 per cent. Durations: extraction
+      median 217 s, p90 450 s, max 1,800 s; a worker's next extraction
+      starts a median 233 s after its previous one started (52 of 126
+      per-worker gaps over five minutes; four worker ids ran). Built:
+      `lib/product/anthropic-api-model.js` sends every request as two
+      text blocks in one user message, the stable block (call kind, prompt
+      version, then every request key not named in PER_SECTION_KEYS for
+      the call kind: ROUTING section_reference, section,
+      deterministic_family_evidence; RESIDUAL section_reference,
+      routed_families, paragraphs; EXTRACTION source_closure,
+      part_instruction, article_introduction_instruction,
+      no_other_reps_instruction) carrying `cache_control: { type:
+      'ephemeral', ttl: '1h' }`, then the section block; the system prompt
+      gains one sentence (REQUEST_LAYOUT_NOTE) saying the request is two
+      JSON objects to be read as one. Decision: the cache is keyed per
+      routed family set, identical content to today; the whole schema's
+      contracts in one entry for every section would have added about
+      180,000 tokens of contracts the model was not routed to on every
+      call (the 25 contracts and the 30 table shapes together are 418 KB)
+      and changed what it reads; not taken. What the model reads is the
+      same words in a new order (the closure now follows the contracts)
+      plus that sentence, so the prompt versions stay. The minimum
+      cacheable prefix is 512 tokens for claude-opus-5
+      (platform.claude.com/docs/en/build-with-claude/prompt-caching, read
+      2026-10-18: "Shorter prompts cannot be cached, even if marked with
+      cache_control ... processed without caching, and no error is
+      returned"); the residual pass's stable block is above it on the
+      estimate, so all three call kinds get the breakpoint; if it falls
+      short the API ignores it at no cost. The lifetime: the documentation
+      says it "is measured from the start of the request that writes or
+      reads the cache entry, not from the end of its response", and the
+      entry is refreshed on every read. On generation 8's gaps between
+      consecutive calls of the same routed set (any worker), the 5-minute
+      entry ($6.25 per million written) would be read by 45 of the 90
+      repeat extraction calls, 69 of 92 routing, 66 of 89 residual:
+      writes 3,185,992 tokens, reads 1,566,424, input $51.33 against
+      $54.39 uncached, saving $3.07 a generation. The 1-hour entry ($10
+      per million) would be read by 85 of 90, 91 of 92, 88 of 89: writes
+      1,552,709, reads 3,199,707, input $47.76, saving $6.64. Chosen: 1
+      hour, `ANTHROPIC_API_CACHE_TTL` in product-model-config.js with the
+      arithmetic in its comment. Caveat on the hit rate: an entry is
+      readable only after the writing request's first response begins,
+      so two workers starting the same routed set within an extraction's
+      thinking time both write; the 85 of 90 is an upper bound. Recording:
+      the stored call's request is the request as sent, blocks and all;
+      its response is the message as received, whose `usage` carries
+      `cache_read_input_tokens`, `cache_creation_input_tokens` and the
+      `cache_creation` breakdown by lifetime beside `input_tokens`, which
+      stays the whole prompt (the call body itself is unchanged: a new
+      field would change every model_call_id and the finalisation's
+      identity check reloads calls from the fixed columns).
+      `anthropicApiCostMicrousd` prices writes from that breakdown, else
+      at the lifetime asked for. `scripts/product/estimate-run-cost.js`
+      takes `--cache-write-tokens`, `--cache-read-tokens`, `--cache-ttl`
+      (replacing the guessed `--cache-read-share`), or with `--run` reads
+      the split from the stored calls' responses per call kind, and prints
+      the uncached total beside the estimate. The NCS estimate on
+      generation 8's profile (10,878,349 input, 3,623,975 output):
+      uncached $144.99 ($54.39 input, $90.60 output); with the cache at
+      the design's 1-hour hit rate $138.36; at the 5-minute rate $141.92.
+      Repository evidence against finding (46)'s "about $97 if two thirds
+      of the input read from cache": the input that repeats is 44 per
+      cent, not two thirds (the closure is 59 per cent of an extraction's
+      bytes and never repeats), and output tokens are 62 per cent of the
+      bill and cannot be cached. The honest expectation is a saving of
+      about 4.6 per cent; the API run's real reason stays what (50) said,
+      preserving the subscription. Generation 8 ran 10 per cent more
+      input and 15 per cent more output than generation 7 ($127.93).
+      Proposed, not done: Ben's $200 covers one NCS generation and a
+      retry at these rates; a second deal does not fit. Tests
+      (`tests/product-anthropic-api-provider.test.js`, 13 of 13): the
+      block structure per call kind and the one-block case, the stable
+      block byte-identical across Concho 6.11 and 6.13 through the real
+      builders with the V2 schema and the V3 table shapes (routing,
+      residual and extraction each; the section block differs; the
+      extraction's stable block carries NO_SHOP's contract and table
+      shapes and no closure), the cost arithmetic by lifetime, the
+      recorded shape, the estimate script's flags, generation 8's three
+      estimates, and the split read from stored rows. CLI paths untouched.
+      npm run test:active: 679 tests, 678 pass, the one failure the known Codex-client final-message test. To submit NCS on the API, in order:
+      `node scripts/product/update-sandbox-worker.js` (the sandbox to this
+      branch's tip, after the merge), a redeploy of the branch so the run
+      route reads the new code and ANTHROPIC_API_KEY, then
+      `PRODUCT_INTERNAL_TOKEN=... node scripts/product/start-generation.js
+      <base-url> <ncs-sec-url> <generation> --provider ANTHROPIC_API`;
+      afterwards `SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... node
+      scripts/product/estimate-run-cost.js --run <run-id>` prices the run
+      from its own cache reads and writes. Commits 33540c0 (code and
+      tests) and the plan and guide commit.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
