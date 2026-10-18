@@ -1443,6 +1443,43 @@ function applyFinancing(doc) {
   subtypeSection(doc, { sectionKey: 'financing', title: 'Financing', familyKeys: ['FINANCING_COVENANTS', 'GUARANTY_FINANCING_PARTY'], tables: [table] });
 }
 
+// ==========================================================================
+// Work package 6 (manager, 2026-10-18, on generation 8's 3.13(b) and (c)):
+// the material contracts representation's own limbs (the Disclosure Letter
+// list, validity and enforceability, no default) were UNPLACED: not on the
+// material contracts list table, not on the representations table. They
+// are the representation's limbs, so they are sub-items of the
+// representations table's "Material Contracts" row, the way the Knowledge
+// definition (KEY_DEFINED_TERMS) sits on its Knowledge row: the family
+// joins the section, the limbs are its detail labels, the subtypes are
+// admitted, and limb_rows_from_subtype tells the page where a stored fact
+// without a readout goes (lib/product/table-view.js). The list table says
+// these subtypes are never its rows.
+// ==========================================================================
+const MATERIAL_CONTRACTS_ROW = 'Material Contracts';
+const MATERIAL_CONTRACT_LIMBS = Object.freeze({
+  MATERIAL_CONTRACT_DISCLOSURE_LIST: 'Disclosure list',
+  MATERIAL_CONTRACT_STATUS_REPRESENTATION: 'Validity and enforceability',
+  MATERIAL_CONTRACT_BREACH_TERMINATION_RIGHT: 'No default',
+});
+
+function applyMaterialContractLimbs(doc) {
+  const section = findSection(doc, 'representations-qualifiers');
+  if (!section.v2_family_keys.some((entry) => entry.key === 'MATERIAL_CONTRACTS')) {
+    section.v2_family_keys.push({ key: 'MATERIAL_CONTRACTS', confidence: 'low' });
+  }
+  const table = section.tables[0];
+  if (!table.fixed_row_labels.includes(MATERIAL_CONTRACTS_ROW)) throw new Error(`MATERIAL_CONTRACTS_ROW_MISSING: ${table.table_key}`);
+  table.detail_labels_by_row = { ...(table.detail_labels_by_row || {}), [MATERIAL_CONTRACTS_ROW]: Object.values(MATERIAL_CONTRACT_LIMBS) };
+  for (const subtype of Object.keys(MATERIAL_CONTRACT_LIMBS)) if (!table.only_subtype_keys.includes(subtype)) table.only_subtype_keys.push(subtype);
+  table.limb_rows_from_subtype = {
+    MATERIAL_CONTRACTS: Object.fromEntries(Object.entries(MATERIAL_CONTRACT_LIMBS).map(([subtype, detail]) => [subtype, { row_label: MATERIAL_CONTRACTS_ROW, row_detail: detail }])),
+  };
+  table.guidance = `${table.guidance} The material contracts representation's own limbs are MATERIAL_CONTRACTS facts on the "${MATERIAL_CONTRACTS_ROW}" row, never on the material contracts list table: row_detail "${MATERIAL_CONTRACT_LIMBS.MATERIAL_CONTRACT_DISCLOSURE_LIST}" for the Disclosure Letter list of the Company's material contracts (MATERIAL_CONTRACT_DISCLOSURE_LIST), "${MATERIAL_CONTRACT_LIMBS.MATERIAL_CONTRACT_STATUS_REPRESENTATION}" for the statement that they are valid, binding, enforceable and in full force (MATERIAL_CONTRACT_STATUS_REPRESENTATION), "${MATERIAL_CONTRACT_LIMBS.MATERIAL_CONTRACT_BREACH_TERMINATION_RIGHT}" for the no-default and no-event-of-default statements (MATERIAL_CONTRACT_BREACH_TERMINATION_RIGHT, one fact per sentence); the Qualifiers cell is the MAE or materiality qualifier the limb carries (MAE_AGGREGATE for "except as would not have a Material Adverse Effect"), as on any representation row; a category of the Material Contract definition is never on this row.`;
+  const list = findTable(findSection(doc, 'material-contracts'), 'material-contracts-table');
+  list.guidance = `${list.guidance} The representation's own limbs (MATERIAL_CONTRACT_DISCLOSURE_LIST, MATERIAL_CONTRACT_STATUS_REPRESENTATION, MATERIAL_CONTRACT_BREACH_TERMINATION_RIGHT) are never rows here: their readouts go to the representations table's "${MATERIAL_CONTRACTS_ROW}" row as its sub-items (Disclosure list; Validity and enforceability; No default).`;
+}
+
 function applyDecision34(doc) {
   applyAntitrust(doc);
   applyEquityAwards(doc);
@@ -1458,6 +1495,7 @@ function applyDecision34(doc) {
   applyFinancing(doc);
   applyConsideration(doc);
   applyRepresentations(doc);
+  applyMaterialContractLimbs(doc);
   applyCapitalization(doc);
   applyVotesAndCovenants(doc);
   return doc;

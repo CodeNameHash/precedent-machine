@@ -1352,3 +1352,43 @@ test('readout-less tax and financing facts take their subtype rows in the Tax Ma
   assert.equal(without.sections.some((candidate) => candidate.section_key === 'financing'), false);
   assert.ok(without.sections.some((candidate) => candidate.section_key === 'tax-matters'));
 });
+
+// Work package 6 (manager, 2026-10-18): generation 8's 3.13(b) and (c)
+// facts about the material contracts (the Disclosure Letter list, validity
+// and enforceability, two no-default sentences) were UNPLACED. Without a
+// readout they are sub-items of the Material Contracts row, the Qualifiers
+// cell read from the MAE qualifier they carry.
+test('readout-less material contracts representation limbs are sub-items of the Material Contracts row, their MAE qualifier the Qualifiers cell', () => {
+  const limb = (id, subtype, text, qualifier, summary) => ({
+    fact_id: id, proposal_id: id, family_key: 'MATERIAL_CONTRACTS', subtype_key: subtype, fact_type: subtype, section_reference: '3.13', structure_node_id: 'n-3-13', validation_status: 'VALID',
+    statement: `${text}${qualifier ? `, ${qualifier}` : ''}.`, headline: { label: subtype, distinguishing_component_ids: [`${id}-op`], summary },
+    components: [
+      { component_id: `${id}-op`, kind: 'OPERATION', label: 'statement', text, origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: text.length, gap_before: false, children: [] },
+      ...(qualifier ? [{ component_id: `${id}-q`, kind: 'MATERIALITY_QUALIFIER', label: 'qualifier', text: qualifier, origin: 'OWN', source_span_id: 's', start_byte: text.length + 2, end_byte: text.length + 2 + qualifier.length, gap_before: false, children: [] }] : []),
+    ],
+  });
+  const facts = [
+    limb('mc-list', 'MATERIAL_CONTRACT_DISCLOSURE_LIST', 'Section 3.13(a) of the Company Disclosure Letter lists each Specified Contract as of the date of this Agreement', null, 'Company Disclosure Letter lists the Company\'s material contracts as of signing, with stated exclusions'),
+    limb('mc-status', 'MATERIAL_CONTRACT_STATUS_REPRESENTATION', 'each Specified Contract is valid, binding and in full force and effect', 'except as would not reasonably be expected to have a Company Material Adverse Effect', 'Specified Contracts are valid, binding, enforceable and in full force, absent Material Adverse Effect'),
+    limb('mc-default', 'MATERIAL_CONTRACT_BREACH_TERMINATION_RIGHT', 'neither the Company nor any of its Subsidiaries is in breach of or default under any Specified Contract', 'except for such breaches and defaults as would not reasonably be expected to have a Company Material Adverse Effect', 'No default under any Specified Contract absent a Company Material Adverse Effect'),
+    limb('mc-event', 'MATERIAL_CONTRACT_BREACH_TERMINATION_RIGHT', 'no event has occurred that with notice or lapse of time would constitute a default under any Specified Contract', 'except as would not reasonably be expected to have a Company Material Adverse Effect', 'No event would become a Specified Contract default absent Material Adverse Effect'),
+    // A category criterion without a readout keeps its own section.
+    limb('mc-cat', 'MATERIAL_CONTRACT_CATEGORY_CRITERION', 'any Contract that would be required to be filed as a material contract pursuant to Item 601(b)(10) of Regulation S-K', null, 'Contracts filed under Item 601(b)(10) are Specified Contracts'),
+  ];
+  const view = buildTableView({ facts, tableShapes, legalSchema });
+  const reps = view.sections.find((section) => section.section_key === 'representations-qualifiers');
+  const row = reps.tables[0].rows.find((candidate) => candidate.subject === 'Material Contracts');
+  assert.ok(row, 'the Material Contracts row renders');
+  assert.deepEqual(row.sub_rows.map((sub) => sub.subject), ['Disclosure list', 'Validity and enforceability', 'No default']);
+  const noDefault = row.sub_rows.find((sub) => sub.subject === 'No default');
+  assert.deepEqual(noDefault.backing_facts.map((entry) => entry.fact_id).sort(), ['mc-default', 'mc-event'], 'both no-default sentences back the one sub-item');
+  const qualifierOf = (line) => { const cell = line.cells.find((candidate) => candidate.column_id === 'materiality'); return cell.values ? cell.values.map((value) => value.label) : [cell.label]; };
+  assert.deepEqual(qualifierOf(row.sub_rows.find((sub) => sub.subject === 'Validity and enforceability')), ['MAE (aggregate)']);
+  assert.deepEqual(qualifierOf(noDefault), ['MAE (aggregate)']);
+  assert.equal(row.sub_rows.find((sub) => sub.subject === 'Disclosure list').cells.find((cell) => cell.column_id === 'materiality').kind, 'dash', 'no qualifier, no pill');
+  assert.equal(reps.facts_without_readout.length, 0);
+  const materialContracts = view.sections.find((section) => section.section_key === 'material-contracts');
+  assert.ok(materialContracts, 'the list section still renders for the category fact');
+  assert.deepEqual(materialContracts.facts_without_readout.map((entry) => entry.fact_id), ['mc-cat'], 'a category without a readout is listed under its own section, not under the representations');
+  assert.equal(materialContracts.tables.flatMap((table) => table.rows).some((candidate) => candidate.backing_facts.some((entry) => /^mc-(list|status|default|event)$/.test(entry.fact_id))), false, 'no limb is a row of the list table');
+});

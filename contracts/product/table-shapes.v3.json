@@ -834,6 +834,10 @@
         {
           "key": "KEY_DEFINED_TERMS",
           "confidence": "low"
+        },
+        {
+          "key": "MATERIAL_CONTRACTS",
+          "confidence": "low"
         }
       ],
       "tables": [
@@ -1167,9 +1171,14 @@
               "Subsidiary equity interests",
               "No other securities, options or voting agreements",
               "Valid issuance, fully paid and nonassessable"
+            ],
+            "Material Contracts": [
+              "Disclosure list",
+              "Validity and enforceability",
+              "No default"
             ]
           },
-          "guidance": "row_label is the representation as the precedent names it (one of fixed_row_labels); add a new row label only for a representation none of them covers (for example a regulatory or FDA representation). Each limb of a representation is a sub-item: row_detail is the canonical limb name from detail_labels_by_row for that row (a new limb name only when none fits, in the same style, never the agreement's own words); a fact about the representation as a whole carries no row_detail and gives the overview. The bringdown column is never filled from a representation: it comes from the closing conditions. A CAPITALISATION fact (authorized capital, issued and outstanding shares, reserved securities, the award inventory, subsidiary equity) is a limb of Capitalization; Subsidiaries: row_label that representation, row_detail the limb from its list; a fact that states a count of a security class is coded to the capitalization table instead (see capitalization-table). The article's introductory sentence (the disclosure-letter and SEC-document exceptions to every representation) is the General Exceptions row, the first row of this table: each REPRESENTATION_QUALIFICATION fact carries row_label \"General Exceptions\" and row_detail the source of exception from its list (\"SEC Filings\" for the Filed SEC Documents exception, \"Disclosure Letter\" for the Disclosure Letter exception, \"Other\" for any other article-wide qualification), its Qualifiers cells the codes the clause establishes (EXCLUDES_FORWARD_LOOKING_STATEMENTS, EXCLUDES_RISK_FACTORS, EXCLUDES_EXHIBITS, SPECIFIC_HISTORICAL_FACTS_NOT_EXCLUDED on the SEC filings exception; ARRANGED_BY_SECTION, CROSS_SECTION_WHERE_REASONABLY_APPARENT or SECTION_SPECIFIC_ONLY on the Disclosure Letter exception) and its lookback cell the SEC filings cut-off (the date filed since, or the period before signing). The knowledge standard is the Knowledge row, the second row: a KEY_DEFINED_TERMS/KNOWLEDGE fact (the \"Knowledge\" definition) or an article-wide knowledge standard from the introduction carries row_label \"Knowledge\", row_detail \"Standard\" (the standard: KNOWLEDGE_AFTER_REASONABLE_INQUIRY, ACTUAL_KNOWLEDGE, CONSTRUCTIVE_KNOWLEDGE) or \"Persons\" (whose knowledge counts: PERSONS_LISTED_ON_DISCLOSURE_LETTER, NAMED_INDIVIDUALS, OFFICERS); a single fact that states both carries no row_detail and both codes. Never a numbered representation on either row.",
+          "guidance": "row_label is the representation as the precedent names it (one of fixed_row_labels); add a new row label only for a representation none of them covers (for example a regulatory or FDA representation). Each limb of a representation is a sub-item: row_detail is the canonical limb name from detail_labels_by_row for that row (a new limb name only when none fits, in the same style, never the agreement's own words); a fact about the representation as a whole carries no row_detail and gives the overview. The bringdown column is never filled from a representation: it comes from the closing conditions. A CAPITALISATION fact (authorized capital, issued and outstanding shares, reserved securities, the award inventory, subsidiary equity) is a limb of Capitalization; Subsidiaries: row_label that representation, row_detail the limb from its list; a fact that states a count of a security class is coded to the capitalization table instead (see capitalization-table). The article's introductory sentence (the disclosure-letter and SEC-document exceptions to every representation) is the General Exceptions row, the first row of this table: each REPRESENTATION_QUALIFICATION fact carries row_label \"General Exceptions\" and row_detail the source of exception from its list (\"SEC Filings\" for the Filed SEC Documents exception, \"Disclosure Letter\" for the Disclosure Letter exception, \"Other\" for any other article-wide qualification), its Qualifiers cells the codes the clause establishes (EXCLUDES_FORWARD_LOOKING_STATEMENTS, EXCLUDES_RISK_FACTORS, EXCLUDES_EXHIBITS, SPECIFIC_HISTORICAL_FACTS_NOT_EXCLUDED on the SEC filings exception; ARRANGED_BY_SECTION, CROSS_SECTION_WHERE_REASONABLY_APPARENT or SECTION_SPECIFIC_ONLY on the Disclosure Letter exception) and its lookback cell the SEC filings cut-off (the date filed since, or the period before signing). The knowledge standard is the Knowledge row, the second row: a KEY_DEFINED_TERMS/KNOWLEDGE fact (the \"Knowledge\" definition) or an article-wide knowledge standard from the introduction carries row_label \"Knowledge\", row_detail \"Standard\" (the standard: KNOWLEDGE_AFTER_REASONABLE_INQUIRY, ACTUAL_KNOWLEDGE, CONSTRUCTIVE_KNOWLEDGE) or \"Persons\" (whose knowledge counts: PERSONS_LISTED_ON_DISCLOSURE_LETTER, NAMED_INDIVIDUALS, OFFICERS); a single fact that states both carries no row_detail and both codes. Never a numbered representation on either row. The material contracts representation's own limbs are MATERIAL_CONTRACTS facts on the \"Material Contracts\" row, never on the material contracts list table: row_detail \"Disclosure list\" for the Disclosure Letter list of the Company's material contracts (MATERIAL_CONTRACT_DISCLOSURE_LIST), \"Validity and enforceability\" for the statement that they are valid, binding, enforceable and in full force (MATERIAL_CONTRACT_STATUS_REPRESENTATION), \"No default\" for the no-default and no-event-of-default statements (MATERIAL_CONTRACT_BREACH_TERMINATION_RIGHT, one fact per sentence); the Qualifiers cell is the MAE or materiality qualifier the limb carries (MAE_AGGREGATE for \"except as would not have a Material Adverse Effect\"), as on any representation row; a category of the Material Contract definition is never on this row.",
           "intro_facts_row": "General Exceptions",
           "knowledge_facts_row": "Knowledge",
           "only_subtype_keys": [
@@ -1187,8 +1196,27 @@
             "EQUITY_AWARD_INVENTORY",
             "VALID_ISSUANCE_STATUS",
             "CAPITALISATION_ABSENCE",
-            "PARTNERSHIP_OR_SUBSIDIARY_EQUITY"
-          ]
+            "PARTNERSHIP_OR_SUBSIDIARY_EQUITY",
+            "MATERIAL_CONTRACT_DISCLOSURE_LIST",
+            "MATERIAL_CONTRACT_STATUS_REPRESENTATION",
+            "MATERIAL_CONTRACT_BREACH_TERMINATION_RIGHT"
+          ],
+          "limb_rows_from_subtype": {
+            "MATERIAL_CONTRACTS": {
+              "MATERIAL_CONTRACT_DISCLOSURE_LIST": {
+                "row_label": "Material Contracts",
+                "row_detail": "Disclosure list"
+              },
+              "MATERIAL_CONTRACT_STATUS_REPRESENTATION": {
+                "row_label": "Material Contracts",
+                "row_detail": "Validity and enforceability"
+              },
+              "MATERIAL_CONTRACT_BREACH_TERMINATION_RIGHT": {
+                "row_label": "Material Contracts",
+                "row_detail": "No default"
+              }
+            }
+          }
         }
       ],
       "print_pages": [
@@ -1870,7 +1898,7 @@
           ],
           "fixed_row_labels_source": "TopBuild print Material Contracts buckets (covered and not-covered checklists), decision 32",
           "open_rows": true,
-          "guidance": "One row per contract category the Material Contract definition names: row_label is the canonical category from fixed_row_labels that the clause describes (a new category name only when none fits, never the clause's own words); the clause's words go in the provision column; threshold is the dollar floor from the cited words and qualifier the materiality standard, each omitted when the clause states none. A category the definition does not name has no fact; the page shows it as Not covered. Two clauses that fit one category (an annual and an aggregate payments threshold) are two facts on the same row."
+          "guidance": "One row per contract category the Material Contract definition names: row_label is the canonical category from fixed_row_labels that the clause describes (a new category name only when none fits, never the clause's own words); the clause's words go in the provision column; threshold is the dollar floor from the cited words and qualifier the materiality standard, each omitted when the clause states none. A category the definition does not name has no fact; the page shows it as Not covered. Two clauses that fit one category (an annual and an aggregate payments threshold) are two facts on the same row. The representation's own limbs (MATERIAL_CONTRACT_DISCLOSURE_LIST, MATERIAL_CONTRACT_STATUS_REPRESENTATION, MATERIAL_CONTRACT_BREACH_TERMINATION_RIGHT) are never rows here: their readouts go to the representations table's \"Material Contracts\" row as its sub-items (Disclosure list; Validity and enforceability; No default)."
         }
       ],
       "print_pages": [

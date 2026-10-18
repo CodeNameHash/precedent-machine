@@ -843,3 +843,36 @@ test('Tax Matters and Financing sections carry one row per subtype, defaults for
   delete brokenTable.row_from_subtype;
   assert.throws(() => validateTableShapesV3(broken, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_DEFAULT_ROWS_FROM_SUBTYPE_WITHOUT_SUBTYPE_ROWS/);
 });
+
+// Work package 6 (manager, 2026-10-18, generation 8's 3.13(b) and (c)): the
+// material contracts representation's limbs are sub-items of the
+// representations table's Material Contracts row, the family joining the
+// section as KEY_DEFINED_TERMS does for the Knowledge row; the list table
+// never takes them.
+test('the material contracts representation\'s limbs are sub-items of the Material Contracts row, placed by limb_rows_from_subtype', () => {
+  const section = findSectionV3('representations-qualifiers');
+  assert.deepEqual(section.v2_family_keys.find((entry) => entry.key === 'MATERIAL_CONTRACTS'), { key: 'MATERIAL_CONTRACTS', confidence: 'low' });
+  const table = findTableV3(section, 'representations-qualifiers-table');
+  assert.deepEqual(table.detail_labels_by_row['Material Contracts'], ['Disclosure list', 'Validity and enforceability', 'No default']);
+  assert.deepEqual(table.limb_rows_from_subtype, { MATERIAL_CONTRACTS: {
+    MATERIAL_CONTRACT_DISCLOSURE_LIST: { row_label: 'Material Contracts', row_detail: 'Disclosure list' },
+    MATERIAL_CONTRACT_STATUS_REPRESENTATION: { row_label: 'Material Contracts', row_detail: 'Validity and enforceability' },
+    MATERIAL_CONTRACT_BREACH_TERMINATION_RIGHT: { row_label: 'Material Contracts', row_detail: 'No default' },
+  } });
+  for (const subtype of Object.keys(table.limb_rows_from_subtype.MATERIAL_CONTRACTS)) assert.ok(table.only_subtype_keys.includes(subtype), subtype);
+  assert.match(table.guidance, /MATERIAL_CONTRACTS facts on the "Material Contracts" row, never on the material contracts list table/);
+  assert.match(findTableV3(findSectionV3('material-contracts'), 'material-contracts-table').guidance, /never rows here: their readouts go to the representations table's "Material Contracts" row/);
+  // The parent table is untouched: Parent makes no material contracts representation here.
+  assert.equal(findTableV3(findSectionV3('parent-representations-qualifiers'), 'parent-representations-qualifiers-table').limb_rows_from_subtype, undefined);
+  // The layer rules tell the extractor the same.
+  assert.match(legalSchemaV2.families.find((family) => family.family_key === 'MATERIAL_CONTRACTS').layer_rules, /readouts go to the representations table's "Material Contracts" row/);
+
+  const broken = structuredClone(tableShapesV3);
+  const brokenTable = broken.sections.find((s) => s.section_key === 'representations-qualifiers').tables[0];
+  brokenTable.limb_rows_from_subtype.MATERIAL_CONTRACTS.MATERIAL_CONTRACT_DISCLOSURE_LIST.row_detail = 'Schedule';
+  assert.throws(() => validateTableShapesV3(broken, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_LIMB_ROWS_FROM_SUBTYPE_DETAIL_UNKNOWN/);
+  brokenTable.limb_rows_from_subtype.MATERIAL_CONTRACTS.MATERIAL_CONTRACT_DISCLOSURE_LIST = { row_label: 'No such row', row_detail: 'Disclosure list' };
+  assert.throws(() => validateTableShapesV3(broken, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_LIMB_ROWS_FROM_SUBTYPE_ROW_UNKNOWN/);
+  brokenTable.limb_rows_from_subtype = { NO_SHOP: { PROHIBITED_ACTION: { row_label: 'Material Contracts', row_detail: 'No default' } } };
+  assert.throws(() => validateTableShapesV3(broken, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_LIMB_ROWS_FROM_SUBTYPE_FAMILY/);
+});

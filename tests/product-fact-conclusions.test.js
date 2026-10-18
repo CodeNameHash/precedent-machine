@@ -500,6 +500,15 @@ test('a REPRESENTATION_QUALIFICATION readout on the General Exceptions row valid
     conclusions: { table_key: 'representations-qualifiers-table', row_label: 'Knowledge', row_detail: 'Standard', cells: [{ column_id: 'materiality', code: 'KNOWLEDGE_AFTER_REASONABLE_INQUIRY', component_ids: ['intro-1-risk'] }] },
   };
   assert.deepEqual(validateFactConclusions(knowledge, { tableShapes }), [], 'the knowledge definition belongs on the Knowledge row');
+  // Work package 6: the material contracts representation's limbs belong on
+  // the Material Contracts row as sub-items.
+  const limb = {
+    ...fact, fact_id: 'mc-1', family_key: 'MATERIAL_CONTRACTS', subtype_key: 'MATERIAL_CONTRACT_BREACH_TERMINATION_RIGHT',
+    conclusions: { table_key: 'representations-qualifiers-table', row_label: 'Material Contracts', row_detail: 'No default', cells: [{ column_id: 'materiality', code: 'MAE_AGGREGATE', component_ids: ['intro-1-risk'] }] },
+  };
+  assert.deepEqual(validateFactConclusions(limb, { tableShapes }), [], 'the no-default limb belongs on the Material Contracts row');
+  const category = { ...limb, subtype_key: 'MATERIAL_CONTRACT_CATEGORY_CRITERION' };
+  assert.ok(validateFactConclusions(category, { tableShapes }).some((p) => /does not belong in representations-qualifiers-table/.test(p)), 'a category is never a representation row');
   assert.equal(tableForFact({ family_key: 'REPRESENTATIONS', conclusions: { table_key: 'representations-general-qualifications' } }, tableShapes), null, 'the separate table is gone');
 });
 
