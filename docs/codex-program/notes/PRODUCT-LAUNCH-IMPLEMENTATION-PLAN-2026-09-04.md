@@ -3262,6 +3262,35 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       Parent table's General Exceptions row; Merger Sub's 1,000 shares on
       their capitalization row. Suite for work package 6 running at the
       time of writing.
+      (57) 2026-10-18 05:35 UTC, generation 8 at 51 of 85 (4.09, 5.01,
+      5.02, 6.01, 6.02, 6.04 added; 646 proposals, 635 VALID; no failed
+      section; work package 6's suite clean but for the known failure).
+      5.02 against Ben's comments (findings (42), (44), (47)): the notice
+      table is 5.02(d)'s mechanics on its rows (Initial notice within 48
+      hours of an officer's or director's knowledge; Notice contents:
+      identity, a copy of a written proposal; Ongoing updates: status and
+      developments, draft documentation, 48 hours; Notice of a decision
+      to engage, 48 hours; Oral proposals; No agreement restricting
+      information to Parent, Yes); "Representative breach is Company
+      breach" Yes under the control standard; the intervening table's
+      Board determination standard row is filled from 5.02(f) (its
+      summary; no code yet); the fiduciary and change-of-recommendation
+      tables as generation 7's with the once-only reaffirmation as a
+      sub-item. Four defects to work package 7: (a) the subsequent match
+      period reads 4 business days where the clause says the four become
+      two ("the references to four (4) business days will be deemed two
+      (2) business days": the period parser takes the first number; a
+      "deemed" clause takes the deemed one, any other two-number period
+      is left empty with a note); (b) 45 KEY_DEFINED_TERMS facts whose
+      readout names `defined-terms-table` are in Defined Terms and also
+      listed under the Intervening Event section as "without a readout";
+      (c) the Board determination standard rows carry no code when the
+      model gives none, though the words name the standard; (d) six
+      no-shop facts have no row: the permitted contact to clarify, the
+      permission to tell a bidder the no-shop's terms, the required-by-
+      law and factual-disclosure permissions, the negotiation with a
+      qualifying proposal, and the takeover-statute carve-out of an
+      Adverse Recommendation Change.
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
