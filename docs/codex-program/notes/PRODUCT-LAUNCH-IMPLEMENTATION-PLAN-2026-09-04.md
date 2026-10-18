@@ -4676,6 +4676,36 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       NCS 5.14's twelve facts read as eight sub-items; improved, accepted.
       The ten publicity labels are proposals for Ben ("he decides the
       names; the code only proposes"); put to him with this check-in.
+      (165) 2026-10-18 21:00 UTC: NCS generation 5 (run 51577c57) READY
+      at 20:48 UTC: 1,037 proposals, 1,015 VALID, 22 held, 104 sections,
+      393 model calls, 12.79m input (6.37m uncached, 4.68m cache reads,
+      1.73m cache writes) and 3.80m output tokens, the pipeline's stored
+      cost $145.68 (Ben's $200 credit; the projection of (160) was $150).
+      Read, not just counted, in docs/codex-program/notes/
+      NCS-GENERATION-5-AUDIT-2026-10-18.md: against generation 4's 850
+      VALID and 145 held, every hold has a reason and a code rule (3.4's
+      ten status representations cite the Article III chapeau on a span
+      id one hex character from the closure's, the model's slip; 6.2's
+      two bring-down tiers list cross-references; 6.4's three frustration
+      facts cite "this Article VI" unresolved; the rest are work
+      packages 14 and 18 (a) and (b), merged after this worker's wake);
+      eight VALID facts have no readout (subtypes without a row); 25
+      unusual provisions, ten of them genuinely unusual for Ben (the
+      Tolling Period, the novation, the tax-deposit condition, the VAT
+      warranty and mandatory election, Rewind). Work package 19 to
+      implementer A: (a) to (d) the four rules above, (f) the
+      registration rights as a table at the bottom of the Consideration
+      section per Ben's (163), (g) finding (95)'s row move does not
+      happen on the stored rows (29 facts stay on "General notification"
+      with the sub-items; no "Registration rights" row), a defect to fix
+      with the real rows pinned. The active suite on the merged head
+      b77da65e: 757 of 758, the known failure only. The sandbox released
+      (release_sandbox); pm-codex-preview-worker updated to b77da65e;
+      pm-codex-preview-worker-2 created for the subscription provider
+      (claude 2.1.302). Olaplex and Apogee generation 2 intakes on the
+      environment's default provider: runs 686c3bf2 (1974640) and
+      f1e2493f (1786205), QUEUED, woken next on the pool, per Ben's
+      "Olaplex and Apogee run on the subscription, back to back/parallel".
       (94) (a) and (b) are finalisation rules: NCS generation 5's worker
       runs the code of its wake (18:55 UTC), so 4.7's three inherited
       quotes and 5.11's reference premium stay held in that run and are
