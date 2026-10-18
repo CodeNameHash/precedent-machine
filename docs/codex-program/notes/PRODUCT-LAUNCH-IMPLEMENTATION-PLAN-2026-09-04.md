@@ -4200,6 +4200,115 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       Also seen: 76 CONCLUSIONS_MISSING notes over 31 sections (the
       extractor gave no readout), against 92 over generation 8's 85;
       the rate is up and is watched on the next read.
+      (80) 2026-10-18 16:50 to 17:06 UTC (implementer), work package 13
+      on finding (79)'s three defects. No run submitted; no live API call;
+      no key value anywhere. (a) The unknown span. The held components of
+      NCS 3.4 and Metsera 8's 3.19 cite a span id one character off the
+      chapeau span that holds their words. `resolveEvidenceQuote`
+      (lib/product/agreement-draft.js) now takes a quote on a span the
+      closure does not have from the one closure span of a kind its origin
+      allows (INHERITED_SPAN_KINDS: CHAPEAU and INTRO to the chapeau spans,
+      DEFINITION to the definition spans) in which the quote is verbatim,
+      records `unknown_span_resolved_from` and the span's kind on the
+      component, and the compiler reports one COMPONENT_SPAN_RELOCATED note
+      per proposal listing the quotes moved; two candidate spans, or none,
+      stay UNKNOWN_SOURCE_COMPONENT and the fact stays held; own words
+      still resolve through the section alone. The id the model wrote is
+      kept as evidence. (b) Defined Terms. `definedTermParts`
+      (lib/product/table-view.js) reads a DEFINED_TERM component's
+      resolves_to words as its definition before the inline guess from its
+      parent or neighbour and says which it used (`source`); a
+      non-definition fact enters Defined Terms only through a component
+      that resolves to its definition (source resolves_to or a "means"
+      sentence), and an inline guess alone adds no entry, so 1.2's Tolling
+      Period and Closing Date read their definitions and a fact whose term
+      the model did not resolve stays under its family's table. On the
+      stored 2.1 facts the entries Default Stock, Share Election Stock and
+      Rewind remain because the model resolved them; their text is now the
+      resolved definition. Commit 8eb259c, tests in
+      tests/product-fact-components-extraction.test.js and
+      tests/product-table-view.test.js. (c) The election economics. Read
+      first: 2.1's 33 VALID facts rendered through buildTableView from the
+      stored rows (run 51577c57). The components table did carry the
+      ratios, rounded: "Stock election 0.554" (the Share Consideration
+      Exchange Ratio is 0.5537; `formatValue` gave a count three decimals)
+      and "Acquirer stock 0.239" (the mixed election's 0.2392, on the
+      Acquirer stock row because the extractor coded its form PARENT_STOCK;
+      the form vocabulary has no mixed code); the cash leg (the
+      CASH_COMPONENT fact 608d3d2b) is INVALID with no components stored,
+      so no row; the combined definition read "Eligible Shares" (the
+      package fact's first DEFINED_TERM; the “Merger Consideration” is
+      quoted inside its OBJECT). Built, commit b392cc1: a fourth
+      consideration table, `consideration-election-options` ("ELECTION
+      OPTIONS": Cash election, Stock election, Mixed election; columns
+      Exchange ratio, Cash per share, Value terms, Defined as under the
+      row's name), in scripts/product/table-shapes-decision-34.js with the
+      manager's words, offered to the extractor like any fixed-list table
+      and filled by the page (`fillElectionOptions`) by the table's
+      `election_options` rule, data in the shape and validated in
+      lib/product/table-shapes.js: a VALID CONSIDERATION fact of the
+      component or election subtypes is an option's when its readout
+      carries the option's form code (STOCK_ELECTION, CASH_ELECTION) or its
+      words match the option's pattern ("election to receive only share
+      consideration", "election to receive mixed consideration"), and never
+      when they match `unless` ("no election": the mechanics table's "If no
+      election" row); its ratio is its value cell in shares, else a numeric
+      AMOUNT or THRESHOLD component without a dollar sign; its cash its
+      value cell in dollars, else a dollar component; its term the
+      readout's term cell, else its first DEFINED_TERM. Then every value
+      term the fact's words name (a Defined Terms entry matching
+      `(?:Consideration|Value|Amount|Price|Ratio)$`, other than the
+      option's own term; a longer term's words are blanked before a
+      shorter one is looked for, so “Mixed Share Consideration” is not
+      “Share Consideration”): a definition that is a bare number fills the
+      empty ratio (a count) or cash (dollars) cell, marked `derived:
+      'defined_term'` and citing the definition and the option fact; any
+      other is listed under Value terms with, after it, the numbers of the
+      value terms its definition names. A row exists once a ratio, cash or
+      value-terms cell is filled; a readout's own cell is never
+      overwritten. `formatValue` now keeps every digit of a count.
+      `combined_definition_from.term_words` (Consideration$) names the
+      combined term: the first quoted term matching it, a DEFINED_TERM
+      component first, else no combined definition. The contract is
+      regenerated (49 tables, 157 columns). NCS 2.1 as the page now reads
+      it, for Ben: Stock election [Share Consideration]: Exchange ratio
+      0.5537. Mixed election [Mixed Share Consideration]: Exchange ratio
+      0.2392; Value terms "Cash Consideration means the Cash Exchange Ratio
+      multiplied by the Parent Closing Price", "Cash Exchange Ratio:
+      0.1371". Cash per share is hidden (no option states a dollar figure;
+      NCS's cash is a ratio times the Parent Closing Price). No Cash
+      election row: NCS offers none, and the page does not say "Not
+      offered" because an unfilled option can also be a held fact (the
+      cash leg here). The components table keeps its rows, now "Stock
+      election 0.5537" and "Acquirer stock 0.2392", and its combined
+      definition reads “Merger Consideration”. Metsera generation 8 (cash
+      plus a CVR): no election table, the components table unchanged.
+      For Ben, in order: (1) the row names: "Stock election" as the
+      components table's form code has it, or "Share election" as NCS
+      drafts it; (2) whether an option with no fact should read "Not
+      offered" (the MAE table's "None" precedent) or stay absent as built;
+      (3) whether the components table should keep its election rows now
+      that the options table carries them, or show the fixed forms only
+      (Cash, Parent stock, CVR) with the elections in the new table; (4)
+      the Mixed Share Consideration Value (the mixed ratio times the Parent
+      Closing Price) is a Defined Terms entry but not on the mixed row,
+      because the election fact's words do not name it; a rule naming the
+      value term of an option from the definitions alone would need the
+      deal's structure, which is Ben's call to describe. Observed, not
+      changed: with two options only (a cash or a stock election), each
+      value column is filled on one line and Ben's column rule (finding
+      (42)) folds it into the row as a trailing detail ("Exchange ratio
+      0.5537"), leaving the table with no value columns; the rule holds
+      as written and the test records it. The extractor now sees the new
+      table in table_shapes and may read a component fact out onto it
+      directly, so the stable block changes with the contract as every
+      shape change does; the prompt version stays. Tests: the shape, its
+      rule and validation (tests/product-table-shapes.test.js), the NCS
+      rows and the two-option fallback, a no-election deal, the combined
+      term (tests/product-table-view.test.js), the count digits
+      (tests/product-fact-conclusions.test.js). npm run test:active: 694
+      of 695, the one failure the known Codex-client final-message test.
+      Commits 8eb259c, b392cc1 and this plan and guide commit.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
