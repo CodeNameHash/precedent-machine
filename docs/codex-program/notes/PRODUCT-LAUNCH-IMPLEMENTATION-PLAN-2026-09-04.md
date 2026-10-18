@@ -6043,7 +6043,7 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       notification 2 (the Nasdaq deficiency notice and the delisting
       event), Litigation notification 1 (Nasdaq or SEC proceedings);
       nothing without a readout. Nothing submitted, woken or retried.
-      (99a) 2026-10-18 22:55 to 23:50 UTC (implementer A), work package 20
+      (99a) 2026-10-18 21:45 to 22:25 UTC (implementer A), work package 20
       on the manager's (168) (begun on its decided terms; the formal
       message had not arrived by the push). Numbered (99a) because A's
       range (90) to (99) is spent; the plan owner's to renumber. Read
@@ -6134,7 +6134,7 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       labelled QUALIFIER and whose exception facts copy its words could
       be held with them; the hold is a VALIDATION issue carrying the
       rule, reviewable, and the layer rule reduces the shape. The
-      manager's formal message (21:40 UTC, read at 23:55 after the work
+      manager's formal message (21:40 UTC, read at 22:11 after the work
       was built on (168)'s terms) reconciled: its note name is used,
       CONTEXT_COMPONENT_DROPPED (the component tree) and
       CONTEXT_EVIDENCE_DROPPED (the evidence quotes), each naming the
