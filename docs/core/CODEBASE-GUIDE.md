@@ -113,6 +113,7 @@ These files are development data. Their authorities, receipts and programme gate
 
 - `tests/product-phase-0.test.js`: Phase 0 denominator, structure and regression tests.
 - `tests/product-phase-1.test.js`: SEC intake, identity, deduplication, resume, structure reuse and API-boundary tests.
+- `tests/helpers/product-database.js` (work package D2, plan finding (141)): the one harness of every database test in the CI database step. It applies every migration in `supabase/migrations` in file order on an inactive Postgres (`TEST_DATABASE_URL`) or PGlite in one rolled-back transaction, and gives the Supabase-shaped facade; a test that proves one migration's own effect names it in `hooks` (`before` and `after` that file) and places its savepoint there. Finding (104) found the Phase 1 to 3 tests on a prefix of the list that the runner's recorded part identities no longer admit.
 - `tests/product-phase-1-db.test.js`: inactive Postgres migration, state-transition, permission and rollback test.
 - `tests/product-phase-2.test.js`: source closure, exact-request recording adapter, synthetic model orchestration over the real Concho source, fail-closed validation and Review read tests.
 - `tests/product-phase-2-db.test.js`: real Concho runner-to-Review persistence, migration, permission and rollback test on inactive Postgres.

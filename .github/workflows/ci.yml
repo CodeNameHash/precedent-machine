@@ -3,7 +3,10 @@ name: Product CI
 on:
   pull_request:
   push:
-    branches: [main]
+    # The product branch and its parallel-session branch run the same
+    # workflow on every push (work package D2, plan finding (141)): the
+    # database job had not run since 2026-09-05 on pull requests alone.
+    branches: [main, codex/product-implementation-plan-20260904, claude/festive-albattani-70cwn5]
 
 concurrency:
   group: product-ci-${{ github.event.pull_request.number || github.ref }}

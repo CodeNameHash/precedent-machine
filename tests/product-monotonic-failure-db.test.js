@@ -2,8 +2,6 @@
 
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
-const fs = require('node:fs');
-const path = require('node:path');
 const test = require('node:test');
 
 process.env.PRODUCT_PHASE2_DB_HELPER_ONLY = '1';
@@ -13,9 +11,6 @@ const {
 delete process.env.PRODUCT_PHASE2_DB_HELPER_ONLY;
 const { ProductPhase2Store } = require('../lib/product/phase-2-store');
 
-const migration = fs.readFileSync(path.resolve(
-  __dirname, '../supabase/migrations/20260905213000_product_monotonic_failed_section_status.sql',
-), 'utf8');
 
 let sequence = 0;
 
@@ -76,15 +71,12 @@ async function runState(client, runId) {
   )).rows[0];
 }
 
-test.before(async () => {
-  await setupDatabase();
-  if (process.env.PRODUCT_MONOTONIC_SKIP_MIGRATION !== '1') {
-    const client = getDatabaseClient();
-    if (typeof client.exec === 'function') await client.exec(migration);
-    else await client.query(migration);
-  }
-});
+test.before(setupDatabase);
 test.after(teardownDatabase);
+
+function numbers(row) {
+  return Object.fromEntries(Object.entries(row).map(([key, value]) => [key, typeof value === 'string' && /^-?\d+$/.test(value) ? Number(value) : value]));
+}
 
 test('an exhausted failure remains authoritative after a later retryable failure and duplicate delivery', async () => {
   const { client, store, runId, claimA, claimB } = await createTwoSectionRun();
@@ -108,7 +100,9 @@ test('an exhausted failure remains authoritative after a later retryable failure
   const accounting = (await client.query(`SELECT count(*) AS calls, sum(input_tokens) AS input_tokens,
     sum(output_tokens) AS output_tokens, sum(cost_microusd) AS cost_microusd
     FROM public.product_model_calls WHERE run_id=$1`, [runId])).rows[0];
-  assert.deepEqual(accounting, { calls: 2, input_tokens: '18', output_tokens: '5', cost_microusd: '144' });
+  // count(*) and sum() come back as bigint and numeric text from node-postgres
+  // (PGlite gave numbers): read as numbers on either (finding (141)).
+  assert.deepEqual(numbers(accounting), { calls: 2, input_tokens: 18, output_tokens: 5, cost_microusd: 144 });
 });
 
 test('an exhausted failure remains authoritative after a later completion and duplicate delivery', async () => {
@@ -131,11 +125,11 @@ test('an exhausted failure remains authoritative after a later completion and du
   });
   const sectionB = (await client.query(`SELECT status,cost_microusd,input_tokens,output_tokens
     FROM public.product_section_work WHERE run_id=$1 AND node_id='section-b'`, [runId])).rows[0];
-  assert.deepEqual(sectionB, { status: 'COMPLETE', cost_microusd: 37, input_tokens: 17, output_tokens: 4 });
+  assert.deepEqual(numbers(sectionB), { status: 'COMPLETE', cost_microusd: 37, input_tokens: 17, output_tokens: 4 });
   const calls = (await client.query(
     'SELECT count(*) AS count,sum(input_tokens) AS input_tokens FROM public.product_model_calls WHERE run_id=$1', [runId],
   )).rows[0];
-  assert.deepEqual(calls, { count: 1, input_tokens: '13' });
+  assert.deepEqual(numbers(calls), { count: 1, input_tokens: 13 });
 });
 
 test('a nullable exhausted-section error still keeps the run failed', async () => {
@@ -220,10 +214,10 @@ test('a phase 2 commit cannot downgrade an exhausted failure or duplicate immuta
   const accounting = (await client.query(`SELECT count(*) AS calls, sum(input_tokens) AS input_tokens,
     sum(output_tokens) AS output_tokens, sum(cost_microusd) AS cost_microusd
     FROM public.product_model_calls WHERE run_id=$1`, [raceRun.run_id])).rows[0];
-  assert.deepEqual(accounting, {
+  assert.deepEqual(numbers(accounting), {
     calls: expected.calls,
-    input_tokens: String(expected.inputTokens),
-    output_tokens: String(expected.outputTokens),
-    cost_microusd: String(expected.costMicrousd),
+    input_tokens: expected.inputTokens,
+    output_tokens: expected.outputTokens,
+    cost_microusd: expected.costMicrousd,
   });
 });

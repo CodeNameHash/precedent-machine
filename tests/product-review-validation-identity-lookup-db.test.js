@@ -2,37 +2,14 @@
 
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
-const fs = require('node:fs');
-const path = require('node:path');
 const test = require('node:test');
 
 process.env.PRODUCT_PHASE2_DB_HELPER_ONLY = '1';
 const database = require('./product-phase-2-db.test');
 delete process.env.PRODUCT_PHASE2_DB_HELPER_ONLY;
 
-const ROOT = path.resolve(__dirname, '..');
-const migrations = [
-  'supabase/migrations/20260905070000_product_phase_3_review.sql',
-  'supabase/migrations/20260905212000_product_review_citation_repair.sql',
-  'supabase/migrations/20260905215000_product_finding_resolution_validation.sql',
-  'supabase/migrations/20260905220000_product_review_proposition_group_repair.sql',
-  'supabase/migrations/20260905222000_product_relationship_review.sql',
-  'supabase/migrations/20260905225000_product_legal_schema_v1_1_relationship_types.sql',
-  'supabase/migrations/20260905230000_product_notice_update_relationship_types.sql',
-  'supabase/migrations/20260905231000_product_termination_effect_relationship_types.sql',
-];
-const identityLookupMigration = path.join(
-  ROOT, 'supabase/migrations/20260905232000_product_review_validation_identity_lookup.sql',
-);
-
 const sha = (value) => crypto.createHash('sha256').update(value).digest('hex');
 const itemId = (kind, sourceId) => sha(`${kind}\u001f${sourceId}`);
-
-async function execute(sql) {
-  const client = database.getDatabaseClient();
-  if (typeof client.exec === 'function') await client.exec(sql);
-  else await client.query(sql);
-}
 
 async function immutableValidatorMetadata() {
   const result = await database.getDatabaseClient().query(`SELECT
@@ -54,7 +31,9 @@ async function insertJsonRows(client, table, columns, records) {
     run_id: 'uuid', payload: 'jsonb', families: 'jsonb',
   }[column] || (['authored_order'].includes(column) ? 'integer' : 'text')}`).join(',')}
      )`,
-    [records],
+    // node-postgres sends a JavaScript array as a Postgres array literal,
+    // which jsonb refuses; the rows go as JSON text (finding (141)).
+    [JSON.stringify(records)],
   );
 }
 
@@ -256,27 +235,32 @@ async function rejects(value, label, mutate, pattern) {
   await value.client.query(`RELEASE SAVEPOINT ${label}`);
 }
 
-test.before(async () => {
-  await database.setupDatabase();
-  for (const migration of migrations) await execute(fs.readFileSync(path.join(ROOT, migration), 'utf8'));
-  if (process.env.PRODUCT_REVIEW_IDENTITY_LOOKUP_SKIP_MIGRATION !== '1') {
-    const client = database.getDatabaseClient();
-    const prior = await immutableValidatorMetadata();
-    const migration = fs.readFileSync(identityLookupMigration, 'utf8');
-    await client.query('SAVEPOINT identity_lookup_rollback_proof');
-    await execute(migration);
-    const applied = await immutableValidatorMetadata();
-    assert.notEqual(applied.definition, prior.definition);
-    assert.deepEqual({ ...applied, definition: prior.definition }, prior);
-    await client.query('ROLLBACK TO SAVEPOINT identity_lookup_rollback_proof');
-    await client.query('RELEASE SAVEPOINT identity_lookup_rollback_proof');
-    assert.deepEqual(await immutableValidatorMetadata(), prior);
-    await execute(migration);
-    const final = await immutableValidatorMetadata();
-    assert.deepEqual({ ...final, definition: prior.definition }, prior);
-  }
+// The rollback proof on the full list (finding (141)): the validator's
+// metadata is read just before this migration, the savepoint placed there,
+// the new definition checked just after it, and the teardown rolls back to
+// the savepoint and finds the prior definition again.
+let prior;
+test.before(() => database.setupDatabase({ hooks: {
+  '20260905232000_product_review_validation_identity_lookup.sql': {
+    before: async (client) => {
+      prior = await immutableValidatorMetadata();
+      await client.query('SAVEPOINT identity_lookup_rollback_proof');
+    },
+    after: async () => {
+      const applied = await immutableValidatorMetadata();
+      assert.notEqual(applied.definition, prior.definition);
+      assert.deepEqual({ ...applied, definition: prior.definition }, prior);
+    },
+  },
+} }));
+test.after(async () => {
+  const client = database.getDatabaseClient();
+  await client.query('ROLLBACK TO SAVEPOINT identity_lookup_rollback_proof');
+  await client.query('RELEASE SAVEPOINT identity_lookup_rollback_proof');
+  assert.deepEqual(await immutableValidatorMetadata(), prior);
+  await database.teardownDatabase();
 });
-test.after(database.teardownDatabase);
+
 
 test('large initial review validates within the production statement limit', async (context) => {
   const value = await largeInitialReviewFixture();

@@ -4863,6 +4863,117 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       after the other: the first takes pm-codex-preview-worker, the
       second pm-codex-preview-worker-2, and each monitor's { keepalive:
       true } extends that run's sandbox.
+      (141) 2026-10-18 21:14 to 22:20 UTC (implementer D), work package D2
+      on the manager's message of 21:10 UTC: every database test of the
+      CI "Database migration and rollback" step on the full migration
+      list, the push trigger, and the results before and after. No run
+      touched. Environment: this container has Postgres 16 installed
+      (/usr/lib/postgresql/16, cluster "main" on 127.0.0.1:5432, started
+      with pg_ctlcluster; TEST_DATABASE_URL=postgres://postgres:...@
+      127.0.0.1:5432/postgres), so the step ran here against a server,
+      one file at a time in the CI order, each file alone, before and
+      after the change; not the embedded Postgres of finding (104), the
+      same inactive database in the same transaction-and-rollback form.
+      Built: tests/helpers/product-database.js is the one harness
+      (setupDatabase applies every file of supabase/migrations in name
+      order, 42 today, in one transaction; teardownDatabase rolls back
+      and asserts the first, a Phase 2 and a Phase 3 table are gone;
+      databaseFacade is the Supabase-shaped client; a test that proves
+      one migration's own effect names it in `hooks` with `before` and
+      `after` callbacks on that file, so a measurement or a savepoint
+      sits exactly where the test's prefix used to end, and a ROLLBACK
+      TO that savepoint undoes the migration and every later one, which
+      keeps the absence assertions true on the full list). Every file of
+      the step now sets up through it: product-phase-2-db re-exports it
+      for the fourteen tests that require it; phase-1, phase-6 and
+      failed-model-call-durability use it directly. Removed with that:
+      phase-1's three-file prefix (its third file, 20260905200000,
+      calls product_private.product_phase2_commit_section, so on a fresh
+      database the test failed in setup, "function does not exist",
+      before anything else); phase-2's list of eleven and its second
+      application of 20260905201000; phase-3's seven manual applies;
+      the prerequisite lists of nine tests; the per-test
+      PRODUCT_*_SKIP_MIGRATION switches, set nowhere in the repository
+      or the workflow. The in-test re-application review-timing makes
+      (restore the pre-V3 save function, then re-apply the reference
+      samples V3 migration) stays, through the harness's applyMigration.
+      Harness defects the full list exposed, fixed in the harness or the
+      test, never in a migration: (a) node-postgres sends a JavaScript
+      array as a Postgres array literal, which a jsonb parameter refuses
+      ("invalid input syntax for type json"); the three facades and
+      identity-lookup's insertJsonRows passed arrays straight (a section
+      failure's model calls, 816 proposal rows), written against PGlite
+      where that passes; the one facade now sends an object, and any
+      array that is not all strings (an empty one included), as JSON
+      text, and leaves a text[] (the sandbox pool) alone; (b) count(*)
+      and sum() read back as text from node-postgres, numbers on PGlite:
+      monotonic-failure reads them as numbers. Rules a later migration
+      changed, the expectation updated on the migration's own words: (c)
+      20260907005021_product_article_intro_coverage removes the "-INTRO"
+      exclusion from the work set and raises "product article-
+      introduction exclusion remains" if it is still there (its own
+      check; the file carries no comment line, which is worth one): the
+      phase-1 fixture's work set is three nodes (1.01, Exhibit-A::1.01,
+      the article introduction), the exhibit container still excluded;
+      the test completes the third section before the run is READY and
+      counts three COMPLETE rows; its mid-test re-application of
+      20260905190000, written to prove that migration prunes rows it
+      had inserted by hand, is gone (an out-of-order re-application on
+      the full list would have re-installed the exclusion); (d)
+      20260905221000_product_analysis_running_progress puts `running`
+      in every progress object: failed-model-call's final progress reads
+      running 0, and the test of that migration itself writes its
+      fixture and reads its baseline in a hook just before the file
+      (the baseline has no `running`, the read after it has). (e) The
+      span-closure test's proof is measured the same way: the indexes
+      and the database surface just before and just after
+      20260905223000 (the reverse index is the only thing added, the
+      surface unchanged), then in the test body the read is identical
+      with the index dropped under a savepoint and again once it is
+      back. (f) identity-lookup, termination-effect, cross-section and
+      the sandbox pool test place their savepoint and pre-state in the
+      hook before their file; identity-lookup's rollback proof runs at
+      teardown instead of before the test. Current code the old prefix
+      never reached (phase-3 failed at the first recorded model call,
+      failed-model-call at the first section failure), the fixture made
+      true to the current extractor, no migration rule involved: (g)
+      phase-3's acceptAll is phase-6's (a held proposal rejected, a
+      relationship the review state refuses rejected: REVIEW_INVALID_
+      PROPOSAL, REVIEW_RELATIONSHIP_SOURCE on the synthetic draft), its
+      release evaluation carries the REVIEWED_OMISSION resolutions of
+      the UNRESOLVED coverage as phase-6's does (RELEASE_EVALUATION_
+      REQUIRED otherwise), the proposal it groups and the proposal it
+      edits are VALID ones (REVIEW_INVALID_PROPOSAL_SOURCE otherwise),
+      and its first test asserts the evaluation passed with the bars in
+      the message; (h) failed-model-call's counts are read from the
+      first attempt (a long section is extracted in parts since Q6, so
+      one attempt is seven calls on this section, not three): the
+      section's totals equal the attempt's recorded calls, the replay
+      keeps them, the second attempt doubles the rows and each first
+      extraction has one twin with the same request and response under
+      another call id, the retried section carries three attempts'
+      calls. CI: `on.push.branches` now lists main, codex/product-
+      implementation-plan-20260904 and claude/festive-albattani-70cwn5;
+      nothing else in the workflow changed, and the database step runs
+      the same eighteen files. Results, each file alone in the CI order
+      (tests, pass, fail): before, on the tip before this work:
+      phase-1 1/0/1 ("product_private.product_phase2_commit_section
+      does not exist" in setup); phase-2 2/0/2 and phase-3 3/0/3
+      ("invalid product model invocation identity", finding (104));
+      failed-model-call-durability 1/0/1 (transaction aborted after the
+      json error); provider-response-durability 2/0/2 (the same);
+      monotonic-failure 5/0/5 ("invalid input syntax for type json");
+      analysis-running-progress 1/1/0; review-timing-integration 1/1/0;
+      finding-resolution 2/2/0; relationship-review 6/5/1 (one json
+      error); span-closure-lookup 1/1/0; cross-section-relationship
+      2/2/0; legal-schema-revision-persistence 2/0/2 ("relation
+      product_fact_components does not exist": its prefix stopped before
+      the V2 migration the store now reads); fact-occurrence-collision
+      3/3/0; termination-effect 2/2/0; review-validation-identity-lookup
+      2/0/2 (json error); sandbox-pool 4/4/0; phase-6 1/1/0 (156 s).
+      After: all eighteen files pass, 40 tests of 40: phase-1 1/1/0; phase-2 2/2/0 (147 s); phase-3 3/3/0 (280 s); failed-model-call-durability 1/1/0 (134 s); provider-response-durability 2/2/0; monotonic-failure 5/5/0; analysis-running-progress 1/1/0; review-timing-integration 1/1/0; finding-resolution 2/2/0; relationship-review 6/6/0; span-closure-lookup 1/1/0; cross-section-relationship 2/2/0; legal-schema-revision-persistence 2/2/0; fact-occurrence-collision 3/3/0; termination-effect 2/2/0; review-validation-identity-lookup 2/2/0; sandbox-pool 4/4/0; phase-6 1/1/0 (152 s); about 15 minutes in all, the four runner-driven files most of it. Defects in a migration: none found; the one gap is 20260907005021's missing comment line, noted under (c). npm run test:active after the change:
+      768 tests, 767 pass, the one failure the known Codex-client final-message test. One commit for the harness, the tests, the workflow,
+      the guide line and this finding.
 
       (84) 2026-10-18 18:05 to 18:20 UTC (implementer), work package 15
       on finding (83)'s terms ("the documented maximum output cap on the
