@@ -3401,6 +3401,78 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       codes. Generation 8's stored facts take the sub-items on the next
       page render. npm run test:active: 662 tests, 661 pass, the one
       failure the known Codex-client final-message test.
+      (58) 2026-10-18 (implementer), work package 7 on the manager's
+      message of 05:45 UTC, the four defects of finding (57). (a) The
+      value parser: parseComponentValue collects every value of the kind
+      the text states; a deeming form (deemed, shall be, will be, reduced
+      to, replaced by, between a stated value and a later one) reads the
+      deemed value, so 5.02(e)'s "the references to four (4) business
+      days will be deemed two (2) business days" reads 2 business days;
+      any other text naming two different values reads nothing, and the
+      extractor notes the empty cell as VALUE_AMBIGUOUS_<KIND> (PERIOD,
+      AMOUNT, PERCENTAGE, DATE; ambiguousValueComponents, the note beside
+      CONCLUSIONS_CELLS_DROPPED in agreement-draft.js). The page's own
+      completion (derivedValueCell) reads the same parser, so generation
+      8's cell shows 2 business days on the next render; a two-period
+      text leaves the cell empty and the row shows the summary alone,
+      both asserted in the table-view test. (b) `defined-terms-table`:
+      the shapes say its section is a reference appendix, not a fact
+      table (decision 15, section.kind reference_appendix,
+      excluded_from_fact_tables true, Ben's #19), yet fact-conclusions'
+      tablesForFamily offered it to the extractor and validated readouts
+      against it, which is how 45 facts named it. Decision from that
+      evidence: it is a retired key for readouts. fact-conclusions skips
+      excluded sections in tablesForFamily and findTableByKey, so the
+      extractor's table_shapes for KEY_DEFINED_TERMS no longer carry it
+      and a readout naming it fails validation and is dropped with the
+      CONCLUSIONS_DROPPED note, the fact kept, as finding (37)'s retired
+      tables are; on the page the readout was already treated as none.
+      And a fact collectDefinitionFact takes into Defined Terms is never
+      listed under a section as without a readout (collectDefinedTerms
+      returns whether it took the fact). (c) A column's
+      code_from_words_by_row (row -> [{ code, words }], validated against
+      the row's codes) codes an empty vocabulary cell on the page from the
+      fact's own words, first rule that matches; both Board determination
+      standard rows carry the four rules, "reasonably likely to be
+      inconsistent" before "inconsistent" alone (the stricter reading),
+      then "violate" and "required by"; the cell is marked derived:
+      'code_from_words' and cites the words that named the code; a code
+      the model returned is never overwritten. Both tables' guidance now
+      asks for the code every time, naming the mapping. Found underneath
+      it: a presence-derived column (the intervening and superior tables'
+      provision column, derived on their termination rows alone)
+      overwrote every row's cell with a dash at render, so a code the
+      model returned on the intervening table's other rows never showed;
+      rows outside derived.rows now keep their cells (asserted). (d) The
+      six facts: the core table gains the fixed row "Permitted contact:
+      clarification and the no-shop's terms" (Yes / No, coded Yes from
+      the words) for the clarify and the no-shop's-terms permissions; the
+      change-of-recommendation table's Not a Change of Recommendation row
+      gains DISCLOSURE_REQUIRED_BY_LAW and
+      DISCLOSURE_PERMISSION_NOT_A_CHANGE beside the stop-look-and-listen
+      and factual-statement codes, taking the required-by-Law permission
+      (EXCEPTION_PREREQUISITE) and the no-change sentence
+      (RECOMMENDATION_CHANGE); the negotiation with a Qualifying Company
+      Takeover Proposal is the Engagement standard row; the takeover-
+      statute carve-out is an Other provisions entry of the change table
+      through a new table field other_provisions_from_subtype (subtype
+      keys and a words gate; such a fact is never a row). The page
+      defaults are fact_type_rows with fact_type_rows_when, which now
+      takes one gate per fact type (a fact type without a gate in that
+      form takes no default from the table), the gates disjoint across
+      the no-shop tables so defaultConclusions finds one candidate. The
+      NO_SHOP layer rules name the six as facts of their own with their
+      rows. The proposed row label, the two codes and the word gates are
+      the implementer's; Ben or the manager adjust. Tests: fact-
+      conclusions (the deeming forms, the ambiguity, the note, the
+      appendix not offered), table-view (5.02(e) through the page,
+      Defined Terms only, the codes from words on both tables with the
+      derivation and the non-overwrite, the six facts on their rows and
+      the other provision, nothing unplaced), table-shapes (the fields,
+      the gates, the codes, the layer rule, four validation codes).
+      Generation 8's stored facts take the rows and codes on the next
+      page render; no re-run. npm run test:active: 669 tests, 668 pass,
+      the one failure the known Codex-client final-message test.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
