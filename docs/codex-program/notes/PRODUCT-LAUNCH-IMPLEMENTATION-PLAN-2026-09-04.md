@@ -3005,9 +3005,15 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       beneath, no toggle; list elements such as (i) and (ii) are separate
       indented lines; every line is one text style, left-aligned (the
       italic grey of inherited words and the dotted underline of a
-      reference term are gone; the test ids stay). This supersedes the
-      closed-by-default detail of 2026-09-14: the tree is open
-      throughout. Verified by hand in headless Chromium on a 2.01-shaped
+      reference term are gone; the test ids stay). The manager's A.5
+      message of 00:12 UTC is met with two readings to note: a list's
+      connectives between the children ("(i) ... and (ii) ...") count as
+      covered, since Ben's own example is such a list and the parent
+      would otherwise repeat its children with "and" as its only word of
+      its own; and no toggle appears above the fourth level, where the
+      fourth level and below fold behind one control. This supersedes the
+      closed-by-default detail of 2026-09-14: the tree is open to three
+      levels. Verified by hand in headless Chromium on a 2.01-shaped
       fact: "shall be converted into the right to receive" above its
       object, "(i) $47.50 in cash" and "(ii) one CVR" as two indented
       lines in the list's place, the defined-term line left-aligned.
@@ -3062,6 +3068,47 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       children indented beneath, no toggle; list elements such as (i)
       and (ii) are separate indented lines; every tree line uses one
       text style, left-aligned.
+      (48) 2026-10-18 00:30 UTC, implementer, work package 3 on the
+      terms of (44) and (45), ahead of its message, no run submitted.
+      The Anthropic API is a hosted provider beside the Claude CLI path:
+      provider `ANTHROPIC_API` (`lib/product/product-model-config.js`,
+      `ANTHROPIC_API_MODEL_CONFIG`), the CLI path's model tier and effort
+      per call kind (claude-opus-5; routing and residual low, extraction
+      high), Claude Code's default output cap of 32,000 tokens, adaptive
+      thinking (the model's default; no sampling parameter, which the
+      model refuses), the same compact-JSON system prompt, streaming so a
+      long extraction outlives the request timeout, the runner's part
+      splitting unchanged (`lib/product/anthropic-api-model.js`;
+      `createHostedProductModel` builds it for a run whose model_config
+      names the provider, so the run page shows which account paid).
+      The key: `ANTHROPIC_API_KEY` on the deployment, read by the run
+      route like the OAuth token, passed to the sandbox by the wake for
+      this provider alone, required by the launcher and the worker, and
+      unset by the launcher for every other provider; never in the
+      repository. Every call's cost is recorded at the published
+      first-party rates (claude-opus-5: $5 input, $6.25 cache write,
+      $0.50 cache read, $25 output per million tokens) and the input
+      count is the whole prompt as the CLI path counts it. A 429 after
+      the SDK's own retries, or a 400 naming the credit balance, is
+      ANTHROPIC_API_USAGE_LIMIT, which the worker's usage-limit rule
+      stops on instead of burning attempts; a refusal or an answer cut
+      off at the cap fails the call with the received output kept.
+      Selected for new runs by PRODUCT_MODEL_PROVIDER=ANTHROPIC_API on
+      the deployment, as the other providers are. Cost estimate for a
+      Metsera-sized run from generation 7's tokens (9.85m input, 3.15m
+      output), at the rates above: input $49.25 plus output $78.75, about
+      $128 per generation with no prompt caching, which the request does
+      not yet ask for (the family contracts and table shapes repeat on
+      every section; a cache breakpoint on them would cut the input
+      share, roughly to $100 a generation if two thirds of the input read
+      from cache, and is the first lever if the API path is used more
+      than once). Ben's $200 of credit covers one generation on this
+      path with margin, not two. claude-opus-5-5 ($4 / $20) would be
+      about $102, but is a different model from the CLI path's and so
+      not what (45) asked for; Ben's call. Tests:
+      `tests/product-anthropic-api-provider.test.js` (in test:active).
+      Not done: no live call was made from here (no key in this
+      environment, by design).
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
