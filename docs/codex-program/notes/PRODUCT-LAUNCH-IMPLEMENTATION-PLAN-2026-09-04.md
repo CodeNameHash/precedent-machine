@@ -4676,6 +4676,58 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       NCS 5.14's twelve facts read as eight sub-items; improved, accepted.
       The ten publicity labels are proposals for Ben ("he decides the
       names; the code only proposes"); put to him with this check-in.
+      (165) 2026-10-18 21:00 UTC: NCS generation 5 (run 51577c57) READY
+      at 20:48 UTC: 1,037 proposals, 1,015 VALID, 22 held, 104 sections,
+      393 model calls, 12.79m input (6.37m uncached, 4.68m cache reads,
+      1.73m cache writes) and 3.80m output tokens, the pipeline's stored
+      cost $145.68 (Ben's $200 credit; the projection of (160) was $150).
+      Read, not just counted, in docs/codex-program/notes/
+      NCS-GENERATION-5-AUDIT-2026-10-18.md: against generation 4's 850
+      VALID and 145 held, every hold has a reason and a code rule (3.4's
+      ten status representations cite the Article III chapeau on a span
+      id one hex character from the closure's, the model's slip; 6.2's
+      two bring-down tiers list cross-references; 6.4's three frustration
+      facts cite "this Article VI" unresolved; the rest are work
+      packages 14 and 18 (a) and (b), merged after this worker's wake);
+      eight VALID facts have no readout (subtypes without a row); 25
+      unusual provisions, ten of them genuinely unusual for Ben (the
+      Tolling Period, the novation, the tax-deposit condition, the VAT
+      warranty and mandatory election, Rewind). Work package 19 to
+      implementer A: (a) to (d) the four rules above, (f) the
+      registration rights as a table at the bottom of the Consideration
+      section per Ben's (163), (g) finding (95)'s row move does not
+      happen on the stored rows (29 facts stay on "General notification"
+      with the sub-items; no "Registration rights" row), a defect to fix
+      with the real rows pinned. The active suite on the merged head
+      b77da65e: 757 of 758, the known failure only. The sandbox released
+      (release_sandbox); pm-codex-preview-worker updated to b77da65e;
+      pm-codex-preview-worker-2 created for the subscription provider
+      (claude 2.1.302). Olaplex and Apogee generation 2 intakes on the
+      environment's default provider: runs 686c3bf2 (1974640) and
+      f1e2493f (1786205), QUEUED, woken next on the pool, per Ben's
+      "Olaplex and Apogee run on the subscription, back to back/parallel".
+      (166) 2026-10-18 21:05 UTC, Ben's decisions, verbatim. On the
+      publicity sub-item names: "all sounds fine" (the ten labels of
+      (94) (c) are final). On the registration-rights sub-items: "are
+      these from a reg rights agreement? I wouldn't go into anywhere near
+      this depth in this product" (they are NCS 5.17, a registration
+      covenant inside the merger agreement, not a separate agreement;
+      applied: registration rights is one row at the bottom of the
+      Consideration section, present or absent with the as-drafted
+      summary and its facts behind it, no sub-items; the seven labels of
+      (95) are withdrawn). On the ten unusual provisions: "not a fact
+      type today". On the production project: "I'm not sure what you
+      mean but I don't care boaut the old site, you can move over whener
+      you like" (applied: the move of the product schema and the
+      reviewed rows to the production project is approved in principle;
+      implementer B prepares it as a script with a dry run and a report,
+      the manager runs it after reading the dry run; the released Review
+      still publishes only a review every item of which Ben decided).
+      On the next deals: "btw let's do major biopharma deals as the
+      basi sfor the build out of next searches, starting > $1bn"
+      (applied: after Olaplex and Apogee, the intakes are public-target
+      biopharma merger agreements over $1bn; implementer C compiles the
+      candidate list with each Exhibit 2.1 URL for Ben to order).
       (94) (a) and (b) are finalisation rules: NCS generation 5's worker
       runs the code of its wake (18:55 UTC), so 4.7's three inherited
       quotes and 5.11's reference premium stay held in that run and are
