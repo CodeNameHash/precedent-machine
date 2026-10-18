@@ -3137,6 +3137,29 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       children indented beneath, no toggle; list elements such as (i)
       and (ii) are separate indented lines; every tree line uses one
       text style, left-aligned.
+      (50) 2026-10-18 01:20 UTC, manager review of work packages 2 and 3
+      (findings (43), (46), (48)): accepted. The suite on the merged
+      head is 649 of 650 (the known Codex-client failure). The key
+      handling reads correctly (the wake passes ANTHROPIC_API_KEY only
+      for the API provider, the launcher unsets it for every other path,
+      no value anywhere in the repository). Generation 7 under the new
+      page code: the notice table's timing pills fold under rule B4 and
+      the two placed rows take their defaults; four no-shop facts stay
+      without a readout until generation 8 extracts on the new rows; the
+      intervening-event table's "Parent termination right on a change"
+      line is a derived row with no summary (open). The implementer's
+      provider id `ANTHROPIC_API` stands (the in-request `ANTHROPIC`
+      path keeps its name). Found on the way to generation 8: the
+      persistent sandbox no longer resumes ("Cannot resume sandbox: no
+      snapshot available" after a month idle), so work package 4
+      (finding (49)) reworks create-sandbox-worker.js for every hosted
+      provider; the manager runs it, then updates the worker and submits
+      generation 8. Cost (finding (46), prices read 2026-10-18): $127.93
+      per generation on claude-opus-5 at generation 7's token counts
+      without caching, about $97 with a cache breakpoint on the repeated
+      contracts, $102.34 on claude-opus-5-5. Recommendation to Ben:
+      generation 8 on the subscription (no charge, the limit resets);
+      the API for NCS after a cache breakpoint lands.
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
