@@ -6704,6 +6704,62 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       headline figures (equity, or EV where marked), not read from the
       agreements; the agreements' consideration is what the intake
       will extract. No run, worker or sandbox touched.
+      (128) 2026-10-18 21:55 to 22:45 UTC (implementer C), work package
+      C4, the tender-offer and stock-deal readiness of the schema:
+      docs/codex-program/notes/TENDER-OFFER-AND-STOCK-DEAL-SCHEMA-GAPS-2026-10-18.md.
+      GSK / Nuvalent (a two-step tender offer) and Indivior / Supernus
+      (the stock merger of equals) read in full from their exhibits, no
+      intake, 45 provisions set against the V2 schema, LEGAL-RULES and
+      the table shapes, and against what the extractor did with the
+      corpus's one tender offer (Arcellx: its V2 run filed Article I's
+      Offer under nine families, CONSIDERATION_PACKAGE, DOCUMENT_FILING,
+      OBTAIN_FINANCING and TRANSACTION_STEP among them, and Annex I
+      under BRINGDOWN and GENERAL, because no subtype names the Offer:
+      "offer" is in the schema twice, "tender" never). The count: of 24
+      tender-offer provisions, 11 had no family, subtype or row (the
+      Offer's commencement, expiration, extensions, amendment
+      restrictions and termination; the Minimum Tender Condition and
+      its waiver rule; the Merger's condition that the Offer was
+      consummated; the Section 251(h) merger without a vote; both
+      parties' Offer-failure termination rights); of 21 stock-deal
+      provisions, 5 had no row (fractional shares, the combined-company
+      governance, Parent's reciprocal no-shop, Parent's recommendation-
+      change termination, the second vote's failure). Added, as rows
+      and codes on existing subtypes (decision 34, work package C4,
+      `applyTenderOfferAndStockDealRows`, the contract regenerated,
+      pinned with the agreements' words in
+      tests/product-table-shapes.test.js): conditions-table "Minimum
+      tender condition", "Offer consummated (Acceptance Time)", "Parent
+      stockholder approval" and the vote standard MAJORITY_OF_VOTES_CAST
+      (Supernus 4.27(b): "a majority in voting power of the outstanding
+      Indivior Shares present in person or represented by proxy ... and
+      entitled to vote"); the mutual termination row "Parent stockholder
+      vote not obtained"; Parent's "Offer expired on a failed Offer
+      Condition" (placed before the written-consent rows work package 19
+      (d) pins as last); the Company's "Offer not commenced or not
+      consummated" and "Parent change of recommendation"; the window
+      code BEFORE_ACCEPTANCE_TIME on both termination windows (Nuvalent
+      8.2 to 8.4: "at any time prior to the Acceptance Time"); the
+      votes rows "Merger without a vote (Section 251(h))" and "Parent
+      stockholders' meeting"; the proxy rows "Schedule TO (Offer
+      Documents)", "Schedule 14D-9" and "Registration Statement (Form
+      S-4)"; the consideration row "Cash in lieu of fractional shares";
+      guidance on each table saying which words land where. Every row
+      is reachable now through the readout's row_label. What waits on
+      Ben, proposed in the note and not built: an Offer step (five
+      subtypes: commencement, expiration, extension, amendment
+      restriction, termination, with the Acceptance Time as the first
+      step's closing), a MINIMUM_CONDITION subtype with a value, an
+      OFFER_FAILURE termination subtype, three LEGAL-RULES lines (the
+      Offer as its own step; an Annex I condition as the first step's
+      closing condition; no approval condition or meeting under Section
+      251(h)), the ratio's form and the adjustment clause as grid
+      columns, a combined-company governance table, a Parent no-shop
+      section or obligor axis with Parent's Superior Proposal row, and
+      a Dividends table for the Special Dividend. Not changed: the
+      schema, LEGAL-RULES, any subtype or fact type. npm run
+      test:active: 774 of 775, the one failure the known Codex-client
+      final-message test. No run, worker or sandbox touched.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
@@ -6747,6 +6803,71 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       docs/codex-program/notes/Q4-LEGACY-QUERY-COMPARE-EVIDENCE-2026-10-18.md;
       both are already off every entry point and read only legacy
       tables; the question put is retire now or keep unrouted.
+
+      (180) 2026-10-18 21:40 to 23:10 UTC (implementer E), work package
+      E1 item 1, the ledger. No run submitted, woken or retried; no
+      live call; nothing written to the preview branch; no key read.
+      Read from product_model_calls and the run tables by SQL:
+      docs/codex-program/notes/EXTRACTION-COST-LEDGER-2026-10-18.md
+      (the queries at its end), and the same reading as code for every
+      run, `scripts/product/extraction-cost-ledger.js --run <id>`
+      (`lib/product/extraction-cost-ledger.js`; `--snapshot <file>`,
+      `--json`, `--dump-snapshot`; `lib/product/run-rows.js` gains the
+      span, component, headline, conclusion and residual tables and
+      `loadRunContext`). NCS generation 5, $145.68 for 1,015 VALID
+      facts ($0.1435 a fact), 439 minutes: (a) output is 63 per cent
+      of the money ($92.37; 3.69m extraction output tokens at 87 a
+      second are 97 per cent of all call time); about 36 per cent of
+      it is thinking (Metsera's CLI reports 1,249,344 of 3,512,309;
+      the API path does not break it out), and of the visible JSON 30
+      per cent is the agreement's own words written back twice
+      (component quotes 1.02 MB and evidence_quotes 0.42 MB), 20 per
+      cent is 64-hex span ids (0.95 MB), 12 per cent is the V1 roles
+      the V2 page never shows; (b) fresh input is 20 per cent
+      ($28.83): the extraction section block carried 16.36 MB for a
+      0.31 MB agreement, cross_references 10.29 MB (33 agreements)
+      and definitions 4.12 MB (13), a median 86,810 bytes of context
+      per call (3.21, 193 bytes of representation, went out with
+      32,078 fresh tokens, $0.30 for one fact); every agreement byte
+      went at least three times, and a fifth of them (63,324 bytes,
+      the definitions article and the sections most referred to) 119
+      to 277 times each, 74 per cent of the 16.0m byte-sends (mean 54
+      a byte); (c) cache writes are 12 per cent ($17.46): 51 distinct
+      stable blocks (one per routed family set), 22 used once, against
+      $1.92 of reads; table_shapes is 37 per cent of the block and
+      cross_section_target_contracts, the same on every call, 13; (d)
+      $13.84 and 69 call-minutes went on 37 calls of attempts that
+      never committed (5.1's three capped attempts $9.29; 5.8's first
+      attempt lost to the 18:34 restart with no error record $2.69;
+      3.4's JSON failure $1.23; the 1.2, 2.1 and 2.2 pairs $0.64);
+      (e) 62 of the 439 minutes had no call in flight (the restarts
+      of findings (74), (77) and (87)), 353 had two (the worker's two
+      loops). The stored per-call costs reconcile to the published
+      rates to the cent; the split in (165) (6.37m fresh, 4.68m read)
+      counted the failure records' whole prompt as fresh, the calls'
+      own usage gives 6.11m fresh, 4.91m read, 1.76m written. Metsera
+      generation 8 on the CLI: 313 calls, 10.88m input of which 9.71m
+      were cache writes (each `claude -p` process writes its own
+      entry and the next starts cold; free on the subscription, $191
+      at the API's rates), 3.62m output, 435 minutes, 3.68 calls a
+      section. Floor (read once, write the facts once): about 0.11m
+      input tokens and 0.58m output, $15 ($23 with the same thinking
+      share), 110 minutes serial and 13 in parallel; actual is 6x to
+      10x the cost floor, 116x on input tokens, 4x to 7x on output,
+      34x the parallel time floor. The manager's (167) holds: 10x is
+      there, 100x is not while a frontier model writes the facts (the
+      output floor alone is $14 to $23). Asked of the manager: the
+      console's billed usage for the workspace over 13:27 to 20:47
+      UTC, for the reconciliation line, and
+      `extraction-cost-ledger.js --run` on both runs where the branch
+      keys are, the two outputs kept beside the note. Baseline for
+      the gate (item 5):
+      tests/fixtures/product/run-cost-baseline.ncs-generation-5.json;
+      `assertNoUnexplainedRise` fails a rise over 15 per cent (25 on
+      call minutes a section, 10 on calls a section) unless an
+      explanation names the metric.
+      tests/product-extraction-cost-ledger.test.js (7 of 7), added to
+      test:active.
 
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
