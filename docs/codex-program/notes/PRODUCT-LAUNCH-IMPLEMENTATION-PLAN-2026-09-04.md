@@ -4788,6 +4788,32 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       manager to resolve with Ben. Olaplex and Apogee generation 2 at
       22:12 UTC: 24 of 97 and 21 of 85, no failures.
       (172) 2026-10-18 22:30 UTC: implementer E's (180), implementer A's
+      (173) 2026-10-18 22:55 UTC: implementer B's (107), implementer C's
+      (129) and implementer D's (141) merged (head 49d0bc59; the active
+      suite in the next finding). Read: (107) the Verve failure was a
+      sectionizer rule parenting "Annex I" to ARTICLE I by numeral
+      alone; seven of the 42 biopharma exhibits failed on it (every
+      two-step tender offer with a trailing conditions annex) and two
+      more carried an annex's limbs as the last section's; 42 of 42
+      build now, pinned on Verve's own bytes. (129) the three intakes
+      held at the identity gate are parser misses on sound documents
+      (a cover date with a trailing comma; a compound parenthetical; a
+      name class without "/"; "among:" with a colon), not doubts about
+      the document. (141) every CI database test on the full migration
+      list through one harness, 40 of 40 on Postgres 16, the workflow
+      on pushes to both branches; no migration defect. Work packages
+      sent: C6 (the four parser rules, pinned on the three exhibits,
+      swept over the 34), D3 (parts committed as they complete, an
+      attempt resumed after a worker restart, no silent loss; E's
+      ledger put $13.84 and 69 call-minutes of NCS generation 5 on
+      attempts that never committed), B5 (the pre-intake structure
+      check as a script, run over the 34). Olaplex and Apogee
+      generation 2 at 22:49 UTC by SQL: 31 of 97 and 28 of 85, no
+      failures (the preview share cookie expired at 22:49; the share
+      link no longer admits the API, so the status is read by SQL
+      until a new share link or bypass is in hand). Implementer A was
+      at its five-hour limit at 22:49 (resets at 22:50) with work
+      package 21 in progress.
       (98), (99) and (99a) merged (head 5f1785ca). The ledger read by
       the manager, not just its totals: the per-call costs reconcile
       to the published rates to the cent; output is 63 per cent of
