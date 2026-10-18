@@ -3291,6 +3291,25 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       law and factual-disclosure permissions, the negotiation with a
       qualifying proposal, and the takeover-statute carve-out of an
       Adverse Recommendation Change.
+      (59) 2026-10-18 06:25 UTC, generation 8 at 72 of 85 (6.05 to 6.15,
+      7.01 to 7.04, 8.01 to 8.04, 9.01 added; 842 proposals, 830 VALID;
+      two attempts failed on output shape and retried; no failed
+      section). The worker died at about 06:10 UTC: the sandbox session
+      the 02:07 wake created ran under its four-hour timeout and a
+      generation takes six; the monitor re-woke it at 06:22 (new
+      session, new worker; the two in-flight leases expire and are
+      retried at the next check). Work package 7 (finding (58)) merged:
+      (b), (c), (d) hold on generation 8 (no definition fact listed
+      without a readout; the Board determination standard coded from its
+      words; the six 5.02 permissions on their rows); (a) holds for new
+      extractions only, the stored subsequent match period still reads
+      4 business days, so the page re-reads a stored value from its
+      cited words (work package 8, finding (60), with the willful-breach
+      definition's fallback to Defined Terms and the worker keeping its
+      own sandbox session alive). Articles VI to IX.01 read as generation
+      7's did: 6.03 pending; 6.05's indemnification rows, 6.10 and 6.11,
+      the conditions tiers, 8.01's rights and cures, 8.02's fee and tail;
+      141 facts, one unplaced (the willful-breach definition, above).
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
