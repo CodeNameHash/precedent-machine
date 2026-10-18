@@ -186,6 +186,7 @@ test('the run route wakes the sandbox for a Claude CLI run with the deployment\'
   assert.deepEqual(wakeInput, {
     runId, databaseUrl: 'https://ecrtoofsyxozazkvsvcl.supabase.co', serviceRoleKey: 'service-role-secret-value',
     providerId: CLAUDE_CLI_PROVIDER_ID, claudeOauthToken: 'oauth-'.repeat(8),
+    sandboxName: 'pm-codex-preview-worker',
   });
   assert.equal(response.body.execution_mode, 'HOSTED');
 });

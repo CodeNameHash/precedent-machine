@@ -25,11 +25,18 @@
 // set (lib/product/sandbox-wake.js sandboxCredentials), from the repository
 // root:
 //
-//   node scripts/product/create-sandbox-worker.js [--provider ANTHROPIC_API] [--branch <branch>]
+//   node scripts/product/create-sandbox-worker.js [--provider ANTHROPIC_API] [--branch <branch>] [--name <sandbox>]
 //
-// The provider defaults to PRODUCT_MODEL_PROVIDER, else ANTHROPIC_API.
+// The provider defaults to PRODUCT_MODEL_PROVIDER, else ANTHROPIC_API. The
+// pool (plan finding (140)): without --name the script walks every sandbox
+// of the pool (lib/product/sandbox-pool.js; a sandbox that exists is left
+// to update-sandbox-worker.js), with --name only that one. Each sandbox is
+// provisioned the same way; what the person must do by hand on each is the
+// provider's login (finding (49): the Codex device login runs here; the
+// Claude CLI needs no login in the sandbox, its OAuth token arrives per wake).
 
-const { SANDBOX_NAME, SANDBOX_WORKDIR, MINIMUM_SESSION_MS, isSandboxGone, sandboxCredentials } = require('../../lib/product/sandbox-wake');
+const { SANDBOX_NAME, SANDBOX_POOL, SANDBOX_WORKDIR, MINIMUM_SESSION_MS, isSandboxGone, sandboxCredentials } = require('../../lib/product/sandbox-wake');
+const { isSandboxPoolName } = require('../../lib/product/sandbox-pool');
 const { ANTHROPIC_API_PROVIDER_ID, CLAUDE_CLI_PROVIDER_ID, CODEX_PROVIDER_ID, isHostedProvider } = require('../../lib/product/product-model-config');
 
 const REPO = 'https://github.com/CodeNameHash/precedent-machine.git';
@@ -44,11 +51,18 @@ const PROVIDER_SETUP = Object.freeze({
 });
 
 function parseArguments(argv, env = process.env) {
-  const options = { branch: DEFAULT_BRANCH, providerId: env.PRODUCT_MODEL_PROVIDER || ANTHROPIC_API_PROVIDER_ID };
+  const options = { branch: DEFAULT_BRANCH, providerId: env.PRODUCT_MODEL_PROVIDER || ANTHROPIC_API_PROVIDER_ID, names: [...SANDBOX_POOL] };
   for (let index = 0; index < argv.length; index += 1) {
     const argument = argv[index];
     if (argument === '--provider') { options.providerId = argv[index + 1]; index += 1; continue; }
     if (argument === '--branch') { options.branch = argv[index + 1]; index += 1; continue; }
+    if (argument === '--name') {
+      const name = argv[index + 1];
+      if (!isSandboxPoolName(name, SANDBOX_POOL)) throw new TypeError(`--name must be a sandbox of the pool (${SANDBOX_POOL.join(', ')}), not ${name}`);
+      options.names = [name];
+      index += 1;
+      continue;
+    }
     if (argument.startsWith('--')) throw new TypeError(`unknown option ${argument}`);
     options.branch = argument; // the earlier positional form
   }
@@ -72,18 +86,18 @@ async function run(sandbox, cmd, args, { cwd = '/vercel/sandbox', stream = false
 
 // Resume the named sandbox; null when it does not exist or cannot be
 // resumed (its stale record deleted so the name is free again).
-async function resumeOrClear(Sandbox, credentials, log) {
+async function resumeOrClear(Sandbox, credentials, log, name = SANDBOX_NAME) {
   try {
-    return await Sandbox.get({ name: SANDBOX_NAME, resume: true, ...credentials });
+    return await Sandbox.get({ name, resume: true, ...credentials });
   } catch (error) {
     if (!isSandboxGone(error)) throw error;
-    log(`sandbox ${SANDBOX_NAME} cannot be resumed (${String(error.message || error).slice(0, 160)}); treating it as gone`);
+    log(`sandbox ${name} cannot be resumed (${String(error.message || error).slice(0, 160)}); treating it as gone`);
   }
   try {
-    const stale = await Sandbox.get({ name: SANDBOX_NAME, resume: false, ...credentials });
+    const stale = await Sandbox.get({ name, resume: false, ...credentials });
     if (stale && typeof stale.delete === 'function') {
       await stale.delete({ deleteOrphanSnapshots: true });
-      log(`deleted the stale record of ${SANDBOX_NAME}`);
+      log(`deleted the stale record of ${name}`);
     }
   } catch (error) {
     if (!isSandboxGone(error)) log(`could not delete the stale record (${String(error.message || error).slice(0, 160)}); creating anyway`);
@@ -91,24 +105,26 @@ async function resumeOrClear(Sandbox, credentials, log) {
   return null;
 }
 
-async function createSandboxWorker({ Sandbox, branch, providerId, credentials = sandboxCredentials(), log = console.log, stdout = process.stdout }) {
+// One sandbox of the pool, provisioned as every other.
+async function createSandboxWorker({ Sandbox, branch, providerId, name = SANDBOX_NAME, credentials = sandboxCredentials(), log = console.log, stdout = process.stdout }) {
   const setup = PROVIDER_SETUP[providerId];
   if (!setup) throw new TypeError(`unsupported provider ${providerId}`);
-  const existing = await resumeOrClear(Sandbox, credentials, log);
+  if (!isSandboxPoolName(name, SANDBOX_POOL)) throw new TypeError(`${name} is not a sandbox of the pool (${SANDBOX_POOL.join(', ')})`);
+  const existing = await resumeOrClear(Sandbox, credentials, log, name);
   if (existing) {
-    log(`sandbox ${SANDBOX_NAME} already exists (${existing.sandboxId || existing.id || 'id unknown'}); use update-sandbox-worker.js instead`);
+    log(`sandbox ${name} already exists (${existing.sandboxId || existing.id || 'id unknown'}); use update-sandbox-worker.js instead`);
     return { created: false, sandboxId: existing.sandboxId || existing.id || null };
   }
-  log(`creating persistent sandbox ${SANDBOX_NAME} for ${providerId}`);
+  log(`creating persistent sandbox ${name} for ${providerId}`);
   const sandbox = await Sandbox.create({
-    name: SANDBOX_NAME, persistent: true, runtime: 'node22', timeout: MINIMUM_SESSION_MS,
+    name, persistent: true, runtime: 'node22', timeout: MINIMUM_SESSION_MS,
     // A snapshot that never expires: the month-idle loss of 2026-10 does
     // not repeat.
     snapshotExpiration: 0,
     ...credentials,
   });
   const sandboxId = sandbox.sandboxId || sandbox.id || null;
-  log(`created ${SANDBOX_NAME} (${sandboxId || 'id unknown'}); cloning ${branch} into ${SANDBOX_WORKDIR}`);
+  log(`created ${name} (${sandboxId || 'id unknown'}); cloning ${branch} into ${SANDBOX_WORKDIR}`);
   await run(sandbox, 'git', ['clone', '--quiet', '--depth', '50', '--branch', branch, REPO, SANDBOX_WORKDIR]);
   const commit = await run(sandbox, 'git', ['rev-parse', '--short', 'HEAD'], { cwd: SANDBOX_WORKDIR });
   log(`checked out ${branch} at ${commit}`);
@@ -131,18 +147,26 @@ async function createSandboxWorker({ Sandbox, branch, providerId, credentials = 
     const hasAuth = await run(sandbox, 'sh', ['-c', 'test -f /vercel/.codex/auth.json && echo yes || echo no']);
     if (hasAuth !== 'yes') throw new Error('Codex login did not produce /vercel/.codex/auth.json; run this script again');
   }
-  log(`done: ${SANDBOX_NAME} (${sandboxId || 'id unknown'}) on ${branch} at ${commit}, provider ${providerId}, CLIs installed: ${installed.length ? installed.join(', ') : 'none'}`);
+  log(`done: ${name} (${sandboxId || 'id unknown'}) on ${branch} at ${commit}, provider ${providerId}, CLIs installed: ${installed.length ? installed.join(', ') : 'none'}`);
   return { created: true, sandboxId, commit, providerId, clis: installed };
 }
 
+// The pool, or the one sandbox named: each in turn (the Codex login is
+// interactive, one at a time), the results by name.
+async function createSandboxPool({ names = SANDBOX_POOL, ...rest }) {
+  const results = {};
+  for (const name of names) results[name] = await createSandboxWorker({ name, ...rest });
+  return results;
+}
+
 async function main(argv) {
-  const options = parseArguments(argv);
+  const { names, ...options } = parseArguments(argv);
   const { Sandbox } = await import('@vercel/sandbox');
-  return createSandboxWorker({ Sandbox, ...options });
+  return createSandboxPool({ Sandbox, names, ...options });
 }
 
 if (require.main === module) {
   main(process.argv.slice(2)).catch((error) => { console.error(error.message || error); process.exit(1); });
 }
 
-module.exports = { PROVIDER_SETUP, createSandboxWorker, parseArguments, resumeOrClear };
+module.exports = { PROVIDER_SETUP, createSandboxPool, createSandboxWorker, parseArguments, resumeOrClear };
