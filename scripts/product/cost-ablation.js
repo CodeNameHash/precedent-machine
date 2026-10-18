@@ -2,7 +2,7 @@
 'use strict';
 
 // Work package E1 item 3 (plan finding (167), implementer E): the
-// three-section ablation (lib/product/section-ablation.js). One stored
+// three-section ablation (lib/product/cost-ablation.js). One stored
 // run's sections extracted again under a variant of the request profile
 // and the model; the facts compared on the bytes with the stored facts;
 // tokens, seconds and dollars beside them. Routing and residual answers
@@ -12,17 +12,20 @@
 // the live variants on the implementer's word (ANTHROPIC_API_KEY in the
 // environment, never printed); nothing here submits, wakes or writes a run.
 //
-//   SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... node scripts/product/section-ablation.js --run <run-id> --sections 3.19,5.2,5.17 --dump-snapshot ablation-rows.json
-//   node scripts/product/section-ablation.js --snapshot ablation-rows.json --sections 3.19,5.2,5.17 --variant baseline --out table.md
-//   ANTHROPIC_API_KEY=... node scripts/product/section-ablation.js --snapshot ablation-rows.json --sections 3.19,5.2,5.17 --variant format,anchors,lean --live --record recording.json --out table.md --json results.json
-//   node scripts/product/section-ablation.js --snapshot ablation-rows.json --sections ... --variant lean --recording recording.json --out table.md   (replays the recorded answers, no call)
+//   SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... node scripts/product/cost-ablation.js --run <run-id> --sections 3.19,5.2,5.17 --dump-snapshot ablation-rows.json
+//   node scripts/product/cost-ablation.js --snapshot ablation-rows.json --sections 3.19,5.2,5.17 --variant baseline --out table.md
+//   ANTHROPIC_API_KEY=... node scripts/product/cost-ablation.js --snapshot ablation-rows.json --sections 3.19,5.2,5.17 --variant format,anchors,lean --live --record recording.json --out table.md --json results.json
+//   node scripts/product/cost-ablation.js --snapshot ablation-rows.json --sections ... --variant lean --recording recording.json --out table.md   (replays the recorded answers, no call)
+//   ... --analysis-dir ablation-analysis   writes stored.analysis.json and <variant>.analysis.json in the analysis read's shape, for
+//   node scripts/product/compare-generations.js --v1-file ablation-analysis/stored.analysis.json --v2-file ablation-analysis/lean.analysis.json --out lean-vs-stored.md
 
 const fs = require('node:fs');
-const { ABLATION_VARIANTS, createRecorder, renderAblationTable, runSectionAblation } = require('../../lib/product/section-ablation');
+const { ABLATION_VARIANTS, analysisFromResults, analysisFromStoredRows, createRecorder, renderAblationTable, runSectionAblation } = require('../../lib/product/cost-ablation');
+const path = require('node:path');
 const { createEnvironmentClient, loadRunContext, loadTableRows, readRunSnapshot, writeRunSnapshot } = require('../../lib/product/run-rows');
 
 function parseArgs(argv) {
-  const args = { run: null, snapshot: null, sections: [], variants: [], live: false, record: null, recording: null, out: null, json: null, dumpSnapshot: null };
+  const args = { run: null, snapshot: null, sections: [], variants: [], live: false, record: null, recording: null, out: null, json: null, dumpSnapshot: null, analysisDir: null };
   for (let i = 0; i < argv.length; i += 1) {
     if (argv[i] === '--run') args.run = argv[i += 1];
     else if (argv[i] === '--snapshot') args.snapshot = argv[i += 1];
@@ -34,9 +37,10 @@ function parseArgs(argv) {
     else if (argv[i] === '--out') args.out = argv[i += 1];
     else if (argv[i] === '--json') args.json = argv[i += 1];
     else if (argv[i] === '--dump-snapshot') args.dumpSnapshot = argv[i += 1];
+    else if (argv[i] === '--analysis-dir') args.analysisDir = argv[i += 1];
     else { console.error(`unknown argument ${argv[i]}`); process.exit(64); }
   }
-  if ((!args.run && !args.snapshot) || !args.sections.length) { console.error('usage: section-ablation.js (--run <id> | --snapshot <file>) --sections a,b,c [--variant name,...] [--live] [--record file] [--recording file] [--out table.md] [--json results.json] [--dump-snapshot file]'); process.exit(64); }
+  if ((!args.run && !args.snapshot) || !args.sections.length) { console.error('usage: cost-ablation.js (--run <id> | --snapshot <file>) --sections a,b,c [--variant name,...] [--live] [--record file] [--recording file] [--out table.md] [--json results.json] [--dump-snapshot file]'); process.exit(64); }
   for (const name of args.variants) if (!ABLATION_VARIANTS[name]) { console.error(`unknown variant ${name}; known: ${Object.keys(ABLATION_VARIANTS).join(', ')}`); process.exit(64); }
   return args;
 }
@@ -75,6 +79,21 @@ function liveModelFactory() {
   return ({ profile, callKindModels, modelConfig }) => createAnthropicApiProductModel({ modelConfig, requestProfile: profile, callKindModels });
 }
 
+// The visible answer's tokens as the API counts them (count_tokens is not
+// billed), for the thinking share measured per call; the same client
+// options as the provider (the key and the workspace header), never read
+// or printed here.
+function tokenCounterFromEnvironment() {
+  const { clientOptions } = require('../../lib/product/anthropic-api-model');
+  const AnthropicModule = require('@anthropic-ai/sdk');
+  const Anthropic = AnthropicModule.default || AnthropicModule;
+  const client = new Anthropic(clientOptions({ apiKey: process.env.ANTHROPIC_API_KEY, workspaceId: process.env.ANTHROPIC_WORKSPACE_ID }));
+  return async (text, model) => {
+    const counted = await client.messages.countTokens({ model, messages: [{ role: 'user', content: text }] });
+    return Number.isInteger(counted?.input_tokens) ? counted.input_tokens : null;
+  };
+}
+
 async function main(argv) {
   const args = parseArgs(argv);
   let run;
@@ -88,14 +107,24 @@ async function main(argv) {
   if (!args.variants.length) return [];
   const recorder = createRecorder(args.recording ? JSON.parse(fs.readFileSync(args.recording, 'utf8')).calls : []);
   const factory = args.live ? liveModelFactory() : null;
+  const tokenCounter = args.live ? tokenCounterFromEnvironment() : null;
   const ablations = [];
+  if (args.analysisDir) {
+    fs.mkdirSync(args.analysisDir, { recursive: true });
+    const nodeIds = (run.tables.product_source_closures || []).filter((closure) => args.sections.includes(closure.section_reference)).map((closure) => closure.structure_node_id);
+    fs.writeFileSync(path.join(args.analysisDir, 'stored.analysis.json'), `${JSON.stringify({ analysis: analysisFromStoredRows({ run, nodeIds, label: 'stored' }) })}\n`);
+  }
   for (const variantName of args.variants) {
     const ablation = await runSectionAblation({
-      run, sections: args.sections, variantName, liveModelFactory: factory, recorder,
+      run, sections: args.sections, variantName, liveModelFactory: factory, recorder, tokenCounter,
       log: (event) => process.stderr.write(`${JSON.stringify(event)}\n`),
     });
     ablations.push(ablation);
     if (args.record) fs.writeFileSync(args.record, `${JSON.stringify({ schema_version: 'PRODUCT_MODEL_RECORDING/V1', calls: recorder.entries() })}\n`);
+    if (args.analysisDir) {
+      const results = ablation.sections.map((section) => section.result).filter(Boolean);
+      fs.writeFileSync(path.join(args.analysisDir, `${variantName}.analysis.json`), `${JSON.stringify({ analysis: analysisFromResults({ run, results, label: variantName }) })}\n`);
+    }
   }
   const table = renderAblationTable(ablations);
   if (args.out) { fs.writeFileSync(args.out, `${table}\n`); console.log(`wrote ${args.out}`); } else console.log(table);

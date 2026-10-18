@@ -6821,9 +6821,9 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       Proven end to end on Concho 6.3 through the synthetic routing
       and a lean answer written the way the model would: the fact
       VALID with real span ids and the anchored words resolved
-      (tests/product-section-ablation.test.js). (c) The ablation
-      harness, `scripts/product/section-ablation.js`
-      (`lib/product/section-ablation.js`): one stored run's sections
+      (tests/product-cost-ablation.test.js). (c) The ablation
+      harness, `scripts/product/cost-ablation.js`
+      (`lib/product/cost-ablation.js`): one stored run's sections
       extracted again under a variant of the profile and the model
       (the ladder baseline, format, anchors, lean, lean_medium,
       lean_opus55, lean_opus55_medium, routing_sonnet, routing_haiku),
@@ -6859,7 +6859,7 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       finding (94) and work package 19, and is the fix under test;
       read it); (2) `extraction-cost-ledger.js --run` on both runs,
       the two outputs beside the note; (3) the ablation snapshot
-      (`section-ablation.js --run ... --sections 3.19,5.2,5.17
+      (`cost-ablation.js --run ... --sections 3.19,5.2,5.17
       --dump-snapshot`) and the baseline variant, then the live ladder
       at about $46 of Ben's credit on your word; (4) the console's
       billed usage for the workspace over 13:27 to 20:47 UTC and the
@@ -6869,9 +6869,82 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       table says which rungs hold.
       Tests: tests/product-run-replay.test.js,
       tests/product-lean-request-profile.test.js,
-      tests/product-section-ablation.test.js, added to test:active
+      tests/product-cost-ablation.test.js, added to test:active
       beside the ledger suite; tests/product-hosted-worker-pool.test.js
-      takes the new worker range. npm run test:active: see the push.
+      takes the new worker range. npm run test:active on the merged tree
+      of (182)'s push: 792 tests, 791 pass, the one failure the known
+      Codex-client final-message test.
+
+      (182) 2026-10-19 00:40 to 01:30 UTC (implementer E), the manager's
+      direction of 2026-10-18 22:30 UTC (finding (180) accepted; the
+      console figure "log not avail yet", the reconciliation line stays
+      pending) reconciled with (181), which was built on the brief's
+      terms before the direction arrived. Held as built: evidence_quotes
+      dropped where the components carry the words, the V1 roles dropped
+      from the request (finalisation checked first: a V10 call's
+      proposals skip the role check, the legacy-role note of finding
+      (65) untouched for V9 runs), span ids as a per-call alias table
+      (s1..sn) expanded before the compiler reads the answer, one
+      stable block that never changes per run plus the routed one, the
+      cached agreement, concurrency beyond two loops, the failed-attempt
+      and idle count (item 3: $13.84 and 69 call-minutes lost, every
+      cause fixed before this package by findings (74), (77), (81),
+      (83) and (87), the gate's uncommitted_attempt_cost_usd holds it at
+      zero). Added on the direction, each a request-profile setting and
+      a rung of the ladder, none the LEAN config's until the table says
+      it holds: `quote_mode: 'offsets'` (quote_offsets, the zero-based
+      character offsets of a component's words within the cited span's
+      exact_text; `resolveOffsetQuote` reads the words from the span, so
+      the verbatim check downstream is the span's own; the request and
+      answer contract are this package's, the validator's own
+      acceptance of offsets is implementer A's work package 21, to be
+      coordinated through the findings, not by editing each other's
+      files), `contracts_scope: 'all'` (every family's contracts and
+      table shapes in every extraction call's stable block with
+      `routed_families` named, the answer's allowed families, fact types
+      and subtypes still the routed ones: one stable block per call
+      kind for the run instead of 51), `context_mode: 'trimmed'`
+      (cross-references one hop deep, the sections the section's own
+      words name by "Section 5.2", "Article VI" or "Annex A",
+      `directlyReferencedNodeIds`, each whole and once, the rest listed
+      by section and first words). The thinking share measured, not
+      assumed: on a live call the visible answer's tokens are counted
+      by the API's own tokenizer (`count_tokens`, not billed) and taken
+      from the output tokens, per call and per section (`thinkingOf`;
+      the table shows "thinking N of M output (x%)"). The proof script
+      is `scripts/product/cost-ablation.js` (`lib/product/cost-ablation.js`;
+      renamed from section-ablation in (181)), built to run inside a
+      hosted worker sandbox through `createAnthropicApiProductModel`
+      (the sandbox holds the key at wake; no session reads it), the
+      three sections' stored closures, calls, work rows, proposals and
+      components from a snapshot file (`--run ... --dump-snapshot`),
+      one variant per `--variant` flag, and `--analysis-dir` writing
+      `stored.analysis.json` and `<variant>.analysis.json` in the
+      analysis read's shape for `compare-generations.js --v1-file
+      --v2-file` beside its own byte-matched table. The ladder is now
+      baseline, format, anchors, offsets, all_contracts, trimmed, lean,
+      lean_medium, lean_opus55, lean_opus55_medium, routing_sonnet,
+      routing_haiku; the nine extraction variants about $65 at the three
+      sections' size, the two routing variants under $1; the manager
+      chooses the rungs. Rate limits, from the platform's page through
+      the claude-api skill's live sources (not memory): `claude-opus-5`
+      has its own bucket, 400,000 output tokens a minute and 2,000,000
+      uncached input tokens a minute on the Start tier (1,000,000 and
+      5,000,000 on Build, 2,000,000 and 10,000,000 on Scale; cache reads
+      do not count towards input), so eight loops at 42,000 output
+      tokens a minute are a tenth of the Start tier and the sandbox and
+      the store's leases bound the concurrency, not the API; an
+      organisation new to the API may sit below Start until it has a
+      history, which the console's Rate limits page shows. Proven here
+      on Concho 6.3 through the synthetic routing: offsets resolved
+      from the span, every family's contract in the request with the
+      answer bound to NO_SHOP, the trimmed closure keeping the named
+      sections whole, the fact VALID
+      (tests/product-cost-ablation.test.js). Also in this push: the
+      recorded adapter's key tolerates an input without a prompt
+      version (the Modiv calibration's recordings; the active suite's
+      Modiv test failed on the first form of (181)'s callKey), and the
+      hosted worker's two tests take the one-to-eight range.
 
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 

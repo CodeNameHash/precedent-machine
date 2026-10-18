@@ -7,7 +7,7 @@ const test = require('node:test');
 const { buildAgreementStructure } = require('../lib/product/agreement-structure');
 const { LEAN_PROMPT_VERSION, buildAgreementSectionDraft } = require('../lib/product/agreement-draft');
 const { ANTHROPIC_API_REQUEST_PROFILES } = require('../lib/product/product-model-config');
-const { ABLATION_VARIANTS, compareFacts, createRecorder, createVariantModel, renderAblationTable } = require('../lib/product/section-ablation');
+const { ABLATION_VARIANTS, analysisFromResults, compareFacts, createRecorder, createVariantModel, renderAblationTable, thinkingOf } = require('../lib/product/cost-ablation');
 const { indexStoredCalls } = require('../lib/product/run-replay');
 const { substantiveSections } = require('../lib/product/source-context');
 const { conchoSource, createSyntheticConchoModel } = require('./product-phase-2.test.js');
@@ -101,6 +101,63 @@ test('the lean profile end to end on Concho 6.3: aliased request without roles o
   const roleCoverage = result.coverage.filter((item) => item.subject_kind === 'ROLE');
   assert.ok(roleCoverage.length > 0);
   assert.ok(roleCoverage.every((item) => item.state === 'FOUND' && item.reason === 'ROLE_IN_COMPONENTS'));
+  // The analysis read's shape for compare-generations: the fact with its component bytes under its section.
+  const analysis = analysisFromResults({ run: { run_id: 'r' }, results: [result], label: 'lean' });
+  assert.equal(analysis.kind, 'draftAnalysis');
+  assert.equal(analysis.sections[0].section_reference, '6.3');
+  assert.equal(analysis.proposals.length, 1);
+  assert.ok(analysis.spans.length > 0);
+});
+
+test('the offsets mode reads a component\'s words from the span by character offsets, and the trimmed context keeps the sections the words name', async () => {
+  const sourceDocument = await conchoSource();
+  const agreementStructure = buildAgreementStructure(sourceDocument);
+  const node = substantiveSections(agreementStructure).find((item) => item.reference === '6.3');
+  const synthetic = createSyntheticConchoModel();
+  const seen = [];
+  const model = {
+    async complete(input) {
+      seen.push(input);
+      if (input.call_kind !== 'EXTRACTION') return synthetic.complete(input);
+      const family = input.request.family_contracts.find((item) => item.family_key === 'NO_SHOP');
+      const subtype = family.subtypes[0];
+      const operative = input.request.source_closure.operative[0];
+      const characters = Array.from(operative.exact_text);
+      const end = Math.min(characters.length, 120);
+      const response = {
+        proposals: [{
+          client_ref: 'p1', group_ref: 'g1', family_key: 'NO_SHOP', subtype_key: subtype.subtype_key, fact_type: family.required_fact_types[0],
+          statement: characters.slice(0, end).join(''),
+          headline: { label: subtype.label || subtype.subtype_key, distinguishing_refs: ['c1'], summary: 'Offsets on the no-shop' },
+          components: [{ ref: 'c1', kind: 'OPERATION', label: 'the covenant', quote_offsets: [0, end], source_span_id: operative.span_id, occurrence: 0, origin: 'OWN', gap_before: false, children: [] }],
+        }],
+        groups: [{ client_ref: 'g1', family_key: 'NO_SHOP', subtype_key: subtype.subtype_key }],
+        links: [],
+        coverage: Object.fromEntries(input.request.response_contract.allowed_fact_types_by_family ? Object.keys(input.request.response_contract.allowed_fact_types_by_family).map((key) => [key, key === 'NO_SHOP' ? 'FOUND' : 'NOT_FOUND']) : []),
+      };
+      return { provider_id: 'SYNTHETIC', model_id: 'LEAN/V1', raw_request: input.request, raw_response: response, response, input_tokens: 10, output_tokens: 5, cost_microusd: 0, duration_ms: 1 };
+    },
+  };
+  const profile = { name: 'OFFSETS_TRIMMED_ALL', response_format: 'V10', quote_mode: 'offsets', context_mode: 'trimmed', stable_blocks: 2, contracts_scope: 'all' };
+  const result = await buildAgreementSectionDraft({ sourceDocument, agreementStructure, legalSchema: schemaV2, model, node, requestProfile: profile });
+  const extraction = seen.find((input) => input.call_kind === 'EXTRACTION');
+  assert.ok(extraction.request.family_contracts.length > 1, 'every family\'s contract is in the request');
+  assert.deepEqual(extraction.request.routed_families, ['NO_SHOP']);
+  assert.deepEqual(Object.keys(extraction.request.response_contract.allowed_fact_types_by_family), ['NO_SHOP'], 'the answer is still bound to the routed families');
+  assert.match(extraction.request.component_instruction, /quote_offsets/);
+  assert.ok(extraction.request.response_contract.proposals[0].components[0].quote_offsets);
+  const listed = extraction.request.source_closure.cross_references.filter((span) => span.text_in === 'agreement block');
+  const whole = extraction.request.source_closure.cross_references.filter((span) => span.exact_text);
+  assert.ok(whole.length + listed.length === extraction.request.source_closure.cross_references.length);
+  assert.equal(extraction.context, undefined, 'the trimmed context sends no agreement block');
+  const note = JSON.parse(result.issues.find((issue) => issue.code === 'LEAN_RESPONSE_NORMALISED').message);
+  assert.equal(note.offsets_resolved, 1);
+  assert.equal(note.offsets_unresolved, 0);
+  assert.equal(result.proposals.length, 1);
+  assert.equal(result.proposals[0].validation_status, 'VALID', JSON.stringify(result.issues.map((issue) => [issue.code, issue.message]).slice(0, 6)));
+  assert.equal(result.proposals[0].components[0].text.length, 120);
+  assert.deepEqual(thinkingOf([{ output_tokens: 100, visible_output_tokens: 64 }, { output_tokens: 50 }]), { visible_output_tokens: 64, thinking_tokens: 36, thinking_share: 0.36 });
+  assert.deepEqual(thinkingOf([]), {});
 });
 
 test('compareFacts matches stored facts to a variant\'s on the bytes and names the new ones', () => {
