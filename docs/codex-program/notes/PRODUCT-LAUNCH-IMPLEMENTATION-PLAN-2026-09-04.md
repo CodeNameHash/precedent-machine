@@ -3416,6 +3416,23 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       own cache reads and writes at the end
       (`estimate-run-cost.js --run 51577c57-41b1-4b75-bcdf-c84ef2558589`).
       Olaplex and Apogee follow the NCS read.
+      (69) 2026-10-18 11:27 UTC: run 51577c57 FAILED within a minute of
+      the wake, zero tokens spent. Every API call answered 400
+      invalid_request_error: "This API key is not scoped to a workspace,
+      so this request must include the anthropic-workspace-id header
+      with the ID of the workspace to use. Add the header, or use an API
+      key that is scoped to a workspace." Two sections burnt their three
+      attempts each and the worker stopped (PRODUCT_HOSTED_RUN_FAILED).
+      Ben's ANTHROPIC_API_KEY is an organisation-level key. Needed from
+      Ben, one of: a key created inside a workspace (replacing
+      ANTHROPIC_API_KEY on the Vercel project), or the workspace id set
+      as ANTHROPIC_WORKSPACE_ID on the project. Work package 11
+      (implementer): the provider sends the header when the id is
+      configured, the wake passes the variable to the sandbox beside the
+      key, and a 400 naming the workspace header stops the worker as a
+      configuration failure instead of burning every section's
+      attempts. The run is then retried (retry resets the two FAILED
+      sections; the other 102 are PENDING).
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
