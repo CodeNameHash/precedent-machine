@@ -6072,6 +6072,140 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       notification 2 (the Nasdaq deficiency notice and the delisting
       event), Litigation notification 1 (Nasdaq or SEC proceedings);
       nothing without a readout. Nothing submitted, woken or retried.
+      (99a) 2026-10-18 22:55 to 23:50 UTC (implementer A), work package 20
+      on the manager's (168) (begun on its decided terms; the formal
+      message had not arrived by the push). Numbered (99a) because A's
+      range (90) to (99) is spent; the plan owner's to renumber. Read
+      first, from the preview branch's tables: 4.7's three facts were
+      not a page-footer case. Their held evidence quotes cite the Article
+      IV introduction's words on the Article III chapeau span (3d0f7a06,
+      in 4.7's closure through its reference to Section 3.8); the Article
+      IV chapeau span c0b36c15 holds both quotes verbatim, with the
+      footer ("34") after "as follows:", outside them. Work package 18
+      (a)'s relocation did not reach them because evidence_quotes carry no
+      origin, and the rule keyed on the origin; the components of the
+      same facts, with origin INTRO, were relocated. 5.4 is a footer case:
+      "any information relating to the Transactions,\n49\nthe Company or
+      Parent", where the model's TRIGGER stopped at the footer, VALID but
+      short; the NCS text has 87 bare page-number lines and no "-N-"
+      footers, which source-display.js did not know. Built, each as a
+      rule across the corpus with tests (tests/product-fact-components-
+      extraction.test.js, the work package 20 block; the page footers
+      test in tests/product-table-view.test.js; tests/product-legal-
+      schema-v2.test.js): (a) B's rule, lib/product/agreement-draft.js
+      dropUnresolvedInherited: an inherited context component (origin
+      INTRO, CHAPEAU, DEFINITION or CROSS_REFERENCE) that resolves
+      nowhere after the relocation rules is dropped from the tree with
+      the note CONTEXT_COMPONENT_DROPPED (path, kind, origin, label,
+      quote, the id cited, the reason), never holding a fact whose own
+      words resolved; an own word that fails, or a fact with no resolved
+      own word, holds as before. The same at the evidence level: an
+      evidence quote cited on a context span (chapeau, definition,
+      cross-reference) that resolves nowhere is dropped with
+      CONTEXT_EVIDENCE_DROPPED when the own evidence is exact. And the
+      missing half of 18 (a): an evidence quote cited on a context span
+      that does not hold it is relocated by the cited span's kind
+      (CONTEXT_SPAN_RELOCATION), noted EVIDENCE_SPAN_RELOCATED; own words
+      are never relocated across spans. The two earlier tests that pinned
+      "two candidate spans keep the hold" (13 (a), 18 (a)) now pin the
+      drop and the note. On the stored 4.7 facts the relocation applies
+      (one Article IV chapeau span holds the words), so the next
+      extraction of 4.7 gives three VALID facts with the note. (b)
+      footerTolerantMatches in resolveEvidenceQuote: when a quote has no
+      verbatim match in its span, its words in order, with any whitespace
+      between them, may enclose exactly a footer line (FOOTER_GAP from
+      source-display.js: "-43-", "-ii-" or a bare page number on its own
+      line); a match without a footer inside is not taken, so whitespace
+      alone never relaxes the verbatim rule (pinned). The span's bytes
+      include the footer and its text is those bytes (rule R1 holds); the
+      context records page_footer_skipped; a quote that copies the page
+      number as a word ("the Transactions, 49 the Company") matches too.
+      PAGE_FOOTER now hides a bare page-number line; between single
+      newlines (NCS's layout) a footer at a paragraph boundary keeps one
+      newline, otherwise a space; Metsera's blank-line layout is
+      unchanged. (c) lib/product/representation-limbs.js fusedLimbs: on
+      a REPRESENTATIONS fact, or any fact stated as a representation
+      (3.27's TAX_MATTERS fact says "represents and warrants"), an own
+      component opening on a finite verb that follows an own OPERATION
+      with only "or" or "nor" between them in the source is the note
+      FUSED_REPRESENTATION_LIMBS (the two predicates, the joining word, the
+      one-effect rule); "and" is not (3.17: "is in material breach or
+      default, and has not taken any action" is one status and its
+      consequence). (d) exceptionOnlyRepresentation: a REPRESENTATIONS
+      fact (never REPRESENTATION_QUALIFICATION, never from an article
+      introduction) whose own words are an enumerated exception is held
+      REPRESENTATION_EXCEPTION_NOT_A_FACT: the exception words are an own
+      EXCEPTION opening on an enumerator, "except for", "other than" or
+      "save for" (never "except as set forth in", the disclosure
+      exception), or an own component governed by an EXCEPTION introducer
+      earlier in the fact; every own component before them is shared
+      verbatim with another proposal of the same call (the sentence they
+      were all cut from, a non-generic shared context required); no own
+      OPERATION or EFFORTS_STANDARD before them; no operative kind from
+      them on. The REPRESENTATIONS layer rule (scripts/product/build-
+      legal-schema-v2.js, the schema regenerated) tells the extractor both
+      shapes: predicates joined by "or" are two facts; an enumerated
+      exception is an EXCEPTION component, a LIST with a LIST_ELEMENT per
+      item, since the representations table has no row per exception
+      (MAE_DEFINITION's carve-outs keep their facts, as (168) says). Both
+      detectors run over the 278 stored generation-5 representation
+      facts before the rules went in (scratch script, bytes only; the
+      "or" gaps confirmed from the canonical text): (c) fires on exactly
+      the three fused facts (3.27 twice, 4.13 once) and on nothing else;
+      (d) on exactly twelve facts, 3.5(b)'s four, 4.4(b)'s four and
+      3.7's four ("except (a) to the extent accrued ..., (b) for
+      liabilities in the ordinary course ..."), none other of the 278.
+      Plan evidence: B's "(7) ten facts of 3.5, 4.4 and 5.1" is twelve of
+      3.5, 3.7 and 4.4 on this read; 5.1 has no representation facts
+      (its EXCEPTION facts are the covenant's general exceptions, cells
+      of the interim operating table, which has them). Residual risk of
+      (d), for the manager: a representation whose own verb the model
+      labelled QUALIFIER and whose exception facts copy its words could
+      be held with them; the hold is a VALIDATION issue carrying the
+      rule, reviewable, and the layer rule reduces the shape. The
+      manager's formal message (21:40 UTC, read at 23:55 after the work
+      was built on (168)'s terms) reconciled: its note name is used,
+      CONTEXT_COMPONENT_DROPPED (the component tree) and
+      CONTEXT_EVIDENCE_DROPPED (the evidence quotes), each naming the
+      quote, the span cited and the reason; its finding number (98) was
+      already (98), work package 19, when the message arrived, so (99a)
+      stays, the plan owner's to renumber; its (b) asks that "the fact's
+      byte ranges then exclude the footer", which a component cannot do:
+      a component is one half-open byte range and rule R1 (contract
+      FACT_COMPONENTS/V2) requires its text to be those bytes, so a quote
+      across a footer has the footer inside its range and its text, and
+      every place the words are shown hides it (hidePageFooters: the
+      tables, the tree, the sidebar, the clause). Splitting the component
+      in two at the footer would make one word run two components; the
+      manager decides if the range is to be cut another way. Counts from
+      the preview branch's rows, generation 5 (run 51577c57): (a) 13 held
+      facts have inherited components that resolve nowhere beside
+      resolved own words (3.4's ten, 4.7's three), and the same three of
+      4.7 at the evidence level (their two chapeau quotes are the only
+      unmatched evidence on a context span in the run); on the next
+      extraction the 4.7 quotes relocate (one Article IV chapeau span
+      holds them) and 3.4's resolve by work package 13 (a), the drop the
+      backstop for a quote no span holds. (b) Of the run's 5,439 resolved
+      components, none spans a footer: 42 end mid-sentence at a footer
+      and 27 begin right after one (4.14 six, 4.4 and 4.6 five each,
+      4.5 four, 5.14 and 5.17 three each, 5.4 two, the Article IV
+      introduction two, ten sections one), the model stopping its quote
+      where the page ends; of the 13 held facts' unmatched quotes, none
+      is a footer case. So the matcher changes no stored fact by itself
+      and the extractor is now told, in the component instruction, that a
+      page number on a line of its own between two words is a footer to
+      quote across with the number left out, never to stop at; the
+      matcher then takes the quote. (c) three facts (3.27 twice, 4.13
+      once). (d) twelve facts (3.5(b) four, 3.7 four, 4.4(b) four). No
+      decision of Ben's needed; nothing submitted, woken or retried. Two
+      commits on the shared branch, "Work package 20: inherited
+      components dropped not held, quotes across page footers, fused and
+      exception-only representations" and "Work package 20 reconciled
+      with the manager's message: note names, the extractor's footer
+      line, the counts", after git fetch and merge of origin (B's (106)
+      production-move files came in, no conflict); npm run test:active
+      on the final tree: 778 of 779, the one failure the known
+      Codex-client final-message test.
       (120) 2026-10-18 19:10 to 19:45 UTC (implementer C), Q5: the limb
       names harvested. `scripts/product/harvest-rep-limbs.js` (library
       `lib/product/rep-limb-harvest.js`, `tests/product-rep-limb-harvest.test.js`)
@@ -6698,6 +6832,71 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       docs/codex-program/notes/Q4-LEGACY-QUERY-COMPARE-EVIDENCE-2026-10-18.md;
       both are already off every entry point and read only legacy
       tables; the question put is retire now or keep unrouted.
+
+      (180) 2026-10-18 21:40 to 23:10 UTC (implementer E), work package
+      E1 item 1, the ledger. No run submitted, woken or retried; no
+      live call; nothing written to the preview branch; no key read.
+      Read from product_model_calls and the run tables by SQL:
+      docs/codex-program/notes/EXTRACTION-COST-LEDGER-2026-10-18.md
+      (the queries at its end), and the same reading as code for every
+      run, `scripts/product/extraction-cost-ledger.js --run <id>`
+      (`lib/product/extraction-cost-ledger.js`; `--snapshot <file>`,
+      `--json`, `--dump-snapshot`; `lib/product/run-rows.js` gains the
+      span, component, headline, conclusion and residual tables and
+      `loadRunContext`). NCS generation 5, $145.68 for 1,015 VALID
+      facts ($0.1435 a fact), 439 minutes: (a) output is 63 per cent
+      of the money ($92.37; 3.69m extraction output tokens at 87 a
+      second are 97 per cent of all call time); about 36 per cent of
+      it is thinking (Metsera's CLI reports 1,249,344 of 3,512,309;
+      the API path does not break it out), and of the visible JSON 30
+      per cent is the agreement's own words written back twice
+      (component quotes 1.02 MB and evidence_quotes 0.42 MB), 20 per
+      cent is 64-hex span ids (0.95 MB), 12 per cent is the V1 roles
+      the V2 page never shows; (b) fresh input is 20 per cent
+      ($28.83): the extraction section block carried 16.36 MB for a
+      0.31 MB agreement, cross_references 10.29 MB (33 agreements)
+      and definitions 4.12 MB (13), a median 86,810 bytes of context
+      per call (3.21, 193 bytes of representation, went out with
+      32,078 fresh tokens, $0.30 for one fact); every agreement byte
+      went at least three times, and a fifth of them (63,324 bytes,
+      the definitions article and the sections most referred to) 119
+      to 277 times each, 74 per cent of the 16.0m byte-sends (mean 54
+      a byte); (c) cache writes are 12 per cent ($17.46): 51 distinct
+      stable blocks (one per routed family set), 22 used once, against
+      $1.92 of reads; table_shapes is 37 per cent of the block and
+      cross_section_target_contracts, the same on every call, 13; (d)
+      $13.84 and 69 call-minutes went on 37 calls of attempts that
+      never committed (5.1's three capped attempts $9.29; 5.8's first
+      attempt lost to the 18:34 restart with no error record $2.69;
+      3.4's JSON failure $1.23; the 1.2, 2.1 and 2.2 pairs $0.64);
+      (e) 62 of the 439 minutes had no call in flight (the restarts
+      of findings (74), (77) and (87)), 353 had two (the worker's two
+      loops). The stored per-call costs reconcile to the published
+      rates to the cent; the split in (165) (6.37m fresh, 4.68m read)
+      counted the failure records' whole prompt as fresh, the calls'
+      own usage gives 6.11m fresh, 4.91m read, 1.76m written. Metsera
+      generation 8 on the CLI: 313 calls, 10.88m input of which 9.71m
+      were cache writes (each `claude -p` process writes its own
+      entry and the next starts cold; free on the subscription, $191
+      at the API's rates), 3.62m output, 435 minutes, 3.68 calls a
+      section. Floor (read once, write the facts once): about 0.11m
+      input tokens and 0.58m output, $15 ($23 with the same thinking
+      share), 110 minutes serial and 13 in parallel; actual is 6x to
+      10x the cost floor, 116x on input tokens, 4x to 7x on output,
+      34x the parallel time floor. The manager's (167) holds: 10x is
+      there, 100x is not while a frontier model writes the facts (the
+      output floor alone is $14 to $23). Asked of the manager: the
+      console's billed usage for the workspace over 13:27 to 20:47
+      UTC, for the reconciliation line, and
+      `extraction-cost-ledger.js --run` on both runs where the branch
+      keys are, the two outputs kept beside the note. Baseline for
+      the gate (item 5):
+      tests/fixtures/product/run-cost-baseline.ncs-generation-5.json;
+      `assertNoUnexplainedRise` fails a rise over 15 per cent (25 on
+      call minutes a section, 10 on calls a section) unless an
+      explanation names the metric.
+      tests/product-extraction-cost-ledger.test.js (7 of 7), added to
+      test:active.
 
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
