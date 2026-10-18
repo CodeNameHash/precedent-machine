@@ -4984,6 +4984,165 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       the manager updates the sandbox worker to this tip; the page
       changes apply on the next deploy. One commit for code, tests and
       this finding.
+      (100) 2026-10-18 19:15 to 20:30 UTC (implementer B), Phase 6
+      engineering without the cutover: the load. Read first, from the
+      preview branch (ecrtoofsyxozazkvsvcl) by SQL: product_agreement_
+      releases and product_agreement_release_heads are empty for every
+      source; Metsera generation 8 (run 72d94dd2) is READY with 974
+      proposals and has no review session at all (the seven sessions that
+      exist are all DRAFT; NCS generation 1 is the only one with
+      decisions, version 45, 5 decided of 1,672); the production project
+      (tzulhdasmioeechxapdy) has none of the product_ tables. So "the
+      reviewed candidate" of Phase 6's second box is, in the database, an
+      undecided draft: the Phase 3 rule (product_phase3_save_review,
+      PUBLISH) publishes only a review with every item decided and
+      coverage confirmed, and publication is itself the inactive release
+      pointer: PUBLISH inserts an immutable release whose
+      supersedes_release_id is the source's current head and leaves the
+      head alone; only ACTIVATE_RELEASE (after EVALUATE_RELEASE's lawyer
+      attestation) moves it; ROLLBACK_RELEASE moves it to the superseded
+      release. Built on that rule, nothing new in the database:
+      lib/product/cutover-client.js (one client over the product's own
+      routes, the deployment through PRODUCT_INTERNAL_TOKEN with
+      --base-url, or the route handlers in-process over a service-role
+      client; the run route that wakes the worker is absent by design),
+      lib/product/published-facts-handler.js (the published read as a
+      factory, the page unchanged), lib/product/release-candidate.js and
+      scripts/product/load-release-candidate.js: `--run <id>` reads the
+      review workspace and reports readiness (pending, unresolved,
+      decisions by kind, coverage, the run's releases, the source's
+      pointer); `--publish` sends the page's own PUBLISH and then proves
+      the release exists, the pointer did not move and the published read
+      is unchanged. It never decides an item (Ben's standing rule;
+      OPERATING-RULES: "Only a lawyer-accepted fact is final for the
+      internal release") and never activates. On Metsera generation 8
+      the check says: no review session, then about 1,600 items pending;
+      the load runs the minute Ben's decisions are in (the review page,
+      or the manager on Ben's word), as one command. Tests:
+      tests/product-cutover-scripts.test.js (the real handlers over an
+      in-memory store keeping the release rules: refused while pending,
+      published inactive once decided, refused again once PUBLISHED) and
+      tests/product-phase-6-db.test.js ((104) below). Plan evidence, a
+      correction proposed and not made: Phase 6's first box restored the
+      backup to the preview branch, and "Switch private Review to the
+      accepted V2 release" reads as a pointer move on that database; the
+      production project has no product schema, so a Review on production
+      needs the 41 migrations applied there and the reviewed source, run
+      and release rows carried over, which no script does. The manager
+      should say which database the released Review runs on; the scripts
+      work on either through --base-url.
+      (101) 2026-10-18 20:30 to 21:20 UTC (implementer B), the V1 against
+      V2 comparison. lib/product/generation-comparison.js and
+      scripts/product/compare-generations.js: a Markdown report pairing a
+      V1 generation's facts with a V2 generation's on the agreement's
+      bytes (a V1 fact's cited spans against a V2 fact's own component
+      bytes, the rule of lib/product/review-comparison.js; half or more
+      of the cited bytes is a counterpart, some is partial), by section
+      (routing with the families V2 adds or drops and the widening by
+      code, coverage states, each V1 fact with its best V2 counterpart,
+      facts new to V2, facts V2 held with their issue codes, the V1
+      reviewer's decision and comments beside the fact) and by table
+      (each V2 row's V1 counterparts, V2 facts without a readout, V1
+      families with no V2 table). Inputs: run ids through either
+      transport, or `{ analysis, review }` files. Test on fixtures:
+      tests/product-generation-comparison.test.js. Run on NCS generation
+      1 (eaafcac8, V1, Ben's review at version 45) against generation 4
+      (39456f2d, V2, prompt V8; generation 5 was still running), the
+      inputs assembled from the preview branch's tables by SQL (no
+      deployment token here): V1 982 valid facts, 649 with a V2
+      counterpart, 231 partial, 102 without, and 84 of those 102 overlap
+      a fact V2 held; V2 850 valid, 32 new to V2, 145 held (92
+      INVALID_FACT_COMPONENTS, 45 DUPLICATE_FACT_OCCURRENCE); 43 of 104
+      sections route differently, mostly V2 adding a family (3.5:
+      IMMATERIAL in V1, REPRESENTATIONS in V2 by the article heading
+      rule, four new facts). Read, not just counted: the partials sit in
+      REPRESENTATIONS (109 of 216) because a V1 representation cites the
+      whole sub-section ("Except as set forth ...") while a V2 fact's own
+      words are one limb, a counterpart in substance and a partial on
+      bytes; EMPLOYEE_MATTERS falls 59 to 33 and CONSIDERATION 105 to 60
+      because V1 wrote one fact per sentence where V2 writes one per
+      operative effect; the V2 loss is mostly validation holds, not
+      misses. Generation 4 has no readouts, so the by-table part is lists;
+      the table comparison is generation 5's once READY (`--v2-run
+      51577c57`). The report is docs/codex-program/notes/
+      NCS-V1-V2-GENERATION-COMPARISON-2026-10-18.md (evidence, 2,300
+      lines). Not a plan equality: the report names each difference and
+      its reason.
+      (102) 2026-10-18 (implementer B), the outside-in smoke test.
+      lib/product/smoke-test.js and scripts/product/smoke-test.js: dry
+      run only: the intake (POST /api/product/intake), the run status
+      read, the provisions page read (the preview route the page polls),
+      the published read and the three page shells; the run route is
+      never called, so no model call and no cost follow. The intake's own
+      rule, read in product_phase1_create_run: a submission whose
+      fingerprint (source, schema, prompt bundle, model config, explicit
+      generation, attempts) matches an earlier run returns that run; any
+      other creates the next generation as a QUEUED run with no worker,
+      and the report says which happened. On the cutover's live deal
+      that is the intended path: the smoke test's intake is the
+      generation Ben will then start with start-generation.js. Proof in
+      tests/product-phase-6-db.test.js: the Concho URL under a new
+      fingerprint created generation 2 QUEUED with zero model calls; the
+      status read answered runStatus, the preview read zero sections, the
+      published read no entry; on the analysed run, draftAnalysis READY.
+      Not run against deal-corpus-preview from here: this environment
+      holds no PRODUCT_INTERNAL_TOKEN, and its SUPABASE variables point
+      at the canonical-v2 staging project (sjumbznveyyiizhwvixj), not the
+      preview branch, where the direct transport answers 500 as expected
+      without the product tables. The manager runs it with the token:
+      `PRODUCT_INTERNAL_TOKEN=... node scripts/product/smoke-test.js
+      --base-url https://deal-corpus-preview.vercel.app --run
+      72d94dd2-cb59-49cf-8f46-c89d161b7769`.
+      (103) 2026-10-18 (implementer B), the rollback drill.
+      lib/product/rollback-drill.js and scripts/product/rollback-drill.js:
+      for the run whose release is current, ROLLBACK_RELEASE through the
+      review route, then the pointer and the published read checked (the
+      prior release's publication: same run, same released_at, same
+      layered fact count), then ACTIVATE_RELEASE of the same candidate
+      (`--no-restore` stops after the rollback); every release stays
+      stored. The production switch is never run from here. Proof in
+      tests/product-phase-6-db.test.js: release 1 activated, the drill
+      refused ("supersedes nothing"); after reopen, one edit, publish
+      (release 2 supersedes release 1, pointer still on 1), evaluate and
+      activate, the drill moved the pointer to release 1 with the
+      published read showing publication 1, then back to release 2; the
+      revisions end ROLLBACK_RELEASE, ACTIVATE_RELEASE. Plan evidence:
+      for the first release of a source the database refuses the
+      rollback ("no prior active release exists", the Phase 3 function),
+      because the prior view of a first release is "no published release"
+      and the pointer cannot express it. So Phase 6's "Execute rollback
+      once and prove the prior view returns" cannot run on Metsera's
+      first release as the boxes are ordered. Two ways, Ben's or the
+      manager's to pick: (a) run the drill on the second release, which
+      Ben's first correction after live use produces (reopen, edit,
+      publish, evaluate, activate, then the drill), or (b) a migration
+      letting ROLLBACK_RELEASE delete the head row when the active
+      release supersedes nothing, the drill then proving the published
+      read shows nothing for the source. Not built: a database decision.
+      (104) 2026-10-18 (implementer B), the database proof and what it
+      showed about the estate. tests/product-phase-6-db.test.js applies
+      every migration (41 files, in order) on an inactive Postgres 17 in
+      one rolled-back transaction, runs the Concho synthetic draft, and
+      drives the four scripts through the route handlers as (100) to
+      (103) say; about 150 s, mostly the synthetic runner; added to the
+      CI database job. The synthetic draft on the full migration set
+      leaves coverage UNRESOLVED, which the release evaluation refuses
+      until each is resolved as a reviewed omission; the test supplies
+      those resolutions as the lawyer would, through the command.
+      Observation: tests/product-phase-3-db.test.js fails on a fresh
+      Postgres 17 (and on PGlite) at the first recorded model call,
+      "invalid product model invocation identity", because it applies
+      16 of the 41 migrations while the runner has recorded part
+      identities (`<attempt token>:part-<n>`, 2026-09-14) that only
+      migration 20260914125500 onward admits; the CI workflow runs on
+      pull requests only and this branch's last workflow run is
+      2026-09-05, so the database job has not run since. Proposed: the
+      Phase 1 to 3 database tests apply the full migration list, as the
+      new test does. Environment: the cloud container has no Postgres
+      binary; an embedded Postgres run as a non-root user under
+      /home/user/.cache served the database tests. npm run test:active
+      with the two new files: 711 of 712 before the merge with the other tracks' pushes and 752 of 753 after it, the one failure the known Codex-client final-message test; the database test passed again on the merged tree with its 42 migrations. One commit for code, tests,
+      the evidence note, the guide lines and these findings.
       (90) 2026-10-18 19:17 to 19:36 UTC (implementer A), work package 17
       on the manager's message of 19:10, three rules for every agreement.
       No run touched. (1) The no-shop savings clause. NCS 5.2(d), stored
