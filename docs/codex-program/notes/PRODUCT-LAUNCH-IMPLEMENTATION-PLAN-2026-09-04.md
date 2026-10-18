@@ -4858,6 +4858,64 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       test. The page changes apply on the next deploy; the savings-clause
       default reaches extraction from the next worker update. One commit
       for code, tests and this finding.
+      (91) 2026-10-18 19:38 UTC (implementer A): the NCS read after
+      finding (160)'s 5.13, from the stored rows on the preview branch
+      (no run touched). Complete since: 5.14 (12 facts) and 5.15 (1);
+      the run at 5.16 and the next section RUNNING, the rest PENDING.
+      5.14, publicity: all twelve GENERAL_COVENANTS/PUBLICITY facts land
+      on the general covenants table's "Public announcements" row (the
+      joint announcement release and its approval, the consultation and
+      review duty and its Law, court-process and exchange carve-out, the
+      four carve-outs (i) to (iv): ordinary-course statements, employee
+      communications, dispute statements and the Specified Stockholders'
+      disclosure to limited partners and website posting of the
+      consummation without economic terms, and the consistency proviso),
+      every cell EACH_PARTY or UNQUALIFIED_OBLIGATION; twelve readings on
+      one row are correct and unreadable. 5.15, Section 16: one fact on
+      its row, right. Read back over the earlier sections' held facts
+      for the defect classes that remain: 4.7 (Parent's Form S-4 and
+      Information Statement representations) holds three of four facts
+      on NOT_EXACT_CONTIGUOUS_SOURCE_TEXT: each cites the Article IV
+      introduction's words (origin INTRO: "Parent and Merger Sub
+      represent and warrant to the Company as follows", the two
+      Except-as-set-forth qualifiers) on span 3d0f7a06, which is the
+      Article III chapeau span (the span finding (79)'s 3.4 facts named
+      one character off); the words are verbatim in the closure's own
+      Article IV chapeau span. Work package 13 (a) relocates a quote on
+      an unknown span; here the span is known and simply does not hold
+      the words, so the hold stands. 5.11 holds one fact (aeb3313d, the
+      D&O tail premium cap) on "AMOUNT needs a canonical value" for "the
+      last aggregate annual premium paid by the Company prior to the
+      date hereof", a reference quantity with no number by design, the
+      class beside work package 14's formula. 5.8 and 5.11 each dropped
+      one headline summary for naming a section ("Section 5.8 leaves
+      Parent free to make acquisitions, loans and investments"); the
+      label-built term is used, as the rule says. 5.1 completed on
+      attempt 4 with CONCLUSIONS_DEFAULTED and CONCLUSIONS_CELLS_DROPPED
+      notes only. Proposed as work package 18, for the manager: (a) a
+      quote of inherited origin (INTRO, CHAPEAU, DEFINITION,
+      CROSS_REFERENCE) cited on a known span that does not contain it,
+      found verbatim in exactly one closure span of a kind its origin
+      allows, is relocated to that span with the same
+      COMPONENT_SPAN_RELOCATED note as work package 13 (a) (the id
+      written kept as evidence); two candidates or none keep the hold;
+      own words stay as they are. Evidence: 4.7's three facts; test with
+      their real words and the Article III and IV chapeau spans. (b) An
+      AMOUNT whose words name a reference quantity and state no number
+      ("the last aggregate annual premium paid by the Company prior to
+      the date hereof", "the amount set forth in Section 5.11(b) of the
+      Company Disclosure Letter") carries { canonical: null, unit: null,
+      form: 'REFERENCE' } and a VALUE_IS_REFERENCE note, the fact VALID,
+      as the formula rule does; prose that is neither still holds.
+      Evidence: 5.11's fact. (c) For Ben, a shape question: the
+      publicity row's twelve facts as sub-items under "Public
+      announcements" (Announcement release; Consultation and review;
+      Carve-outs: ordinary course, employees, disputes, sponsor
+      disclosure; Law or exchange exception), by detail labels and
+      words rules, so a sponsor-backed seller's carve-outs read as a
+      line of their own; the code proposes the labels, Ben names them.
+      (d) Nothing to change for the dropped summaries; the rate is two
+      in 73 sections and the rule is the extractor's.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
