@@ -5035,6 +5035,38 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       line of their own; the code proposes the labels, Ben names them.
       (d) Nothing to change for the dropped summaries; the rate is two
       in 73 sections and the rule is the extractor's.
+      (92) 2026-10-18 19:44 UTC (implementer A), work package 17 item
+      4 (the manager's addendum of 19:22, delivered 19:41): a fact that is
+      not a definition keeps its own placement; its resolved DEFINED_TERM
+      components add Defined Terms entries beside it. Checked against the
+      stored facts before changing anything. The two NCS 5.6 facts
+      (1950d63a, "Company submits form of Written Consent ... instead of
+      holding a stockholder meeting"; 8ad8b028, "Company uses reasonable
+      best efforts to obtain Written Consent by the Consent Time") carry
+      readouts on votes-approvals-meeting-table, rows "Written Consent
+      submission" and "Written Consent receipt" (the table is open to new
+      rows), with the Consenting Stockholders and Consent Time terms
+      resolved. Run through buildTableView as stored, both land on those
+      rows under the meeting section, nothing under "without a readout",
+      and the two entries sit in Defined Terms citing the facts: the rule
+      the addendum states is what the code on this branch does, since
+      work package 13 (b) (8eb259c) confined the Defined Terms exemption
+      to definition facts (collectDefinitionFact) and left every other
+      fact to its table. I could not reproduce the page the manager saw
+      from the stored rows; a preview served before 8eb259c reached the
+      deploy, or the meeting section collapsed, would show the entries
+      and not the rows. Which facts move out of Defined Terms under the
+      rule: on Metsera generation 8's 961 facts, none (the 83 facts that
+      stand in Defined Terms alone are all KEY_DEFINED_TERMS definition
+      facts; 873 are on tables, 2 without a readout, 3 are definition
+      facts merged into an earlier entry of the same term); on the NCS
+      rows held here (1.2, 2.1, 3.4) none (the 9 Defined-Terms-only facts
+      are 2.1's KEY_DEFINED_TERMS definitions); on 5.6, the two facts are
+      on their rows. Added, so the rule is pinned: a test with the two
+      NCS facts as stored (rows kept, entries beside them, nothing
+      without a readout) and a definition fact that enters Defined Terms
+      alone with no row (tests/product-table-view.test.js, 75 of 75). No
+      code change; the test commit alone.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
