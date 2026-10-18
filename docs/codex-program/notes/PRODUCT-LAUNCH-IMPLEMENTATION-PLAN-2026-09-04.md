@@ -4563,6 +4563,28 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       with no fact, held for a held one; election forms fold when the
       deal has no election; value terms linked through the definitions.
       NCS at 19:00 UTC: RUNNING again from 65 of 104 on the 128,000 cap.
+      (160) 2026-10-18 19:20 UTC (the manager's findings number from
+      (160) on while the four tracks run; A keeps (90) to (99), B (100)
+      to (119), C (120) to (139), D (140) to (159)). NCS generation 5:
+      RUNNING, 71 of 104, 0 failed since retry-6, $104.87. 5.1 went out
+      on attempt 4 in four limb parts (work package 15's re-split): part
+      2, the restrictions list, answered 115,352 output tokens and
+      ended cleanly under the 128,000 cap; parts 3 and 4 25,834 and
+      11,332. Read against the text, 5.4 to 5.13: 5.4's Form S-4 and
+      Information Statement mechanics on the SEC filing rows (a written
+      consent deal, no meeting); 5.6's Written Consent delivery by the
+      Consent Time, its DGCL Section 228 effectiveness and the Support
+      Agreement counterparts on the meeting table; 5.9's takeover-law
+      covenants on their rows. One defect, to implementer A: two 5.6
+      facts ("Company submits form of Written Consent to Consenting
+      Stockholders instead of holding a stockholder meeting"; "Company
+      uses reasonable best efforts to obtain Written Consent by the
+      Consent Time") stand only as Defined Terms entries (Consenting
+      Stockholders; Consent Time) because their trees carry a resolved
+      DEFINED_TERM: a non-definition fact must keep its own placement
+      (its family's table, a row by its words or "without a readout")
+      and a resolved term adds a Defined Terms entry beside it, never
+      instead of it.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
@@ -4881,6 +4903,80 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       the manager updates the sandbox worker to this tip; the page
       changes apply on the next deploy. One commit for code, tests and
       this finding.
+      (90) 2026-10-18 19:17 to 19:36 UTC (implementer A), work package 17
+      on the manager's message of 19:10, three rules for every agreement.
+      No run touched. (1) The no-shop savings clause. NCS 5.2(d), stored
+      as NO_SHOP/EXCEPTION_PREREQUISITE fe7c93cc with no readout: "Parent
+      and Merger Sub acknowledge and agree that any determination or
+      action by the Company or the Company Board in accordance with
+      Section 5.2(c) shall not be deemed to be a breach or violation of
+      this Section 5.2(a)". The fiduciary-out table gains the fixed row
+      "Fiduciary actions are not a breach" (Yes / No, as drafted) and a
+      new shape key, `words_rows`: a readout-less fact of the table's
+      family whose words match the rule's pattern takes the row, the
+      rule's code (YES) on the provision column citing the words that
+      match, the fact as drafted; `defaultConclusions` applies it before
+      the fact-type default, so the extractor's missing-readout default
+      and the page's placement of stored facts are one rule. The pattern
+      takes "shall not be deemed to be a breach or violation", "shall not
+      constitute a breach" (Metsera's form) and "will not be deemed to
+      constitute a breach", and not "did not result from a breach" (the
+      prerequisite, its own row). Generation 8's stored facts carry no
+      Metsera savings-clause fact to place (searched the 974 proposals
+      for a negated breach in NO_SHOP words); the rule is tested on
+      both phrasings. Contract regenerated (158 columns, one row added);
+      validator for the key (row in the fixed list, pattern compiles,
+      code in the row's vocabulary). (2) Back-reference definitions. NCS
+      5.3's two RECOMMENDATION_CHANGE facts (a518b541, 52546772) each
+      carry the DEFINED_TERM "(any of the foregoing actions, an “Adverse
+      Recommendation Change”)" resolving to "any of the foregoing
+      actions". `definedTermParts` now recognises a resolved definition
+      that is a back-reference (any/all/each of the foregoing, such
+      action(s), the above) and shows it with the words it refers to:
+      the fact's own words before the term in source order, else the
+      fact's statement; the back-reference is kept in front and the
+      entry's `note` says which was used (shown under the definition on
+      the page). Two facts defining one term that way merge with "; ",
+      so the entry lists both sentences: "any of the foregoing actions:
+      Except to the extent permitted by Section 5.2(c) the Company Board
+      ... withhold, withdraw or adversely qualify (or modify or amend in
+      a manner adverse to Parent) the Company Board Recommendation; any
+      of the foregoing actions: ... authorize, approve, adopt or
+      recommend any Acquisition Proposal". A resolved definition that is
+      not a back-reference is unchanged. (3) Held facts on the page. The
+      preview's held facts (work package 16) now carry `held_reason`,
+      built by `heldReason` from the run's issues: the proposal's own
+      INVALID_FACT_COMPONENTS problems by component path, each turned
+      into the component's words (shortened at a word, 80 characters)
+      and what went wrong in plain words ("could not be placed in the
+      source text", "no number could be read from its words", "words
+      that are not in the source"), and, where the section's node-level
+      issue names the same component's quote as UNKNOWN_SOURCE_COMPONENT,
+      "its quote cites a span the section does not have". buildTableView
+      lists held facts under their family's section (`held_facts`:
+      reference, headline, reason), a section with only held facts is
+      shown, and ProvisionTables renders them in the quiet style behind
+      "N facts held by validation · see why". NCS 3.4's held fact
+      05e8ab96, from the stored rows: "“Except as set forth in (a) any
+      Company SEC Document filed with or furnished to…”: its quote cites
+      a span the section does not have; “(b) the disclosure letter
+      delivered by the Company to Parent immediately prior…”: its quote
+      cites a span the section does not have; “the Company represents and
+      warrants to Parent and Merger Sub as follows:”: its quote cites a
+      span the section does not have", which is finding (79)'s diagnosis
+      in Ben's words. Tests: the row, rule and validation
+      (tests/product-table-shapes.test.js); the NCS and Metsera words on
+      the row and the prerequisite off it
+      (tests/product-fact-conclusions.test.js); the back-reference entry,
+      its merge, its note and the unchanged case, and held facts per
+      section (tests/product-table-view.test.js); the held list's
+      rendering (tests/product-provision-tables.test.js); heldReason's
+      words and the preview's held_reason
+      (tests/product-provisions-preview.test.js). npm run test:active:
+      707 of 708, the one failure the known Codex-client final-message
+      test. The page changes apply on the next deploy; the savings-clause
+      default reaches extraction from the next worker update. One commit
+      for code, tests and this finding.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).

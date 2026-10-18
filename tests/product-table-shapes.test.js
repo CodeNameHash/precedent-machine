@@ -996,3 +996,30 @@ test('the consideration election options table names its rows, columns and page 
   doc = broken(); doc.sections.find((s) => s.section_key === 'consideration-hero').tables.find((t) => t.table_key === 'consideration-components').election_forms.plain_form_by_code = { CASH_ELECTION: 'NO_SUCH_CODE' };
   assert.throws(() => validateTableShapesV3(doc, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_ELECTION_FORMS_CODE_UNKNOWN/);
 });
+
+// Work package 17 (manager, 2026-10-18 19:10 UTC, from the NCS read): the
+// no-shop savings clause row, placed by the words of the fact.
+test('the fiduciary-out table has the savings-clause row, placed by words_rows, with its Yes code read from the words', () => {
+  const table = findTableV3(findSectionV3('nosol-fiduciary'), 'nosol-fiduciary-table');
+  assert.ok(table.fixed_row_labels.includes('Fiduciary actions are not a breach'));
+  assert.deepEqual(table.columns[0].vocabulary_by_row['Fiduciary actions are not a breach'], ['YES', 'NO']);
+  assert.equal(table.words_rows.length, 1);
+  const [rule] = table.words_rows;
+  assert.deepEqual([rule.row_label, rule.code], ['Fiduciary actions are not a breach', 'YES']);
+  const when = new RegExp(rule.when, 'i');
+  // NCS 5.2(d) and Metsera 5.02's forms match; the prerequisite does not.
+  assert.ok(when.test('any determination or action by the Company or the Company Board in accordance with Section 5.2(c) shall not be deemed to be a breach or violation of this Section 5.2(a)'));
+  assert.ok(when.test('shall not constitute a breach of Section 5.02(a)'));
+  assert.ok(when.test('will not be deemed to constitute a breach of this Section 5.2'));
+  assert.equal(when.test('a bona fide unsolicited Acquisition Proposal that did not result from a breach of Section 5.2(a)'), false);
+  assert.ok(table.columns[0].code_from_words_by_row['Fiduciary actions are not a breach'].some((entry) => entry.code === 'YES'));
+  assert.match(table.guidance, /Fiduciary actions are not a breach: the savings clause/);
+  const broken = () => structuredClone(tableShapesV3);
+  const tableOf = (doc) => doc.sections.find((s) => s.section_key === 'nosol-fiduciary').tables.find((t) => t.table_key === 'nosol-fiduciary-table');
+  let doc = broken(); tableOf(doc).words_rows = [{ row_label: 'No such row', when: 'x' }];
+  assert.throws(() => validateTableShapesV3(doc, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_WORDS_ROWS_ROW_UNKNOWN/);
+  doc = broken(); tableOf(doc).words_rows = [{ row_label: 'Fiduciary actions are not a breach', when: '(' }];
+  assert.throws(() => validateTableShapesV3(doc, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_WORDS_ROWS/);
+  doc = broken(); tableOf(doc).words_rows = [{ row_label: 'Fiduciary actions are not a breach', when: 'x', code: 'MAYBE' }];
+  assert.throws(() => validateTableShapesV3(doc, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_WORDS_ROWS_CODE_UNKNOWN/);
+});

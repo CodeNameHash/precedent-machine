@@ -1962,3 +1962,59 @@ test('without an election, a per-share row coded as an election form folds into 
   const withElection = buildTableView({ facts: Object.values(facts), tableShapes, legalSchema }).sections.flatMap((section) => section.tables).find((table) => table.table_key === 'consideration-components');
   assert.deepEqual(withElection.rows.map((row) => row.subject), ['Stock election', 'Acquirer stock']);
 });
+
+// Work package 17 (manager, 2026-10-18): "Adverse Recommendation Change"
+// entered Defined Terms as "any of the foregoing actions", the resolved
+// words; the two NCS 5.3 sentences that define it list the actions.
+test('a definition resolved to a back-reference shows the words it refers to, from the fact\'s own words before the term, with a note; two such facts merge', () => {
+  const component = (id, kind, text, start, extra = {}) => ({ component_id: id, kind, label: id, text, origin: 'OWN', source_span_id: 's', start_byte: start, end_byte: start + text.length, gap_before: false, children: [], ...extra });
+  const arc = (id, start, objectText) => ({
+    fact_id: id, proposal_id: id, family_key: 'NO_SHOP', subtype_key: 'RECOMMENDATION_CHANGE', fact_type: 'RECOMMENDATION_CHANGE', section_reference: '5.3', structure_node_id: 'n-5-3', validation_status: 'VALID',
+    statement: `Except to the extent permitted by Section 5.2(c), the Company Board shall not ${objectText}.`,
+    headline: { label: 'Change of recommendation', summary: `Company Board shall not ${objectText}`, distinguishing_component_ids: [`${id}-obj`] },
+    components: [
+      component(`${id}-exc`, 'EXCEPTION', 'Except to the extent permitted by Section 5.2(c)', start),
+      component(`${id}-actor`, 'ACTOR', 'the Company Board and each committee of the Company Board shall not, and shall not authorize or publicly propose to', start + 60),
+      component(`${id}-obj`, 'OBJECT', objectText, start + 200),
+      component(`${id}-term`, 'DEFINED_TERM', '(any of the foregoing actions, an “Adverse Recommendation Change”)', start + 320, { resolves_to: { text: 'any of the foregoing actions' } }),
+    ],
+  });
+  const withhold = arc('arc-1', 0, 'withhold, withdraw or adversely qualify (or modify or amend in a manner adverse to Parent) the Company Board Recommendation');
+  const approve = arc('arc-2', 1000, 'authorize, approve, adopt or recommend any Acquisition Proposal');
+  const view = buildTableView({ facts: [withhold, approve], tableShapes, legalSchema });
+  const entry = view.defined_terms.find((candidate) => candidate.term === 'Adverse Recommendation Change');
+  assert.ok(entry, 'the term is an entry');
+  assert.match(entry.definition, /^any of the foregoing actions: Except to the extent permitted by Section 5\.2\(c\) the Company Board and each committee .* withhold, withdraw or adversely qualify .* the Company Board Recommendation; any of the foregoing actions: Except .* authorize, approve, adopt or recommend any Acquisition Proposal$/);
+  assert.equal(entry.note, 'The resolved words are a back-reference; the list shown is the fact\'s own words before the term.');
+  assert.deepEqual(entry.fact_ids, ['arc-1', 'arc-2']);
+  // A resolved definition that is not a back-reference is unchanged.
+  const plain = { ...withhold, fact_id: 'plain', proposal_id: 'plain', components: [component('plain-term', 'DEFINED_TERM', 'the “Company Board Recommendation”', 0, { resolves_to: { text: 'the recommendation of the Company Board that the stockholders adopt this Agreement' } })] };
+  const plainEntry = buildTableView({ facts: [plain], tableShapes, legalSchema }).defined_terms.find((candidate) => candidate.term === 'Company Board Recommendation');
+  assert.equal(plainEntry.definition, 'the recommendation of the Company Board that the stockholders adopt this Agreement');
+  assert.equal(plainEntry.note, undefined);
+  // With no own words before the term, the fact's statement is the list.
+  const statementOnly = { ...approve, fact_id: 'so', proposal_id: 'so', components: [approve.components[3]] };
+  const soEntry = buildTableView({ facts: [statementOnly], tableShapes, legalSchema }).defined_terms.find((candidate) => candidate.term === 'Adverse Recommendation Change');
+  assert.match(soEntry.definition, /^any of the foregoing actions: Except to the extent permitted by Section 5\.2\(c\), the Company Board shall not authorize, approve, adopt or recommend any Acquisition Proposal\.$/);
+  assert.match(soEntry.note, /the fact's statement/);
+});
+
+// Work package 17: the facts validation held are shown under their
+// section with the reason in words (NCS 3.4: ten facts on an unknown span).
+test('held facts are listed under their family\'s section with their reason, and a section with only held facts is shown', () => {
+  const held = (id, reason) => ({
+    fact_id: id, proposal_id: id, family_key: 'REPRESENTATIONS', subtype_key: 'STATUS_REPRESENTATION', fact_type: 'REPRESENTATION_ACCURACY_STANDARD', section_reference: '3.4', structure_node_id: 'n-3-4', validation_status: 'INVALID',
+    headline: { label: 'Status representation', summary: 'Company has corporate power and authority to execute, deliver and perform the Agreement', distinguishing_component_ids: [`${id}-c`] },
+    components: [{ component_id: `${id}-c`, kind: 'ACTOR', label: 'party', text: 'the Company represents and warrants to Parent and Merger Sub as follows:', origin: 'INTRO', children: [] }],
+    ...(reason ? { held_reason: reason } : {}),
+  });
+  const view = buildTableView({ facts: [], heldFacts: [held('h1', '“the Company represents and warrants to Parent and Merger Sub as follows:”: its quote cites a span the section does not have'), held('h2', null)], tableShapes, legalSchema });
+  const section = view.sections.find((candidate) => candidate.held_facts);
+  assert.ok(section, 'the section is shown for its held facts alone');
+  assert.equal(section.section_key, 'representations-qualifiers');
+  assert.deepEqual(section.tables, []);
+  assert.deepEqual(section.held_facts.map((entry) => [entry.fact_id, entry.section_reference, entry.headline, entry.reason]), [
+    ['h1', '3.4', 'Status representation', '“the Company represents and warrants to Parent and Merger Sub as follows:”: its quote cites a span the section does not have'],
+    ['h2', '3.4', 'Status representation', 'held by validation'],
+  ]);
+});
