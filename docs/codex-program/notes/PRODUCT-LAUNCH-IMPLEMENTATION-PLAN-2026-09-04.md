@@ -3180,7 +3180,9 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       `tests/product-sandbox-worker-scripts.test.js` (gone detection, the
       wake and the 503, the update message, the provider option, the
       create flow per provider with a fake sandbox API, no credential in
-      any output). Suite result below.
+      any output). Commits 92e6373 and 6593d4d; `npm run test:active`
+      656 of 657, the one failure the known Codex-client
+      final-message test. Work package 4 closed 2026-10-18 02:05 UTC.
       (50) 2026-10-18 01:20 UTC, manager review of work packages 2 and 3
       (findings (43), (46), (48)): accepted. The suite on the merged
       head is 649 of 650 (the known Codex-client failure). The key
