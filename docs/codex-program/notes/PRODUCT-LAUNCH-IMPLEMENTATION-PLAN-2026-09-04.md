@@ -4731,6 +4731,33 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       B's (105) merged (head 4506eb2c; the active suite in the next
       finding). Correction to (165) (g): the manager's read of the
       registration rows was of the preview deployed before finding
+      (169) 2026-10-18 21:55 UTC, Ben's intake order, verbatim: "apogee/
+      crinetics/ centessa/ akero / alerkems / verve as the top ones".
+      Applied: Apogee is generation 2 already running (run 686c3bf2);
+      the other five submitted now as generation 1 intakes on the
+      environment's default provider (the subscription), QUEUED with no
+      worker, woken in Ben's order as a pool sandbox frees: Vertex /
+      Crinetics, Lilly / Centessa (a UK scheme, filed as a Transaction
+      Agreement; its Court-sanction mechanics are not the schema's,
+      finding (127)), Novo Nordisk / Akero, Alkermes / Avadel (an Irish
+      scheme), Lilly / Verve. The URLs are finding (127)'s verified
+      Exhibit 2.1 links. The active suite on the merged head 4506eb2c:
+      772 of 773, the known failure only.
+      (170) 2026-10-18 21:58 UTC, Ben, verbatim: "I don't think we
+      intake until E is done and we have reduced cost". Applied: no run
+      is woken until implementer E's work package E1 has landed and the
+      cost per agreement is down; the four intakes of (169) (Crinetics
+      cd1d3e91, Centessa 436276fe, Akero 94cd879e, Avadel 91fe48a1) stay
+      QUEUED with no worker and no model call; Olaplex and Apogee
+      generation 2, already running on the subscription, continue. Two
+      facts from the submissions, for later work: Verve's intake failed
+      twice at structure build (STRUCTURE_PARENT_SPAN on span 4b477bbe,
+      the Vercel function log), a structure defect on that exhibit for
+      implementer A once E1 is in; and three of the four queued runs
+      stopped at DOCUMENT_IDENTITY_REVIEW (the Phase 1 identity gate,
+      product_phase1_resolve_identity), which needs the identity
+      resolution before any wake; Avadel went straight to
+      SECTION_ANALYSIS.
       (95)'s rule reached the deployment (its deploy was created at
       20:50:39 UTC, the read fell between READY at 20:48 and that);
       on the real rows the move happens, now pinned with the stored
@@ -6477,6 +6504,124 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       shapes. npm run test:active: 766 of 767, the one failure the
       known Codex-client final-message test. No run, worker or sandbox
       touched; no live model call made.
+      (106) 2026-10-18 21:30 to 23:30 UTC (implementer B), work package
+      B3 on the manager's message of 21:05 UTC and Ben's decision in
+      (166) ("I'm not sure what you mean but I don't care boaut the old
+      site, you can move over whener you like"): the production move,
+      prepared and not run on production. scripts/product/move-to-
+      production.js over lib/product/production-move.js, two direct
+      Postgres connections (the Supabase project's database connection
+      as the postgres role; the URLs from the arguments or
+      MOVE_SOURCE_DATABASE_URL and MOVE_TARGET_DATABASE_URL, never
+      printed): (a) the 42 files under supabase/migrations applied in
+      order to the target in one transaction and recorded in Supabase's
+      own ledger, supabase_migrations.schema_migrations, the table the
+      CLI keeps (a file counts as applied when the ledger carries its
+      name or its version, because the branch runner records names
+      under its own versions: the preview branch's ledger holds 20 rows
+      for the files from 20260905224000 on and none for the first 22,
+      which its runner applied under other versions; the production
+      project's ledger holds three rows, the old site's RLS hardening
+      of 2026-08-02, and no product_ table or product_private schema;
+      pgcrypto is installed in schema extensions on both); (b) one
+      run's rows carried table by table in foreign-key order (36 tables
+      from the source document and its structure to the release
+      pointer; the pointer travels only when it selects this run's
+      release; product_run_sandboxes, which names the hosted sandbox a
+      run holds, never moves), each row inserted once by the table's
+      own keys (ON CONFLICT DO NOTHING) and, when already there,
+      compared column by column, timestamps carried as the database's
+      text so microseconds survive; (c) the proof: the product's own
+      analysis read, review read for every actor with access and
+      published read for the source, through the stores over a
+      node-postgres facade (lib/product/pg-store-facade.js) on each
+      side, compared whole. `--dry-run` (the default) reads and prints
+      the migrations it would apply and every table's source and target
+      rows; `--apply` writes and needs `--confirm-target <project ref>`
+      matching the target host, so a production apply is a deliberate
+      act; a second apply applies no migration, inserts nothing and
+      reports every row already there. Proof on the embedded Postgres,
+      tests/product-move-to-production.test.js (two databases, the
+      source migrated and seeded with the Concho synthetic draft
+      reviewed, published, evaluated and activated; the dry run reads
+      42 to apply and every target table absent and writes nothing; the
+      apply migrates, inserts every source row, and the three reads are
+      equal; the second apply changes nothing; a ledger renumbered as
+      the branch runner does applies nothing twice): 1 of 1, about 140 s, mostly the synthetic runner.
+      Added to the CI database job. Dry run against the preview branch,
+      by the same count queries the script runs, read by SQL (no
+      connection string here): Metsera generation 8 (run 72d94dd2):
+      source document 1 (2.6 MB), structure 1, run 1, submission request
+      1, section work 85, model calls 313 (12 MB), closures 85, spans
+      6,239 (3.7 MB), closure spans 7,047, routings 85, section results
+      85, residual passes 85, proposition groups 974, proposals 974
+      (3.5 MB), proposal spans 2,298, fact components 5,772, headlines
+      964, conclusions 865, fact links 568, link spans 603, issues 259,
+      coverage assertions 6,639, drafts 1, draft revisions 2, audit
+      events 2, draft analysis 1, run access 1, retry events 2;
+      identity reviews, review session, revisions, actions,
+      publications, releases and heads 0. NCS generation 5 (run
+      51577c57): the same shape with section work 104, model calls 393
+      (19 MB), spans 6,583, closure spans 7,750, proposals 1,037,
+      components 5,879, headlines 1,015, conclusions 875, links 601,
+      issues 309, coverage 7,184, retry events 6; review and release
+      rows 0. So today the move would carry each run's analysis and
+      nothing published: the release rows appear the minute Ben's
+      review is published and activated on the preview branch, and the
+      move carries them then; run on the preview branch after the
+      review, not before. What the production deployment needs beyond
+      the database, by name only (the API refused to list the project's
+      variables to this session, so the names are the code's): the
+      Supabase pair for the target (NEXT_PUBLIC_SUPABASE_URL,
+      NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_URL,
+      SUPABASE_SERVICE_ROLE_KEY) pointed at the production project
+      instead of the preview branch; the login (SESSION_SECRET,
+      AUTH_USERNAME, AUTH_PASSWORD); the scripts' bearer
+      (PRODUCT_INTERNAL_TOKEN); the schema switch
+      (NEXT_PUBLIC_PRODUCT_LEGAL_SCHEMA_VERSION, set to LEGAL_SCHEMA/V2
+      as on the preview); the worker (PRODUCT_MODEL_PROVIDER and, per
+      provider, PRODUCT_CLAUDE_CODE_OAUTH_TOKEN or ANTHROPIC_API_KEY
+      with ANTHROPIC_WORKSPACE_ID; VERCEL_TOKEN, VERCEL_TEAM_ID,
+      VERCEL_PROJECT_ID for the sandbox scripts run outside a
+      deployment); CRON_SECRET for the watch route. The alias: the
+      Vercel project precedent-machine (prj_nMyk8ev0VM2nhNyYnkshoz7H77vl)
+      has one domain, precedent-machine-zeta.vercel.app, its production
+      alias; deal-corpus-preview.vercel.app is the branch alias of
+      codex/product-implementation-plan-20260904 (finding (26)); the
+      production deployment is whatever is promoted to the production
+      alias, so the move's deployment step is a promotion of the
+      branch's build with the production environment's variables, or a
+      merge to the production branch, the manager's choice. The sandbox
+      pool (implementer D, finding (140)): the named sandboxes
+      pm-codex-preview-worker and pm-codex-preview-worker-2 are created
+      against one Vercel project and reach the database through the
+      SUPABASE pair the wake passes, so a production worker needs no new
+      sandbox, only the production pair in the deployment's variables;
+      product_run_sandboxes starts empty on the target and the first
+      production wake fills it. The old site's tables on the production
+      project, untouched by the move, which knows only the product_
+      tables the migrations create: claims (75,675 rows, 133 MB),
+      provision_cards (11,476), provisions (12,816), parser_regions
+      (6,420), deals (40), provisions_archive_20260706 (8,481),
+      ingest_jobs (376), ingest_job_events, ingest_job_dependencies,
+      ingest_job_artifacts, ingest_runs, consideration_treatments,
+      consideration_equity_provisions, deal_candidates, corrections,
+      coding_tasks, run_reports, transaction_steps, deal_quality_metrics,
+      election_options, election_mechanisms, saved_queries,
+      provision_field_groups, provision_cross_references,
+      provision_bring_downs, ioc_positive_obligations,
+      ioc_negative_obligations, users, annotations, deal_topology,
+      closing_condition_cited_provisions, closing_condition_bring_down_
+      tiers, proration_rules, termination_fee_triggers,
+      definition_components, material_contract_categories,
+      provision_analytical_flags, representation_mae_subclauses,
+      signoffs, comments, comparisons: 41 tables, every one left as it
+      is. One caution for the manager's apply: migration
+      20260912190000 runs ALTER ROLE service_role SET statement_timeout,
+      which the Supabase migration runner applied on the preview branch
+      as the postgres role; if the manager's connection role is refused
+      that statement, the transaction rolls back and the script says
+      so, nothing half-applied. npm run test:active: 769 of 770, the one failure the known Codex-client final-message test.
       (127) 2026-10-18 21:30 to 22:15 UTC (implementer C), work package
       C3 on finding (166) (Ben: "btw let's do major biopharma deals as
       the basi sfor the build out of next searches, starting > $1bn"):
