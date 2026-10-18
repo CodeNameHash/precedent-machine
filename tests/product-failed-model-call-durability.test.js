@@ -1,10 +1,7 @@
 'use strict';
 
 const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const path = require('node:path');
 const test = require('node:test');
-const { Client } = require('pg');
 
 const { contentId } = require('../lib/canonical-v2/canonical-bytes');
 const { buildAgreementStructure } = require('../lib/product/agreement-structure');
@@ -17,117 +14,9 @@ process.env.PRODUCT_PHASE2_HELPER_ONLY = '1';
 const { CONCHO_URL, conchoSource, createSyntheticConchoModel, schema } = require('./product-phase-2.test');
 delete process.env.PRODUCT_PHASE2_HELPER_ONLY;
 
-const ROOT = path.resolve(__dirname, '..');
-const databaseUrl = process.env.TEST_DATABASE_URL;
-const pgliteModule = process.env.TEST_PGLITE_MODULE;
-if (!databaseUrl && !pgliteModule) throw new Error('TEST_DATABASE_URL or TEST_PGLITE_MODULE is required for the failed-call durability test');
-
-const migrationFiles = [
-  'supabase/migrations/20260905020346_product_phase_1_foundation.sql',
-  'supabase/migrations/20260905043000_product_phase_2_vertical_slice.sql',
-  'supabase/migrations/20260905070000_product_phase_3_review.sql',
-  'supabase/migrations/20260905190000_product_substantive_section_work.sql',
-  'supabase/migrations/20260905200000_product_expired_section_recovery.sql',
-  'supabase/migrations/20260905201000_product_residual_pass_persistence.sql',
-  'supabase/migrations/20260905202000_product_section_lease_heartbeat.sql',
-  'supabase/migrations/20260905203000_product_finalization_retry.sql',
-  'supabase/migrations/20260905204000_product_saved_run_finalization.sql',
-  'supabase/migrations/20260905205000_product_release_timing_guard.sql',
-  'supabase/migrations/20260905210000_product_structure_versions.sql',
-  'supabase/migrations/20260905211000_product_failed_model_calls.sql',
-];
-
-const rpcArguments = {
-  product_phase1_persist_source: ['p_source'],
-  product_phase1_create_run: ['p_source_document_id', 'p_retrieval_url', 'p_idempotency_key', 'p_schema_version', 'p_prompt_bundle_version', 'p_model_config', 'p_explicit_generation', 'p_max_attempts'],
-  product_phase1_attach_structure: ['p_run_id', 'p_structure_id', 'p_structure', 'p_identity_review'],
-  product_phase1_claim_section: ['p_run_id', 'p_worker_id', 'p_lease_seconds'],
-  product_phase1_renew_section_lease: ['p_run_id', 'p_node_id', 'p_worker_id', 'p_attempt_token', 'p_lease_seconds'],
-  product_phase1_complete_section: ['p_run_id', 'p_node_id', 'p_worker_id', 'p_attempt_token', 'p_cost_microusd', 'p_input_tokens', 'p_output_tokens'],
-  product_phase1_fail_run: ['p_run_id', 'p_stage', 'p_error'],
-  product_phase2_record_model_call: ['p_run_id', 'p_node_id', 'p_worker_id', 'p_attempt_token', 'p_call'],
-  product_phase2_fail_section: ['p_run_id', 'p_node_id', 'p_worker_id', 'p_attempt_token', 'p_error', 'p_model_calls'],
-  product_phase2_commit_section: ['p_run_id', 'p_node_id', 'p_worker_id', 'p_attempt_token', 'p_result'],
-  product_phase2_finalize_saved_run: ['p_run_id', 'p_finalization'],
-  product_phase2_get_analysis: ['p_run_id'],
-};
-
-function databaseFacade(client) {
-  return {
-    async rpc(name, parameters) {
-      try {
-        const names = rpcArguments[name];
-        if (!names) throw new Error(`unsupported RPC ${name}`);
-        const values = names.map((key) => parameters[key]);
-        const markers = values.map((_, index) => `$${index + 1}`).join(',');
-        const result = await client.query(`SELECT public.${name}(${markers}) AS data`, values);
-        return { data: result.rows[0].data, error: null };
-      } catch (error) {
-        return { data: null, error };
-      }
-    },
-    from(table) {
-      if (!/^product_[a-z_]+$/.test(table)) throw new Error('invalid table');
-      let columns = '*';
-      const filters = [];
-      const orders = [];
-      let bounds = null;
-      const execute = async (single = false) => {
-        try {
-          const where = filters.length ? ` WHERE ${filters.map((item, index) => `${item.column} = $${index + 1}`).join(' AND ')}` : '';
-          const order = orders.length ? ` ORDER BY ${orders.map((item) => `${item.column} ${item.ascending ? 'ASC' : 'DESC'}`).join(', ')}` : '';
-          const limit = bounds ? ` LIMIT ${bounds.to - bounds.from + 1} OFFSET ${bounds.from}` : '';
-          const result = await client.query(`SELECT ${columns} FROM public.${table}${where}${order}${limit}`, filters.map((item) => item.value));
-          return { data: single ? (result.rows[0] || null) : result.rows, error: null };
-        } catch (error) {
-          return { data: null, error };
-        }
-      };
-      const builder = {
-        select(value) { columns = value; return builder; },
-        eq(column, value) { filters.push({ column, value }); return builder; },
-        order(column, options = {}) { orders.push({ column, ascending: options.ascending !== false }); return builder; },
-        range(from, to) { bounds = { from, to }; return builder; },
-        maybeSingle() { return execute(true); },
-        then(resolve, reject) { return execute(false).then(resolve, reject); },
-      };
-      return builder;
-    },
-  };
-}
-
-async function createDatabase() {
-  let client;
-  if (databaseUrl) {
-    client = new Client({ connectionString: databaseUrl });
-    await client.connect();
-  } else {
-    const { PGlite } = require(pgliteModule);
-    client = new PGlite();
-    await client.waitReady;
-  }
-  const execute = (sql) => pgliteModule ? client.exec(sql) : client.query(sql);
-  await client.query('BEGIN');
-  await execute(`DO $$ BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'anon') THEN CREATE ROLE anon NOLOGIN; END IF;
-    IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'authenticated') THEN CREATE ROLE authenticated NOLOGIN; END IF;
-    IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'service_role') THEN CREATE ROLE service_role NOLOGIN; END IF;
-  END $$;`);
-  if (pgliteModule) {
-    await execute(`CREATE SCHEMA IF NOT EXISTS extensions;
-      CREATE FUNCTION extensions.digest(data bytea, algorithm text) RETURNS bytea LANGUAGE sql IMMUTABLE
-      AS $$ SELECT CASE WHEN lower(algorithm) = 'sha256' THEN pg_catalog.sha256(data)
-        ELSE decode(md5(data) || md5(data), 'hex') END $$;
-      CREATE FUNCTION extensions.gen_random_uuid() RETURNS uuid LANGUAGE sql VOLATILE
-      AS $$ SELECT pg_catalog.gen_random_uuid() $$;`);
-  }
-  for (const filename of migrationFiles) {
-    const sql = fs.readFileSync(path.join(ROOT, filename), 'utf8')
-      .replace(pgliteModule ? 'CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA extensions;' : '__KEEP_PGCRYPTO__', '');
-    await execute(sql);
-  }
-  return client;
-}
+// The harness: every migration in order, one rolled-back transaction, the
+// Supabase-shaped facade (tests/helpers/product-database.js; finding (141)).
+const database = require('./helpers/product-database');
 
 function rawCall(row) {
   return {
@@ -193,13 +82,9 @@ async function rejectsDatabase(client, action, pattern) {
 }
 
 test('failed model calls persist once per attempt and remain in the final draft history', async (t) => {
-  const client = await createDatabase();
-  t.after(async () => {
-    await client.query('ROLLBACK');
-    if (typeof client.end === 'function') await client.end();
-    else await client.close();
-  });
-  const store = new ProductPhase2Store({ client: databaseFacade(client) });
+  const client = await database.setupDatabase();
+  t.after(database.teardownDatabase);
+  const store = new ProductPhase2Store({ client: database.databaseFacade() });
   const sourceDocument = await conchoSource();
   const structure = buildAgreementStructure({
     agreement_id: sourceDocument.source_document_id,
@@ -227,11 +112,21 @@ test('failed model calls persist once per attempt and remain in the final draft 
   assert.ok(failedWork);
   const firstAttemptRows = (await client.query(`SELECT * FROM public.product_model_calls
     WHERE run_id=$1 AND structure_node_id=$2 ORDER BY call_kind`, [run.run_id, failedWork.node_id])).rows;
-  assert.equal(firstAttemptRows.length, 3);
-  assert.equal(new Set(firstAttemptRows.map((row) => row.invocation_id)).size, 3);
+  // One attempt's calls: routing, residual and one extraction per part of
+  // the section (a long section is extracted in parts since Q6); the count
+  // and the totals are read from the recorded calls, not fixed (finding (141)).
+  const perAttempt = firstAttemptRows.length;
+  assert.ok(perAttempt >= 3, `at least routing, residual and one extraction: ${perAttempt}`);
+  assert.deepEqual([...new Set(firstAttemptRows.map((row) => row.call_kind))].sort(), ['EXTRACTION', 'RESIDUAL', 'ROUTING']);
+  assert.equal(new Set(firstAttemptRows.map((row) => row.invocation_id)).size, perAttempt);
+  const totals = (rows) => rows.reduce((sum, row) => ({
+    input: sum.input + Number(row.input_tokens), output: sum.output + Number(row.output_tokens), cost: sum.cost + Number(row.cost_microusd),
+  }), { input: 0, output: 0, cost: 0 });
+  const attemptTotals = totals(firstAttemptRows);
+  assert.ok(attemptTotals.input > 0 && attemptTotals.cost > 0);
   assert.deepEqual({
     input: Number(failedWork.input_tokens), output: Number(failedWork.output_tokens), cost: Number(failedWork.cost_microusd),
-  }, { input: 300, output: 150, cost: 75 });
+  }, attemptTotals);
 
   await store.failSection({
     runId: run.run_id,
@@ -245,20 +140,25 @@ test('failed model calls persist once per attempt and remain in the final draft 
     WHERE run_id=$1 AND node_id=$2`, [run.run_id, failedWork.node_id])).rows[0];
   assert.deepEqual({
     input: Number(replayed.input_tokens), output: Number(replayed.output_tokens), cost: Number(replayed.cost_microusd),
-  }, { input: 300, output: 150, cost: 75 });
+  }, attemptTotals);
 
   await assert.rejects(() => runAgreementDraftAnalysis({
     runId: run.run_id, store, legalSchema: schema, model: invalidLinkModel(), workerId: 'failed-call-test',
   }), /FACT_LINK_TYPE/);
   const twoAttempts = (await client.query(`SELECT * FROM public.product_model_calls
     WHERE run_id=$1 AND structure_node_id=$2 ORDER BY call_kind,invocation_id`, [run.run_id, failedWork.node_id])).rows;
-  assert.equal(twoAttempts.length, 6);
-  assert.equal(new Set(twoAttempts.map((row) => row.invocation_id)).size, 6);
+  assert.equal(twoAttempts.length, 2 * perAttempt);
+  assert.equal(new Set(twoAttempts.map((row) => row.invocation_id)).size, 2 * perAttempt);
   const failedExtractions = twoAttempts.filter((row) => row.call_kind === 'EXTRACTION');
-  assert.equal(failedExtractions.length, 2);
-  assert.deepEqual(failedExtractions[0].request, failedExtractions[1].request);
-  assert.deepEqual(failedExtractions[0].response, failedExtractions[1].response);
-  assert.notEqual(failedExtractions[0].model_call_id, failedExtractions[1].model_call_id);
+  assert.equal(failedExtractions.length, 2 * firstAttemptRows.filter((row) => row.call_kind === 'EXTRACTION').length);
+  // Every extraction of the first attempt has one twin from the second: the
+  // same request and response under a different call id.
+  for (const first of firstAttemptRows.filter((row) => row.call_kind === 'EXTRACTION')) {
+    const twins = failedExtractions.filter((row) => row.model_call_id !== first.model_call_id
+      && JSON.stringify(row.request) === JSON.stringify(first.request));
+    assert.equal(twins.length, 1, `one twin of ${first.model_call_id}`);
+    assert.deepEqual(twins[0].response, first.response);
+  }
 
   const atomicRun = await store.createOrGetRun({
     sourceDocumentId: sourceDocument.source_document_id,
@@ -375,6 +275,8 @@ test('failed model calls persist once per attempt and remain in the final draft 
     total: finalRead.progress.total,
     completed: finalRead.progress.total,
     failed: 0,
+    // Running work rides in progress since 20260905221000 (finding (141)).
+    running: 0,
     cost_microusd: storedTotals.cost_microusd,
     input_tokens: storedTotals.input_tokens,
     output_tokens: storedTotals.output_tokens,
@@ -383,7 +285,8 @@ test('failed model calls persist once per attempt and remain in the final draft 
   assert.equal(finalRead.model_calls.every((call) => call.invocation_id), true);
   const completed = await store.loadCompletedSectionResults(run.run_id);
   const retriedSection = completed.find((result) => result.node_id === failedWork.node_id);
-  assert.equal(retriedSection.model_calls.length, 9);
+  // Two failed attempts and the successful third, each the section's calls.
+  assert.equal(retriedSection.model_calls.length, 3 * perAttempt);
   const callIds = new Set(retriedSection.model_calls.map((call) => call.model_call_id));
   assert.ok(retriedSection.proposals.every((proposal) => callIds.has(proposal.model_call_id)));
   assert.equal(retriedSection.model_calls.every((call) => call.invocation_id), true);

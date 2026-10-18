@@ -68,3 +68,13 @@ test('the NO_SHOP layer rule names each notice duty as its own fact and the inte
   assert.match(family.layer_rules, /deeming a breach by a Representative a breach by the Company is a PROHIBITED_ACTION fact of its own/);
   assert.match(family.layer_rules, /fiduciary standard the board must meet to change its recommendation for an Intervening Event/);
 });
+
+// Work package 20 (c) and (d) (implementer B's defects (6) and (7), finding
+// (105); NCS generation 5, 3.27, 4.13, 3.5, 3.7 and 4.4): the extractor is
+// told the one-effect rule's two shapes for representations.
+test('the REPRESENTATIONS layer rule splits predicates joined by "or" and keeps an enumerated exception a component', () => {
+  const family = v2.families.find((entry) => entry.family_key === 'REPRESENTATIONS');
+  assert.match(family.layer_rules, /Two predicates of one subject joined by "or" or "nor" \(.*\) are two facts, one per predicate/);
+  assert.match(family.layer_rules, /An enumerated exception to a representation \(.*\) is an EXCEPTION component of the representation it qualifies, a LIST with one LIST_ELEMENT per item, never a fact of its own/);
+  assert.match(family.layer_rules, /REPRESENTATION_EXCEPTION_NOT_A_FACT/);
+});

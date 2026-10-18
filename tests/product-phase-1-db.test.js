@@ -2,17 +2,10 @@
 
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
-const fs = require('node:fs');
-const path = require('node:path');
 const test = require('node:test');
-const { Client } = require('pg');
 
-const databaseUrl = process.env.TEST_DATABASE_URL;
-if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required for the Phase 1 database test');
-
-const migration = fs.readFileSync(path.join(__dirname, '..', 'supabase/migrations/20260905020346_product_phase_1_foundation.sql'), 'utf8');
-const workSetCorrection = fs.readFileSync(path.join(__dirname, '..', 'supabase/migrations/20260905190000_product_substantive_section_work.sql'), 'utf8');
-const leaseRecovery = fs.readFileSync(path.join(__dirname, '..', 'supabase/migrations/20260905200000_product_expired_section_recovery.sql'), 'utf8');
+// Every migration in order (tests/helpers/product-database.js, finding (141)).
+const database = require('./helpers/product-database');
 const sha256 = (value) => crypto.createHash('sha256').update(value).digest('hex');
 let client;
 
@@ -26,27 +19,9 @@ async function rejectsWithoutAbort(action, pattern) {
   }
 }
 
-test.before(async () => {
-  client = new Client({ connectionString: databaseUrl });
-  await client.connect();
-  await client.query('BEGIN');
-  await client.query(`DO $$ BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'anon') THEN CREATE ROLE anon NOLOGIN; END IF;
-    IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'authenticated') THEN CREATE ROLE authenticated NOLOGIN; END IF;
-    IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'service_role') THEN CREATE ROLE service_role NOLOGIN; END IF;
-  END $$;`);
-  await client.query(migration);
-  await client.query(workSetCorrection);
-  await client.query(leaseRecovery);
-});
+test.before(async () => { client = await database.setupDatabase(); });
 
-test.after(async () => {
-  if (!client) return;
-  await client.query('ROLLBACK');
-  const absent = await client.query("SELECT to_regclass('public.product_source_documents') AS relation");
-  assert.equal(absent.rows[0].relation, null);
-  await client.end();
-});
+test.after(database.teardownDatabase);
 
 test('inactive Postgres proves durable state transitions, isolation and rollback', async () => {
   const sourceId = '1'.repeat(64);
@@ -85,18 +60,13 @@ test('inactive Postgres proves durable state transitions, isolation and rollback
   assert.equal(runTwo.source_generation, 2);
 
   await client.query('SELECT public.product_phase1_attach_structure($1,$2,$3,$4)', [runOne.run_id, structureId, structure, null]);
+  // The work set on the full migration list: the substantive sections and,
+  // since 20260907005021_product_article_intro_coverage removed the
+  // "-INTRO" exclusion (its own check raises if the exclusion remains), the
+  // article introduction; never the exhibit container (finding (141)).
   assert.deepEqual((await client.query(
     'SELECT node_id FROM public.product_section_work WHERE run_id=$1 ORDER BY authored_order', [runOne.run_id],
-  )).rows.map((row) => row.node_id), ['3'.repeat(64), '4'.repeat(64)]);
-  await client.query(
-    `INSERT INTO public.product_section_work(run_id, node_id, authored_order, max_attempts)
-     VALUES ($1,$2,3,2),($1,$3,5,2)`,
-    [runOne.run_id, '5'.repeat(64), '7'.repeat(64)],
-  );
-  await client.query(workSetCorrection);
-  assert.deepEqual((await client.query(
-    'SELECT node_id FROM public.product_section_work WHERE run_id=$1 ORDER BY authored_order', [runOne.run_id],
-  )).rows.map((row) => row.node_id), ['3'.repeat(64), '4'.repeat(64)]);
+  )).rows.map((row) => row.node_id), ['3'.repeat(64), '4'.repeat(64), '7'.repeat(64)]);
   let claim = (await client.query('SELECT public.product_phase1_claim_section($1,$2,$3) AS work', [runOne.run_id, 'worker-one', 300])).rows[0].work;
   await rejectsWithoutAbort(() => client.query(
     'SELECT public.product_phase1_complete_section($1,$2,$3,$4,$5,$6,$7)',
@@ -115,6 +85,12 @@ test('inactive Postgres proves durable state transitions, isolation and rollback
   assert.equal(retry.node_id, claim.node_id);
   assert.equal(retry.attempts, 2);
   await client.query('SELECT public.product_phase1_complete_section($1,$2,$3,$4,$5,$6,$7)', [runOne.run_id, retry.node_id, 'worker-three', retry.attempt_token, 200, 20, 10]);
+  // The article introduction (the third section of the work set since
+  // migration 20260907005021) is completed last; only then is the run READY.
+  assert.equal((await client.query('SELECT status FROM public.product_analysis_runs WHERE run_id=$1', [runOne.run_id])).rows[0].status, 'RUNNING');
+  const last = (await client.query('SELECT public.product_phase1_claim_section($1,$2,$3) AS work', [runOne.run_id, 'worker-three', 300])).rows[0].work;
+  assert.equal(last.node_id, '7'.repeat(64));
+  await client.query('SELECT public.product_phase1_complete_section($1,$2,$3,$4,$5,$6,$7)', [runOne.run_id, last.node_id, 'worker-three', last.attempt_token, 50, 5, 2]);
   assert.equal((await client.query('SELECT status FROM public.product_analysis_runs WHERE run_id=$1', [runOne.run_id])).rows[0].status, 'READY');
 
   const draft = (await client.query('SELECT * FROM public.product_drafts WHERE run_id=$1', [runOne.run_id])).rows[0];
@@ -134,7 +110,7 @@ test('inactive Postgres proves durable state transitions, isolation and rollback
   await client.query('SELECT public.product_phase1_resolve_identity($1,$2)', [runTwo.run_id, { confirmed: true }]);
   assert.deepEqual((await client.query(
     'SELECT node_id FROM public.product_section_work WHERE run_id=$1 ORDER BY authored_order', [runTwo.run_id],
-  )).rows.map((row) => row.node_id), ['3'.repeat(64), '4'.repeat(64)]);
+  )).rows.map((row) => row.node_id), ['3'.repeat(64), '4'.repeat(64), '7'.repeat(64)]);
 
   const crashed = (await client.query('SELECT public.product_phase1_claim_section($1,$2,$3) AS work', [runTwo.run_id, 'crashed-worker', 300])).rows[0].work;
   await client.query(`UPDATE public.product_section_work SET lease_expires_at=now()-interval '1 second', attempts=max_attempts
@@ -146,7 +122,7 @@ test('inactive Postgres proves durable state transitions, isolation and rollback
   });
   assert.equal((await client.query('SELECT status FROM public.product_analysis_runs WHERE run_id=$1', [runTwo.run_id])).rows[0].status, 'FAILED');
   assert.equal((await client.query('SELECT public.product_phase1_recover_expired_sections($1) AS result', [runTwo.run_id])).rows[0].result.recovered_sections, 0);
-  assert.equal(Number((await client.query("SELECT count(*) FROM public.product_section_work WHERE run_id=$1 AND status='COMPLETE'", [runOne.run_id])).rows[0].count), 2);
+  assert.equal(Number((await client.query("SELECT count(*) FROM public.product_section_work WHERE run_id=$1 AND status='COMPLETE'", [runOne.run_id])).rows[0].count), 3);
 
   const permissions = (await client.query(`SELECT
     has_table_privilege('service_role', 'public.product_analysis_runs', 'INSERT') AS direct_insert,

@@ -2,8 +2,6 @@
 
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
-const fs = require('node:fs');
-const path = require('node:path');
 const test = require('node:test');
 
 process.env.PRODUCT_PHASE2_DB_HELPER_ONLY = '1';
@@ -12,48 +10,33 @@ delete process.env.PRODUCT_PHASE2_DB_HELPER_ONLY;
 const { runAgreementDraftAnalysis } = require('../lib/product/analysis-runner');
 const { buildAgreementStructure } = require('../lib/product/agreement-structure');
 const { ProductPhase3Store } = require('../lib/product/phase-3-store');
-const { applyReviewCommand, initialiseReviewState } = require('../lib/product/review-state');
+const { applyReviewCommand, initialiseReviewState, ProductReviewError } = require('../lib/product/review-state');
 const { substantiveSections } = require('../lib/product/source-context');
 
 process.env.PRODUCT_PHASE2_HELPER_ONLY = '1';
 const { CONCHO_URL, conchoSource, createSyntheticConchoModel, schema } = require('./product-phase-2.test');
 delete process.env.PRODUCT_PHASE2_HELPER_ONLY;
 
-const ROOT = path.resolve(__dirname, '..');
-const phase3Migration = fs.readFileSync(path.join(ROOT, 'supabase/migrations/20260905070000_product_phase_3_review.sql'), 'utf8');
-const citationRepairMigration = fs.readFileSync(path.join(ROOT, 'supabase/migrations/20260905212000_product_review_citation_repair.sql'), 'utf8');
-const finalizationRetryMigration = fs.readFileSync(path.join(ROOT, 'supabase/migrations/20260905203000_product_finalization_retry.sql'), 'utf8');
-const releaseTimingGuardMigration = fs.readFileSync(path.join(ROOT, 'supabase/migrations/20260905205000_product_release_timing_guard.sql'), 'utf8');
-const releaseTimingMeasurementMigration = fs.readFileSync(path.join(ROOT, 'supabase/migrations/20260906234757_product_release_timing_measurement.sql'), 'utf8');
-const referenceSamplesV3Migration = fs.readFileSync(path.join(ROOT, 'supabase/migrations/20260907082337_product_release_reference_samples_v3.sql'), 'utf8');
-const groupRepairMigration = fs.readFileSync(path.join(ROOT, 'supabase/migrations/20260905220000_product_review_proposition_group_repair.sql'), 'utf8');
 const actor = 'phase3-db-lawyer';
 
-test.before(async () => {
-  await phase2Database.setupDatabase();
-  const client = phase2Database.getDatabaseClient();
-  if (process.env.TEST_PGLITE_MODULE) await client.exec(phase3Migration);
-  else await client.query(phase3Migration);
-  if (process.env.TEST_PGLITE_MODULE) await client.exec(finalizationRetryMigration);
-  else await client.query(finalizationRetryMigration);
-  if (process.env.TEST_PGLITE_MODULE) await client.exec(releaseTimingGuardMigration);
-  else await client.query(releaseTimingGuardMigration);
-  if (process.env.TEST_PGLITE_MODULE) await client.exec(citationRepairMigration);
-  else await client.query(citationRepairMigration);
-  if (process.env.TEST_PGLITE_MODULE) await client.exec(groupRepairMigration);
-  else await client.query(groupRepairMigration);
-  if (process.env.TEST_PGLITE_MODULE) await client.exec(releaseTimingMeasurementMigration);
-  else await client.query(releaseTimingMeasurementMigration);
-  if (process.env.TEST_PGLITE_MODULE) await client.exec(referenceSamplesV3Migration);
-  else await client.query(referenceSamplesV3Migration);
-});
+test.before(phase2Database.setupDatabase);
 
 test.after(phase2Database.teardownDatabase);
 
+// Every item decided as a lawyer would decide the synthetic draft (the form
+// tests/product-phase-6-db.test.js uses; finding (141)): a held (not VALID)
+// proposal rejected, a relationship the review state refuses to accept
+// rejected, everything else accepted.
 function acceptAll(state, analysis, clock) {
   let next = state;
   for (const item of next.items) {
-    next = applyReviewCommand(next, { type: 'DECIDE_ITEM', item_id: item.item_id, decision: 'ACCEPTED' }, { analysis, legalSchema: schema, clock });
+    const held = item.kind === 'PROPOSAL' && item.original.validation_status !== 'VALID';
+    try {
+      next = applyReviewCommand(next, { type: 'DECIDE_ITEM', item_id: item.item_id, decision: held ? 'REJECTED' : 'ACCEPTED' }, { analysis, legalSchema: schema, clock });
+    } catch (error) {
+      if (!(error instanceof ProductReviewError)) throw error;
+      next = applyReviewCommand(next, { type: 'DECIDE_ITEM', item_id: item.item_id, decision: 'REJECTED' }, { analysis, legalSchema: schema, clock });
+    }
   }
   return applyReviewCommand(next, { type: 'CONFIRM_AGREEMENT_COVERAGE', confirmed: true }, { analysis, legalSchema: schema, clock });
 }
@@ -174,7 +157,7 @@ test('Phase 3 review persistence is isolated, idempotent, versioned and atomical
     SELECT p.proposal_id, g.proposition_group_id
     FROM public.product_proposals p
     CROSS JOIN public.product_proposition_groups g
-    WHERE p.run_id=$1 AND g.run_id=p.run_id
+    WHERE p.run_id=$1 AND g.run_id=p.run_id AND p.validation_status='VALID'
       AND (g.family_key <> p.family_key OR g.subtype_key <> p.subtype_key)
     LIMIT 1
   `, [run.run_id])).rows[0];
@@ -243,8 +226,17 @@ test('Phase 3 review persistence is isolated, idempotent, versioned and atomical
 
   const publishedFacts = review.state.summary.families.flatMap((family) => family.facts);
   const referenceSources = await store.listReferenceSources({ actor });
+  // The synthetic draft leaves some coverage UNRESOLVED, which the release
+  // bars refuse until each is resolved as a reviewed omission (the form
+  // tests/product-phase-6-db.test.js uses; finding (141)): a lawyer's
+  // command input.
+  const unresolvedCoverage = new Set((analysis.coverage_assertions || []).filter((item) => item.state === 'UNRESOLVED').map((item) => item.coverage_assertion_id));
+  const findingResolutions = review.state.items
+    .filter((item) => item.kind === 'COVERAGE' && item.decision === 'ACCEPTED' && unresolvedCoverage.has(item.source_id))
+    .map((item) => ({ finding_item_id: item.item_id, disposition: 'REVIEWED_OMISSION', omission_reason: 'Reviewed against the source: nothing further to extract.', reviewed_by_role: 'LAWYER' }));
   const evaluationCommand = {
     type: 'EVALUATE_RELEASE', reviewer_identity: actor, lawyer_attestation: true, reference_samples_attestation: true,
+    finding_resolutions: findingResolutions,
     reference_samples: [{ reference_sample_id: 'phase3-db-sample-1', source_document_id: sourceDocument.source_document_id, source_url: sourceDocument.retrieval_url, source_section: 'Section 5.2', description: 'One reviewed reference legal point.', severity: 'MATERIAL', assessment: 'FOUND', comparison: 'The source and product output state the same legal point.' }],
     citation_assessments: publishedFacts.map((fact) => ({ review_item_id: fact.review_item_id, exact: true, legally_sufficient: true, narrow: true })),
     elapsed_minutes: 120, developer_assisted: false,
@@ -253,6 +245,7 @@ test('Phase 3 review persistence is isolated, idempotent, versioned and atomical
   state = applyReviewCommand(review.state, evaluationCommand, { analysis, legalSchema: schema, clock, timing, referenceSources });
   review = await store.saveReview({ runId: run.run_id, expectedVersion: 4, state, actor, eventType: 'EVALUATE_RELEASE', idempotencyKey: 'phase3-release-evaluation', command: evaluationCommand });
   const firstEvaluatedState = structuredClone(review.state);
+  assert.equal(review.state.release_evaluation.passed, true, JSON.stringify({ bars: review.state.release_evaluation.bars, diagnostics: review.state.release_evaluation.diagnostics, resolutions: findingResolutions.length }));
   assert.equal(review.state.release_evaluation_input.lawyer_attested_by, actor);
   assert.equal(review.state.release_evaluation.schema_version, 'PRODUCT_SUPERVISED_RELEASE_EVALUATION/V3');
   const forgedTiming = structuredClone(review.state);
@@ -303,7 +296,8 @@ test('Phase 3 review persistence is isolated, idempotent, versioned and atomical
   assert.equal((await client.query('SELECT count(*)::integer AS count FROM public.product_review_publications WHERE run_id=$1', [run.run_id])).rows[0].count, 1);
   assert.equal((await client.query('SELECT count(*)::integer AS count FROM public.product_agreement_releases WHERE run_id=$1', [run.run_id])).rows[0].count, 1);
   state = applyReviewCommand(review.state, { type: 'CONFIRM_AGREEMENT_COVERAGE', confirmed: true }, { analysis, legalSchema: schema, clock });
-  const firstProposal = state.items.find((item) => item.kind === 'PROPOSAL');
+  // The first VALID proposal: an edit of a held one must supply its spans.
+  const firstProposal = state.items.find((item) => item.kind === 'PROPOSAL' && item.original.validation_status === 'VALID');
   state = applyReviewCommand(state, { type: 'DECIDE_ITEM', item_id: firstProposal.item_id, decision: 'EDITED', statement: `${firstProposal.original.statement} (reviewed)`, roles: firstProposal.original.roles, value: firstProposal.original.canonical_value }, { analysis, legalSchema: schema, clock });
   state = applyReviewCommand(state, { type: 'PUBLISH' }, { analysis, legalSchema: schema, clock });
   review = await store.saveReview({ runId: run.run_id, expectedVersion: 7, state, actor, eventType: 'PUBLISH', idempotencyKey: 'phase3-publish-2', command: { type: 'PUBLISH' } });
@@ -460,11 +454,15 @@ test('saved invalid proposal citations can be repaired without changing the orig
   )).rows[0].payload, storedBefore);
 
   for (const item of state.items.filter((candidate) => candidate.decision === 'PENDING')) {
-    state = applyReviewCommand(state, {
-      type: 'DECIDE_ITEM', item_id: item.item_id,
-      decision: item.kind === 'EXCEPTION_LINK'
-        || (item.kind === 'PROPOSAL' && item.original.validation_status !== 'VALID') ? 'REJECTED' : 'ACCEPTED',
-    }, { analysis, legalSchema: schema });
+    const rejected = item.kind === 'EXCEPTION_LINK' || (item.kind === 'PROPOSAL' && item.original.validation_status !== 'VALID');
+    try {
+      state = applyReviewCommand(state, { type: 'DECIDE_ITEM', item_id: item.item_id, decision: rejected ? 'REJECTED' : 'ACCEPTED' }, { analysis, legalSchema: schema });
+    } catch (error) {
+      // A relationship the review state refuses to accept (no exact source
+      // on the synthetic draft) is rejected, as a lawyer would (finding (141)).
+      if (!(error instanceof ProductReviewError)) throw error;
+      state = applyReviewCommand(state, { type: 'DECIDE_ITEM', item_id: item.item_id, decision: 'REJECTED' }, { analysis, legalSchema: schema });
+    }
   }
   state = applyReviewCommand(state, { type: 'CONFIRM_AGREEMENT_COVERAGE', confirmed: true }, { analysis, legalSchema: schema });
   state = applyReviewCommand(state, { type: 'PUBLISH' }, { analysis, legalSchema: schema });

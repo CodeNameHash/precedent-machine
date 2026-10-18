@@ -4758,6 +4758,66 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       product_phase1_resolve_identity), which needs the identity
       resolution before any wake; Avadel went straight to
       SECTION_ANALYSIS.
+      (171) 2026-10-18 22:15 UTC: implementer B's (106) and implementer
+      C's (128) merged (head 81203646; the active suite in the next
+      finding). Read: the move script applies the 42 migrations to a
+      named target in one transaction against Supabase's own ledger,
+      carries one run's 36 tables in key order idempotently, and proves
+      the three reads equal; its dry run on the preview branch shows
+      each run's analysis and no release row, because no review is
+      published yet. Manager's answer to B's question: the move runs
+      after Ben's first review is published and activated on the
+      preview branch, so it carries a release and not only analyses;
+      Ben reviews on the preview deployment until then (his (166) "you
+      can move over whener you like" stands as the authority for that
+      apply, with --confirm-target). C's tender-offer and stock-deal
+      rows accepted (eleven of 24 tender-offer provisions and five of
+      21 stock-deal provisions had no row; now every one is reachable
+      by row_label); what waits on Ben, put to him with this check-in:
+      an Offer step with five subtypes, a MINIMUM_CONDITION subtype, an
+      OFFER_FAILURE termination subtype, three LEGAL-RULES lines, the
+      ratio's form and adjustment as grid columns, a combined-company
+      governance table, Parent's no-shop, a Dividends table. Next:
+      work package B4 to implementer B, Verve's intake failure
+      (STRUCTURE_PARENT_SPAN on span 4b477bbe at buildAgreementStructure,
+      twice, finding (170)), a structure defect to fix in code with the
+      exhibit's own bytes pinned; work package C5 to implementer C, the
+      DOCUMENT_IDENTITY_REVIEW gate the Crinetics, Centessa and Akero
+      intakes stopped at: the recorded reasons, the resolution the
+      Phase 1 function wants, and whether the page shows them, for the
+      manager to resolve with Ben. Olaplex and Apogee generation 2 at
+      22:12 UTC: 24 of 97 and 21 of 85, no failures.
+      (172) 2026-10-18 22:30 UTC: implementer E's (180), implementer A's
+      (98), (99) and (99a) merged (head 5f1785ca). The ledger read by
+      the manager, not just its totals: the per-call costs reconcile
+      to the published rates to the cent; output is 63 per cent of
+      NCS generation 5's $145.68 (3.69m extraction output tokens at
+      87 a second are 97 per cent of call time), of the visible answer
+      30 per cent is the agreement's words written back twice, 20 per
+      cent 64-hex span ids, 12 per cent the V1 roles the page never
+      shows; fresh input is 20 per cent (every agreement byte sent at
+      least three times, a fifth of the bytes 119 to 277 times each,
+      74 per cent of 16.0m byte-sends); cache writes 12 per cent (51
+      distinct stable blocks, 22 used once); failed attempts 9.5 per
+      cent; 62 of 439 minutes idle. Floor: about $15 to $23 and 13
+      minutes in parallel; actual 6x to 10x the cost floor and 34x the
+      parallel time floor. The manager's (167) estimate holds: 10x is
+      there, 100x is not while a frontier model writes the facts.
+      Direction to E, in order of measured dollars: output (drop the
+      duplicate evidence quotes and the V1 roles, span aliases, quotes
+      as byte offsets, the thinking share measured by effort), then
+      input (one stable block for every call, the definitions article
+      and the most-referred sections as cached context, cross-reference
+      depth capped), then what remains of the failed attempts and the
+      idle, then concurrency; the three-section proof as a script run
+      inside a third sandbox created for experiments, the credentials
+      never read here. Work package 21 to A (findings from (200)): the
+      validator's acceptance of offsets and span aliases, proven on
+      the stored rows. A's (99) corrects (171): the registration row
+      shape the manager saw was real on the deployed code too (the
+      subtype naming overrode the words rule on the same table), fixed
+      and pinned. Olaplex and Apogee generation 2 at 22:12 UTC: 24 of
+      97 and 21 of 85, no failures.
       (95)'s rule reached the deployment (its deploy was created at
       20:50:39 UTC, the read fell between READY at 20:48 and that);
       on the real rows the move happens, now pinned with the stored
@@ -4939,6 +4999,117 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       after the other: the first takes pm-codex-preview-worker, the
       second pm-codex-preview-worker-2, and each monitor's { keepalive:
       true } extends that run's sandbox.
+      (141) 2026-10-18 21:14 to 22:20 UTC (implementer D), work package D2
+      on the manager's message of 21:10 UTC: every database test of the
+      CI "Database migration and rollback" step on the full migration
+      list, the push trigger, and the results before and after. No run
+      touched. Environment: this container has Postgres 16 installed
+      (/usr/lib/postgresql/16, cluster "main" on 127.0.0.1:5432, started
+      with pg_ctlcluster; TEST_DATABASE_URL=postgres://postgres:...@
+      127.0.0.1:5432/postgres), so the step ran here against a server,
+      one file at a time in the CI order, each file alone, before and
+      after the change; not the embedded Postgres of finding (104), the
+      same inactive database in the same transaction-and-rollback form.
+      Built: tests/helpers/product-database.js is the one harness
+      (setupDatabase applies every file of supabase/migrations in name
+      order, 42 today, in one transaction; teardownDatabase rolls back
+      and asserts the first, a Phase 2 and a Phase 3 table are gone;
+      databaseFacade is the Supabase-shaped client; a test that proves
+      one migration's own effect names it in `hooks` with `before` and
+      `after` callbacks on that file, so a measurement or a savepoint
+      sits exactly where the test's prefix used to end, and a ROLLBACK
+      TO that savepoint undoes the migration and every later one, which
+      keeps the absence assertions true on the full list). Every file of
+      the step now sets up through it: product-phase-2-db re-exports it
+      for the fourteen tests that require it; phase-1, phase-6 and
+      failed-model-call-durability use it directly. Removed with that:
+      phase-1's three-file prefix (its third file, 20260905200000,
+      calls product_private.product_phase2_commit_section, so on a fresh
+      database the test failed in setup, "function does not exist",
+      before anything else); phase-2's list of eleven and its second
+      application of 20260905201000; phase-3's seven manual applies;
+      the prerequisite lists of nine tests; the per-test
+      PRODUCT_*_SKIP_MIGRATION switches, set nowhere in the repository
+      or the workflow. The in-test re-application review-timing makes
+      (restore the pre-V3 save function, then re-apply the reference
+      samples V3 migration) stays, through the harness's applyMigration.
+      Harness defects the full list exposed, fixed in the harness or the
+      test, never in a migration: (a) node-postgres sends a JavaScript
+      array as a Postgres array literal, which a jsonb parameter refuses
+      ("invalid input syntax for type json"); the three facades and
+      identity-lookup's insertJsonRows passed arrays straight (a section
+      failure's model calls, 816 proposal rows), written against PGlite
+      where that passes; the one facade now sends an object, and any
+      array that is not all strings (an empty one included), as JSON
+      text, and leaves a text[] (the sandbox pool) alone; (b) count(*)
+      and sum() read back as text from node-postgres, numbers on PGlite:
+      monotonic-failure reads them as numbers. Rules a later migration
+      changed, the expectation updated on the migration's own words: (c)
+      20260907005021_product_article_intro_coverage removes the "-INTRO"
+      exclusion from the work set and raises "product article-
+      introduction exclusion remains" if it is still there (its own
+      check; the file carries no comment line, which is worth one): the
+      phase-1 fixture's work set is three nodes (1.01, Exhibit-A::1.01,
+      the article introduction), the exhibit container still excluded;
+      the test completes the third section before the run is READY and
+      counts three COMPLETE rows; its mid-test re-application of
+      20260905190000, written to prove that migration prunes rows it
+      had inserted by hand, is gone (an out-of-order re-application on
+      the full list would have re-installed the exclusion); (d)
+      20260905221000_product_analysis_running_progress puts `running`
+      in every progress object: failed-model-call's final progress reads
+      running 0, and the test of that migration itself writes its
+      fixture and reads its baseline in a hook just before the file
+      (the baseline has no `running`, the read after it has). (e) The
+      span-closure test's proof is measured the same way: the indexes
+      and the database surface just before and just after
+      20260905223000 (the reverse index is the only thing added, the
+      surface unchanged), then in the test body the read is identical
+      with the index dropped under a savepoint and again once it is
+      back. (f) identity-lookup, termination-effect, cross-section and
+      the sandbox pool test place their savepoint and pre-state in the
+      hook before their file; identity-lookup's rollback proof runs at
+      teardown instead of before the test. Current code the old prefix
+      never reached (phase-3 failed at the first recorded model call,
+      failed-model-call at the first section failure), the fixture made
+      true to the current extractor, no migration rule involved: (g)
+      phase-3's acceptAll is phase-6's (a held proposal rejected, a
+      relationship the review state refuses rejected: REVIEW_INVALID_
+      PROPOSAL, REVIEW_RELATIONSHIP_SOURCE on the synthetic draft), its
+      release evaluation carries the REVIEWED_OMISSION resolutions of
+      the UNRESOLVED coverage as phase-6's does (RELEASE_EVALUATION_
+      REQUIRED otherwise), the proposal it groups and the proposal it
+      edits are VALID ones (REVIEW_INVALID_PROPOSAL_SOURCE otherwise),
+      and its first test asserts the evaluation passed with the bars in
+      the message; (h) failed-model-call's counts are read from the
+      first attempt (a long section is extracted in parts since Q6, so
+      one attempt is seven calls on this section, not three): the
+      section's totals equal the attempt's recorded calls, the replay
+      keeps them, the second attempt doubles the rows and each first
+      extraction has one twin with the same request and response under
+      another call id, the retried section carries three attempts'
+      calls. CI: `on.push.branches` now lists main, codex/product-
+      implementation-plan-20260904 and claude/festive-albattani-70cwn5;
+      nothing else in the workflow changed, and the database step runs
+      the same eighteen files. Results, each file alone in the CI order
+      (tests, pass, fail): before, on the tip before this work:
+      phase-1 1/0/1 ("product_private.product_phase2_commit_section
+      does not exist" in setup); phase-2 2/0/2 and phase-3 3/0/3
+      ("invalid product model invocation identity", finding (104));
+      failed-model-call-durability 1/0/1 (transaction aborted after the
+      json error); provider-response-durability 2/0/2 (the same);
+      monotonic-failure 5/0/5 ("invalid input syntax for type json");
+      analysis-running-progress 1/1/0; review-timing-integration 1/1/0;
+      finding-resolution 2/2/0; relationship-review 6/5/1 (one json
+      error); span-closure-lookup 1/1/0; cross-section-relationship
+      2/2/0; legal-schema-revision-persistence 2/0/2 ("relation
+      product_fact_components does not exist": its prefix stopped before
+      the V2 migration the store now reads); fact-occurrence-collision
+      3/3/0; termination-effect 2/2/0; review-validation-identity-lookup
+      2/0/2 (json error); sandbox-pool 4/4/0; phase-6 1/1/0 (156 s).
+      After: all eighteen files pass, 40 tests of 40: phase-1 1/1/0; phase-2 2/2/0 (147 s); phase-3 3/3/0 (280 s); failed-model-call-durability 1/1/0 (134 s); provider-response-durability 2/2/0; monotonic-failure 5/5/0; analysis-running-progress 1/1/0; review-timing-integration 1/1/0; finding-resolution 2/2/0; relationship-review 6/6/0; span-closure-lookup 1/1/0; cross-section-relationship 2/2/0; legal-schema-revision-persistence 2/2/0; fact-occurrence-collision 3/3/0; termination-effect 2/2/0; review-validation-identity-lookup 2/2/0; sandbox-pool 4/4/0; phase-6 1/1/0 (152 s); about 15 minutes in all, the four runner-driven files most of it. The nineteenth file the merge of origin added to the step, tests/product-move-to-production.test.js (implementer B), applies the full list through lib/product/production-move.js by design and passes here too, 1/1/0. On the merged tree npm run test:active: 780 tests, 779 pass, the one failure the known Codex-client final-message test. Defects in a migration: none found; the one gap is 20260907005021's missing comment line, noted under (c). npm run test:active after the change:
+      768 tests, 767 pass, the one failure the known Codex-client final-message test. One commit for the harness, the tests, the workflow,
+      the guide line and this finding.
 
       (84) 2026-10-18 18:05 to 18:20 UTC (implementer), work package 15
       on finding (83)'s terms ("the documented maximum output cap on the
@@ -6043,6 +6214,140 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       notification 2 (the Nasdaq deficiency notice and the delisting
       event), Litigation notification 1 (Nasdaq or SEC proceedings);
       nothing without a readout. Nothing submitted, woken or retried.
+      (99a) 2026-10-18 21:45 to 22:25 UTC (implementer A), work package 20
+      on the manager's (168) (begun on its decided terms; the formal
+      message had not arrived by the push). Numbered (99a) because A's
+      range (90) to (99) is spent; the plan owner's to renumber. Read
+      first, from the preview branch's tables: 4.7's three facts were
+      not a page-footer case. Their held evidence quotes cite the Article
+      IV introduction's words on the Article III chapeau span (3d0f7a06,
+      in 4.7's closure through its reference to Section 3.8); the Article
+      IV chapeau span c0b36c15 holds both quotes verbatim, with the
+      footer ("34") after "as follows:", outside them. Work package 18
+      (a)'s relocation did not reach them because evidence_quotes carry no
+      origin, and the rule keyed on the origin; the components of the
+      same facts, with origin INTRO, were relocated. 5.4 is a footer case:
+      "any information relating to the Transactions,\n49\nthe Company or
+      Parent", where the model's TRIGGER stopped at the footer, VALID but
+      short; the NCS text has 87 bare page-number lines and no "-N-"
+      footers, which source-display.js did not know. Built, each as a
+      rule across the corpus with tests (tests/product-fact-components-
+      extraction.test.js, the work package 20 block; the page footers
+      test in tests/product-table-view.test.js; tests/product-legal-
+      schema-v2.test.js): (a) B's rule, lib/product/agreement-draft.js
+      dropUnresolvedInherited: an inherited context component (origin
+      INTRO, CHAPEAU, DEFINITION or CROSS_REFERENCE) that resolves
+      nowhere after the relocation rules is dropped from the tree with
+      the note CONTEXT_COMPONENT_DROPPED (path, kind, origin, label,
+      quote, the id cited, the reason), never holding a fact whose own
+      words resolved; an own word that fails, or a fact with no resolved
+      own word, holds as before. The same at the evidence level: an
+      evidence quote cited on a context span (chapeau, definition,
+      cross-reference) that resolves nowhere is dropped with
+      CONTEXT_EVIDENCE_DROPPED when the own evidence is exact. And the
+      missing half of 18 (a): an evidence quote cited on a context span
+      that does not hold it is relocated by the cited span's kind
+      (CONTEXT_SPAN_RELOCATION), noted EVIDENCE_SPAN_RELOCATED; own words
+      are never relocated across spans. The two earlier tests that pinned
+      "two candidate spans keep the hold" (13 (a), 18 (a)) now pin the
+      drop and the note. On the stored 4.7 facts the relocation applies
+      (one Article IV chapeau span holds the words), so the next
+      extraction of 4.7 gives three VALID facts with the note. (b)
+      footerTolerantMatches in resolveEvidenceQuote: when a quote has no
+      verbatim match in its span, its words in order, with any whitespace
+      between them, may enclose exactly a footer line (FOOTER_GAP from
+      source-display.js: "-43-", "-ii-" or a bare page number on its own
+      line); a match without a footer inside is not taken, so whitespace
+      alone never relaxes the verbatim rule (pinned). The span's bytes
+      include the footer and its text is those bytes (rule R1 holds); the
+      context records page_footer_skipped; a quote that copies the page
+      number as a word ("the Transactions, 49 the Company") matches too.
+      PAGE_FOOTER now hides a bare page-number line; between single
+      newlines (NCS's layout) a footer at a paragraph boundary keeps one
+      newline, otherwise a space; Metsera's blank-line layout is
+      unchanged. (c) lib/product/representation-limbs.js fusedLimbs: on
+      a REPRESENTATIONS fact, or any fact stated as a representation
+      (3.27's TAX_MATTERS fact says "represents and warrants"), an own
+      component opening on a finite verb that follows an own OPERATION
+      with only "or" or "nor" between them in the source is the note
+      FUSED_REPRESENTATION_LIMBS (the two predicates, the joining word, the
+      one-effect rule); "and" is not (3.17: "is in material breach or
+      default, and has not taken any action" is one status and its
+      consequence). (d) exceptionOnlyRepresentation: a REPRESENTATIONS
+      fact (never REPRESENTATION_QUALIFICATION, never from an article
+      introduction) whose own words are an enumerated exception is held
+      REPRESENTATION_EXCEPTION_NOT_A_FACT: the exception words are an own
+      EXCEPTION opening on an enumerator, "except for", "other than" or
+      "save for" (never "except as set forth in", the disclosure
+      exception), or an own component governed by an EXCEPTION introducer
+      earlier in the fact; every own component before them is shared
+      verbatim with another proposal of the same call (the sentence they
+      were all cut from, a non-generic shared context required); no own
+      OPERATION or EFFORTS_STANDARD before them; no operative kind from
+      them on. The REPRESENTATIONS layer rule (scripts/product/build-
+      legal-schema-v2.js, the schema regenerated) tells the extractor both
+      shapes: predicates joined by "or" are two facts; an enumerated
+      exception is an EXCEPTION component, a LIST with a LIST_ELEMENT per
+      item, since the representations table has no row per exception
+      (MAE_DEFINITION's carve-outs keep their facts, as (168) says). Both
+      detectors run over the 278 stored generation-5 representation
+      facts before the rules went in (scratch script, bytes only; the
+      "or" gaps confirmed from the canonical text): (c) fires on exactly
+      the three fused facts (3.27 twice, 4.13 once) and on nothing else;
+      (d) on exactly twelve facts, 3.5(b)'s four, 4.4(b)'s four and
+      3.7's four ("except (a) to the extent accrued ..., (b) for
+      liabilities in the ordinary course ..."), none other of the 278.
+      Plan evidence: B's "(7) ten facts of 3.5, 4.4 and 5.1" is twelve of
+      3.5, 3.7 and 4.4 on this read; 5.1 has no representation facts
+      (its EXCEPTION facts are the covenant's general exceptions, cells
+      of the interim operating table, which has them). Residual risk of
+      (d), for the manager: a representation whose own verb the model
+      labelled QUALIFIER and whose exception facts copy its words could
+      be held with them; the hold is a VALIDATION issue carrying the
+      rule, reviewable, and the layer rule reduces the shape. The
+      manager's formal message (21:40 UTC, read at 22:11 after the work
+      was built on (168)'s terms) reconciled: its note name is used,
+      CONTEXT_COMPONENT_DROPPED (the component tree) and
+      CONTEXT_EVIDENCE_DROPPED (the evidence quotes), each naming the
+      quote, the span cited and the reason; its finding number (98) was
+      already (98), work package 19, when the message arrived, so (99a)
+      stays, the plan owner's to renumber; its (b) asks that "the fact's
+      byte ranges then exclude the footer", which a component cannot do:
+      a component is one half-open byte range and rule R1 (contract
+      FACT_COMPONENTS/V2) requires its text to be those bytes, so a quote
+      across a footer has the footer inside its range and its text, and
+      every place the words are shown hides it (hidePageFooters: the
+      tables, the tree, the sidebar, the clause). Splitting the component
+      in two at the footer would make one word run two components; the
+      manager decides if the range is to be cut another way. Counts from
+      the preview branch's rows, generation 5 (run 51577c57): (a) 13 held
+      facts have inherited components that resolve nowhere beside
+      resolved own words (3.4's ten, 4.7's three), and the same three of
+      4.7 at the evidence level (their two chapeau quotes are the only
+      unmatched evidence on a context span in the run); on the next
+      extraction the 4.7 quotes relocate (one Article IV chapeau span
+      holds them) and 3.4's resolve by work package 13 (a), the drop the
+      backstop for a quote no span holds. (b) Of the run's 5,439 resolved
+      components, none spans a footer: 42 end mid-sentence at a footer
+      and 27 begin right after one (4.14 six, 4.4 and 4.6 five each,
+      4.5 four, 5.14 and 5.17 three each, 5.4 two, the Article IV
+      introduction two, ten sections one), the model stopping its quote
+      where the page ends; of the 13 held facts' unmatched quotes, none
+      is a footer case. So the matcher changes no stored fact by itself
+      and the extractor is now told, in the component instruction, that a
+      page number on a line of its own between two words is a footer to
+      quote across with the number left out, never to stop at; the
+      matcher then takes the quote. (c) three facts (3.27 twice, 4.13
+      once). (d) twelve facts (3.5(b) four, 3.7 four, 4.4(b) four). No
+      decision of Ben's needed; nothing submitted, woken or retried. Two
+      commits on the shared branch, "Work package 20: inherited
+      components dropped not held, quotes across page footers, fused and
+      exception-only representations" and "Work package 20 reconciled
+      with the manager's message: note names, the extractor's footer
+      line, the counts", after git fetch and merge of origin (B's (106)
+      production-move files came in, no conflict); npm run test:active
+      on the final tree: 778 of 779, the one failure the known
+      Codex-client final-message test.
       (120) 2026-10-18 19:10 to 19:45 UTC (implementer C), Q5: the limb
       names harvested. `scripts/product/harvest-rep-limbs.js` (library
       `lib/product/rep-limb-harvest.js`, `tests/product-rep-limb-harvest.test.js`)
@@ -6641,6 +6946,165 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       is in the one sectionizer every intake runs, not a Verve
       special case. npm run test:active: 774 of 775, the one failure
       the known Codex-client final-message test.
+      (128) 2026-10-18 21:55 to 22:45 UTC (implementer C), work package
+      C4, the tender-offer and stock-deal readiness of the schema:
+      docs/codex-program/notes/TENDER-OFFER-AND-STOCK-DEAL-SCHEMA-GAPS-2026-10-18.md.
+      GSK / Nuvalent (a two-step tender offer) and Indivior / Supernus
+      (the stock merger of equals) read in full from their exhibits, no
+      intake, 45 provisions set against the V2 schema, LEGAL-RULES and
+      the table shapes, and against what the extractor did with the
+      corpus's one tender offer (Arcellx: its V2 run filed Article I's
+      Offer under nine families, CONSIDERATION_PACKAGE, DOCUMENT_FILING,
+      OBTAIN_FINANCING and TRANSACTION_STEP among them, and Annex I
+      under BRINGDOWN and GENERAL, because no subtype names the Offer:
+      "offer" is in the schema twice, "tender" never). The count: of 24
+      tender-offer provisions, 11 had no family, subtype or row (the
+      Offer's commencement, expiration, extensions, amendment
+      restrictions and termination; the Minimum Tender Condition and
+      its waiver rule; the Merger's condition that the Offer was
+      consummated; the Section 251(h) merger without a vote; both
+      parties' Offer-failure termination rights); of 21 stock-deal
+      provisions, 5 had no row (fractional shares, the combined-company
+      governance, Parent's reciprocal no-shop, Parent's recommendation-
+      change termination, the second vote's failure). Added, as rows
+      and codes on existing subtypes (decision 34, work package C4,
+      `applyTenderOfferAndStockDealRows`, the contract regenerated,
+      pinned with the agreements' words in
+      tests/product-table-shapes.test.js): conditions-table "Minimum
+      tender condition", "Offer consummated (Acceptance Time)", "Parent
+      stockholder approval" and the vote standard MAJORITY_OF_VOTES_CAST
+      (Supernus 4.27(b): "a majority in voting power of the outstanding
+      Indivior Shares present in person or represented by proxy ... and
+      entitled to vote"); the mutual termination row "Parent stockholder
+      vote not obtained"; Parent's "Offer expired on a failed Offer
+      Condition" (placed before the written-consent rows work package 19
+      (d) pins as last); the Company's "Offer not commenced or not
+      consummated" and "Parent change of recommendation"; the window
+      code BEFORE_ACCEPTANCE_TIME on both termination windows (Nuvalent
+      8.2 to 8.4: "at any time prior to the Acceptance Time"); the
+      votes rows "Merger without a vote (Section 251(h))" and "Parent
+      stockholders' meeting"; the proxy rows "Schedule TO (Offer
+      Documents)", "Schedule 14D-9" and "Registration Statement (Form
+      S-4)"; the consideration row "Cash in lieu of fractional shares";
+      guidance on each table saying which words land where. Every row
+      is reachable now through the readout's row_label. What waits on
+      Ben, proposed in the note and not built: an Offer step (five
+      subtypes: commencement, expiration, extension, amendment
+      restriction, termination, with the Acceptance Time as the first
+      step's closing), a MINIMUM_CONDITION subtype with a value, an
+      OFFER_FAILURE termination subtype, three LEGAL-RULES lines (the
+      Offer as its own step; an Annex I condition as the first step's
+      closing condition; no approval condition or meeting under Section
+      251(h)), the ratio's form and the adjustment clause as grid
+      columns, a combined-company governance table, a Parent no-shop
+      section or obligor axis with Parent's Superior Proposal row, and
+      a Dividends table for the Special Dividend. Not changed: the
+      schema, LEGAL-RULES, any subtype or fact type. npm run
+      test:active: 774 of 775, the one failure the known Codex-client
+      final-message test. No run, worker or sandbox touched.
+      (129) 2026-10-18 22:15 to 23:05 UTC (implementer C), work package
+      C5, the three intakes of 21:44 UTC held at
+      DOCUMENT_IDENTITY_REVIEW. Read by SQL on the preview branch
+      (product_document_identity_reviews joined to product_analysis_runs
+      and product_source_documents), nothing resolved, no run woken. The
+      gate: lib/product/sec-intake.js extractDocumentIdentity scores the
+      exhibit on nine rules (CIK, accession, exhibit type confirmed,
+      exhibit type conflict, filename conflict, parties, agreement date,
+      revision, completeness); one failure makes identity_status
+      NEEDS_REVIEW, lib/product/phase-1-foundation.js attaches the
+      structure with the reasons, product_phase1_attach_structure writes
+      the review row and leaves the run QUEUED at
+      DOCUMENT_IDENTITY_REVIEW, and the hosted worker refuses such a run
+      (PRODUCT_HOSTED_IDENTITY_REVIEW_REQUIRED). The rows, all OPEN,
+      resolution null: cd1d3e91 (Vertex / Crinetics, review 27850060)
+      reasons ["AGREEMENT_DATE_UNCONFIRMED"]; 436276fe (Lilly /
+      Centessa, review 6afe2802) ["PARTIES_UNCONFIRMED"]; 94cd879e (Novo
+      Nordisk / Akero, review a40bb6cd) ["PARTIES_UNCONFIRMED"]. Each
+      flag reproduced locally by running the committed extractor over
+      the exhibit through the canonical-text conversion, and each is a
+      parser miss on a sound document, not a doubt about which document
+      it is: all three are the complete, original, execution-version
+      EX-2.1 (revision "original", looks_like_complete_document true, no
+      amendment language). Crinetics: parties found (Vertex PARENT,
+      Clark Merger Sub MERGER_SUB, Crinetics COMPANY), exhibit
+      confirmed; the cover line reads "DATED AS OF JULY 6, 2026," with a
+      trailing comma and isoAgreementDate anchors its pattern on the
+      year at the end of the line, so the line fails and the preamble's
+      "dated as of July 6, 2026 (this "Agreement" ...)" is mid-line,
+      which the rule never reads; the date is in the document twice and
+      consistent. Centessa: date 2026-03-31 confirmed; the preamble
+      names Eli Lilly and Company ("Parent"), LDH XV Corporation
+      ("Purchaser") and Centessa Pharmaceuticals plc "(the "Company"
+      and, together with Parent and Purchaser, the "Parties")"; the
+      embedded-role pattern requires the closing parenthesis straight
+      after "Company", so the compound parenthetical loses the Company,
+      and without a Company partyIdentity falls back to the cover
+      caption, which it reads only from a line beginning "by and among"
+      while this cover says "among"; parties []. Akero: date 2025-10-09
+      confirmed; the preamble reads "by and among: Novo Nordisk A/S, a
+      Danish aktieselsab ("Parent"); NN Invest Sub, Inc, ... ("Merger
+      Sub"); and Akero Therapeutics, Inc., ... (the "Company")"; the
+      name character class has no "/" so "Novo Nordisk A/S" never
+      matches, the buyer is missing, the caption fallback fails on
+      "among:" and parties is []. Avadel (91fe48a1) passed because its
+      cover carries "dated as of October 22, 2025" alone on a line and
+      its preamble's two parties, Alkermes plc ("Parent") and Avadel
+      Pharmaceuticals plc ("Company"), fit the pattern. What the
+      function accepts: product_phase1_resolve_identity(p_run_id,
+      p_resolution) (current body in
+      supabase/migrations/20260905190000_product_substantive_section_work.sql,
+      service_role only) requires the run at DOCUMENT_IDENTITY_REVIEW
+      (else 55000, replayed silently when the same resolution was
+      already stored), requires p_resolution non-null and not {}
+      (22023), and checks nothing else about its shape: it stores the
+      JSON verbatim as resolution, marks the review RESOLVED, inserts
+      product_section_work for every leaf SECTION node and moves the run
+      to QUEUED at SECTION_ANALYSIS. What submits it: POST
+      /api/product/analysis/<run_id>/identity
+      (pages/api/product/analysis/[id]/identity.js,
+      lib/product/identity-handler.js), reached from the "Confirm this
+      agreement" button on the intake panel of pages/review/index.js
+      (components/product/ProductIntakePanel.jsx, which lists the
+      parties, filing, date and the reasons); the handler ignores the
+      request body and sends the one fixed resolution {"confirmed":
+      true, "confirmed_by": <actor>}, the actor being the session
+      subject from the browser or AUTH_USERNAME (default "ben") for the
+      internal bearer token; no script, worker or other route resolves a
+      review. So the exact resolution for each of the three, were Ben to
+      say yes, is the same call: POST
+      /api/product/analysis/cd1d3e91-2e20-45de-9657-a42c689eff68/identity,
+      .../436276fe-d733-4d03-bd2e-59c84fb55766/identity and
+      .../94cd879e-08e0-4b68-8115-8424b1fa096d/identity with an empty
+      JSON body, each stored as {"confirmed": true, "confirmed_by":
+      "ben"} (or by SQL as select
+      product_phase1_resolve_identity('<run_id>', '{"confirmed": true,
+      "confirmed_by": "ben"}')). Is any of it a lawyer's decision: no.
+      The gate asks only whether this is the agreement intended, and for
+      all three it is; the confirmation is mechanical. Two things for
+      Ben to know before the word is given: (a) confirming does not
+      repair the record, the source document keeps parties [] for
+      Centessa and Akero and agreement_date null for Crinetics, which
+      the review and preview pages then show as unknown (the display
+      repair in lib/product/review-handler.js only recovers suffix-only
+      names, not empty lists); (b) resolving moves each run to QUEUED at
+      SECTION_ANALYSIS, which costs nothing until a worker is woken
+      (Ben: "I don't think we intake until E is done and we have reduced
+      cost"). The repeatable fix (Ben: "everything to be driven by
+      coding and not just a layer on top so all edits need to be
+      repeatable across corpus"), proposed and not built in this
+      package: in sec-intake.js let the date rule drop trailing
+      punctuation on the cover line, let the embedded-role rule accept a
+      compound parenthetical (the "Company" and, together with ..., the
+      "Parties"), add "/" to the entity-name character class (A/S), and
+      let the caption fallback read a cover line beginning "among" or
+      "among:"; each pinned with these three preambles as fixtures. The
+      fix helps the next deals on the >$1bn list (note of (127)); for
+      these three the stored source document is found by URL on
+      re-submission and never re-scored, so their records stay as
+      extracted unless the source row is re-intaken. Documentation only;
+      no code, schema or rule changed. npm run test:active:
+      774 of 775, the one failure the known Codex-client final-message
+      test. No run, worker or sandbox touched.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
@@ -6684,6 +7148,71 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       docs/codex-program/notes/Q4-LEGACY-QUERY-COMPARE-EVIDENCE-2026-10-18.md;
       both are already off every entry point and read only legacy
       tables; the question put is retire now or keep unrouted.
+
+      (180) 2026-10-18 21:40 to 23:10 UTC (implementer E), work package
+      E1 item 1, the ledger. No run submitted, woken or retried; no
+      live call; nothing written to the preview branch; no key read.
+      Read from product_model_calls and the run tables by SQL:
+      docs/codex-program/notes/EXTRACTION-COST-LEDGER-2026-10-18.md
+      (the queries at its end), and the same reading as code for every
+      run, `scripts/product/extraction-cost-ledger.js --run <id>`
+      (`lib/product/extraction-cost-ledger.js`; `--snapshot <file>`,
+      `--json`, `--dump-snapshot`; `lib/product/run-rows.js` gains the
+      span, component, headline, conclusion and residual tables and
+      `loadRunContext`). NCS generation 5, $145.68 for 1,015 VALID
+      facts ($0.1435 a fact), 439 minutes: (a) output is 63 per cent
+      of the money ($92.37; 3.69m extraction output tokens at 87 a
+      second are 97 per cent of all call time); about 36 per cent of
+      it is thinking (Metsera's CLI reports 1,249,344 of 3,512,309;
+      the API path does not break it out), and of the visible JSON 30
+      per cent is the agreement's own words written back twice
+      (component quotes 1.02 MB and evidence_quotes 0.42 MB), 20 per
+      cent is 64-hex span ids (0.95 MB), 12 per cent is the V1 roles
+      the V2 page never shows; (b) fresh input is 20 per cent
+      ($28.83): the extraction section block carried 16.36 MB for a
+      0.31 MB agreement, cross_references 10.29 MB (33 agreements)
+      and definitions 4.12 MB (13), a median 86,810 bytes of context
+      per call (3.21, 193 bytes of representation, went out with
+      32,078 fresh tokens, $0.30 for one fact); every agreement byte
+      went at least three times, and a fifth of them (63,324 bytes,
+      the definitions article and the sections most referred to) 119
+      to 277 times each, 74 per cent of the 16.0m byte-sends (mean 54
+      a byte); (c) cache writes are 12 per cent ($17.46): 51 distinct
+      stable blocks (one per routed family set), 22 used once, against
+      $1.92 of reads; table_shapes is 37 per cent of the block and
+      cross_section_target_contracts, the same on every call, 13; (d)
+      $13.84 and 69 call-minutes went on 37 calls of attempts that
+      never committed (5.1's three capped attempts $9.29; 5.8's first
+      attempt lost to the 18:34 restart with no error record $2.69;
+      3.4's JSON failure $1.23; the 1.2, 2.1 and 2.2 pairs $0.64);
+      (e) 62 of the 439 minutes had no call in flight (the restarts
+      of findings (74), (77) and (87)), 353 had two (the worker's two
+      loops). The stored per-call costs reconcile to the published
+      rates to the cent; the split in (165) (6.37m fresh, 4.68m read)
+      counted the failure records' whole prompt as fresh, the calls'
+      own usage gives 6.11m fresh, 4.91m read, 1.76m written. Metsera
+      generation 8 on the CLI: 313 calls, 10.88m input of which 9.71m
+      were cache writes (each `claude -p` process writes its own
+      entry and the next starts cold; free on the subscription, $191
+      at the API's rates), 3.62m output, 435 minutes, 3.68 calls a
+      section. Floor (read once, write the facts once): about 0.11m
+      input tokens and 0.58m output, $15 ($23 with the same thinking
+      share), 110 minutes serial and 13 in parallel; actual is 6x to
+      10x the cost floor, 116x on input tokens, 4x to 7x on output,
+      34x the parallel time floor. The manager's (167) holds: 10x is
+      there, 100x is not while a frontier model writes the facts (the
+      output floor alone is $14 to $23). Asked of the manager: the
+      console's billed usage for the workspace over 13:27 to 20:47
+      UTC, for the reconciliation line, and
+      `extraction-cost-ledger.js --run` on both runs where the branch
+      keys are, the two outputs kept beside the note. Baseline for
+      the gate (item 5):
+      tests/fixtures/product/run-cost-baseline.ncs-generation-5.json;
+      `assertNoUnexplainedRise` fails a rise over 15 per cent (25 on
+      call minutes a section, 10 on calls a section) unless an
+      explanation names the metric.
+      tests/product-extraction-cost-ledger.test.js (7 of 7), added to
+      test:active.
 
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
