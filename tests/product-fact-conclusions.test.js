@@ -322,6 +322,11 @@ test('a counted instrument keeps its parsed COUNT whatever unit the model wrote'
   assert.equal(formatValue(normalised.cells[0].value, 'AMOUNT'), '1');
   assert.equal(formatValue({ canonical: 47.5, unit: 'USD' }, 'AMOUNT'), '$47.50');
   assert.equal(formatValue({ canonical: 190000000, unit: 'USD' }, 'AMOUNT'), '$190,000,000');
+  // Work package 13 (c) (NCS generation 5, 2.1): an exchange ratio keeps
+  // every digit the words state; 0.5537 was shown as 0.554.
+  assert.equal(formatValue({ canonical: 0.5537, unit: 'COUNT' }, 'AMOUNT'), '0.5537');
+  assert.equal(formatValue({ canonical: 0.1371, unit: 'COUNT' }, 'AMOUNT'), '0.1371');
+  assert.equal(formatValue({ canonical: 1000000, unit: 'COUNT' }, 'COUNT'), '1,000,000');
 });
 
 test('C11 / C14: an exchange-mechanics fact gets no per-share row, and appraisal rights are derived from the appraisal provision, never coded', () => {

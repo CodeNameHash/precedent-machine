@@ -1633,3 +1633,177 @@ test('a definition fact whose readout lands on no row falls back to a Defined Te
   const kept = buildTableView({ facts: [superior], tableShapes, legalSchema });
   assert.ok(kept.sections.flatMap((section) => section.tables).find((table) => table.table_key === 'nosol-superior-acquisition-proposal-definition').rows.some((row) => row.subject === 'Acquisition Proposal'));
 });
+
+// Work package 13 (c) (manager, 2026-10-18, plan finding (79), NCS
+// generation 5, 2.1): "the three exchange ratios and the cash value sit in
+// Defined Terms while the consideration-components table shows 'Stock
+// election' and 'Acquirer stock' rows with no ratio or value. The shape needs
+// the election options as rows (cash election, share election, mixed
+// election: ratio, cash, value per share) filled from the facts, with a
+// value fallback from a defined ratio that carries a number". The fixture
+// is NCS 2.1 as generation 5 stored it: the share-only election fact (read
+// out as STOCK_ELECTION, ratio 0.5537), the mixed election fact (read out as
+// PARENT_STOCK, ratio 0.2392, its cash leg named "Cash Consideration"), the
+// no-election default, and the definitions of Cash Exchange Ratio (0.1371),
+// Cash Consideration (a formula) and Share Consideration Exchange Ratio.
+function ncsElectionFacts() {
+  const component = (id, kind, text, start, extra = {}) => ({ component_id: id, kind, label: id, text, origin: 'OWN', source_span_id: 's', start_byte: start, end_byte: start + text.length, gap_before: false, children: [], ...extra });
+  const definition = (id, term, definitionText) => ({
+    fact_id: id, proposal_id: id, family_key: 'KEY_DEFINED_TERMS', subtype_key: 'OTHER_DEFINED_TERM', fact_type: 'OTHER_DEFINED_TERM_RECORDED', section_reference: '2.1', structure_node_id: 'n-2-1', validation_status: 'VALID',
+    headline: { label: 'Other defined term', summary: `${term} means ${definitionText}`, distinguishing_component_ids: [`${id}-t`] },
+    components: [component(`${id}-t`, 'TERM', `“${term}”`, 0), component(`${id}-op`, 'OPERATION', `means ${definitionText}`, 30)],
+  });
+  const share = {
+    fact_id: 'share', proposal_id: 'share', family_key: 'CONSIDERATION', subtype_key: 'STOCK_COMPONENT', fact_type: 'PER_SHARE_CASH_CONSIDERATION', section_reference: '2.1', structure_node_id: 'n-2-1', validation_status: 'VALID',
+    headline: { label: 'Share election', distinguishing_component_ids: ['share-cond'] },
+    components: [
+      component('share-actor', 'ACTOR', 'for each Share of Company Common Stock', 0),
+      component('share-cond', 'CONDITION', 'with respect to which an election to receive only share consideration has been made and not validly revoked pursuant to Section 2.5', 40),
+      component('share-stock', 'DEFINED_TERM', '(the “Share Election Stock”)', 170),
+      component('share-obj', 'OBJECT', 'that number of Parent Ordinary Shares equal to the Share Consideration Exchange Ratio', 200),
+      component('share-term', 'DEFINED_TERM', '(the “Share Consideration”)', 290),
+      component('share-ratio', 'AMOUNT', '“Share Consideration Exchange Ratio” means 0.5537', 2000),
+    ],
+    conclusions: { table_key: 'consideration-components', row_label: 'Stock election', cells: [
+      { column_id: 'form', code: 'STOCK_ELECTION', component_ids: ['share-cond'] },
+      { column_id: 'amount', value: { canonical: 0.5537, unit: 'COUNT' }, component_ids: ['share-ratio'] },
+      { column_id: 'per', code: 'PER_SHARE_OF_COMPANY_COMMON_STOCK', component_ids: ['share-actor'] },
+      { column_id: 'definedAs', text: 'Share Consideration', component_ids: ['share-term'] },
+    ] },
+  };
+  const mixed = {
+    fact_id: 'mixed', proposal_id: 'mixed', family_key: 'CONSIDERATION', subtype_key: 'STOCK_COMPONENT', fact_type: 'PER_SHARE_CASH_CONSIDERATION', section_reference: '2.1', structure_node_id: 'n-2-1', validation_status: 'VALID',
+    headline: { label: 'Mixed election', distinguishing_component_ids: ['mixed-cond'] },
+    components: [
+      component('mixed-actor', 'ACTOR', 'for each Share of Company Common Stock', 400),
+      component('mixed-cond', 'CONDITION', 'with respect to which an election to receive mixed consideration has been made and not validly revoked pursuant to Section 2.5', 440),
+      component('mixed-obj', 'OBJECT', '(B) that number of Parent Ordinary Shares equal to the Mixed Share Consideration Exchange Ratio', 560),
+      component('mixed-term', 'DEFINED_TERM', '(the “Mixed Share Consideration” and together with the Cash Consideration, the “Mixed Consideration”)', 660),
+      component('mixed-ratio', 'AMOUNT', '“Mixed Share Consideration Exchange Ratio” means 0.2392', 2100),
+    ],
+    conclusions: { table_key: 'consideration-components', row_label: 'Acquirer stock', cells: [
+      { column_id: 'form', code: 'PARENT_STOCK', component_ids: ['mixed-obj'] },
+      { column_id: 'amount', value: { canonical: 0.2392, unit: 'COUNT' }, component_ids: ['mixed-ratio'] },
+      { column_id: 'definedAs', text: 'Mixed Share Consideration', component_ids: ['mixed-term'] },
+    ] },
+  };
+  const noElection = {
+    fact_id: 'default', proposal_id: 'default', family_key: 'CONSIDERATION', subtype_key: 'ELECTION', fact_type: 'PER_SHARE_CASH_CONSIDERATION', section_reference: '2.1', structure_node_id: 'n-2-1', validation_status: 'VALID',
+    headline: { label: 'No election', summary: 'Default Stock with no election receives the Share Consideration', distinguishing_component_ids: ['default-cond'] },
+    components: [
+      component('default-cond', 'CONDITION', 'with respect to which no election to receive Share Consideration or Mixed Consideration has been made', 800),
+      component('default-term', 'DEFINED_TERM', '(the “Default Stock”)', 900),
+      component('default-obj', 'OBJECT', 'the Share Consideration', 930),
+    ],
+    conclusions: { table_key: 'consideration-hero-election-mechanics', row_label: 'If no election', cells: [{ column_id: 'body', text: 'the Share Consideration', component_ids: ['default-cond', 'default-obj'] }] },
+  };
+  return {
+    share, mixed, noElection,
+    cashRatio: definition('def-cash-ratio', 'Cash Exchange Ratio', '0.1371'),
+    cashConsideration: definition('def-cash', 'Cash Consideration', 'cash in an amount equal to the product of (x) the Cash Exchange Ratio, multiplied by (y) the Parent Closing Price'),
+    shareRatio: definition('def-share-ratio', 'Share Consideration Exchange Ratio', '0.5537'),
+    mixedRatio: definition('def-mixed-ratio', 'Mixed Share Consideration Exchange Ratio', '0.2392'),
+    closingPrice: definition('def-price', 'Parent Closing Price', 'the volume weighted average price of a Parent Ordinary Share for the ten trading days before the Closing Date'),
+  };
+}
+
+test('the election options table: one row per election from the facts, the cash leg\'s terms and their numbers from the definitions, no row for the no-election default', () => {
+  const facts = ncsElectionFacts();
+  const view = buildTableView({ facts: Object.values(facts), tableShapes, legalSchema });
+  const tables = view.sections.flatMap((section) => section.tables);
+  const options = tables.find((table) => table.table_key === 'consideration-election-options');
+  assert.ok(options, 'the table exists');
+  assert.deepEqual(options.rows.map((row) => row.subject), ['Stock election', 'Mixed election'], 'the two elections NCS offers, in the fixed order; the default is no row');
+  assert.deepEqual(options.columns.map((column) => column.column_id), ['exchangeRatio', 'valueTerms'], 'no cash number: the cash column is not rendered');
+  assert.deepEqual(options.hidden_columns, [{ column_id: 'cashPerShare', header: 'Cash per share', reason: 'empty' }]);
+  const [stock, mixedRow] = options.rows;
+  const cell = (row, columnId) => row.cells.find((candidate) => candidate.column_id === columnId);
+  assert.equal(stock.subject_note, 'Share Consideration');
+  assert.equal(cell(stock, 'exchangeRatio').label, '0.5537', 'the readout\'s own ratio, every digit');
+  assert.deepEqual(cell(stock, 'exchangeRatio').component_ids, ['share-ratio']);
+  assert.equal(cell(stock, 'exchangeRatio').derived, undefined, 'a readout cell is not marked derived');
+  assert.equal(cell(stock, 'valueTerms').kind, 'dash', 'the option\'s own term and its numeric ratio are not value terms to list');
+  assert.equal(mixedRow.subject_note, 'Mixed Share Consideration');
+  assert.equal(cell(mixedRow, 'exchangeRatio').label, '0.2392');
+  const terms = cell(mixedRow, 'valueTerms');
+  assert.deepEqual(terms.values.map((value) => value.label), [
+    'Cash Consideration means cash in an amount equal to the product of (x) the Cash Exchange Ratio, multiplied by (y) the Parent Closing Price',
+    'Cash Exchange Ratio: 0.1371',
+  ], 'the cash leg\'s term with its definition, then the number of the ratio that definition names; "Share Consideration" inside "Mixed Share Consideration" is not a term the fact names');
+  assert.deepEqual(terms.values.map((value) => value.fact_ids), [['def-cash'], ['def-cash-ratio']], 'each entry cites its definition');
+  assert.deepEqual(mixedRow.backing_facts.map((entry) => entry.fact_id), ['mixed']);
+  // The components table keeps its own rows and now shows every digit.
+  const components = tables.find((table) => table.table_key === 'consideration-components');
+  assert.deepEqual(components.rows.map((row) => [row.subject, cell(row, 'amount').label]), [['Stock election', '0.5537'], ['Acquirer stock', '0.2392']]);
+  // The mechanics table still has the default.
+  assert.ok(tables.find((table) => table.table_key === 'consideration-hero-election-mechanics').rows.some((row) => row.subject === 'If no election'));
+});
+
+test('the election options: a bare numeric definition fills an empty ratio or cash cell; a deal without an election has no table', () => {
+  const facts = ncsElectionFacts();
+  // The share fact without its readout value and without its own ratio
+  // component: the ratio comes from the "Share Consideration Exchange
+  // Ratio" definition it names.
+  const share = { ...facts.share, components: facts.share.components.filter((component) => component.component_id !== 'share-ratio'),
+    conclusions: { ...facts.share.conclusions, cells: facts.share.conclusions.cells.filter((cell) => cell.column_id !== 'amount') } };
+  const cashOnly = {
+    ...facts.mixed, fact_id: 'cash-only', proposal_id: 'cash-only', subtype_key: 'CASH_COMPONENT',
+    components: [
+      { ...facts.mixed.components[0], component_id: 'cash-only-actor' },
+      { ...facts.mixed.components[1], component_id: 'cash-only-cond', text: 'with respect to which an election to receive cash has been made and not validly revoked' },
+      { ...facts.mixed.components[2], component_id: 'cash-only-obj', text: 'an amount in cash equal to the Per Share Cash Amount' },
+      { ...facts.mixed.components[3], component_id: 'cash-only-term', text: '(the “Cash Election Consideration”)' },
+    ],
+    conclusions: { table_key: 'consideration-components', row_label: 'Cash election', cells: [{ column_id: 'form', code: 'CASH_ELECTION', component_ids: ['cash-only-cond'] }] },
+  };
+  const perShareCash = { ...facts.cashRatio, fact_id: 'def-psca', proposal_id: 'def-psca', headline: { ...facts.cashRatio.headline, summary: 'Per Share Cash Amount means $12.50', distinguishing_component_ids: ['def-psca-t'] },
+    components: [{ ...facts.cashRatio.components[0], component_id: 'def-psca-t', text: '“Per Share Cash Amount”' }, { ...facts.cashRatio.components[1], component_id: 'def-psca-op', text: 'means $12.50' }] };
+  const view = buildTableView({ facts: [share, cashOnly, facts.shareRatio, perShareCash, facts.cashConsideration, facts.cashRatio], tableShapes, legalSchema });
+  const options = view.sections.flatMap((section) => section.tables).find((table) => table.table_key === 'consideration-election-options');
+  assert.deepEqual(options.rows.map((row) => row.subject), ['Cash election', 'Stock election']);
+  const [cash, stock] = options.rows;
+  // Each value column is filled on one line of a two-row table, so Ben's
+  // column rule (plan finding (42)) folds it into that line as a trailing
+  // detail; the value-terms column has nothing and is not rendered.
+  assert.deepEqual(options.columns, []);
+  const detail = (row, columnId) => (row.trailing_details || []).find((candidate) => candidate.column_id === columnId);
+  assert.deepEqual(cash.trailing_details.map((entry) => entry.label), ['Cash per share $12.50'], 'the cash per share from the definition the option names');
+  assert.equal(detail(cash, 'cashPerShare').cell.derived, 'defined_term');
+  assert.deepEqual(detail(cash, 'cashPerShare').cell.fact_ids, ['def-psca', 'cash-only'], 'cites the definition and the option fact');
+  assert.equal(detail(cash, 'exchangeRatio'), undefined);
+  assert.deepEqual(stock.trailing_details.map((entry) => entry.label), ['Exchange ratio 0.5537'], 'the ratio from the definition');
+  assert.equal(detail(stock, 'exchangeRatio').cell.derived, 'defined_term');
+  assert.deepEqual(detail(stock, 'exchangeRatio').cell.fact_ids, ['def-share-ratio', 'share']);
+  // Metsera (cash plus a CVR, no election): no election options table.
+  const metsera = buildTableView({ facts: [facts.cashRatio, facts.cashConsideration], tableShapes, legalSchema });
+  assert.equal(metsera.sections.flatMap((section) => section.tables).some((table) => table.table_key === 'consideration-election-options'), false);
+});
+
+// Work package 13 (c): the combined definition's term is the consideration
+// term, not the package fact's first defined term (NCS 2.1: “Eligible
+// Shares” came first; the “Merger Consideration” is quoted in the OBJECT).
+test('the combined definition takes the term matching term_words, a DEFINED_TERM first, else none', () => {
+  const component = (id, kind, text, start) => ({ component_id: id, kind, label: id, text, origin: 'OWN', source_span_id: 's', start_byte: start, end_byte: start + text.length, gap_before: false, children: [] });
+  const pack = (components) => ({
+    fact_id: 'pack', proposal_id: 'pack', family_key: 'CONSIDERATION', subtype_key: 'CONSIDERATION_PACKAGE', section_reference: '2.1', structure_node_id: 'n', validation_status: 'VALID',
+    headline: { label: 'Consideration package', summary: 'Each Eligible Share converts into the Merger Consideration', distinguishing_component_ids: [components[0].component_id] },
+    components,
+    conclusions: { table_key: 'consideration-structure', row_label: 'the Merger', cells: [{ column_id: 'considerationType', code: 'MIXED_ELECTION', component_ids: [components[0].component_id] }] },
+  });
+  const share = ncsElectionFacts().share;
+  const componentsTable = (facts) => buildTableView({ facts, tableShapes, legalSchema }).sections.flatMap((section) => section.tables).find((table) => table.table_key === 'consideration-components');
+  const quotedInObject = componentsTable([share, pack([
+    component('pack-actor', 'ACTOR', 'each share (such shares, collectively, the “Shares”) of common stock of the Company', 0),
+    component('pack-eligible', 'DEFINED_TERM', '(such shares, the “Eligible Shares”)', 90),
+    component('pack-obj', 'OBJECT', 'the following consideration from Parent (such consideration, the “Merger Consideration”)', 130),
+  ])]);
+  assert.equal(quotedInObject.combined_definition.term, 'Merger Consideration');
+  assert.deepEqual(quotedInObject.combined_definition.component_ids, ['pack-obj']);
+  const definedTermFirst = componentsTable([share, pack([
+    component('pack-obj', 'OBJECT', 'the following consideration from Parent (such consideration, the “Merger Consideration”)', 0),
+    component('pack-term', 'DEFINED_TERM', '(the “Per Share Consideration”)', 100),
+  ])]);
+  assert.equal(definedTermFirst.combined_definition.term, 'Per Share Consideration', 'a DEFINED_TERM component matching the pattern comes before an OBJECT\'s quote');
+  const noConsiderationTerm = componentsTable([share, pack([component('pack-eligible', 'DEFINED_TERM', '(such shares, the “Eligible Shares”)', 0)])]);
+  assert.equal(noConsiderationTerm.combined_definition, undefined, 'no consideration term, no combined definition');
+});

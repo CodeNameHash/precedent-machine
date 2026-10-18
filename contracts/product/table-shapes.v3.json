@@ -576,7 +576,106 @@
           "combined_definition_from": {
             "family_key": "CONSIDERATION",
             "subtype_key": "CONSIDERATION_PACKAGE",
-            "label": "Combined definition"
+            "label": "Combined definition",
+            "term_words": "Consideration$"
+          }
+        },
+        {
+          "table_key": "consideration-election-options",
+          "group_header": "ELECTION OPTIONS",
+          "term_column": {
+            "header": "Election",
+            "source": "subject",
+            "fill_from": [
+              "TERM",
+              "DEFINED_TERM",
+              "CONDITION"
+            ]
+          },
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Cash election",
+            "Stock election",
+            "Mixed election"
+          ],
+          "subtype_keys": [
+            "CASH_COMPONENT",
+            "STOCK_COMPONENT",
+            "ELECTION"
+          ],
+          "guidance": "Only for a deal whose holders elect between forms of consideration; never a row when the agreement has no election. One row per option a holder may elect (cash only, stock only, a stated mix), from the conversion clause: the exchange ratio (Parent shares per Company share) and the cash per share that option receives, and the defined term the agreement gives it. A no-election default is the election mechanics table's \"If no election\" row, never an option here. The page fills an empty ratio or cash cell from the agreement's own definition of a term the option names when that definition is a bare number (a \"Cash Exchange Ratio\" that \"means 0.1371\").",
+          "columns": [
+            {
+              "column_id": "exchangeRatio",
+              "header": "Exchange ratio",
+              "render": "value",
+              "value_kind": "AMOUNT",
+              "fill_from": [
+                "AMOUNT",
+                "THRESHOLD"
+              ],
+              "addition": true,
+              "reason": "Work package 13 (c), 2026-10-18 (plan finding (79), NCS generation 5, 2.1): the Parent shares each Company share receives under the option, as stated."
+            },
+            {
+              "column_id": "cashPerShare",
+              "header": "Cash per share",
+              "render": "value",
+              "value_kind": "AMOUNT",
+              "fill_from": [
+                "AMOUNT",
+                "THRESHOLD"
+              ],
+              "addition": true,
+              "reason": "Work package 13 (c), 2026-10-18 (plan finding (79), NCS generation 5, 2.1): the cash each Company share receives under the option, as stated."
+            },
+            {
+              "column_id": "valueTerms",
+              "header": "Value terms",
+              "render": "verbatim",
+              "display": "fact_text",
+              "fill_from": [
+                "DEFINED_TERM",
+                "OPERATION",
+                "OBJECT"
+              ],
+              "addition": true,
+              "reason": "Work package 13 (c), 2026-10-18 (plan finding (79), NCS generation 5, 2.1): the value terms the option names (a \"Cash Consideration\" defined as a ratio times a closing price), each with its definition, when the option's value is a formula rather than a number."
+            },
+            {
+              "column_id": "definedAs",
+              "header": "Defined as",
+              "render": "term",
+              "fill_from": [
+                "DEFINED_TERM",
+                "TERM"
+              ],
+              "display": "subject_note",
+              "addition": true,
+              "reason": "Work package 13 (c), 2026-10-18 (plan finding (79), NCS generation 5, 2.1): the defined term the agreement gives the option's consideration (\"Share Consideration\", \"Mixed Consideration\")."
+            }
+          ],
+          "election_options": {
+            "rows": {
+              "Cash election": {
+                "form_code": "CASH_ELECTION",
+                "words": "election to receive (?:only |solely )?(?:the )?cash"
+              },
+              "Stock election": {
+                "form_code": "STOCK_ELECTION",
+                "words": "election to receive (?:only |solely )?(?:the )?(?:share|stock)"
+              },
+              "Mixed election": {
+                "form_code": "MIXED_ELECTION",
+                "words": "election to receive (?:a |the )?mixed|\\bmixed (?:consideration|election)"
+              }
+            },
+            "unless": "\\bno election\\b",
+            "ratio_column": "exchangeRatio",
+            "cash_column": "cashPerShare",
+            "terms_column": "valueTerms",
+            "term_column": "definedAs",
+            "value_terms": "(?:Consideration|Value|Amount|Price|Ratio)$"
           }
         },
         {

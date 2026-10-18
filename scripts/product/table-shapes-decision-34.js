@@ -27,6 +27,7 @@
 // no randomness, reads nothing but the document it is handed.
 
 const BEN = "Ben's decision 2026-09-14 (decision 34)";
+const WP13 = 'Work package 13 (c), 2026-10-18 (plan finding (79), NCS generation 5, 2.1)';
 
 function findSection(doc, key) {
   const section = doc.sections.find((s) => s.section_key === key);
@@ -1141,9 +1142,67 @@ function applyConsideration(doc) {
   // the package's own term (the “Merger Consideration”) closes the table.
   const definedAs = findColumn(components, 'definedAs');
   definedAs.display = 'subject_note';
-  components.combined_definition_from = { family_key: 'CONSIDERATION', subtype_key: 'CONSIDERATION_PACKAGE', label: 'Combined definition' };
+  // Work package 13 (c) (NCS generation 5, 2.1): the package fact's first
+  // defined term was "Eligible Shares"; the “Merger Consideration” sits in
+  // its OBJECT's words. The combined term is the quoted term matching
+  // term_words, a DEFINED_TERM component first, else no combined definition.
+  components.combined_definition_from = { family_key: 'CONSIDERATION', subtype_key: 'CONSIDERATION_PACKAGE', label: 'Combined definition', term_words: 'Consideration$' };
   const election = findTable(section, 'consideration-hero-election-mechanics');
   for (const column of election.columns) if (column.render === 'verbatim') { column.display = 'fact_text'; column.header = 'As drafted'; }
+  // Work package 13 (c) (manager, 2026-10-18, plan finding (79), NCS
+  // generation 5, 2.1): "The consideration tables carry the election type
+  // (Mixed election) and the mechanics rows but no per-share economics: the
+  // three exchange ratios and the cash value sit in Defined Terms while the
+  // consideration-components table shows 'Stock election' and 'Acquirer
+  // stock' rows with no ratio or value. The shape needs the election
+  // options as rows (cash election, share election, mixed election: ratio,
+  // cash, value per share) filled from the facts, with a value fallback
+  // from a defined ratio that carries a number". One table, one row per
+  // election a holder may make, each row the option's exchange ratio, its
+  // cash per share and the value terms the agreement defines for it. The
+  // extractor may fill it like any fixed-list table; the page
+  // (lib/product/table-view.js, fillElectionOptions) also builds the rows
+  // from the stored facts by the election_options rule: a component fact is
+  // an option's when its readout carries the option's form code or its
+  // words name that election (never a no-election default, which is the
+  // mechanics table's "If no election" row); the ratio and cash come from
+  // the fact's own value cells or numeric components, and every value term
+  // the fact names whose Defined Terms entry is a bare number fills the
+  // empty ratio (a count) or cash (dollars) cell, else is shown with its
+  // definition under Value terms, with the numbers of the terms that
+  // definition names in turn. Ben decides the row wording ("Stock election"
+  // as the components table has it, or "Share election" as NCS drafts it)
+  // and whether an unfilled option should read as not offered; until then
+  // an option with no fact has no row.
+  const options = {
+    table_key: 'consideration-election-options',
+    group_header: 'ELECTION OPTIONS',
+    term_column: { header: 'Election', source: 'subject', fill_from: ['TERM', 'DEFINED_TERM', 'CONDITION'] },
+    rows_are: 'fixed list',
+    fixed_row_labels: ['Cash election', 'Stock election', 'Mixed election'],
+    subtype_keys: ['CASH_COMPONENT', 'STOCK_COMPONENT', 'ELECTION'],
+    guidance: 'Only for a deal whose holders elect between forms of consideration; never a row when the agreement has no election. One row per option a holder may elect (cash only, stock only, a stated mix), from the conversion clause: the exchange ratio (Parent shares per Company share) and the cash per share that option receives, and the defined term the agreement gives it. A no-election default is the election mechanics table\'s "If no election" row, never an option here. The page fills an empty ratio or cash cell from the agreement\'s own definition of a term the option names when that definition is a bare number (a "Cash Exchange Ratio" that "means 0.1371").',
+    columns: [
+      { column_id: 'exchangeRatio', header: 'Exchange ratio', render: 'value', value_kind: 'AMOUNT', fill_from: ['AMOUNT', 'THRESHOLD'], addition: true, reason: `${WP13}: the Parent shares each Company share receives under the option, as stated.` },
+      { column_id: 'cashPerShare', header: 'Cash per share', render: 'value', value_kind: 'AMOUNT', fill_from: ['AMOUNT', 'THRESHOLD'], addition: true, reason: `${WP13}: the cash each Company share receives under the option, as stated.` },
+      { column_id: 'valueTerms', header: 'Value terms', render: 'verbatim', display: 'fact_text', fill_from: ['DEFINED_TERM', 'OPERATION', 'OBJECT'], addition: true, reason: `${WP13}: the value terms the option names (a "Cash Consideration" defined as a ratio times a closing price), each with its definition, when the option's value is a formula rather than a number.` },
+      { column_id: 'definedAs', header: 'Defined as', render: 'term', fill_from: ['DEFINED_TERM', 'TERM'], display: 'subject_note', addition: true, reason: `${WP13}: the defined term the agreement gives the option's consideration ("Share Consideration", "Mixed Consideration").` },
+    ],
+    election_options: {
+      rows: {
+        'Cash election': { form_code: 'CASH_ELECTION', words: 'election to receive (?:only |solely )?(?:the )?cash' },
+        'Stock election': { form_code: 'STOCK_ELECTION', words: 'election to receive (?:only |solely )?(?:the )?(?:share|stock)' },
+        'Mixed election': { form_code: 'MIXED_ELECTION', words: 'election to receive (?:a |the )?mixed|\\bmixed (?:consideration|election)' },
+      },
+      unless: '\\bno election\\b',
+      ratio_column: 'exchangeRatio',
+      cash_column: 'cashPerShare',
+      terms_column: 'valueTerms',
+      term_column: 'definedAs',
+      value_terms: '(?:Consideration|Value|Amount|Price|Ratio)$',
+    },
+  };
+  section.tables.splice(section.tables.indexOf(components) + 1, 0, options);
   const mae = findSection(doc, 'mae-definitions');
   for (const table of mae.tables) for (const column of table.columns) if (column.render === 'verbatim') column.display = 'fact_text';
 }

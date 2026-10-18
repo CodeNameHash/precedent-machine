@@ -927,3 +927,59 @@ test('work package 7: codes from words on the Board determination standard rows,
   doc = broken(); doc.sections.find((s) => s.section_key === 'nosol-fiduciary').tables[1].other_provisions_from_subtype = { subtype_keys: ['RECOMMENDATION_CHANGE'], when: '(' };
   assert.throws(() => validateTableShapesV3(doc, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_OTHER_PROVISIONS_FROM_SUBTYPE/);
 });
+
+// Work package 13 (c) (manager, 2026-10-18, plan finding (79), NCS
+// generation 5, 2.1): "The shape needs the election options as rows (cash
+// election, share election, mixed election: ratio, cash, value per share)
+// filled from the facts, with a value fallback from a defined ratio that
+// carries a number".
+test('the consideration election options table names its rows, columns and page rule', () => {
+  const section = findSectionV3('consideration-hero');
+  assert.deepEqual(section.tables.map((table) => table.table_key), ['consideration-structure', 'consideration-components', 'consideration-election-options', 'consideration-hero-election-mechanics']);
+  const options = findTableV3(section, 'consideration-election-options');
+  assert.equal(options.rows_are, 'fixed list');
+  assert.deepEqual(options.fixed_row_labels, ['Cash election', 'Stock election', 'Mixed election']);
+  assert.deepEqual(options.subtype_keys, ['CASH_COMPONENT', 'STOCK_COMPONENT', 'ELECTION']);
+  assert.deepEqual(options.columns.map((column) => [column.column_id, column.render, column.display || null]), [
+    ['exchangeRatio', 'value', null], ['cashPerShare', 'value', null], ['valueTerms', 'verbatim', 'fact_text'], ['definedAs', 'term', 'subject_note'],
+  ]);
+  assert.match(options.guidance, /never a row when the agreement has no election/);
+  const rule = options.election_options;
+  assert.deepEqual(Object.keys(rule.rows), options.fixed_row_labels);
+  assert.equal(rule.rows['Stock election'].form_code, 'STOCK_ELECTION');
+  // NCS 2.1's words: the share-only election, the mixed election, and the
+  // no-election default (the mechanics table's row, never an option).
+  assert.ok(new RegExp(rule.rows['Stock election'].words, 'i').test('with respect to which an election to receive only share consideration has been made and not validly revoked'));
+  assert.ok(new RegExp(rule.rows['Mixed election'].words, 'i').test('with respect to which an election to receive mixed consideration has been made'));
+  assert.ok(new RegExp(rule.rows['Cash election'].words, 'i').test('with respect to which an election to receive cash has been made'));
+  assert.ok(new RegExp(rule.unless, 'i').test('with respect to which no election to receive Share Consideration or Mixed Consideration has been made'));
+  assert.equal(new RegExp(rule.rows['Mixed election'].words, 'i').test('an election to receive only share consideration'), false);
+  assert.ok(new RegExp(rule.value_terms, 'i').test('Cash Exchange Ratio'));
+  assert.ok(new RegExp(rule.value_terms, 'i').test('Cash Consideration'));
+  assert.equal(new RegExp(rule.value_terms, 'i').test('Share Election Stock'), false);
+  assert.deepEqual([rule.ratio_column, rule.cash_column, rule.terms_column, rule.term_column], ['exchangeRatio', 'cashPerShare', 'valueTerms', 'definedAs']);
+  // The combined definition's term must be a consideration term (NCS 2.1:
+  // the package fact's first defined term was "Eligible Shares").
+  assert.equal(findTableV3(section, 'consideration-components').combined_definition_from.term_words, 'Consideration$');
+
+  // Validation: rows are fixed rows with a code or a pattern; the columns
+  // are of the right render; the patterns compile.
+  const broken = () => structuredClone(tableShapesV3);
+  const optionsOf = (doc) => doc.sections.find((s) => s.section_key === 'consideration-hero').tables.find((t) => t.table_key === 'consideration-election-options');
+  let doc = broken(); optionsOf(doc).election_options.rows['No such row'] = { words: 'x' };
+  assert.throws(() => validateTableShapesV3(doc, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_ELECTION_OPTIONS_ROW_UNKNOWN/);
+  doc = broken(); optionsOf(doc).election_options.rows['Cash election'] = {};
+  assert.throws(() => validateTableShapesV3(doc, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_ELECTION_OPTIONS_ROW_RULE/);
+  doc = broken(); optionsOf(doc).election_options.rows['Cash election'] = { words: '(' };
+  assert.throws(() => validateTableShapesV3(doc, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_ELECTION_OPTIONS_ROW_RULE/);
+  doc = broken(); optionsOf(doc).election_options.ratio_column = 'valueTerms';
+  assert.throws(() => validateTableShapesV3(doc, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_ELECTION_OPTIONS_COLUMN/);
+  doc = broken(); optionsOf(doc).election_options.cash_column = 'exchangeRatio';
+  assert.throws(() => validateTableShapesV3(doc, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_ELECTION_OPTIONS_COLUMN/);
+  doc = broken(); optionsOf(doc).election_options.value_terms = '(';
+  assert.throws(() => validateTableShapesV3(doc, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_ELECTION_OPTIONS_VALUE_TERMS/);
+  doc = broken(); optionsOf(doc).rows_are = 'one per subject'; delete optionsOf(doc).fixed_row_labels;
+  assert.throws(() => validateTableShapesV3(doc, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_ELECTION_OPTIONS_WITHOUT_FIXED_LIST/);
+  doc = broken(); doc.sections.find((s) => s.section_key === 'consideration-hero').tables.find((t) => t.table_key === 'consideration-components').combined_definition_from.term_words = '(';
+  assert.throws(() => validateTableShapesV3(doc, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_COMBINED_DEFINITION_FROM/);
+});
