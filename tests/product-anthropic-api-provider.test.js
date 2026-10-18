@@ -12,24 +12,33 @@ const assert = require('node:assert/strict');
 const test = require('node:test');
 
 const {
-  ANTHROPIC_API_CALL_KIND_MODELS, ANTHROPIC_API_MODEL_CONFIG, ANTHROPIC_API_PRICES, ANTHROPIC_API_PROVIDER_ID, CLAUDE_CLI_CALL_KIND_MODELS,
+  ANTHROPIC_API_CACHE_TTL, ANTHROPIC_API_CALL_KIND_MODELS, ANTHROPIC_API_MODEL_CONFIG, ANTHROPIC_API_PRICES, ANTHROPIC_API_PROVIDER_ID, CLAUDE_CLI_CALL_KIND_MODELS,
   CLAUDE_CLI_MODEL_CONFIG, anthropicApiCostMicrousd, configuredProductModelConfig, hostedModelConfigFor, isHostedProvider, resolveAnthropicApiCallModel,
 } = require('../lib/product/product-model-config');
 const { createProductIntakeHandler } = require('../lib/product/intake-handler');
 const { createProductAnalysisHandler } = require('../lib/product/analysis-handler');
-const { estimateRunCost, parseArguments } = require('../scripts/product/estimate-run-cost');
-const { createAnthropicApiProductModel, isAccountLimit } = require('../lib/product/anthropic-api-model');
+const { estimateFromSplit, estimateRunCost, parseArguments, usageSplit } = require('../scripts/product/estimate-run-cost');
+const { PER_SECTION_KEYS, REQUEST_LAYOUT_NOTE, cacheableContent, createAnthropicApiProductModel, isAccountLimit, splitRequestForCache } = require('../lib/product/anthropic-api-model');
 const { createHostedProductModel, SYSTEM_PROMPT } = require('../lib/product/claude-cli-model');
 const { receivedProviderFailure } = require('../lib/product/model-adapter');
 const { isUsageLimitError } = require('../lib/llm-cli-client');
 const { wakeSandboxProductRun, SANDBOX_LAUNCHER } = require('../lib/product/sandbox-wake');
 const { createProductRunHandler } = require('../lib/product/run-handler');
+const { buildAgreementStructure } = require('../lib/product/agreement-structure');
+const { buildAgreementSectionDraft } = require('../lib/product/agreement-draft');
+const { substantiveSections } = require('../lib/product/source-context');
+const tableShapes = require('../contracts/product/table-shapes.v3.json');
+const legalSchemaV2 = require('../contracts/product/legal-schema.v2.json');
+
+process.env.PRODUCT_PHASE2_HELPER_ONLY = '1';
+const { conchoSource } = require('./product-phase-2.test');
+delete process.env.PRODUCT_PHASE2_HELPER_ONLY;
 
 function message(text = '{"ok":true}', overrides = {}) {
   return {
     id: 'msg_1', type: 'message', role: 'assistant', model: 'claude-opus-5',
     content: [{ type: 'text', text }],
-    usage: { input_tokens: 1000, output_tokens: 200, cache_creation_input_tokens: 300, cache_read_input_tokens: 4000 },
+    usage: { input_tokens: 1000, output_tokens: 200, cache_creation_input_tokens: 300, cache_read_input_tokens: 4000, cache_creation: { ephemeral_5m_input_tokens: 0, ephemeral_1h_input_tokens: 300 } },
     stop_reason: 'end_turn',
     ...overrides,
   };
@@ -54,20 +63,31 @@ test('the API provider is a hosted provider at the Claude CLI tier, metered at t
   assert.deepEqual(resolveAnthropicApiCallModel(ANTHROPIC_API_MODEL_CONFIG, 'EXTRACTION'), { model: 'claude-opus-5', effort: 'high' });
   assert.throws(() => resolveAnthropicApiCallModel(ANTHROPIC_API_MODEL_CONFIG, 'UNKNOWN'), /CALL_KIND/);
   assert.throws(() => resolveAnthropicApiCallModel({ ...ANTHROPIC_API_MODEL_CONFIG, max_output_tokens: 1 }, 'ROUTING'), /ANTHROPIC_API_MODEL_CONFIG_UNSUPPORTED/);
-  // One million of each kind: $5 fresh input, $6.25 cache write, $0.50 cache read, $25 output.
+  // One million of each kind: $5 fresh input, $6.25 5-minute cache write, $0.50 cache read, $25 output.
   assert.equal(anthropicApiCostMicrousd('claude-opus-5', { input_tokens: 1000000, cache_creation_input_tokens: 1000000, cache_read_input_tokens: 1000000, output_tokens: 1000000 }), 36750000);
   assert.equal(anthropicApiCostMicrousd('claude-opus-5', { input_tokens: 1000, output_tokens: 200 }), 10000);
   assert.throws(() => anthropicApiCostMicrousd('claude-unknown', { input_tokens: 1 }), /RATES_UNKNOWN/);
+  // Work package 10: writes priced at their lifetime. The message's own
+  // breakdown first; without one, the lifetime the request asked for.
+  assert.equal(ANTHROPIC_API_CACHE_TTL, '1h');
+  assert.equal(anthropicApiCostMicrousd('claude-opus-5', { input_tokens: 0, cache_creation_input_tokens: 1000000 }, { cacheTtl: '1h' }), 10000000);
+  assert.equal(anthropicApiCostMicrousd('claude-opus-5', { input_tokens: 0, cache_creation_input_tokens: 1000000 }), 6250000, '5 minutes when nothing says otherwise');
+  assert.equal(anthropicApiCostMicrousd('claude-opus-5', { input_tokens: 0, cache_creation_input_tokens: 300, cache_creation: { ephemeral_5m_input_tokens: 100, ephemeral_1h_input_tokens: 200 } }, { cacheTtl: '1h' }), Math.round(100 * 6.25 + 200 * 10));
+  assert.throws(() => anthropicApiCostMicrousd('claude-opus-5', { input_tokens: 1 }, { cacheTtl: '2h' }), /CACHE_TTL_UNKNOWN/);
 });
 
-test('a call streams one compact-JSON request at the call kind\'s effort under the output cap, and records the whole prompt and its cost', async () => {
+test('a call streams one compact-JSON request at the call kind\'s effort under the output cap, in two blocks with the cache breakpoint on the stable one, and records the whole prompt and its cost', async () => {
   const seen = [];
   const model = createAnthropicApiProductModel({ client: fakeClient(message('```json\n{"proposals":[]}\n```'), seen) });
-  const result = await model.complete({ call_kind: 'EXTRACTION', prompt_version: 'PRODUCT_ALL_FAMILY_EXTRACTOR/V9', request: { section: '5.02' } });
+  const request = { instruction: 'Review', family_contracts: [{ family_key: 'NO_SHOP' }], source_closure: { full_section: '5.02' }, part_instruction: 'part 1 of 2' };
+  const result = await model.complete({ call_kind: 'EXTRACTION', prompt_version: 'PRODUCT_ALL_FAMILY_EXTRACTOR/V9', request });
   assert.equal(seen.length, 1);
   assert.deepEqual(seen[0], {
-    model: 'claude-opus-5', max_tokens: 64000, output_config: { effort: 'high' }, system: SYSTEM_PROMPT,
-    messages: [{ role: 'user', content: JSON.stringify({ call_kind: 'EXTRACTION', prompt_version: 'PRODUCT_ALL_FAMILY_EXTRACTOR/V9', section: '5.02' }) }],
+    model: 'claude-opus-5', max_tokens: 64000, output_config: { effort: 'high' }, system: `${SYSTEM_PROMPT} ${REQUEST_LAYOUT_NOTE}`,
+    messages: [{ role: 'user', content: [
+      { type: 'text', text: JSON.stringify({ call_kind: 'EXTRACTION', prompt_version: 'PRODUCT_ALL_FAMILY_EXTRACTOR/V9', instruction: 'Review', family_contracts: [{ family_key: 'NO_SHOP' }] }), cache_control: { type: 'ephemeral', ttl: '1h' } },
+      { type: 'text', text: JSON.stringify({ source_closure: { full_section: '5.02' }, part_instruction: 'part 1 of 2' }) },
+    ] }],
   });
   assert.equal('temperature' in seen[0], false, 'no sampling parameter: the model refuses them');
   assert.equal('thinking' in seen[0], false, 'adaptive thinking is the model\'s default');
@@ -76,8 +96,12 @@ test('a call streams one compact-JSON request at the call kind\'s effort under t
   assert.deepEqual(result.response, { proposals: [] });
   assert.equal(result.input_tokens, 5300, 'fresh, cache-written and cache-read tokens together, as the CLI path counts');
   assert.equal(result.output_tokens, 200);
-  assert.equal(result.cost_microusd, 1000 * 5 + 300 * 6.25 + 4000 * 0.5 + 200 * 25);
+  assert.equal(result.cost_microusd, 1000 * 5 + 300 * 10 + 4000 * 0.5 + 200 * 25, 'the 300 written tokens at the 1-hour rate');
   assert.equal(result.provider_completion_confirmed, true);
+  // The recorded shape: the request as sent, blocks and all; the response
+  // as received, its usage carrying the cache reads and writes separately.
+  assert.deepEqual(result.raw_request, seen[0]);
+  assert.deepEqual(result.raw_response.usage, { input_tokens: 1000, output_tokens: 200, cache_creation_input_tokens: 300, cache_read_input_tokens: 4000, cache_creation: { ephemeral_5m_input_tokens: 0, ephemeral_1h_input_tokens: 300 } });
   const routing = await createAnthropicApiProductModel({ client: fakeClient(message(), seen) }).complete({ call_kind: 'ROUTING', prompt_version: 'R1', request: {} });
   assert.deepEqual(seen[1].output_config, { effort: 'low' });
   assert.equal(routing.model_id, 'claude-opus-5;effort=low');
@@ -91,7 +115,8 @@ test('an answer cut off by the output cap, a refusal and a non-JSON answer fail 
     assert.ok(received, 'the received output rides with the failure');
     assert.equal(received.provider_completion_confirmed, false);
     assert.equal(received.input_tokens, 5300);
-    assert.equal(received.cost_microusd, 1000 * 5 + 300 * 6.25 + 4000 * 0.5 + 200 * 25);
+    assert.equal(received.cost_microusd, 1000 * 5 + 300 * 10 + 4000 * 0.5 + 200 * 25);
+    assert.ok(Array.isArray(received.raw_request.messages[0].content), 'the failure keeps the request as sent');
     return true;
   });
   const refused = createAnthropicApiProductModel({ client: fakeClient(message('', { stop_reason: 'refusal', stop_details: { type: 'refusal', category: 'cyber' } })) });
@@ -246,19 +271,155 @@ test('the analysis read names the run\'s provider', async () => {
   assert.deepEqual(response.body, { status: 'RUNNING', model_provider: ANTHROPIC_API_PROVIDER_ID });
 });
 
+// Work package 10 (plan finding (67)): the prompt cache's two blocks.
+test('each call kind splits into a stable block under the breakpoint and a section block; a request with nothing per-section is one cached block', () => {
+  assert.deepEqual(PER_SECTION_KEYS, {
+    ROUTING: ['section_reference', 'section', 'deterministic_family_evidence'],
+    RESIDUAL: ['section_reference', 'routed_families', 'paragraphs'],
+    EXTRACTION: ['source_closure', 'part_instruction', 'article_introduction_instruction', 'no_other_reps_instruction'],
+  });
+  const routing = splitRequestForCache({ call_kind: 'ROUTING', prompt_version: 'R3', request: { instruction: 'Classify', allowed_families: ['NO_SHOP'], family_routing_contracts: {}, section_reference: '5.02', section: { exact_text: 'x' }, deterministic_family_evidence: [], response_contract: {} } });
+  assert.deepEqual(Object.keys(routing.stable), ['call_kind', 'prompt_version', 'instruction', 'allowed_families', 'family_routing_contracts', 'response_contract']);
+  assert.deepEqual(Object.keys(routing.section), ['section_reference', 'section', 'deterministic_family_evidence']);
+  const residual = splitRequestForCache({ call_kind: 'RESIDUAL', prompt_version: 'P1', request: { instruction: 'Review', allowed_families: [], section_reference: '5.02', routed_families: ['NO_SHOP'], paragraphs: [], response_contract: {} } });
+  assert.deepEqual(Object.keys(residual.stable), ['call_kind', 'prompt_version', 'instruction', 'allowed_families', 'response_contract']);
+  assert.deepEqual(Object.keys(residual.section), ['section_reference', 'routed_families', 'paragraphs']);
+  const extraction = splitRequestForCache({ call_kind: 'EXTRACTION', prompt_version: 'V9', request: { schema_version: 'LEGAL_SCHEMA/V2', instruction: 'i', scope_instruction: 's', source_closure: {}, family_contracts: [], cross_section_target_contracts: {}, response_contract: {}, component_instruction: 'c', article_introduction_instruction: 'a', no_other_reps_instruction: 'n', table_shapes: {}, conclusion_instruction: 'k', part_instruction: 'p' } });
+  assert.deepEqual(Object.keys(extraction.stable), ['call_kind', 'prompt_version', 'schema_version', 'instruction', 'scope_instruction', 'family_contracts', 'cross_section_target_contracts', 'response_contract', 'component_instruction', 'table_shapes', 'conclusion_instruction']);
+  assert.deepEqual(Object.keys(extraction.section), ['source_closure', 'article_introduction_instruction', 'no_other_reps_instruction', 'part_instruction']);
+  const whole = cacheableContent({ call_kind: 'EXTRACTION', prompt_version: 'V9', request: { instruction: 'i' } });
+  assert.equal(whole.system, SYSTEM_PROMPT, 'one block: the system prompt says nothing about a second object');
+  assert.deepEqual(whole.content, [{ type: 'text', text: '{"call_kind":"EXTRACTION","prompt_version":"V9","instruction":"i"}', cache_control: { type: 'ephemeral', ttl: '1h' } }]);
+  const two = cacheableContent({ call_kind: 'ROUTING', prompt_version: 'R3', request: { instruction: 'i', section: 's' } });
+  assert.equal(two.system, `${SYSTEM_PROMPT} ${REQUEST_LAYOUT_NOTE}`);
+  assert.equal(two.content.length, 2);
+  assert.equal('cache_control' in two.content[1], false, 'the section block is never cached');
+});
+
+// Two sections with the same routed families through the real request
+// builders (the V2 schema and the V3 table shapes, as a run uses them): the
+// stable block is byte-identical, the section block differs.
+function noShopModel(inputs) {
+  const noShop = legalSchemaV2.families.find((family) => family.family_key === 'NO_SHOP');
+  return {
+    async complete(input) {
+      inputs.push(input);
+      const { call_kind: kind, request } = input;
+      let response;
+      if (kind === 'ROUTING') {
+        const others = (request.deterministic_family_evidence || []).map((evidence) => evidence.section_family).filter((family) => family && family !== 'NO_SHOP');
+        response = { families: ['NO_SHOP'], disposition: 'FAMILY_ASSIGNED', rationale: 'no-shop', deterministic_disagreements: [...new Set(others)].map((family) => ({ family_key: family, reason: 'synthetic test model routes the no-shop family only' })) };
+      } else if (kind === 'RESIDUAL') {
+        response = { paragraphs: request.paragraphs.map((paragraph) => ({ source_span_id: paragraph.source_span_id, disposition: 'KNOWN_FAMILY', family_keys: ['NO_SHOP'], rationale: 'covered' })) };
+      } else {
+        const span = request.source_closure.operative[0];
+        const words = span.exact_text.split(/\s+/).filter(Boolean).slice(1, 8).join(' ');
+        const quote = span.exact_text.slice(span.exact_text.indexOf(words), span.exact_text.indexOf(words) + words.length);
+        response = {
+          proposals: [{
+            client_ref: 'p-1', group_ref: 'g-1', family_key: 'NO_SHOP', subtype_key: 'PROHIBITED_ACTION', fact_type: 'PROHIBITED_ACTION',
+            statement: quote, roles: { covenant_obligor: 'Company', prohibited_action: quote }, value: null,
+            evidence_quotes: [{ quote, source_span_id: span.span_id, occurrence: 0 }],
+          }],
+          groups: [{ client_ref: 'g-1', family_key: 'NO_SHOP', subtype_key: 'PROHIBITED_ACTION' }],
+          links: [],
+          coverage: { NO_SHOP: 'FOUND' },
+          fact_type_coverage: { NO_SHOP: Object.fromEntries(noShop.required_fact_types.map((factType) => [factType, factType === 'PROHIBITED_ACTION' ? 'FOUND' : 'NOT_FOUND'])) },
+        };
+      }
+      return { provider_id: 'SYNTHETIC_TEST_PROVIDER', model_id: 'SYNTHETIC_LEGAL_MODEL/V1', raw_request: request, raw_response: response, response, input_tokens: 10, output_tokens: 5, cost_microusd: 1, duration_ms: 1 };
+    },
+  };
+}
+
+test('the stable block is byte-identical across two sections with the same routed families, and the section block carries only the section', async () => {
+  const sourceDocument = await conchoSource();
+  const agreementStructure = buildAgreementStructure({
+    agreement_id: sourceDocument.source_document_id,
+    canonical_text: sourceDocument.canonical_text,
+    canonical_text_sha256: sourceDocument.canonical_text_sha256,
+  });
+  const sections = substantiveSections(agreementStructure);
+  const inputs = [];
+  const model = noShopModel(inputs);
+  for (const reference of ['6.11', '6.13']) {
+    const node = sections.find((item) => item.reference === reference);
+    assert.ok(node, reference);
+    await buildAgreementSectionDraft({ sourceDocument, agreementStructure, legalSchema: legalSchemaV2, model, node, tableShapes });
+  }
+  assert.deepEqual(inputs.map((input) => input.call_kind), ['ROUTING', 'RESIDUAL', 'EXTRACTION', 'ROUTING', 'RESIDUAL', 'EXTRACTION']);
+  for (const [first, second] of [[0, 3], [1, 4], [2, 5]]) {
+    const a = cacheableContent(inputs[first]);
+    const b = cacheableContent(inputs[second]);
+    assert.equal(a.content.length, 2, inputs[first].call_kind);
+    assert.equal(a.content[0].text, b.content[0].text, `${inputs[first].call_kind}: the stable block is byte-identical`);
+    assert.deepEqual(a.content[0].cache_control, { type: 'ephemeral', ttl: '1h' });
+    assert.notEqual(a.content[1].text, b.content[1].text, `${inputs[first].call_kind}: the section block differs`);
+    assert.equal(a.system, `${SYSTEM_PROMPT} ${REQUEST_LAYOUT_NOTE}`);
+  }
+  // The extraction's stable block carries the routed family's contract and
+  // table shapes and none of the section; the section block carries the
+  // closure and nothing of the contracts. Both are well over the 512-token
+  // minimum the API caches for claude-opus-5.
+  const extraction = cacheableContent(inputs[2]);
+  const stable = JSON.parse(extraction.content[0].text);
+  const section = JSON.parse(extraction.content[1].text);
+  assert.deepEqual(stable.family_contracts.map((family) => family.family_key), ['NO_SHOP']);
+  assert.ok(stable.table_shapes.NO_SHOP, 'the routed family\'s table shapes ride in the stable block');
+  assert.equal('source_closure' in stable, false);
+  assert.deepEqual(Object.keys(section), ['source_closure']);
+  assert.ok(Buffer.byteLength(extraction.content[0].text) > 20000, String(Buffer.byteLength(extraction.content[0].text)));
+  const routing = cacheableContent(inputs[0]);
+  assert.ok(Buffer.byteLength(routing.content[0].text) > 10000, 'routing: the instruction and the 25 family routing contracts');
+  assert.deepEqual(Object.keys(JSON.parse(routing.content[1].text)), ['section_reference', 'section', 'deterministic_family_evidence']);
+  const residual = cacheableContent(inputs[1]);
+  assert.ok(Buffer.byteLength(residual.content[0].text) > 1200, 'residual: about 1,600 bytes, above the minimum');
+});
+
 // The estimate from generation 7's recorded tokens at the published rates.
-test('the estimate script prices generation 7\'s tokens at the price table, with and without cache reads', () => {
+test('the estimate script prices a run\'s tokens at the price table, uncached or with the cache split by lifetime', () => {
   const estimate = estimateRunCost({ inputTokens: 9853912, outputTokens: 3146447 });
   assert.equal(estimate.input_usd, 49.27);
   assert.equal(estimate.output_usd, 78.66);
   assert.equal(estimate.total_usd, 127.93);
+  assert.equal(estimate.uncached_total_usd, 127.93);
   assert.equal(estimate.price_source, ANTHROPIC_API_PRICES.source);
   assert.equal(estimate.price_date, ANTHROPIC_API_PRICES.retrieved);
-  const cached = estimateRunCost({ inputTokens: 9853912, outputTokens: 3146447, cacheReadShare: 2 / 3 });
-  assert.ok(cached.total_usd < estimate.total_usd && cached.total_usd > 90, String(cached.total_usd));
   assert.equal(estimateRunCost({ inputTokens: 9853912, outputTokens: 3146447, modelId: 'claude-opus-5-5' }).total_usd, 102.34);
-  assert.deepEqual(parseArguments(['9,853,912', '3,146,447']), { modelId: 'claude-opus-5', cacheReadShare: 0, inputTokens: 9853912, outputTokens: 3146447 });
-  assert.deepEqual(parseArguments(['--run', '46c45080-6935-49e5-96ae-b6cb0609a924', '--model', 'claude-opus-5-5']), { modelId: 'claude-opus-5-5', cacheReadShare: 0, runId: '46c45080-6935-49e5-96ae-b6cb0609a924' });
+  // Generation 8's profile (313 calls; 10,878,349 input and 3,623,975
+  // output tokens) with the cache behaviour its stored calls give the block
+  // design: 4,752,416 stable tokens, of which the 1-hour entry reads
+  // 3,199,707 and writes 1,552,709; the 5-minute entry reads 1,566,424 and
+  // writes 3,185,992.
+  const uncached = estimateRunCost({ inputTokens: 10878349, outputTokens: 3623975 });
+  assert.equal(uncached.total_usd, 144.99);
+  const hour = estimateRunCost({ inputTokens: 10878349, outputTokens: 3623975, cacheWriteTokens: 1552709, cacheReadTokens: 3199707, cacheTtl: '1h' });
+  assert.deepEqual([hour.fresh_input_tokens, hour.cache_write_tokens, hour.input_usd, hour.output_usd, hour.total_usd], [6125933, { '5m': 0, '1h': 1552709 }, 47.76, 90.6, 138.36]);
+  const fiveMinutes = estimateRunCost({ inputTokens: 10878349, outputTokens: 3623975, cacheWriteTokens: 3185992, cacheReadTokens: 1566424, cacheTtl: '5m' });
+  assert.deepEqual([fiveMinutes.cache_write_tokens, fiveMinutes.total_usd], [{ '5m': 3185992, '1h': 0 }, 141.92]);
+  assert.throws(() => estimateRunCost({ inputTokens: 100, outputTokens: 1, cacheReadTokens: 101 }), /exceeds the input tokens/);
+  assert.throws(() => estimateRunCost({ inputTokens: 1, outputTokens: 1, cacheTtl: '2h' }), /cacheTtl/);
   assert.throws(() => estimateRunCost({ inputTokens: 1, outputTokens: 1, modelId: 'claude-unknown' }), /no published rates/);
+  assert.deepEqual(parseArguments(['9,853,912', '3,146,447']), { modelId: 'claude-opus-5', cacheWriteTokens: 0, cacheReadTokens: 0, cacheTtl: '1h', inputTokens: 9853912, outputTokens: 3146447 });
+  assert.deepEqual(parseArguments(['10,878,349', '3,623,975', '--cache-write-tokens', '1,552,709', '--cache-read-tokens', '3199707', '--cache-ttl', '5m']), { modelId: 'claude-opus-5', cacheWriteTokens: 1552709, cacheReadTokens: 3199707, cacheTtl: '5m', inputTokens: 10878349, outputTokens: 3623975 });
+  assert.deepEqual(parseArguments(['--run', '46c45080-6935-49e5-96ae-b6cb0609a924', '--model', 'claude-opus-5-5']), { modelId: 'claude-opus-5-5', cacheWriteTokens: 0, cacheReadTokens: 0, cacheTtl: '1h', runId: '46c45080-6935-49e5-96ae-b6cb0609a924' });
   assert.throws(() => parseArguments(['1']), /usage/);
+  // From a run's stored calls: the whole prompt from input_tokens, the
+  // split from each response's usage; a CLI run's calls have no usage and
+  // price as uncached.
+  const split = usageSplit([
+    { call_kind: 'ROUTING', input_tokens: '10000', output_tokens: '100', usage: { input_tokens: 2000, cache_creation_input_tokens: 8000, cache_read_input_tokens: 0, cache_creation: { ephemeral_5m_input_tokens: 0, ephemeral_1h_input_tokens: 8000 } } },
+    { call_kind: 'ROUTING', input_tokens: '11000', output_tokens: '100', usage: { input_tokens: 3000, cache_creation_input_tokens: 0, cache_read_input_tokens: 8000 } },
+    { call_kind: 'EXTRACTION', input_tokens: '50000', output_tokens: '20000', usage: { input_tokens: 20000, cache_creation_input_tokens: 30000, cache_read_input_tokens: 0 } },
+    { call_kind: 'EXTRACTION', input_tokens: '40000', output_tokens: '10000', usage: null },
+  ]);
+  assert.deepEqual(split.total, { calls: 4, input_tokens: 111000, output_tokens: 30200, cache_read_tokens: 8000, cache_writes: { '5m': 0, '1h': 38000 } });
+  assert.deepEqual(split.by_call_kind.ROUTING, { calls: 2, input_tokens: 21000, output_tokens: 200, cache_read_tokens: 8000, cache_writes: { '5m': 0, '1h': 8000 } });
+  assert.deepEqual(usageSplit([{ call_kind: 'ROUTING', input_tokens: 10, output_tokens: 1, usage: { cache_creation_input_tokens: 5 } }], '5m').total.cache_writes, { '5m': 5, '1h': 0 }, 'no breakdown: the lifetime asked for');
+  const fromRun = estimateFromSplit(split, 'claude-opus-5');
+  assert.equal(fromRun.calls, 4);
+  assert.equal(fromRun.fresh_input_tokens, 111000 - 8000 - 38000);
+  assert.equal(fromRun.total_usd, Number(((65000 * 5 + 38000 * 10 + 8000 * 0.5 + 30200 * 25) / 1e6).toFixed(2)));
+  assert.deepEqual(Object.keys(fromRun.by_call_kind), ['ROUTING', 'EXTRACTION']);
+  assert.equal(fromRun.by_call_kind.EXTRACTION.calls, 2);
 });
