@@ -4309,6 +4309,42 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       (tests/product-fact-conclusions.test.js). npm run test:active: 694
       of 695, the one failure the known Codex-client final-message test.
       Commits 8eb259c, b392cc1 and this plan and guide commit.
+      Reconciled at 17:08 UTC with the manager's work package 13 message
+      of 16:45 (queued 16:50, delivered after the push of d384c74; built
+      on finding (79)'s terms meanwhile). (a) The message names four
+      origins; the first build relocated INTRO and CHAPEAU to chapeau
+      spans and DEFINITION to definition spans, and OWN already resolved
+      through the full section span; CROSS_REFERENCE to cross-reference
+      spans is added. The note now names the id written, the closure span
+      whose words were used (`to_closure_span_id`) and the component's own
+      span within it (`to_span_id`), as asked. The replay fixture
+      (tests/product-v8-replay.test.js) is one NCS V8 call and holds no
+      3.4 or 3.19 tree, so the check is the unit test with 3.4's real
+      quotes and a closure of two chapeau spans. (b) The "is referred to
+      in this Agreement as" case is met through the component's
+      resolves_to (1.2's Closing Date reads "The date on which the
+      Closing occurs"; its Tolling Period "any date that falls on, or
+      between, the date(s) of the Irish High Court hearing to sanction
+      Rewind ..."). Generation 8 before and after, on the stored rows:
+      147 entries both ways, none added or lost, 17 whose text changes to
+      the resolved definition: Company Balance Sheet (3.06), Company
+      Disclosure Letter (III intro), Company Preferred Stock (3.02),
+      Company SEC Documents (3.06), Company Takeover Proposal (8.02),
+      Delisting Period (6.12), Effective Time (1.03: "the time the Merger
+      becomes effective", was "being referred to herein as"), Exchange Act
+      (3.05), Existing D&O Policies (6.05), Filed Company SEC Documents
+      (III intro), HIPAA (3.20), HSR Act (3.05), IND (3.17), Paying Agent
+      (2.02), Privacy Obligations (3.20), Proceeding (3.14), Proxy
+      Statement (3.07). NCS 2.1: Default Stock, Share Election Stock,
+      Eligible Shares and Mixed Share Consideration likewise read their
+      resolved definitions. (c) The message proposes the rows "Cash
+      election; Share election; Mixed election" and columns "exchange
+      ratio, cash per share, value per share"; built as "Stock election"
+      (the components table's form code) and "Value terms" (the option's
+      value defined as a formula, with its numbers), both for Ben as
+      above; the single-form Metsera row is unchanged as asked. The
+      preview is not downloaded; the stored rows on the preview branch
+      are the evidence.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).

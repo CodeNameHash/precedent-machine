@@ -656,7 +656,12 @@ test('a component quote on an unknown span is taken from the one closure span it
   assert.equal(fact.components[0].start_byte, intro.indexOf('the Company represents'));
   const note = relocated.issues.find((issue) => issue.code === 'COMPONENT_SPAN_RELOCATED');
   assert.ok(note && note.kind === 'NOTE', 'the relocation is a note, not a hold');
-  assert.deepEqual(JSON.parse(note.message), { client_ref: 'p1', relocated: [{ quote: 'the Company represents and warrants to Parent and Merger Sub as follows:', from_span_id: wrongId, to_span_kind: 'CHAPEAU', to_structure_node_id: introNode }] });
+  const { relocated: [entry], ...noteRest } = JSON.parse(note.message);
+  assert.deepEqual(noteRest, { client_ref: 'p1' });
+  assert.match(entry.to_span_id, /^[0-9a-f]{64}$/, 'the component\'s own span within the chapeau');
+  assert.equal(entry.to_span_id, fact.components[0].source_span_id);
+  const { to_span_id: _usedSpan, ...named } = entry;
+  assert.deepEqual(named, { quote: 'the Company represents and warrants to Parent and Merger Sub as follows:', from_span_id: wrongId, to_closure_span_id: introSpan.span_id, to_span_kind: 'CHAPEAU', to_structure_node_id: introNode }, 'the id written, the closure span used');
   // Two chapeau spans holding the words: still unknown.
   const twice = compileAuthority(proposalWith([
     { ref: 'c1', kind: 'TERM', label: 'heading', quote: 'Section 3.4 Authority.', source_span_id: wrongId, occurrence: 0, origin: 'CHAPEAU', children: [] },
