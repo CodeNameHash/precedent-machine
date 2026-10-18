@@ -763,16 +763,33 @@ function applyConditions(doc) {
     LISTING_CONDITION: 'Stock Exchange Listing',
     FRUSTRATION_BREACH_STANDARD: 'Frustration of conditions',
     METSERA_7_04_FRUSTRATION_BRANCH: 'Frustration of conditions',
+    // Work package 19 (d) (NCS generation 5, 6.1: the Information Statement
+    // mailed at least 20 Business Days before Closing had no row): a mutual
+    // condition the fixed list does not name.
+    GENERAL_CLOSING_CONDITION: 'Other mutual conditions',
   };
-  mutual.statement_words = 'obligations? of each (party|of the parties)';
+  if (!mutual.fixed_row_labels.includes('Other mutual conditions')) mutual.fixed_row_labels.push('Other mutual conditions');
+  // The party's table follows from the statement's words, written either
+  // way round ("the obligations of the Company"; "the Company's obligation").
+  mutual.statement_words = "obligations? of each (party|of the parties)|each (party|of the parties)'?s obligations?";
   for (const [sectionKey, tableKey, words] of [
-    ['conditions-b', 'conditions-b-table', 'obligations? of (each of )?Parent'],
-    ['conditions-s', 'conditions-s-table', 'obligations? of the Company'],
+    ['conditions-b', 'conditions-b-table', "obligations? of (each of )?Parent|Parent'?s obligations?"],
+    ['conditions-s', 'conditions-s-table', "obligations? of the Company|Company'?s obligations?"],
   ]) {
     const table = findTable(findSection(doc, sectionKey), tableKey);
     if (!table.columns.some((column) => column.column_id === 'asDrafted')) table.columns.push(asDrafted(why));
+    // Work package 19 (d) (NCS generation 5, 6.3: the Closing Tax Opinion,
+    // the Canadian tax-deposit condition and the no-Parent-MAE condition of
+    // a stock deal had no row on the Company's table): a tax opinion row,
+    // an other-conditions row, and the No Material Adverse Effect row the
+    // mapping already named on both party tables.
+    for (const label of ['No Material Adverse Effect', 'Tax opinion', 'Other conditions']) {
+      if (!table.fixed_row_labels.includes(label)) table.fixed_row_labels.push(label);
+    }
     table.fact_type_rows = {
       'GENERAL_CLOSING_CONDITION:BRINGDOWN': 'Accuracy of Representations',
+      'GENERAL_CLOSING_CONDITION:TAX_OPINION': 'Tax opinion',
+      GENERAL_CLOSING_CONDITION: 'Other conditions',
       COVENANT_COMPLIANCE_STANDARD: 'Performance of Covenants',
       NO_MAE_CONDITION: 'No Material Adverse Effect',
       NO_MAE_CONDITION_CONTINUING: 'No Material Adverse Effect',
@@ -807,9 +824,14 @@ function applyTerminationRights(doc) {
   mutual.guidance = 'Mutual termination rights, the row from the subtype: Mutual consent (written consent required or not); Outside / End Date (the initial date in outsideDate, an extension date in outsideDateExtension, the extension mechanism a sub-item as drafted); Legal restraint / order (final and non-appealable); Stockholder vote not obtained. exercisedBy codes who may elect.';
 
   const buyer = findTable(section, 'termination-rights-buyer-may-terminate');
-  buyer.fixed_row_labels = ['Company (Target) breach', 'Change of Recommendation', 'Breach of the no-shop'];
+  // Work package 19 (d) (NCS generation 5, 7.1: Parent's rights to
+  // terminate when the Written Consent or the Support Agreement is not
+  // delivered by the Consent Time had no row): the written-consent deal's
+  // two rights, each its row.
+  buyer.fixed_row_labels = ['Company (Target) breach', 'Change of Recommendation', 'Breach of the no-shop', 'Written consent not delivered', 'Support agreement not delivered'];
   buyer.row_from_subtype = true;
-  buyer.subtype_rows = { BREACH: 'Company (Target) breach', RECOMMENDATION_CHANGE: 'Change of Recommendation', NO_SOLICITATION_BREACH: 'Breach of the no-shop' };
+  buyer.subtype_rows = { BREACH: 'Company (Target) breach', RECOMMENDATION_CHANGE: 'Change of Recommendation', NO_SOLICITATION_BREACH: 'Breach of the no-shop', WRITTEN_CONSENT_NOT_DELIVERED: 'Written consent not delivered', SUPPORT_AGREEMENT_NOT_DELIVERED: 'Support agreement not delivered' };
+  buyer.fact_type_rows = { 'TERMINATION_RIGHT:WRITTEN_CONSENT_NOT_DELIVERED': 'Written consent not delivered', 'TERMINATION_RIGHT:SUPPORT_AGREEMENT_NOT_DELIVERED': 'Support agreement not delivered' };
   if (!buyer.columns.some((column) => column.column_id === 'asDrafted')) buyer.columns.push(asDrafted(why));
   buyer.guidance = 'Parent\'s termination rights, the row from the subtype: Company breach (cure period, its end, whether curable, the terminator-breach bar as faultBasedCarveOut); Change of Recommendation (trigger, window); breach of the no-shop. A BREACH fact in this table is Parent terminating for the Company\'s breach; the Company\'s right for Parent\'s breach goes to the company table.';
 
@@ -853,11 +875,15 @@ function applyTerminationRights(doc) {
         code('Board action required', why, { code: 'BOARD_ACTION_REQUIRED' }),
         code('Stockholder approval not required', why, { code: 'STOCKHOLDER_APPROVAL_NOT_REQUIRED' }),
       ]],
+      // Work package 19 (d) (NCS generation 5, 7.2): the non-breaching
+      // party's remedies preserved where fraud or willful breach liability is.
+      ['Remedies preserved', yesNo(why)],
     ],
     reason: why,
-    subtypeRows: { AGREEMENT_VOIDING: 'Agreement void on termination', LIABILITY_RELEASE: 'Release of liability', WILLFUL_MATERIAL_BREACH_CARVEOUT: 'Willful and material breach carve-out', PROVISION_SURVIVAL: 'Surviving provisions', TERMINATION_NOTICE: 'Termination formalities' },
+    subtypeRows: { AGREEMENT_VOIDING: 'Agreement void on termination', LIABILITY_RELEASE: 'Release of liability', WILLFUL_MATERIAL_BREACH_CARVEOUT: 'Willful and material breach carve-out', PROVISION_SURVIVAL: 'Surviving provisions', TERMINATION_NOTICE: 'Termination formalities', REMEDY_ENTITLEMENT: 'Remedies preserved' },
     guidance: 'The effect of termination, the row from the subtype: the agreement becoming void; the release of liability and its carve-outs; the willful and material breach carve-out; the surviving provisions; and the formalities of terminating (notice, board action, no stockholder approval), one cell per formality.',
   });
+  effect.fact_type_rows = { 'TERMINATION_EFFECT:REMEDY_ENTITLEMENT': 'Remedies preserved' };
   section.tables = [mutual, buyer, company, effect];
 }
 
@@ -1065,11 +1091,17 @@ function applyMisc(doc) {
         code('Specified covenants survive', why, { code: 'SPECIFIED_COVENANTS_SURVIVE' }),
       ]],
       ['Construction', yesNo(why)],
+      // Work package 19 (d) (NCS generation 5, 7.5): the parties' rights and
+      // remedies cumulative and not exclusive.
+      ['Cumulative remedies', yesNo(why)],
     ],
     reason: why,
     subtypeKeys: ['GOVERNING_LAW', 'FORUM', 'ASSIGNMENT', 'AMENDMENT_WAIVER', 'NOTICE', 'ENTIRE_AGREEMENT', 'THIRD_PARTY_BENEFICIARY', 'SEVERABILITY', 'COUNTERPARTS', 'SURVIVAL', 'CONSTRUCTION', 'EXPENSES'],
     guidance: 'One row per boilerplate term as the precedent names it; the row is the term the fact addresses (a FORUM fact on the jury waiver is Jury trial waiver; a SPECIFIC_PERFORMANCE_REMEDIES fact on equitable relief, irreparable harm, the bond waiver or closing enforcement is Specific performance, each a sub-item; a REMEDY_COORDINATION or REMEDY_ACTION_EXTENSION fact is Specific performance limitations; an EXPENSES or COST_SHIFT fact is Fee / expense allocation). The Provision cell is the code from that row\'s list (several cells when the clause states several: the amendment formalities, the notice methods); the clause as drafted beside it. A row the agreement does not address is omitted.',
   });
+  // Work package 19 (d): a readout-less CONSTRUCTION fact (NCS 7.3) and a
+  // CUMULATIVE_RIGHTS fact (NCS 7.5) take their rows by default.
+  table.fact_type_rows = { 'MISC_BOILERPLATE_MECHANIC_PRESENT:CONSTRUCTION': 'Construction', 'SPECIFIC_PERFORMANCE_REMEDY_PRESENT:CUMULATIVE_RIGHTS': 'Cumulative remedies' };
   section.tables = [table];
 }
 
@@ -1476,8 +1508,8 @@ function applyCapitalization(doc) {
 // "Public announcements" row, "correct and unreadable". The row's sub-items,
 // named by the facts' own words (detail_from_words_by_row, first match
 // wins), so a sponsor-backed seller's carve-outs read as a line of their
-// own. The labels are the code's proposal; Ben names them ("he decides the
-// names; the code only proposes"). Order of the rules: the carve-outs and
+// own. The labels were the code's proposal; Ben, 2026-10-18 (plan finding
+// (166)): "all sounds fine", so the ten are final. Order of the rules: the carve-outs and
 // the consistency proviso before the duties they qualify, so "without
 // providing ... the opportunity for such consultation and review, issue a
 // press release ... consistent with prior press releases" is the

@@ -5894,6 +5894,128 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       generation 8: unchanged, no such table. docs/core/CODEBASE-GUIDE.md
       updated. npm run test:active: the known failure only (the count in
       the commit). Nothing submitted or retried.
+      (98) 2026-10-18 22:25 UTC (implementer A), work package 19 on the
+      manager's terms of 21:00 (delivered 21:20, after (97) had gone up
+      on the (165) text; the manager's message asks for finding (95),
+      which (95) already is, so this is (98); (97) stands for what it
+      says). (a) The unknown-span relocation the manager describes is
+      work package 13 (a)'s rule (plan finding (79)), in the code since
+      8eb259c and tested with 3.4's case; nothing new to build. The
+      note's entry now says unknown_span: true, as work package 18 (a)'s
+      says known_span: true. Stored facts the rule keeps VALID, counted
+      from the preview branch's rows as in (94) (every non-VALID fact
+      with a component of inherited origin on a span id its closure does
+      not know, counted against the closure's spans of the allowed
+      kind): NCS generation 5, ten (3.4's 05e8ab96, 2ec8f972, 36b14852,
+      4d765c14, 61ab1d62, 7b0b52ed, 854f8bcb, b7a123fb, b83fbcc8,
+      fcc71293; 28 components, each with exactly one holder); Metsera
+      generation 8, six (1dc9dadb, 8e819867, c54f636c, c7058ea6,
+      dca9d348, ece4453b; one component each). (b) Decided from the
+      contract and the validator: CROSS_REFERENCE (and DEFINED_TERM) are
+      allowed LIST children. A list of the representations a tier covers
+      is a list of references, each child already resolved to its
+      section, which a LIST_ELEMENT would not be; and the stored facts
+      stay VALID without a re-run, where wrapping would have needed one.
+      The validator rule and the contract's R2 say so; the extraction
+      instruction still asks for LIST_ELEMENT children for lists of
+      things that vary. 6.2's two tiers (7c534651, d2f8a9b9) are the
+      stored facts kept VALID. (c) An Article-level reference now
+      resolves to the article node of the agreement structure, as the
+      manager asked, not an exemption: agreement-draft.js
+      resolveStructureReferences runs over the model's components
+      before the tree is built (compileExtraction takes
+      agreementStructure, which buildAgreementSectionDraft passes): a
+      CROSS_REFERENCE the model left unresolved that reads "this Article
+      N" resolves to the enclosing article whose number it names (roman
+      or arabic), else the agreement's one article of that number in the
+      same document scope; "this Section N.M" to that section; "this
+      Agreement" to the root; the resolution's text is the node's
+      heading words ("ARTICLE VI CONDITIONS PRECEDENT"). The model's own
+      resolves_to, when given, stands; only the bare adverbs of
+      reference ("hereof", "herein") are exempt from resolution. Test
+      with a built structure (buildAgreementStructure, buildSourceClosure)
+      whose 6.4 says "any condition set forth in this Article VI": the
+      fact is VALID, the reference's structure_node_id is the article
+      node; without the structure the same proposal is held. On NCS
+      6.4's three facts (78926bd5, 7589b03e, fc6c34bd) the words are the
+      same, so they are VALID on the next generation and
+      FRUSTRATION_BREACH_STANDARD is FOUND rather than UNRESOLVED (the
+      draft's REQUIRED_FACT_TYPE_UNRESOLVED comes from a fact type whose
+      only facts are held; a VALID fact clears it). (d) Rows for the
+      eight facts without a readout, by fact_type_rows keyed
+      "FACT_TYPE:SUBTYPE" (scripts/product/table-shapes-decision-34.js;
+      the contract regenerated, 50 tables, 164 columns): 6.1's
+      Information Statement mailing takes "Other mutual conditions", a
+      new row of the mutual conditions table (fact_type_rows
+      GENERAL_CLOSING_CONDITION); 6.3's Closing Tax Opinion "Tax opinion"
+      and its Canadian tax-deposit condition "Other conditions", new rows
+      of both party tables (GENERAL_CLOSING_CONDITION:TAX_OPINION; the
+      bare key), and beside them 6.3's no-Parent-MAE condition
+      (e9bd4f85, the ninth readout-less fact of those sections) takes
+      the "No Material Adverse Effect" row the Company's table's mapping
+      named and its fixed list lacked; the party tables' statement_words
+      now read the party either way round ("the obligations of the
+      Company"; "the Company's obligation"), which is what kept 6.3's
+      facts off their table; 7.1's two rights take "Written consent not
+      delivered" and "Support agreement not delivered", new rows of the
+      buyer's termination table (subtype_rows and fact_type_rows); 7.2's
+      remedy entitlement "Remedies preserved", a new row of the effect
+      table; 7.3's VAT warranty (the model's CONSTRUCTION) the existing
+      "Construction" row; 7.5's cumulative rights "Cumulative remedies",
+      a new row of the boilerplate table. The nine NCS facts, with their
+      own words, each land on that row and nothing is left without a
+      readout (tests/product-table-view.test.js; the shapes in
+      tests/product-table-shapes.test.js; defaultConclusions' cases in
+      tests/product-fact-conclusions.test.js). Metsera generation 8: its
+      readout-less VALID facts (100: defined-term entries, exchange
+      mechanics, equity awards, no-shop prerequisites, merger mechanics,
+      appraisal, material contracts) are of none of these fact types and
+      subtypes, so none moves; the page shows none without a readout as
+      before. docs/core/CODEBASE-GUIDE.md updated. npm run test:active:
+      the known failure only (the count in the commit). Nothing
+      submitted, woken or retried.
+      (99) 2026-10-18 22:40 UTC (implementer A), the manager's addenda
+      of 21:10 and 21:05 to work package 19 (delivered 21:22 and 21:24).
+      (f) Done before the addenda arrived, in (96) and fb98374: the
+      registration rights are one row of their own small table, last in
+      the Consideration section, present or absent, the facts behind it,
+      no sub-items; the words rule that recognises the facts stays on
+      the general covenants table and sends them there; the general
+      covenants table keeps the three Nasdaq notices; the nine
+      CAPITALISATION facts stay on the capitalization table (question
+      (g) of (93) with Ben). Ben's words are in the code comments: "reg
+      rights I think goes with consideration (but at bottom)"; "are
+      these from a reg rights agreement? I wouldn't go into anywhere
+      near this depth in this product"; on the publicity labels, "all
+      sounds fine" (now in the PUBLICITY comment of
+      scripts/product/table-shapes-decision-34.js; the ten are final);
+      on the unusual provisions, "not a fact type today" (nothing
+      built). (g) The manager's diagnosis was right and (97)'s was
+      incomplete. The stale deploy was real, but the shape the manager
+      saw ("General notification" carrying 29 facts with (95)'s sub-items
+      and no "Registration rights" row) is what (95)'s code did on the
+      real rows even when deployed: the general covenants table names its
+      rows from the fact's subtype (row_from_subtype, subtype_rows), the
+      stored 5.17 facts are GENERAL_NOTIFICATION, so a fact the words
+      rule had moved to "Registration rights" on that same table was
+      still named "General notification" and the rule's row became its
+      sub-item, then the sub-item rule read the row_label and named the
+      details; the fixture's facts carried a made-up subtype
+      (OTHER_COVENANT, not in the schema) the subtype naming never
+      touched, so the test moved where the rows did not. Fixed in
+      lib/product/table-view.js: a fact a words_rows rule moved
+      (page_rule 'words_rows') keeps the rule's row over the subtype's
+      name, on the same table as across tables; pinned with a real
+      subtype on the general covenants table under a synthetic same-table
+      rule, and with the stored 5.17 rows (real subtypes, real fields:
+      tests/fixtures/product/ncs-generation-5-5-17-general-covenants.json)
+      on the registration table, where the move was already right since
+      (96) because the registration table has no subtype naming. Counts
+      from the real rows, through buildTableView with the generated
+      contract: Registration rights line 29 facts, no sub-rows; General
+      notification 2 (the Nasdaq deficiency notice and the delisting
+      event), Litigation notification 1 (Nasdaq or SEC proceedings);
+      nothing without a readout. Nothing submitted, woken or retried.
       (120) 2026-10-18 19:10 to 19:45 UTC (implementer C), Q5: the limb
       names harvested. `scripts/product/harvest-rep-limbs.js` (library
       `lib/product/rep-limb-harvest.js`, `tests/product-rep-limb-harvest.test.js`)
@@ -6262,6 +6384,46 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       shapes. npm run test:active: 766 of 767, the one failure the
       known Codex-client final-message test. No run, worker or sandbox
       touched; no live model call made.
+      (127) 2026-10-18 21:30 to 22:15 UTC (implementer C), work package
+      C3 on finding (166) (Ben: "btw let's do major biopharma deals as
+      the basi sfor the build out of next searches, starting > $1bn"):
+      docs/codex-program/notes/BIOPHARMA-DEALS-OVER-1BN-2026-10-18.md,
+      documentation only, no intake submitted. Thirty-four public-target
+      biopharma and pharma acquisitions announced 2025-01-01 to
+      2026-10-18 at or above about $1bn, each with acquirer, target,
+      announcement date, headline value and its source (four trackers
+      and the parties' releases), the structure read from the
+      agreement's own text (the Offer defined for a tender, Contingent
+      Value Right for a CVR, the Scheme for a UK or Irish scheme) and
+      the EDGAR Exhibit 2.1 URL found by full-text search and fetched
+      in full (every one answered 200; the two scripts are in the
+      session's scratchpad). Three are in the corpus (Metsera, Apogee,
+      Arcellx), 31 are not. By form: 17 two-step tender offers, 15
+      one-step cash mergers, one stock merger (Indivior / Supernus,
+      1.5401 shares per share, the only stock deal), 11 with a CVR,
+      four schemes or Dutch offers filed as Transaction Agreements
+      (Verona, Centessa, Avadel, Merus). Below the line: Regulus,
+      Esperion, Theravance and XOMA (under $1bn upfront); the tools,
+      diagnostics and device deals (Exact Sciences $21bn, Bio-Techne
+      EV $11.3bn, Integer, Personalis, BioLife); the private targets
+      the trackers carry. The intake cannot take Recordati (Italian
+      offer, $12.4bn) or PolyPeptide (Swiss), neither an SEC
+      registrant; it takes the four scheme and Dutch-offer agreements
+      by URL but their mechanics are not the schema's (Court sanction,
+      a Scheme Document, a post-offer reorganisation), so they go after
+      the Delaware deals. Metsera's Amendment No. 1 of 2025-11-07 is
+      listed beside the original (generation 8 is the original). The
+      three to run first, for drafting variety against the corpus's
+      two cash mergers and one CVR tender offer: GSK / Nuvalent (a
+      $10.6bn two-step tender offer without a CVR), Indivior / Supernus
+      (the stock merger of equals, an exchange ratio the consideration
+      tables have never seen) and J&J / Intra-Cellular ($14.6bn, a
+      plain one-step cash merger, the control); fourth, Curium /
+      Lantheus (a one-step merger with a $12 CVR and a private-equity
+      acquirer) or Novo Nordisk / Akero. Values are the trackers'
+      headline figures (equity, or EV where marked), not read from the
+      agreements; the agreements' consideration is what the intake
+      will extract. No run, worker or sandbox touched.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
