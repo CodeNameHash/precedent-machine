@@ -9,8 +9,7 @@ const {
   ANTHROPIC_API_PROVIDER_ID, CLAUDE_CLI_PROVIDER_ID, assertConfiguredRunModelConfig, hostedModelConfigFor, isHostedProvider,
 } = require('../lib/product/product-model-config');
 const { assertDisposableDatabaseUrl } = require('../lib/product/sandbox-wake');
-const { isUsageLimitError } = require('../lib/llm-cli-client');
-const { isNotConfiguredError } = require('../lib/product/anthropic-api-model');
+const { workerStopReason } = require('../lib/product/worker-stop');
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const IDLE_WAIT_MS = 1000;
@@ -115,18 +114,17 @@ async function runHostedWorker(options, output = process.stdout, dependencies = 
       return null;
     } catch (error) {
       stopped = true;
-      // A usage limit on the Codex or Claude login is not a section failure:
-      // the worker stops with the reason so the run can be retried once the
-      // account has credits (Metsera generation 5, 2026-09-14; generation 7
-      // at 19:29 UTC, the Claude session limit). The code keeps its name.
-      if (isUsageLimitError(error)) throw new Error(`PRODUCT_HOSTED_CODEX_USAGE_LIMIT: ${error.message}`);
-      // An API key the account refuses for want of its workspace header is
-      // the deployment's configuration, not a section failure (NCS
-      // generation 5, 2026-10-18: two sections burnt three attempts each
-      // in a minute before the run failed). The worker stops with the
-      // reason; the run is retried once ANTHROPIC_WORKSPACE_ID, or a
-      // workspace-scoped key, is set (work package 11, plan finding (70)).
-      if (isNotConfiguredError(error)) throw new Error(`PRODUCT_HOSTED_ANTHROPIC_API_NOT_CONFIGURED: ${error.message}`);
+      // A usage limit on the Codex or Claude login or the API account, or
+      // an API key the account refuses for want of its workspace header,
+      // is not a section failure: the worker stops with the reason so the
+      // run can be woken again once the account has credits or the
+      // configuration is fixed (Metsera generation 5, 2026-09-14;
+      // generation 7 at 19:29 UTC, the Claude session limit; NCS
+      // generation 5 on the API, 2026-10-18, finding (73)). The section
+      // loop rethrows such an error after one recorded attempt
+      // (lib/product/worker-stop.js). The usage-limit code keeps its name.
+      const stopReason = workerStopReason(error);
+      if (stopReason) throw new Error(`${stopReason}: ${error.message}`);
       throw error;
     }
   };

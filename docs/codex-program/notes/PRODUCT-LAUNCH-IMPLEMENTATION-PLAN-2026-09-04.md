@@ -3887,6 +3887,7 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       the launcher's unset line and no requirement. npm run test:active:
       682 tests, 681 pass, the one failure the known Codex-client
       final-message test. Guide line updated. Commit: the code and tests, then
+      the plan and guide.
       (71) 2026-10-18 13:10 UTC: work package 11 (finding (70)) accepted
       and merged (d82723e8, a fast-forward; its 36 tests across three
       files pass here; its suite 681 of 682 with the known failure); the
@@ -3954,7 +3955,53 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       item says, not blind evidence). Still open on the road to done:
       Phase 5's sample reconciliation and measure (after Olaplex and
       Apogee), Q5 and Q4, Phase 6.
-      the plan and guide.
+      (73) 2026-10-18 13:21 to 13:50 UTC (implementer), work package 11b
+      on the manager's message of 13:17 UTC. No run retried; no live
+      call. The gap, read in the live path: the worker's loop calls
+      `advanceAgreementDraftAnalysis` (lib/product/analysis-runner.js),
+      whose section loop catches every error from the attempt, records
+      the failure (the section FAILED with attempts n, the run PARTIAL
+      while n is under max_attempts) and returns the analysis; the
+      worker sees PARTIAL, loops, and the claim takes the same section
+      again (attempts n+1) until the third failure makes the run FAILED
+      and the worker throws PRODUCT_HOSTED_RUN_FAILED. Neither stop rule
+      in scripts/product-hosted-worker.js ever saw the error: the
+      not-configured stop of (70), and the usage-limit stop before it,
+      which had the same gap (a limit mid-run burnt three attempts a
+      section the same way; the earlier tests stubbed `advance` to throw,
+      a path the live worker does not take). Fix, in code for every
+      hosted run: `lib/product/worker-stop.js` is the one test
+      (`workerStopReason`: ANTHROPIC_API_NOT_CONFIGURED to
+      PRODUCT_HOSTED_ANTHROPIC_API_NOT_CONFIGURED; the usage-limit rule
+      to PRODUCT_HOSTED_CODEX_USAGE_LIMIT, the code keeping its name);
+      the section loop records the one attempt and then rethrows a stop
+      error instead of returning; the worker's catch names the exit
+      reason from the same test. State after the stop: the section
+      FAILED with the reason on its row and attempts 1, the run PARTIAL,
+      the other sections PENDING and untouched. PARTIAL, not RUNNING or
+      PENDING as the message asked: the claim counts the attempt before
+      the call is made and the only ways to release a claimed section
+      (product_phase1_fail_section, the lease expiry) end it FAILED; a
+      plain wake resumes a PARTIAL run (the claim refuses only FAILED
+      and READY runs and takes FAILED sections with attempts to spare),
+      which is what the message wanted. Proposed, not done: a release
+      RPC that returns the section to PENDING with the attempt refunded
+      would need a migration on the preview branch; the one spent
+      attempt out of three did not seem worth it. Tests
+      (`tests/product-hosted-worker-pool.test.js`, 14 of 14), through
+      the real section loop with an in-memory store that keeps the
+      database's claim and failure rules and the Concho fixture: the
+      refused configuration makes one call (the first routing call), one
+      claim, one recorded attempt with the reason, the worker exits
+      PRODUCT_HOSTED_ANTHROPIC_API_NOT_CONFIGURED with the API's message,
+      the run is PARTIAL and every other section PENDING with no
+      attempt; a session limit stops the same way; an ordinary section
+      error is still claimed to three attempts and then fails the run;
+      the reason table. Also repaired here: the manager's (71) and (72)
+      were inserted inside (70)'s last sentence; the sentence is joined
+      again. npm run test:active: 685 tests, 684 pass, the one
+      failure the known Codex-client final-message test. Guide line for
+      analysis-runner.js updated.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
