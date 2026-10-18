@@ -4447,6 +4447,39 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       test:active: 698 of 699, the one failure the known Codex-client
       final-message test. Commits 1126129, 28c9417 and the
       reconciliation commit.
+      (83) 2026-10-18 17:58 UTC: work package 14 (finding (82)) accepted
+      and merged (268ca08a, a fast-forward; its three suites 95 of 95
+      here). NCS generation 5 at 17:53 UTC: RUNNING, 61 of 104, 0
+      failed, $80.30 (projection about $137). Read against the text,
+      4.6 to 5.3: the no-shop. 5.2's 27 facts on their rows: the
+      prohibited acts and the Representative control standard, cease
+      existing discussions, return or destruction (six months), the
+      data-room cut-off, the 48-hour initial notice, the notice
+      contents (identity, unredacted copies, oral summary) and ongoing
+      updates, no agreement restricting information to Parent, the
+      fiduciary table (bona fide unsolicited proposal before the
+      Written Consent, no breach, the fiduciary standard, an Acceptable
+      Confidentiality Agreement, information parity within 48 hours,
+      the engagement standard), the Acquisition Proposal 20% threshold
+      and the Superior Proposal 80% substitution; 5.3's change of
+      recommendation (the prohibited actions, the Superior Proposal
+      right before the Written Consent, the ten-Business-Day tender
+      offer response, the four-Business-Day match and two-Business-Day
+      subsequent match, the stop-look-and-listen carve-out). Two notes:
+      the fiduciary savings clause ("Company and Company Board actions
+      under the fiduciary exception are not a no-shop breach") has no
+      row (unplaced; a savings-clause sub-item of the fiduciary table is
+      the candidate, listed for the next shapes pass); "Adverse
+      Recommendation Change" enters Defined Terms as "any of the
+      foregoing actions", the resolved words, which is the definition
+      as drafted but reads poorly without the list (watched). One
+      failure in flight: 5.1 lost its first attempt at 17:37 to the
+      API provider's 64,000-token output cap on part 2 of 3 (the
+      restrictions list); work package 15 (the documented maximum
+      output cap on the API and an attempt-aware re-split) is with the
+      implementer; if 5.1 fails its three attempts the run is retried
+      once the worker carries the fix.
+
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
