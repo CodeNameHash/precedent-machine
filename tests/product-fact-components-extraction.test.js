@@ -903,3 +903,37 @@ test('a publicity proposal takes its sub-item from its words at extraction; the 
   assert.ok(note && note.kind === 'NOTE');
   assert.deepEqual(JSON.parse(note.message), { client_ref: 'p1', from: 'Joint release', row_label: 'Public announcements', to: 'Announcement release' });
 });
+
+// Work package 18 (d) (plan finding (93); NCS generation 5, 5.17): at
+// extraction a covenant naming the Registration Statement leaves the row
+// the model chose for Registration rights, with its sub-item, both noted.
+test('a registration-rights covenant moves from General notification to Registration rights at extraction, with its sub-item and notes', () => {
+  const text = 'Section 5.17 Registration Rights. Parent shall use its reasonable best efforts to keep such Registration Statement continuously effective under the Securities Act until the date on which all Registrable Securities covered by such Registration Statement have been sold.';
+  const doc = { source_document_id: 'e'.repeat(64), canonical_text: text };
+  const sectionNode = 'r'.repeat(64);
+  const span = { span_id: 'r1'.repeat(32), kind: 'FULL_SECTION', structure_node_id: sectionNode, start_byte: 0, end_byte: bytes(text), exact_text: text };
+  const rightsClosure = { source_closure_id: 'r2'.repeat(32), structure_node_id: sectionNode, section_node_id: sectionNode, section_reference: '5.17', full_section_span_id: span.span_id, spans: [span] };
+  const rightsNode = { node_id: sectionNode, reference: '5.17', kind: 'SECTION' };
+  const own = (ref, kind, label, quote) => ({ ref, kind, label, quote, source_span_id: span.span_id, occurrence: 0, origin: 'OWN', children: [] });
+  const compiled = compileExtraction({
+    sourceDocument: doc, legalSchema: legalSchemaV2, node: rightsNode, closure: rightsClosure, call, routedFamilies: ['GENERAL_COVENANTS'], ownedNodeIds: new Set([sectionNode]), tableShapes,
+    response: {
+      proposals: [{ client_ref: 'p1', group_ref: 'g1', family_key: 'GENERAL_COVENANTS', subtype_key: 'GENERAL_NOTIFICATION', fact_type: 'GENERAL_COVENANT_PRESENT',
+        statement: 'Parent keeps the Registration Statement effective until all Registrable Securities are sold.',
+        roles: { LEGAL_ACTOR_OR_SUBJECT: 'Parent', LEGAL_OPERATION: 'shall use its reasonable best efforts to keep such Registration Statement continuously effective', OPERATIVE_OBJECT: 'such Registration Statement' },
+        value: null, evidence_quotes: [{ quote: 'to keep such Registration Statement continuously effective under the Securities Act', source_span_id: span.span_id, occurrence: 0 }],
+        headline: { label: 'Registration rights', distinguishing_refs: ['c3'], summary: 'Parent keeps Registration Statement effective until all Registrable Securities have been sold' },
+        components: [own('c1', 'ACTOR', 'Parent', 'Parent'), own('c2', 'EFFORTS_STANDARD', 'standard', 'shall use its reasonable best efforts'), own('c3', 'OPERATION', 'keep effective', 'to keep such Registration Statement continuously effective under the Securities Act'), own('c4', 'PERIOD', 'until sold', 'until the date on which all Registrable Securities covered by such Registration Statement have been sold')],
+        conclusions: { table_key: 'general-covenants-table', row_label: 'General notification', cells: [{ column_id: 'obligor', code: 'PARENT', component_refs: ['c1'] }, { column_id: 'standard', code: 'REASONABLE_BEST_EFFORTS', component_refs: ['c2'] }, { column_id: 'asDrafted', text: 'to keep such Registration Statement continuously effective under the Securities Act', component_refs: ['c3'] }] } }],
+      groups: [{ client_ref: 'g1', family_key: 'GENERAL_COVENANTS', subtype_key: 'GENERAL_NOTIFICATION' }],
+      links: [],
+    },
+  });
+  assert.equal(compiled.proposals.length, 1);
+  const [fact] = compiled.proposals;
+  assert.equal(fact.validation_status, 'VALID', compiled.issues.map((issue) => `${issue.code}: ${issue.message}`).join('\n'));
+  assert.equal(fact.conclusions.row_label, 'Registration rights');
+  assert.equal(fact.conclusions.row_detail, 'Effectiveness and amendments');
+  assert.deepEqual(JSON.parse(compiled.issues.find((issue) => issue.code === 'ROW_FROM_WORDS').message), { client_ref: 'p1', from: 'General notification', to: 'Registration rights' });
+  assert.deepEqual(JSON.parse(compiled.issues.find((issue) => issue.code === 'ROW_DETAIL_FROM_WORDS').message), { client_ref: 'p1', from: null, row_label: 'Registration rights', to: 'Effectiveness and amendments' });
+});

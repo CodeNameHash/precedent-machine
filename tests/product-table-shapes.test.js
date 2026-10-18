@@ -1049,3 +1049,24 @@ test('the general covenants table names the publicity sub-items and the words th
   brokenTable.detail_from_words_by_row['Access to information'] = [{ detail: 'Data room', words: 'data room' }];
   assert.throws(() => validateTableShapesV3(broken, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_DETAIL_FROM_WORDS_ROW_WITHOUT_LABELS/);
 });
+
+// Work package 18 (d) (plan finding (93); NCS generation 5, 5.17): the
+// Registration rights row, its words rule over the model's row, and its
+// sub-items.
+test('the general covenants table has a Registration rights row placed by words over the readout, with its sub-items', () => {
+  const table = findTableV3(findSectionV3('general-covenants'), 'general-covenants-table');
+  assert.ok(table.fixed_row_labels.includes('Registration rights'));
+  const rule = table.words_rows.find((candidate) => candidate.row_label === 'Registration rights');
+  assert.equal(rule.over_readout, true);
+  const when = new RegExp(rule.when, 'i');
+  for (const words of ['to keep such Registration Statement continuously effective', 'all Registrable Securities covered', 'a prospectus supplement', 'Rule 144(c)(1)', 'pursuant to Rule 415']) assert.ok(when.test(words), words);
+  assert.equal(when.test('any notice of deficiency or non-compliance received from Nasdaq'), false);
+  assert.deepEqual(table.detail_labels_by_row['Registration rights'], ['Resale registration', 'Effectiveness and amendments', 'Stockholder information and approval', 'Indemnification', 'Expenses', 'Rule 144 and legend removal', 'Listing and reporting']);
+  const rules = table.detail_from_words_by_row['Registration rights'];
+  assert.equal(rules.length, 7);
+  for (const detail of rules) assert.ok(table.detail_labels_by_row['Registration rights'].includes(detail.detail), detail.detail);
+  assert.deepEqual(rules.slice(0, 2).map((candidate) => candidate.detail), ['Indemnification', 'Expenses'], 'the indemnity before the filing duties that name a prospectus');
+  const broken = structuredClone(tableShapesV3);
+  findTableV3(broken.sections.find((s) => s.section_key === 'general-covenants'), 'general-covenants-table').words_rows[0].over_readout = 'yes';
+  assert.throws(() => validateTableShapesV3(broken, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_WORDS_ROWS/);
+});

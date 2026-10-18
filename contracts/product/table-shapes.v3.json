@@ -7551,7 +7551,8 @@
             "Confidentiality",
             "Transaction litigation",
             "Financing cooperation",
-            "Director and officer indemnification"
+            "Director and officer indemnification",
+            "Registration rights"
           ],
           "fixed_row_labels_source": "LEGAL_SCHEMA/V2 GENERAL_COVENANTS subtypes plus the covenants the legacy Other Covenants index curated (financing cooperation, D&O indemnification, confidentiality, transaction litigation)",
           "open_rows": true,
@@ -7569,7 +7570,7 @@
             "CVR": "CVR Agreement",
             "LISTING": "Stock exchange listing"
           },
-          "guidance": "One row per covenant, named as the precedent would (fixed_row_labels), with a new name only when none fits. Each limb of a covenant is a sub-item (row_detail) with the same columns; the covenant's line gives the overview. The subject of the row is the covenant, never a party or a pronoun; the obligor is a coded cell. The covenant as drafted replaces the scope and exceptions fragments. Public announcements: every publicity fact is on this row, one fact per operative unit (the announcement release and its approval; the consent, consultation and review duties; the consistency proviso; each carve-out; the Law, court-process or listing-agreement exception), each a sub-item with row_detail from the row's detail_labels_by_row; the code names the sub-item from the fact's own words when a label's words are present (work package 18, 2026-10-18).",
+          "guidance": "One row per covenant, named as the precedent would (fixed_row_labels), with a new name only when none fits. Each limb of a covenant is a sub-item (row_detail) with the same columns; the covenant's line gives the overview. The subject of the row is the covenant, never a party or a pronoun; the obligor is a coded cell. The covenant as drafted replaces the scope and exceptions fragments. Registration rights: every covenant of a registration-rights package (the resale registration statement or shelf, keeping it effective and amending it, the holders' information and approval rights, the indemnities and their mechanics, the expenses, Rule 144 and legend removal, the listing and reporting covenants for the resale period) is on this row, one fact per operative unit, each a sub-item with row_detail from the row's detail_labels_by_row; the code places a covenant whose words name the Registration Statement, Registrable Securities, a prospectus, Rule 144 or Rule 415 here and names its sub-item from its words (work package 18, 2026-10-18). Public announcements: every publicity fact is on this row, one fact per operative unit (the announcement release and its approval; the consent, consultation and review duties; the consistency proviso; each carve-out; the Law, court-process or listing-agreement exception), each a sub-item with row_detail from the row's detail_labels_by_row; the code names the sub-item from the fact's own words when a label's words are present (work package 18, 2026-10-18).",
           "detail_labels_by_row": {
             "Public announcements": [
               "Announcement release",
@@ -7582,6 +7583,15 @@
               "Carve-out: investor and media communications",
               "Carve-out: sponsor disclosure",
               "Law or exchange exception"
+            ],
+            "Registration rights": [
+              "Resale registration",
+              "Effectiveness and amendments",
+              "Stockholder information and approval",
+              "Indemnification",
+              "Expenses",
+              "Rule 144 and legend removal",
+              "Listing and reporting"
             ]
           },
           "detail_from_words_by_row": {
@@ -7626,8 +7636,45 @@
                 "detail": "Law or exchange exception",
                 "words": "required\\s+by\\s+(?:applicable\\s+)?Law|listing\\s+agreement|court\\s+process|securities\\s+exchange"
               }
+            ],
+            "Registration rights": [
+              {
+                "detail": "Indemnification",
+                "words": "indemni|hold\\s+harmless|reimburs|omission\\s+or\\s+alleged\\s+omission|net\\s+proceeds|required\\s+to\\s+pay"
+              },
+              {
+                "detail": "Expenses",
+                "words": "expenses\\s+incurred\\s+in\\s+connection\\s+with\\s+any\\s+registration|registration\\s+expenses|shall\\s+be\\s+paid\\s+by"
+              },
+              {
+                "detail": "Listing and reporting",
+                "words": "\\blisting\\b|Nasdaq|delisting|Depository\\s+Trust|reports?\\s+(?:and\\s+other\\s+documents\\s+)?required|timely\\s+file|Exchange\\s+Act\\s+reports?"
+              },
+              {
+                "detail": "Rule 144 and legend removal",
+                "words": "Rule\\s+144|legend"
+              },
+              {
+                "detail": "Stockholder information and approval",
+                "words": "approved\\s+in\\s+writing|written\\s+approval|review\\s+and\\s+approve|opportunity\\s+to\\s+review|furnish|information\\s+concerning"
+              },
+              {
+                "detail": "Resale registration",
+                "words": "Rule\\s+415|\\bshelf\\b|prospectus\\s+supplement\\s+to|424\\(b\\)|selling\\s+securityholders?|include\\s+the\\s+Registrable\\s+Securities"
+              },
+              {
+                "detail": "Effectiveness and amendments",
+                "words": "effective|amend|supplement|untrue\\s+statement|request\\s+by\\s+the\\s+SEC"
+              }
             ]
-          }
+          },
+          "words_rows": [
+            {
+              "row_label": "Registration rights",
+              "when": "Registration\\s+Statement|Registrable\\s+Securities|\\bprospectus|Rule\\s+144|Rule\\s+415",
+              "over_readout": true
+            }
+          ]
         }
       ],
       "print_pages": [
