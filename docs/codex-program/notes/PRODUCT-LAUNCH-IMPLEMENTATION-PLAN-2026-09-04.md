@@ -3055,6 +3055,75 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       published prices and generation 7's 9.85m input and 3.15m output
       tokens. Generation 8 goes on whichever path is ready first, Ben
       choosing by the estimate.
+      (46) 2026-10-18 00:30 to 01:15 UTC, implementer, work package 3
+      (the manager's message of 00:40 UTC; built on the terms of (44)
+      and (45) and then brought to the message). No run submitted; no
+      live API call made from here; no key value anywhere in the
+      repository or a fixture. The Anthropic API is a hosted provider
+      beside the Claude CLI path. Its id is `ANTHROPIC_API`, not
+      `ANTHROPIC`: repository evidence is that `ANTHROPIC` is the
+      in-request provider (Sonnet, 12,000-token cap, `run-handler`'s
+      in-process path) and the default whenever PRODUCT_MODEL_PROVIDER
+      is unset, so making that id hosted would route every default run
+      to the sandbox and break the in-process path and its tests; the
+      manager may rename it. The hosted provider (`lib/product/
+      product-model-config.js` `ANTHROPIC_API_MODEL_CONFIG`,
+      `lib/product/anthropic-api-model.js`): the CLI path's model tier
+      and effort per call kind read from that path's map (claude-opus-5;
+      routing and residual low, extraction high), a 64,000-token output
+      cap so a 60,000-token extraction completes (the CLI path runs
+      under Claude Code's own cap), adaptive thinking (the model's
+      default; no sampling parameter, which the model refuses), the same
+      compact-JSON system prompt, streaming, the runner's LONG_SECTION
+      split and part handling untouched, the same recorded shape
+      (prompt_version, `model_id` as `claude-opus-5;effort=high`, the
+      whole prompt as input tokens, cost_microusd from the price table).
+      The price table is one constant with its source and date
+      (`ANTHROPIC_API_PRICES`: https://platform.claude.com/docs/en/about-claude/pricing
+      read 2026-10-18; claude-opus-5 $5 input, $6.25 5-minute cache
+      write, $10 1-hour cache write, $0.50 cache read, $25 output per
+      million tokens; claude-opus-5-5 $4 / $5 / $8 / $0.20 / $20). The
+      key: ANTHROPIC_API_KEY on the deployment, read by the run route,
+      passed to the sandbox command's env by the wake exactly as
+      CLAUDE_CODE_OAUTH_TOKEN is and only for this provider, required
+      by the launcher and the worker, unset by the launcher for every
+      other provider. A 429 after the SDK's retries, or a 400 naming the
+      credit balance, is ANTHROPIC_API_USAGE_LIMIT; the worker stops on
+      it with the reason recorded (PRODUCT_HOSTED_CODEX_USAGE_LIMIT, the
+      code's existing name), as on the CLI paths; a refusal or an answer
+      cut off at the cap fails the call with the received output kept.
+      Choosing per run: the intake takes an optional `provider`,
+      validated against the hosted providers (anything else is a 400),
+      and the run's model_config records it; the run route drives a run
+      on the provider its own model_config names whatever the
+      environment's default; the analysis read carries `model_provider`
+      and the provisions page shows "Anthropic API" / "Claude
+      subscription" beside the state chip. To submit one run on the API
+      while the environment default stays the subscription, POST
+      /api/product/intake with the internal bearer token and the body
+      {"url": "<sec exhibit url>", "idempotencyKey": "<new key>",
+      "explicitGeneration": <n>, "provider": "ANTHROPIC_API"}, then POST
+      /api/product/analysis/<run_id>/run as today; or, in one line,
+      `node scripts/product/start-generation.js <preview-url> <sec-url>
+      <generation> --provider ANTHROPIC_API`. The sandbox worker must be
+      on this branch head first (`update-sandbox-worker.js`), and the
+      preview deployment redeployed since Ben set the key. Estimate
+      (`scripts/product/estimate-run-cost.js 9,853,912 3,146,447`, the
+      generation 7 tokens, prices of 2026-10-18): input $49.27 plus
+      output $78.66, $127.93 per generation on claude-opus-5 with no
+      cache reads (the request sets no cache breakpoint today; the
+      contracts and table shapes repeat on every section, so a
+      breakpoint on them is the first lever, about $97 if two thirds of
+      the input read from cache); $102.34 on claude-opus-5-5, a
+      different model from the CLI path's. Ben's $200 covers one
+      generation with margin, not two. Tests:
+      `tests/product-anthropic-api-provider.test.js` (provider
+      selection, the request shape, cost, limits, the wake's env with no
+      key value asserted, the run route, the intake field, the analysis
+      read, the estimate), the worker's key check and its stop on a 429
+      in `tests/product-hosted-worker-pool.test.js`, the provider on the
+      preview page. Commits 2d2c6f4, 7709441 and the package commit;
+      `npm run test:active` result below.
       (47) 2026-10-18 00:05 UTC, Ben, on the 2.01 Consideration package
       tree in the sidebar: "hitting 'show detail' doesn't add much...just
       smae stuff again? Also, we should better indent the (i) and (ii)
@@ -3068,49 +3137,6 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       children indented beneath, no toggle; list elements such as (i)
       and (ii) are separate indented lines; every tree line uses one
       text style, left-aligned.
-      (48) 2026-10-18 00:30 UTC, implementer, work package 3 on the
-      terms of (44) and (45), ahead of its message, no run submitted.
-      The Anthropic API is a hosted provider beside the Claude CLI path:
-      provider `ANTHROPIC_API` (`lib/product/product-model-config.js`,
-      `ANTHROPIC_API_MODEL_CONFIG`), the CLI path's model tier and effort
-      per call kind (claude-opus-5; routing and residual low, extraction
-      high), Claude Code's default output cap of 32,000 tokens, adaptive
-      thinking (the model's default; no sampling parameter, which the
-      model refuses), the same compact-JSON system prompt, streaming so a
-      long extraction outlives the request timeout, the runner's part
-      splitting unchanged (`lib/product/anthropic-api-model.js`;
-      `createHostedProductModel` builds it for a run whose model_config
-      names the provider, so the run page shows which account paid).
-      The key: `ANTHROPIC_API_KEY` on the deployment, read by the run
-      route like the OAuth token, passed to the sandbox by the wake for
-      this provider alone, required by the launcher and the worker, and
-      unset by the launcher for every other provider; never in the
-      repository. Every call's cost is recorded at the published
-      first-party rates (claude-opus-5: $5 input, $6.25 cache write,
-      $0.50 cache read, $25 output per million tokens) and the input
-      count is the whole prompt as the CLI path counts it. A 429 after
-      the SDK's own retries, or a 400 naming the credit balance, is
-      ANTHROPIC_API_USAGE_LIMIT, which the worker's usage-limit rule
-      stops on instead of burning attempts; a refusal or an answer cut
-      off at the cap fails the call with the received output kept.
-      Selected for new runs by PRODUCT_MODEL_PROVIDER=ANTHROPIC_API on
-      the deployment, as the other providers are. Cost estimate for a
-      Metsera-sized run from generation 7's tokens (9.85m input, 3.15m
-      output), at the rates above: input $49.25 plus output $78.75, about
-      $128 per generation with no prompt caching, which the request does
-      not yet ask for (the family contracts and table shapes repeat on
-      every section; a cache breakpoint on them would cut the input
-      share, roughly to $100 a generation if two thirds of the input read
-      from cache, and is the first lever if the API path is used more
-      than once). Ben's $200 of credit covers one generation on this
-      path with margin, not two. claude-opus-5-5 ($4 / $20) would be
-      about $102, but is a different model from the CLI path's and so
-      not what (45) asked for; Ben's call. Tests:
-      `tests/product-anthropic-api-provider.test.js` (in test:active).
-      Not done: no live call was made from here (no key in this
-      environment, by design). Commits 2d2c6f4 (the provider), a0b677e
-      (A.5's fourth-level fold) and 72c2ec6; `npm run test:active` 643
-      of 644, the one failure the known Codex-client final-message test.
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
