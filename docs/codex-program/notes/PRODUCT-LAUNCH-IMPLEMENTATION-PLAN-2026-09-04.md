@@ -4148,6 +4148,58 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       the codes-hidden default, and renaming the `provision` column's
       "Summary" header. NCS generation 5 at 15:05 UTC: RUNNING, 14 of
       104, no failure since the retry, $16.40 spent; the worker alive.
+      (79) 2026-10-18 16:40 UTC, NCS generation 5 read at 31 of 104
+      ($46.35 spent, 356 proposals, 344 VALID, 12 held; the projection
+      now about $155, Ben told at $137 and warned of the $170 line).
+      Read against the text: 1.1 (the merger, Merger Sub's existence
+      ceasing, the Company surviving as Parent's wholly owned
+      subsidiary) right; 1.2 right in substance (the second Business
+      Day Closing at 10:00 a.m. Central, Baker Botts, remote closing,
+      the Tolling Period blackout, the day-for-day Outside Date
+      extension and the no-termination clause on the mutual termination
+      table's Outside Date row); 2.1's election economics extracted
+      (Cash Exchange Ratio 0.1371, Share Consideration Exchange Ratio
+      0.5537, Mixed Share Consideration Exchange Ratio 0.2392, Parent
+      Closing Price, the Section 368(a)(2)(E)(ii) cash cap on the Tax
+      Matters table, Default Stock, the Rewind no-adjustment clause).
+      Three defects, two shared with generation 8, handed to the
+      implementer as work package 13:
+      (a) 3.4 (Authority) is all held, 10 of 10, and generation 8's
+      3.19 was the same class: every component the model cut from the
+      Article III introduction (origin INTRO: "the Company represents
+      and warrants to Parent and Merger Sub as follows:" and the
+      Except-as-set-forth qualifiers) cites span 3d0f0a06..., which does
+      not exist; the closure's chapeau span is 3d0f7a06... (one
+      character apart) and holds every quote verbatim. The component
+      compiler reports UNKNOWN_SOURCE_COMPONENT and holds the fact. A
+      quote found verbatim in exactly one closure span of a kind its
+      origin allows is relocated to that span with a note, as sibling
+      relocation already does; the id the model wrote is evidence of
+      what it read, not the fact.
+      (b) The Defined Terms fallback takes non-definition facts whose
+      tree carries a DEFINED_TERM component and shows an arbitrary
+      component as the definition: 1.2's "Closing may not occur during
+      the Rewind Tolling Period" is a Defined Terms entry "Tolling
+      Period: shall not occur on any date that falls on..." and "The
+      date the Closing occurs is the Closing Date" an entry "Closing
+      Date: is referred to in this Agreement as"; 2.1's Default Stock,
+      Rewind and Share Election Stock facts likewise. A fact enters
+      Defined Terms only when it is a definition (KEY_DEFINED_TERMS, or
+      a DEFINED_TERM component that resolves to its definition) and the
+      entry's text is the definitional words; any other readout-less
+      fact stays under its family's table "without a readout".
+      (c) The consideration tables carry the election type (Mixed
+      election) and the mechanics rows but no per-share economics: the
+      three exchange ratios and the cash value sit in Defined Terms
+      while the consideration-components table shows "Stock election"
+      and "Acquirer stock" rows with no ratio or value. The shape needs
+      the election options as rows (cash election, share election,
+      mixed election: ratio, cash, value per share) filled from the
+      facts, with a value fallback from a defined ratio that carries
+      a number; proposed to Ben with the rows once built.
+      Also seen: 76 CONCLUSIONS_MISSING notes over 31 sections (the
+      extractor gave no readout), against 92 over generation 8's 85;
+      the rate is up and is watched on the next read.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
