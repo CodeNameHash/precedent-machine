@@ -763,16 +763,33 @@ function applyConditions(doc) {
     LISTING_CONDITION: 'Stock Exchange Listing',
     FRUSTRATION_BREACH_STANDARD: 'Frustration of conditions',
     METSERA_7_04_FRUSTRATION_BRANCH: 'Frustration of conditions',
+    // Work package 19 (d) (NCS generation 5, 6.1: the Information Statement
+    // mailed at least 20 Business Days before Closing had no row): a mutual
+    // condition the fixed list does not name.
+    GENERAL_CLOSING_CONDITION: 'Other mutual conditions',
   };
-  mutual.statement_words = 'obligations? of each (party|of the parties)';
+  if (!mutual.fixed_row_labels.includes('Other mutual conditions')) mutual.fixed_row_labels.push('Other mutual conditions');
+  // The party's table follows from the statement's words, written either
+  // way round ("the obligations of the Company"; "the Company's obligation").
+  mutual.statement_words = "obligations? of each (party|of the parties)|each (party|of the parties)'?s obligations?";
   for (const [sectionKey, tableKey, words] of [
-    ['conditions-b', 'conditions-b-table', 'obligations? of (each of )?Parent'],
-    ['conditions-s', 'conditions-s-table', 'obligations? of the Company'],
+    ['conditions-b', 'conditions-b-table', "obligations? of (each of )?Parent|Parent'?s obligations?"],
+    ['conditions-s', 'conditions-s-table', "obligations? of the Company|Company'?s obligations?"],
   ]) {
     const table = findTable(findSection(doc, sectionKey), tableKey);
     if (!table.columns.some((column) => column.column_id === 'asDrafted')) table.columns.push(asDrafted(why));
+    // Work package 19 (d) (NCS generation 5, 6.3: the Closing Tax Opinion,
+    // the Canadian tax-deposit condition and the no-Parent-MAE condition of
+    // a stock deal had no row on the Company's table): a tax opinion row,
+    // an other-conditions row, and the No Material Adverse Effect row the
+    // mapping already named on both party tables.
+    for (const label of ['No Material Adverse Effect', 'Tax opinion', 'Other conditions']) {
+      if (!table.fixed_row_labels.includes(label)) table.fixed_row_labels.push(label);
+    }
     table.fact_type_rows = {
       'GENERAL_CLOSING_CONDITION:BRINGDOWN': 'Accuracy of Representations',
+      'GENERAL_CLOSING_CONDITION:TAX_OPINION': 'Tax opinion',
+      GENERAL_CLOSING_CONDITION: 'Other conditions',
       COVENANT_COMPLIANCE_STANDARD: 'Performance of Covenants',
       NO_MAE_CONDITION: 'No Material Adverse Effect',
       NO_MAE_CONDITION_CONTINUING: 'No Material Adverse Effect',
@@ -807,9 +824,14 @@ function applyTerminationRights(doc) {
   mutual.guidance = 'Mutual termination rights, the row from the subtype: Mutual consent (written consent required or not); Outside / End Date (the initial date in outsideDate, an extension date in outsideDateExtension, the extension mechanism a sub-item as drafted); Legal restraint / order (final and non-appealable); Stockholder vote not obtained. exercisedBy codes who may elect.';
 
   const buyer = findTable(section, 'termination-rights-buyer-may-terminate');
-  buyer.fixed_row_labels = ['Company (Target) breach', 'Change of Recommendation', 'Breach of the no-shop'];
+  // Work package 19 (d) (NCS generation 5, 7.1: Parent's rights to
+  // terminate when the Written Consent or the Support Agreement is not
+  // delivered by the Consent Time had no row): the written-consent deal's
+  // two rights, each its row.
+  buyer.fixed_row_labels = ['Company (Target) breach', 'Change of Recommendation', 'Breach of the no-shop', 'Written consent not delivered', 'Support agreement not delivered'];
   buyer.row_from_subtype = true;
-  buyer.subtype_rows = { BREACH: 'Company (Target) breach', RECOMMENDATION_CHANGE: 'Change of Recommendation', NO_SOLICITATION_BREACH: 'Breach of the no-shop' };
+  buyer.subtype_rows = { BREACH: 'Company (Target) breach', RECOMMENDATION_CHANGE: 'Change of Recommendation', NO_SOLICITATION_BREACH: 'Breach of the no-shop', WRITTEN_CONSENT_NOT_DELIVERED: 'Written consent not delivered', SUPPORT_AGREEMENT_NOT_DELIVERED: 'Support agreement not delivered' };
+  buyer.fact_type_rows = { 'TERMINATION_RIGHT:WRITTEN_CONSENT_NOT_DELIVERED': 'Written consent not delivered', 'TERMINATION_RIGHT:SUPPORT_AGREEMENT_NOT_DELIVERED': 'Support agreement not delivered' };
   if (!buyer.columns.some((column) => column.column_id === 'asDrafted')) buyer.columns.push(asDrafted(why));
   buyer.guidance = 'Parent\'s termination rights, the row from the subtype: Company breach (cure period, its end, whether curable, the terminator-breach bar as faultBasedCarveOut); Change of Recommendation (trigger, window); breach of the no-shop. A BREACH fact in this table is Parent terminating for the Company\'s breach; the Company\'s right for Parent\'s breach goes to the company table.';
 
@@ -853,11 +875,15 @@ function applyTerminationRights(doc) {
         code('Board action required', why, { code: 'BOARD_ACTION_REQUIRED' }),
         code('Stockholder approval not required', why, { code: 'STOCKHOLDER_APPROVAL_NOT_REQUIRED' }),
       ]],
+      // Work package 19 (d) (NCS generation 5, 7.2): the non-breaching
+      // party's remedies preserved where fraud or willful breach liability is.
+      ['Remedies preserved', yesNo(why)],
     ],
     reason: why,
-    subtypeRows: { AGREEMENT_VOIDING: 'Agreement void on termination', LIABILITY_RELEASE: 'Release of liability', WILLFUL_MATERIAL_BREACH_CARVEOUT: 'Willful and material breach carve-out', PROVISION_SURVIVAL: 'Surviving provisions', TERMINATION_NOTICE: 'Termination formalities' },
+    subtypeRows: { AGREEMENT_VOIDING: 'Agreement void on termination', LIABILITY_RELEASE: 'Release of liability', WILLFUL_MATERIAL_BREACH_CARVEOUT: 'Willful and material breach carve-out', PROVISION_SURVIVAL: 'Surviving provisions', TERMINATION_NOTICE: 'Termination formalities', REMEDY_ENTITLEMENT: 'Remedies preserved' },
     guidance: 'The effect of termination, the row from the subtype: the agreement becoming void; the release of liability and its carve-outs; the willful and material breach carve-out; the surviving provisions; and the formalities of terminating (notice, board action, no stockholder approval), one cell per formality.',
   });
+  effect.fact_type_rows = { 'TERMINATION_EFFECT:REMEDY_ENTITLEMENT': 'Remedies preserved' };
   section.tables = [mutual, buyer, company, effect];
 }
 
@@ -1065,11 +1091,17 @@ function applyMisc(doc) {
         code('Specified covenants survive', why, { code: 'SPECIFIED_COVENANTS_SURVIVE' }),
       ]],
       ['Construction', yesNo(why)],
+      // Work package 19 (d) (NCS generation 5, 7.5): the parties' rights and
+      // remedies cumulative and not exclusive.
+      ['Cumulative remedies', yesNo(why)],
     ],
     reason: why,
     subtypeKeys: ['GOVERNING_LAW', 'FORUM', 'ASSIGNMENT', 'AMENDMENT_WAIVER', 'NOTICE', 'ENTIRE_AGREEMENT', 'THIRD_PARTY_BENEFICIARY', 'SEVERABILITY', 'COUNTERPARTS', 'SURVIVAL', 'CONSTRUCTION', 'EXPENSES'],
     guidance: 'One row per boilerplate term as the precedent names it; the row is the term the fact addresses (a FORUM fact on the jury waiver is Jury trial waiver; a SPECIFIC_PERFORMANCE_REMEDIES fact on equitable relief, irreparable harm, the bond waiver or closing enforcement is Specific performance, each a sub-item; a REMEDY_COORDINATION or REMEDY_ACTION_EXTENSION fact is Specific performance limitations; an EXPENSES or COST_SHIFT fact is Fee / expense allocation). The Provision cell is the code from that row\'s list (several cells when the clause states several: the amendment formalities, the notice methods); the clause as drafted beside it. A row the agreement does not address is omitted.',
   });
+  // Work package 19 (d): a readout-less CONSTRUCTION fact (NCS 7.3) and a
+  // CUMULATIVE_RIGHTS fact (NCS 7.5) take their rows by default.
+  table.fact_type_rows = { 'MISC_BOILERPLATE_MECHANIC_PRESENT:CONSTRUCTION': 'Construction', 'SPECIFIC_PERFORMANCE_REMEDY_PRESENT:CUMULATIVE_RIGHTS': 'Cumulative remedies' };
   section.tables = [table];
 }
 
@@ -1476,8 +1508,8 @@ function applyCapitalization(doc) {
 // "Public announcements" row, "correct and unreadable". The row's sub-items,
 // named by the facts' own words (detail_from_words_by_row, first match
 // wins), so a sponsor-backed seller's carve-outs read as a line of their
-// own. The labels are the code's proposal; Ben names them ("he decides the
-// names; the code only proposes"). Order of the rules: the carve-outs and
+// own. The labels were the code's proposal; Ben, 2026-10-18 (plan finding
+// (166)): "all sounds fine", so the ten are final. Order of the rules: the carve-outs and
 // the consistency proviso before the duties they qualify, so "without
 // providing ... the opportunity for such consultation and review, issue a
 // press release ... consistent with prior press releases" is the
@@ -1786,6 +1818,108 @@ function applyMaterialContractLimbs(doc) {
   list.guidance = `${list.guidance} The representation's own limbs (MATERIAL_CONTRACT_DISCLOSURE_LIST, MATERIAL_CONTRACT_STATUS_REPRESENTATION, MATERIAL_CONTRACT_BREACH_TERMINATION_RIGHT) are never rows here: their readouts go to the representations table's "${MATERIAL_CONTRACTS_ROW}" row as its sub-items (Disclosure list; Validity and enforceability; No default).`;
 }
 
+// ==========================================================================
+// Work package C4 (2026-10-18, plan finding (128)): the rows a two-step
+// tender offer and a stock merger of equals need and the shapes did not
+// have, read from GSK / Nuvalent (Agreement and Plan of Merger, 2026-06-09)
+// and Indivior / Supernus (Agreement and Plan of Merger, 2026-08-01). Rows
+// and codes only, each for a subtype the schema already has; the provisions
+// that need a new subtype or fact type (the Offer's own mechanics, the
+// combined-company governance, Parent's reciprocal no-shop, the ratio's
+// form) are proposed to Ben in
+// docs/codex-program/notes/TENDER-OFFER-AND-STOCK-DEAL-SCHEMA-GAPS-2026-10-18.md
+// and not built here.
+// ==========================================================================
+
+const C4 = 'Work package C4, 2026-10-18 (plan finding (128)): tender-offer and stock-deal rows read from GSK / Nuvalent and Indivior / Supernus';
+
+const C4_ROWS = Object.freeze({
+  // Nuvalent Annex I 1(a): "that number of Class A Shares that ... represents at least a majority of the Class A Shares outstanding as of the consummation of the Offer (such condition ... the “Minimum Tender Condition”)".
+  MINIMUM_TENDER_CONDITION: 'Minimum tender condition',
+  // Nuvalent 7.1: the Merger's own condition that Purchaser "shall have accepted for payment all Shares validly tendered" (the Acceptance Time).
+  OFFER_CONSUMMATED: 'Offer consummated (Acceptance Time)',
+  // Supernus 7.1(a): "the Indivior Stockholder Approval shall have been attained", beside 7.1(b) the Supernus approval.
+  PARENT_STOCKHOLDER_APPROVAL: 'Parent stockholder approval',
+  // Supernus 8.1(d)(iv): termination by either party when "the Indivior Stockholder Approval ... shall not have been obtained".
+  PARENT_VOTE_NOT_OBTAINED: 'Parent stockholder vote not obtained',
+  // Nuvalent 8.4(c): Parent may terminate if "due to the failure of an Offer Condition to be satisfied, the Offer has expired or has been terminated without Purchaser having accepted for purchase the Shares".
+  OFFER_EXPIRED_ON_FAILED_CONDITION: 'Offer expired on a failed Offer Condition',
+  // Nuvalent 8.3(a)(i) to (iii): the Company may terminate if "Purchaser fails to timely commence the Offer", "the Offer has expired or has been terminated without Purchaser having accepted for purchase the Shares" or Purchaser "fails to accept for purchase Shares validly tendered".
+  OFFER_NOT_COMMENCED_OR_CONSUMMATED: 'Offer not commenced or not consummated',
+  // Supernus 8.1(c)(ii): Supernus may terminate if "the Indivior Board or any committee thereof (A) shall make an Indivior Adverse Recommendation Change".
+  PARENT_RECOMMENDATION_CHANGE: 'Parent change of recommendation',
+  // Nuvalent 2.6: "The Merger will be governed by Section 251(h) of the DGCL ... without a vote of the holders of any Shares".
+  MERGER_WITHOUT_A_VOTE: 'Merger without a vote (Section 251(h))',
+  // Supernus 6.3(b): Indivior shall "convene and hold a meeting of the Indivior Stockholders ... for the purpose of obtaining the Indivior Stockholder Approval".
+  PARENT_STOCKHOLDERS_MEETING: "Parent stockholders' meeting",
+  // Nuvalent 1.1(c): "Parent and Purchaser will file or cause to be filed with the SEC a Tender Offer Statement on Schedule TO ... (collectively ... the “Offer Documents”)".
+  SCHEDULE_TO: 'Schedule TO (Offer Documents)',
+  // Nuvalent 1.2: "the Company will file with the SEC a Solicitation/Recommendation Statement on Schedule 14D-9 ... containing ... the Company Board Recommendation".
+  SCHEDULE_14D9: 'Schedule 14D-9',
+  // Supernus 6.2(b): Indivior shall "prepare and file with the SEC ... a registration statement on Form S-4, in which the Joint Proxy Statement shall be included".
+  REGISTRATION_STATEMENT: 'Registration Statement (Form S-4)',
+  // Supernus 2.8(b): "no fractional Indivior Shares shall be issued ... shall, in lieu of such fraction of a share ... be paid in cash the dollar amount ... determined by multiplying such fraction by the Average Indivior Stock Price".
+  FRACTIONAL_SHARES: 'Cash in lieu of fractional shares',
+});
+
+// Supernus 4.27(b): "The affirmative vote of a majority in voting power of the outstanding Indivior Shares present in person or represented by proxy at the Indivior Stockholders' Meeting and entitled to vote on the proposal to approve the Indivior Share Issuance" (the Nasdaq share-issuance standard).
+const C4_VOTES_CAST_CODE = 'MAJORITY_OF_VOTES_CAST';
+// Nuvalent 8.2, 8.3, 8.4: every right is exercisable "at any time prior to the Acceptance Time"; 8.4(b) "no later than two (2) Business Days after the Expiration Date following the Change of Board Recommendation".
+const C4_WINDOW_CODE = 'BEFORE_ACCEPTANCE_TIME';
+
+function addRow(table, label) {
+  if (!table.fixed_row_labels.includes(label)) table.fixed_row_labels.push(label);
+}
+
+function addCode(column, label, codeValue, why) {
+  if (!column.vocabulary.some((entry) => entry.code === codeValue)) column.vocabulary.push(code(label, why, { code: codeValue }));
+}
+
+function applyTenderOfferAndStockDealRows(doc) {
+  const conditions = findTable(findSection(doc, 'conditions'), 'conditions-table');
+  addRow(conditions, C4_ROWS.MINIMUM_TENDER_CONDITION);
+  addRow(conditions, C4_ROWS.OFFER_CONSUMMATED);
+  addRow(conditions, C4_ROWS.PARENT_STOCKHOLDER_APPROVAL);
+  conditions.guidance = `${conditions.guidance} ${C4}: in a tender offer the Offer's conditions (an Annex I) are closing conditions with the Offer as their subject: the Minimum Tender Condition is its own row (the share count or percentage that must be tendered in the words), the Merger's condition that the Offer was consummated is "${C4_ROWS.OFFER_CONSUMMATED}", the Offer's bring-down, officer certificate and no-MAE conditions take the Parent-side table's rows as a one-step deal's do, and "Stockholder Approval" reads as not required when the merger is under Section 251(h). In a stock deal Parent's own stockholder approval (of the share issuance) is "${C4_ROWS.PARENT_STOCKHOLDER_APPROVAL}" with its vote standard, beside the Company's.`;
+
+  const section = findSection(doc, 'termination-rights');
+  const mutual = findTable(section, 'termination-rights-mutual');
+  addRow(mutual, C4_ROWS.PARENT_VOTE_NOT_OBTAINED);
+  mutual.guidance = `${mutual.guidance} ${C4}: a stock deal's second vote has its own row, "${C4_ROWS.PARENT_VOTE_NOT_OBTAINED}"; in a tender offer the outside date and every right run to the Acceptance Time, not the Effective Time.`;
+  const buyer = findTable(section, 'termination-rights-buyer-may-terminate');
+  // Before the written-consent deal's two rows, which work package 19 (d)
+  // pins as the list's last two.
+  if (!buyer.fixed_row_labels.includes(C4_ROWS.OFFER_EXPIRED_ON_FAILED_CONDITION)) {
+    buyer.fixed_row_labels.splice(buyer.fixed_row_labels.indexOf('Written consent not delivered'), 0, C4_ROWS.OFFER_EXPIRED_ON_FAILED_CONDITION);
+  }
+  buyer.guidance = `${buyer.guidance} ${C4}: Parent's right to terminate when the Offer expired or was terminated because an Offer Condition failed is "${C4_ROWS.OFFER_EXPIRED_ON_FAILED_CONDITION}"; a window that runs to the Acceptance Time is coded ${C4_WINDOW_CODE}.`;
+  addCode(findColumn(buyer, 'window'), 'Before the Acceptance Time', C4_WINDOW_CODE, `${C4}. Nuvalent 8.4: "at any time prior to the Acceptance Time"; 8.4(b): no later than two Business Days after the Expiration Date following the Change of Board Recommendation.`);
+  const company = findTable(section, 'termination-rights-company-may-terminate');
+  addRow(company, C4_ROWS.OFFER_NOT_COMMENCED_OR_CONSUMMATED);
+  addRow(company, C4_ROWS.PARENT_RECOMMENDATION_CHANGE);
+  company.guidance = `${company.guidance} ${C4}: the Company's right when Purchaser fails to commence the Offer, lets it expire or fails to accept tendered Shares is "${C4_ROWS.OFFER_NOT_COMMENCED_OR_CONSUMMATED}"; in a stock deal the Company's right on Parent's adverse recommendation change is "${C4_ROWS.PARENT_RECOMMENDATION_CHANGE}", and its right to terminate for its own Superior Proposal stays on "Superior Proposal".`;
+  addCode(findColumn(company, 'window'), 'Before the Acceptance Time', C4_WINDOW_CODE, `${C4}. Nuvalent 8.3: "at any time prior to the Acceptance Time".`);
+  for (const column of [findColumn(mutual, 'voteThreshold'), findColumn(conditions, 'voteStandard')]) {
+    addCode(column, 'Majority of votes cast', C4_VOTES_CAST_CODE, `${C4}. Supernus 4.27(b): a majority in voting power of the outstanding shares present in person or represented by proxy and entitled to vote, the Nasdaq share-issuance standard.`);
+  }
+
+  const votesSection = findSection(doc, 'votes-approvals-meeting');
+  const votes = findTable(votesSection, 'votes-approvals-meeting-table');
+  addRow(votes, C4_ROWS.MERGER_WITHOUT_A_VOTE);
+  addRow(votes, C4_ROWS.PARENT_STOCKHOLDERS_MEETING);
+  addCode(findColumn(votes, 'voteStandard'), 'Majority of votes cast', C4_VOTES_CAST_CODE, `${C4}. Supernus 4.27(b).`);
+  votes.guidance = `${votes.guidance || ''} ${C4}: a merger under Section 251(h) without a stockholder vote is the "${C4_ROWS.MERGER_WITHOUT_A_VOTE}" row (the Company stockholder approval row then reads as not required); a stock deal's Parent meeting is "${C4_ROWS.PARENT_STOCKHOLDERS_MEETING}" with its own deadline and anchor.`.trim();
+  const proxy = findTable(votesSection, 'votes-proxy-sec');
+  addRow(proxy, C4_ROWS.SCHEDULE_TO);
+  addRow(proxy, C4_ROWS.SCHEDULE_14D9);
+  addRow(proxy, C4_ROWS.REGISTRATION_STATEMENT);
+  proxy.guidance = `${proxy.guidance || ''} ${C4}: in a tender offer Parent's Schedule TO and the Offer Documents are "${C4_ROWS.SCHEDULE_TO}" (who: Parent) and the Company's Schedule 14D-9 with the Company Board Recommendation is "${C4_ROWS.SCHEDULE_14D9}" (who: Company); in a stock deal Parent's Form S-4 with the proxy statement included is "${C4_ROWS.REGISTRATION_STATEMENT}" (who: Parent), its effectiveness efforts and mailing after effectiveness on the same row.`.trim();
+
+  const components = findTable(findSection(doc, 'consideration-hero'), 'consideration-components');
+  addRow(components, C4_ROWS.FRACTIONAL_SHARES);
+  components.guidance = `${components.guidance || ''} ${C4}: in a stock deal the cash paid in lieu of fractional Parent shares is its own row, "${C4_ROWS.FRACTIONAL_SHARES}" (form CASH, the price it is measured at in the words); the exchange ratio itself is the Parent stock row's amount.`.trim();
+}
+
 function applyDecision34(doc) {
   applyAntitrust(doc);
   applyEquityAwards(doc);
@@ -1804,7 +1938,8 @@ function applyDecision34(doc) {
   applyMaterialContractLimbs(doc);
   applyCapitalization(doc);
   applyVotesAndCovenants(doc);
+  applyTenderOfferAndStockDealRows(doc);
   return doc;
 }
 
-module.exports = { applyDecision34, IOC_CATEGORIES, EXTRA_REP_ROWS, CAPITALISATION_LIMBS, CAPITALISATION_SUBTYPES, CAPITALIZATION_ROWS, GENERAL_EXCEPTIONS_ROW, KNOWLEDGE_ROW, GENERAL_EXCEPTION_DETAILS, KNOWLEDGE_DETAILS };
+module.exports = { applyDecision34, C4_ROWS, C4_VOTES_CAST_CODE, C4_WINDOW_CODE, IOC_CATEGORIES, EXTRA_REP_ROWS, CAPITALISATION_LIMBS, CAPITALISATION_SUBTYPES, CAPITALIZATION_ROWS, GENERAL_EXCEPTIONS_ROW, KNOWLEDGE_ROW, GENERAL_EXCEPTION_DETAILS, KNOWLEDGE_DETAILS };

@@ -4727,6 +4727,63 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       the record: 10x is plausible from those levers; 100x is not while
       a frontier model reads every byte, and the finding must say what
       the next 10x would cost in facts.
+      (168) 2026-10-18 21:40 UTC: implementer A's (97) and implementer
+      B's (105) merged (head 4506eb2c; the active suite in the next
+      finding). Correction to (165) (g): the manager's read of the
+      registration rows was of the preview deployed before finding
+      (169) 2026-10-18 21:55 UTC, Ben's intake order, verbatim: "apogee/
+      crinetics/ centessa/ akero / alerkems / verve as the top ones".
+      Applied: Apogee is generation 2 already running (run 686c3bf2);
+      the other five submitted now as generation 1 intakes on the
+      environment's default provider (the subscription), QUEUED with no
+      worker, woken in Ben's order as a pool sandbox frees: Vertex /
+      Crinetics, Lilly / Centessa (a UK scheme, filed as a Transaction
+      Agreement; its Court-sanction mechanics are not the schema's,
+      finding (127)), Novo Nordisk / Akero, Alkermes / Avadel (an Irish
+      scheme), Lilly / Verve. The URLs are finding (127)'s verified
+      Exhibit 2.1 links. The active suite on the merged head 4506eb2c:
+      772 of 773, the known failure only.
+      (170) 2026-10-18 21:58 UTC, Ben, verbatim: "I don't think we
+      intake until E is done and we have reduced cost". Applied: no run
+      is woken until implementer E's work package E1 has landed and the
+      cost per agreement is down; the four intakes of (169) (Crinetics
+      cd1d3e91, Centessa 436276fe, Akero 94cd879e, Avadel 91fe48a1) stay
+      QUEUED with no worker and no model call; Olaplex and Apogee
+      generation 2, already running on the subscription, continue. Two
+      facts from the submissions, for later work: Verve's intake failed
+      twice at structure build (STRUCTURE_PARENT_SPAN on span 4b477bbe,
+      the Vercel function log), a structure defect on that exhibit for
+      implementer A once E1 is in; and three of the four queued runs
+      stopped at DOCUMENT_IDENTITY_REVIEW (the Phase 1 identity gate,
+      product_phase1_resolve_identity), which needs the identity
+      resolution before any wake; Avadel went straight to
+      SECTION_ANALYSIS.
+      (95)'s rule reached the deployment (its deploy was created at
+      20:50:39 UTC, the read fell between READY at 20:48 and that);
+      on the real rows the move happens, now pinned with the stored
+      5.17 rows in tests/fixtures/product/ncs-generation-5-5-17-
+      general-covenants.json. Accepted: the registration-rights table
+      as one line under Consideration, no sub-items, per Ben's (166);
+      the PARTY_NOUN and TIMING_WORDS rules the real rows forced; the
+      LIST-of-references and SELF_REFERENCE rules (five NCS holds VALID
+      on the next generation). B's comparison on generation 5: 12 V1
+      facts without a counterpart (11 held by V2 with the fact
+      extracted, one a chapeau), none a miss; seven V2 defects ranked.
+      Of them, (1) to (4) are in the code since work packages 13 (a),
+      14, 18 (b) and 19; the new ones go to implementer A as work
+      package 20: B's rule that an inherited context component which
+      fails to resolve is dropped with a note rather than holding a
+      fact whose own components resolved; (5) a quote across an SEC
+      page footer matched with the footer tokens skipped (4.7, 5.4);
+      (6) the fused "has not taken any action" and "knows of no fact"
+      representations split by the one-effect rule (3.27, 4.13); (7) a
+      filing exception of a no-conflicts representation as an EXCEPTION
+      component, not its own fact, unless the family's table has a row
+      per exception (3.5, 4.4, 5.1). Olaplex and Apogee generation 2 at
+      21:35 UTC: 16 of 97 and 10 of 85 sections, no failures, on the
+      subscription (slower than the API: about 25 sections an hour
+      across the two sandboxes). Implementer E started on work package
+      E1 at 21:22 UTC.
       (94) (c) are final). On the registration-rights sub-items: "are
       these from a reg rights agreement? I wouldn't go into anywhere near
       this depth in this product" (they are NCS 5.17, a registration
@@ -5864,6 +5921,128 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       generation 8: unchanged, no such table. docs/core/CODEBASE-GUIDE.md
       updated. npm run test:active: the known failure only (the count in
       the commit). Nothing submitted or retried.
+      (98) 2026-10-18 22:25 UTC (implementer A), work package 19 on the
+      manager's terms of 21:00 (delivered 21:20, after (97) had gone up
+      on the (165) text; the manager's message asks for finding (95),
+      which (95) already is, so this is (98); (97) stands for what it
+      says). (a) The unknown-span relocation the manager describes is
+      work package 13 (a)'s rule (plan finding (79)), in the code since
+      8eb259c and tested with 3.4's case; nothing new to build. The
+      note's entry now says unknown_span: true, as work package 18 (a)'s
+      says known_span: true. Stored facts the rule keeps VALID, counted
+      from the preview branch's rows as in (94) (every non-VALID fact
+      with a component of inherited origin on a span id its closure does
+      not know, counted against the closure's spans of the allowed
+      kind): NCS generation 5, ten (3.4's 05e8ab96, 2ec8f972, 36b14852,
+      4d765c14, 61ab1d62, 7b0b52ed, 854f8bcb, b7a123fb, b83fbcc8,
+      fcc71293; 28 components, each with exactly one holder); Metsera
+      generation 8, six (1dc9dadb, 8e819867, c54f636c, c7058ea6,
+      dca9d348, ece4453b; one component each). (b) Decided from the
+      contract and the validator: CROSS_REFERENCE (and DEFINED_TERM) are
+      allowed LIST children. A list of the representations a tier covers
+      is a list of references, each child already resolved to its
+      section, which a LIST_ELEMENT would not be; and the stored facts
+      stay VALID without a re-run, where wrapping would have needed one.
+      The validator rule and the contract's R2 say so; the extraction
+      instruction still asks for LIST_ELEMENT children for lists of
+      things that vary. 6.2's two tiers (7c534651, d2f8a9b9) are the
+      stored facts kept VALID. (c) An Article-level reference now
+      resolves to the article node of the agreement structure, as the
+      manager asked, not an exemption: agreement-draft.js
+      resolveStructureReferences runs over the model's components
+      before the tree is built (compileExtraction takes
+      agreementStructure, which buildAgreementSectionDraft passes): a
+      CROSS_REFERENCE the model left unresolved that reads "this Article
+      N" resolves to the enclosing article whose number it names (roman
+      or arabic), else the agreement's one article of that number in the
+      same document scope; "this Section N.M" to that section; "this
+      Agreement" to the root; the resolution's text is the node's
+      heading words ("ARTICLE VI CONDITIONS PRECEDENT"). The model's own
+      resolves_to, when given, stands; only the bare adverbs of
+      reference ("hereof", "herein") are exempt from resolution. Test
+      with a built structure (buildAgreementStructure, buildSourceClosure)
+      whose 6.4 says "any condition set forth in this Article VI": the
+      fact is VALID, the reference's structure_node_id is the article
+      node; without the structure the same proposal is held. On NCS
+      6.4's three facts (78926bd5, 7589b03e, fc6c34bd) the words are the
+      same, so they are VALID on the next generation and
+      FRUSTRATION_BREACH_STANDARD is FOUND rather than UNRESOLVED (the
+      draft's REQUIRED_FACT_TYPE_UNRESOLVED comes from a fact type whose
+      only facts are held; a VALID fact clears it). (d) Rows for the
+      eight facts without a readout, by fact_type_rows keyed
+      "FACT_TYPE:SUBTYPE" (scripts/product/table-shapes-decision-34.js;
+      the contract regenerated, 50 tables, 164 columns): 6.1's
+      Information Statement mailing takes "Other mutual conditions", a
+      new row of the mutual conditions table (fact_type_rows
+      GENERAL_CLOSING_CONDITION); 6.3's Closing Tax Opinion "Tax opinion"
+      and its Canadian tax-deposit condition "Other conditions", new rows
+      of both party tables (GENERAL_CLOSING_CONDITION:TAX_OPINION; the
+      bare key), and beside them 6.3's no-Parent-MAE condition
+      (e9bd4f85, the ninth readout-less fact of those sections) takes
+      the "No Material Adverse Effect" row the Company's table's mapping
+      named and its fixed list lacked; the party tables' statement_words
+      now read the party either way round ("the obligations of the
+      Company"; "the Company's obligation"), which is what kept 6.3's
+      facts off their table; 7.1's two rights take "Written consent not
+      delivered" and "Support agreement not delivered", new rows of the
+      buyer's termination table (subtype_rows and fact_type_rows); 7.2's
+      remedy entitlement "Remedies preserved", a new row of the effect
+      table; 7.3's VAT warranty (the model's CONSTRUCTION) the existing
+      "Construction" row; 7.5's cumulative rights "Cumulative remedies",
+      a new row of the boilerplate table. The nine NCS facts, with their
+      own words, each land on that row and nothing is left without a
+      readout (tests/product-table-view.test.js; the shapes in
+      tests/product-table-shapes.test.js; defaultConclusions' cases in
+      tests/product-fact-conclusions.test.js). Metsera generation 8: its
+      readout-less VALID facts (100: defined-term entries, exchange
+      mechanics, equity awards, no-shop prerequisites, merger mechanics,
+      appraisal, material contracts) are of none of these fact types and
+      subtypes, so none moves; the page shows none without a readout as
+      before. docs/core/CODEBASE-GUIDE.md updated. npm run test:active:
+      the known failure only (the count in the commit). Nothing
+      submitted, woken or retried.
+      (99) 2026-10-18 22:40 UTC (implementer A), the manager's addenda
+      of 21:10 and 21:05 to work package 19 (delivered 21:22 and 21:24).
+      (f) Done before the addenda arrived, in (96) and fb98374: the
+      registration rights are one row of their own small table, last in
+      the Consideration section, present or absent, the facts behind it,
+      no sub-items; the words rule that recognises the facts stays on
+      the general covenants table and sends them there; the general
+      covenants table keeps the three Nasdaq notices; the nine
+      CAPITALISATION facts stay on the capitalization table (question
+      (g) of (93) with Ben). Ben's words are in the code comments: "reg
+      rights I think goes with consideration (but at bottom)"; "are
+      these from a reg rights agreement? I wouldn't go into anywhere
+      near this depth in this product"; on the publicity labels, "all
+      sounds fine" (now in the PUBLICITY comment of
+      scripts/product/table-shapes-decision-34.js; the ten are final);
+      on the unusual provisions, "not a fact type today" (nothing
+      built). (g) The manager's diagnosis was right and (97)'s was
+      incomplete. The stale deploy was real, but the shape the manager
+      saw ("General notification" carrying 29 facts with (95)'s sub-items
+      and no "Registration rights" row) is what (95)'s code did on the
+      real rows even when deployed: the general covenants table names its
+      rows from the fact's subtype (row_from_subtype, subtype_rows), the
+      stored 5.17 facts are GENERAL_NOTIFICATION, so a fact the words
+      rule had moved to "Registration rights" on that same table was
+      still named "General notification" and the rule's row became its
+      sub-item, then the sub-item rule read the row_label and named the
+      details; the fixture's facts carried a made-up subtype
+      (OTHER_COVENANT, not in the schema) the subtype naming never
+      touched, so the test moved where the rows did not. Fixed in
+      lib/product/table-view.js: a fact a words_rows rule moved
+      (page_rule 'words_rows') keeps the rule's row over the subtype's
+      name, on the same table as across tables; pinned with a real
+      subtype on the general covenants table under a synthetic same-table
+      rule, and with the stored 5.17 rows (real subtypes, real fields:
+      tests/fixtures/product/ncs-generation-5-5-17-general-covenants.json)
+      on the registration table, where the move was already right since
+      (96) because the registration table has no subtype naming. Counts
+      from the real rows, through buildTableView with the generated
+      contract: Registration rights line 29 facts, no sub-rows; General
+      notification 2 (the Nasdaq deficiency notice and the delisting
+      event), Litigation notification 1 (Nasdaq or SEC proceedings);
+      nothing without a readout. Nothing submitted, woken or retried.
       (120) 2026-10-18 19:10 to 19:45 UTC (implementer C), Q5: the limb
       names harvested. `scripts/product/harvest-rep-limbs.js` (library
       `lib/product/rep-limb-harvest.js`, `tests/product-rep-limb-harvest.test.js`)
@@ -6067,6 +6246,82 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       touched; the preview API was not called; detail_labels_by_row,
       the closure builder and the draft's issue message are unchanged,
       proposed only.
+      (105) 2026-10-18 21:15 to 22:40 UTC (implementer B), work package
+      B2 on the manager's message of 21:10 UTC: NCS generation 5 (run
+      51577c57) read READY by SQL at 21:15 (READY since 20:47, 104 of
+      104 sections, 1,037 proposals; nothing woken, retried or touched)
+      and the comparison regenerated with it as the V2 side, the
+      inputs assembled from the preview branch's tables as (101) did
+      (headline summaries from product_fact_headlines joined on). The
+      note docs/codex-program/notes/NCS-V1-V2-GENERATION-COMPARISON-
+      2026-10-18.md now opens with the reading and keeps the script's
+      report after it. Counts, generation 4 then 5: V2 valid 850 then
+      1,015; held 145 then 22; V1 facts with a counterpart 649 then
+      689, partial 231 then 281, without 102 then 12 (11 of the 12
+      overlap a fact V2 held); new to V2 32 then 90 (49 KEY_DEFINED_
+      TERMS, 42 of them the definitions section 8.3, and 38
+      REPRESENTATIONS in sections V1 routed IMMATERIAL); every section
+      routed (104 of 104, V1 95). The by-table part is real: 29 table
+      sections, every V2 valid fact on a row or in a table's Other
+      provisions but nine without a readout (three intervening-event,
+      four conditions, one fee, one boilerplate); the only V1 facts a
+      table section lacks are the 3.4 and 6.2 holds below. Read, every
+      one of the twelve without a counterpart and the 226 partials
+      whose V2 counterparts together cover under half the V1 bytes:
+      eleven of the twelve are (i) held by V2 with the fact extracted
+      (nine 3.4 status representations, one 4.7, the 6.4 frustration
+      rule as three per-party facts, the two 6.2 bring-down tiers Ben
+      commented on, their summaries naming the standard he asked for),
+      one is (iii) the 6.1 conditions chapeau; none is a miss. Of the
+      partials, 144 are representations where V1 cites the whole
+      sub-section with its exception chapeau and V2's own words are the
+      limb (not a loss, said once); of the other 82, 78 carry the
+      substance as the operative limb (30 of them on the representations
+      table under REPRESENTATIONS where V1 filed them under a covenant
+      family: labour, listing, absence of changes, Merger Sub, tax
+      reps), two are held zero-amount facts, two are a fusion of two
+      V1 facts. Ben's comments on 3.1 (the exclusion as its own fact
+      with the inherited chapeau marked) and 3.16 (inherit the SEC
+      document limitation) are answered by the V2 output. Defects,
+      ranked by count, each with the fix proposed and none built: (1)
+      3.4's nine facts quote the Article III chapeau with span id
+      3d0f0a06 for the closure's 3d0f7a06 (one character), the only
+      CHAPEAU span of the closure with the quote, so work package 13
+      (a)'s relocation resolves it; 3.4 ran 15:21 to 15:27 UTC, before
+      that rule (17:06), so the fix for the nine is a re-extraction of
+      3.4 on the current worker (the manager's), plus a rule still
+      missing: an inherited context component that fails to resolve is
+      dropped with a note, never holding a fact whose own components
+      resolved; (2) "this Article VI" as a CROSS_REFERENCE cannot
+      resolve (three 6.4 facts): resolve Article references to the
+      structure's article nodes, an unplaceable one a note; (3) an
+      AMOUNT with no number in its words is held (four facts: "no
+      shares of Company Preferred Stock", treasury shares, "the Maximum
+      Cash Election Amount", the Base Amount in the Disclosure Letter):
+      extend work package 14's COUNT rules to AMOUNT (none to 0, a bare
+      defined term a FORMULA form, a disclosed-elsewhere value a
+      DISCLOSED form), none a hold; (4) a LIST of section references
+      without LIST_ELEMENT children holds the two 6.2 tiers: make the
+      elements in code from a comma-and list of references before the
+      rule, and the layer-rule line; (5) 4.7's three facts
+      PROPOSAL_EVIDENCE_NOT_EXACT, read as a quote across an SEC page
+      footer (5.4's "the Transactions, 49 the Company" shows the
+      pattern): match a quote with the footer tokens source-display.js
+      knows skipped; (6) 3.27 and 4.13 fuse "has not taken any action"
+      and "knows of no fact" into one fact against OPERATING-RULES'
+      one-effect rule: a representations extractor line and a reviewer
+      note; (7) ten facts of 3.5, 4.4 and 5.1 make each filing
+      exception of a no-conflicts representation its own fact: the
+      REPRESENTATIONS layer rule makes an exception an EXCEPTION
+      component unless the family's table has a row per exception (MAE
+      keeps its rows). Plan evidence: Phase 6's "Compare the rendered
+      V1 and V2 result" box is answered for NCS by this note; the plan
+      has nothing wrong here, and (101)'s "generation 5 is the
+      generation to compare by table" is done. Report changes beside
+      the note (code, so npm run test:active ran: 752 of 753, the one failure the known Codex-client final-message test): a
+      table row lists its V1 counterparts once each, strongest first,
+      three shown and the rest counted; a V1 fact V1 held is no
+      counterpart; a long statement keeps its head and tail.
       (125) 2026-10-18 20:55 to 21:30 UTC (implementer C), the design
       note for the Query on layered facts, no code:
       docs/codex-program/notes/QUERY-ON-LAYERED-FACTS-DESIGN-2026-10-18.md,
@@ -6156,6 +6411,221 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       shapes. npm run test:active: 766 of 767, the one failure the
       known Codex-client final-message test. No run, worker or sandbox
       touched; no live model call made.
+      (106) 2026-10-18 21:30 to 23:30 UTC (implementer B), work package
+      B3 on the manager's message of 21:05 UTC and Ben's decision in
+      (166) ("I'm not sure what you mean but I don't care boaut the old
+      site, you can move over whener you like"): the production move,
+      prepared and not run on production. scripts/product/move-to-
+      production.js over lib/product/production-move.js, two direct
+      Postgres connections (the Supabase project's database connection
+      as the postgres role; the URLs from the arguments or
+      MOVE_SOURCE_DATABASE_URL and MOVE_TARGET_DATABASE_URL, never
+      printed): (a) the 42 files under supabase/migrations applied in
+      order to the target in one transaction and recorded in Supabase's
+      own ledger, supabase_migrations.schema_migrations, the table the
+      CLI keeps (a file counts as applied when the ledger carries its
+      name or its version, because the branch runner records names
+      under its own versions: the preview branch's ledger holds 20 rows
+      for the files from 20260905224000 on and none for the first 22,
+      which its runner applied under other versions; the production
+      project's ledger holds three rows, the old site's RLS hardening
+      of 2026-08-02, and no product_ table or product_private schema;
+      pgcrypto is installed in schema extensions on both); (b) one
+      run's rows carried table by table in foreign-key order (36 tables
+      from the source document and its structure to the release
+      pointer; the pointer travels only when it selects this run's
+      release; product_run_sandboxes, which names the hosted sandbox a
+      run holds, never moves), each row inserted once by the table's
+      own keys (ON CONFLICT DO NOTHING) and, when already there,
+      compared column by column, timestamps carried as the database's
+      text so microseconds survive; (c) the proof: the product's own
+      analysis read, review read for every actor with access and
+      published read for the source, through the stores over a
+      node-postgres facade (lib/product/pg-store-facade.js) on each
+      side, compared whole. `--dry-run` (the default) reads and prints
+      the migrations it would apply and every table's source and target
+      rows; `--apply` writes and needs `--confirm-target <project ref>`
+      matching the target host, so a production apply is a deliberate
+      act; a second apply applies no migration, inserts nothing and
+      reports every row already there. Proof on the embedded Postgres,
+      tests/product-move-to-production.test.js (two databases, the
+      source migrated and seeded with the Concho synthetic draft
+      reviewed, published, evaluated and activated; the dry run reads
+      42 to apply and every target table absent and writes nothing; the
+      apply migrates, inserts every source row, and the three reads are
+      equal; the second apply changes nothing; a ledger renumbered as
+      the branch runner does applies nothing twice): 1 of 1, about 140 s, mostly the synthetic runner.
+      Added to the CI database job. Dry run against the preview branch,
+      by the same count queries the script runs, read by SQL (no
+      connection string here): Metsera generation 8 (run 72d94dd2):
+      source document 1 (2.6 MB), structure 1, run 1, submission request
+      1, section work 85, model calls 313 (12 MB), closures 85, spans
+      6,239 (3.7 MB), closure spans 7,047, routings 85, section results
+      85, residual passes 85, proposition groups 974, proposals 974
+      (3.5 MB), proposal spans 2,298, fact components 5,772, headlines
+      964, conclusions 865, fact links 568, link spans 603, issues 259,
+      coverage assertions 6,639, drafts 1, draft revisions 2, audit
+      events 2, draft analysis 1, run access 1, retry events 2;
+      identity reviews, review session, revisions, actions,
+      publications, releases and heads 0. NCS generation 5 (run
+      51577c57): the same shape with section work 104, model calls 393
+      (19 MB), spans 6,583, closure spans 7,750, proposals 1,037,
+      components 5,879, headlines 1,015, conclusions 875, links 601,
+      issues 309, coverage 7,184, retry events 6; review and release
+      rows 0. So today the move would carry each run's analysis and
+      nothing published: the release rows appear the minute Ben's
+      review is published and activated on the preview branch, and the
+      move carries them then; run on the preview branch after the
+      review, not before. What the production deployment needs beyond
+      the database, by name only (the API refused to list the project's
+      variables to this session, so the names are the code's): the
+      Supabase pair for the target (NEXT_PUBLIC_SUPABASE_URL,
+      NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_URL,
+      SUPABASE_SERVICE_ROLE_KEY) pointed at the production project
+      instead of the preview branch; the login (SESSION_SECRET,
+      AUTH_USERNAME, AUTH_PASSWORD); the scripts' bearer
+      (PRODUCT_INTERNAL_TOKEN); the schema switch
+      (NEXT_PUBLIC_PRODUCT_LEGAL_SCHEMA_VERSION, set to LEGAL_SCHEMA/V2
+      as on the preview); the worker (PRODUCT_MODEL_PROVIDER and, per
+      provider, PRODUCT_CLAUDE_CODE_OAUTH_TOKEN or ANTHROPIC_API_KEY
+      with ANTHROPIC_WORKSPACE_ID; VERCEL_TOKEN, VERCEL_TEAM_ID,
+      VERCEL_PROJECT_ID for the sandbox scripts run outside a
+      deployment); CRON_SECRET for the watch route. The alias: the
+      Vercel project precedent-machine (prj_nMyk8ev0VM2nhNyYnkshoz7H77vl)
+      has one domain, precedent-machine-zeta.vercel.app, its production
+      alias; deal-corpus-preview.vercel.app is the branch alias of
+      codex/product-implementation-plan-20260904 (finding (26)); the
+      production deployment is whatever is promoted to the production
+      alias, so the move's deployment step is a promotion of the
+      branch's build with the production environment's variables, or a
+      merge to the production branch, the manager's choice. The sandbox
+      pool (implementer D, finding (140)): the named sandboxes
+      pm-codex-preview-worker and pm-codex-preview-worker-2 are created
+      against one Vercel project and reach the database through the
+      SUPABASE pair the wake passes, so a production worker needs no new
+      sandbox, only the production pair in the deployment's variables;
+      product_run_sandboxes starts empty on the target and the first
+      production wake fills it. The old site's tables on the production
+      project, untouched by the move, which knows only the product_
+      tables the migrations create: claims (75,675 rows, 133 MB),
+      provision_cards (11,476), provisions (12,816), parser_regions
+      (6,420), deals (40), provisions_archive_20260706 (8,481),
+      ingest_jobs (376), ingest_job_events, ingest_job_dependencies,
+      ingest_job_artifacts, ingest_runs, consideration_treatments,
+      consideration_equity_provisions, deal_candidates, corrections,
+      coding_tasks, run_reports, transaction_steps, deal_quality_metrics,
+      election_options, election_mechanisms, saved_queries,
+      provision_field_groups, provision_cross_references,
+      provision_bring_downs, ioc_positive_obligations,
+      ioc_negative_obligations, users, annotations, deal_topology,
+      closing_condition_cited_provisions, closing_condition_bring_down_
+      tiers, proration_rules, termination_fee_triggers,
+      definition_components, material_contract_categories,
+      provision_analytical_flags, representation_mae_subclauses,
+      signoffs, comments, comparisons: 41 tables, every one left as it
+      is. One caution for the manager's apply: migration
+      20260912190000 runs ALTER ROLE service_role SET statement_timeout,
+      which the Supabase migration runner applied on the preview branch
+      as the postgres role; if the manager's connection role is refused
+      that statement, the transaction rolls back and the script says
+      so, nothing half-applied. npm run test:active: 769 of 770, the one failure the known Codex-client final-message test.
+      (127) 2026-10-18 21:30 to 22:15 UTC (implementer C), work package
+      C3 on finding (166) (Ben: "btw let's do major biopharma deals as
+      the basi sfor the build out of next searches, starting > $1bn"):
+      docs/codex-program/notes/BIOPHARMA-DEALS-OVER-1BN-2026-10-18.md,
+      documentation only, no intake submitted. Thirty-four public-target
+      biopharma and pharma acquisitions announced 2025-01-01 to
+      2026-10-18 at or above about $1bn, each with acquirer, target,
+      announcement date, headline value and its source (four trackers
+      and the parties' releases), the structure read from the
+      agreement's own text (the Offer defined for a tender, Contingent
+      Value Right for a CVR, the Scheme for a UK or Irish scheme) and
+      the EDGAR Exhibit 2.1 URL found by full-text search and fetched
+      in full (every one answered 200; the two scripts are in the
+      session's scratchpad). Three are in the corpus (Metsera, Apogee,
+      Arcellx), 31 are not. By form: 17 two-step tender offers (the
+      Dutch offer for Merus among them), 13 one-step cash mergers,
+      three schemes (Verona, Centessa, Avadel), one stock merger
+      (Indivior / Supernus, 1.5401 shares per share, the only stock
+      deal); 11 carry a CVR; the three schemes and the Dutch offer are
+      filed as Transaction Agreements. Below the line: Regulus,
+      Esperion, Theravance and XOMA (under $1bn upfront); the tools,
+      diagnostics and device deals (Exact Sciences $21bn, Bio-Techne
+      EV $11.3bn, Integer, Personalis, BioLife); the private targets
+      the trackers carry. The intake cannot take Recordati (Italian
+      offer, $12.4bn) or PolyPeptide (Swiss), neither an SEC
+      registrant; it takes the four scheme and Dutch-offer agreements
+      by URL but their mechanics are not the schema's (Court sanction,
+      a Scheme Document, a post-offer reorganisation), so they go after
+      the Delaware deals. Metsera's Amendment No. 1 of 2025-11-07 is
+      listed beside the original (generation 8 is the original). The
+      three to run first, for drafting variety against the corpus's
+      two cash mergers and one CVR tender offer: GSK / Nuvalent (a
+      $10.6bn two-step tender offer without a CVR), Indivior / Supernus
+      (the stock merger of equals, an exchange ratio the consideration
+      tables have never seen) and J&J / Intra-Cellular ($14.6bn, a
+      plain one-step cash merger, the control); fourth, Curium /
+      Lantheus (a one-step merger with a $12 CVR and a private-equity
+      acquirer) or Novo Nordisk / Akero. Values are the trackers'
+      headline figures (equity, or EV where marked), not read from the
+      agreements; the agreements' consideration is what the intake
+      will extract. No run, worker or sandbox touched.
+      (128) 2026-10-18 21:55 to 22:45 UTC (implementer C), work package
+      C4, the tender-offer and stock-deal readiness of the schema:
+      docs/codex-program/notes/TENDER-OFFER-AND-STOCK-DEAL-SCHEMA-GAPS-2026-10-18.md.
+      GSK / Nuvalent (a two-step tender offer) and Indivior / Supernus
+      (the stock merger of equals) read in full from their exhibits, no
+      intake, 45 provisions set against the V2 schema, LEGAL-RULES and
+      the table shapes, and against what the extractor did with the
+      corpus's one tender offer (Arcellx: its V2 run filed Article I's
+      Offer under nine families, CONSIDERATION_PACKAGE, DOCUMENT_FILING,
+      OBTAIN_FINANCING and TRANSACTION_STEP among them, and Annex I
+      under BRINGDOWN and GENERAL, because no subtype names the Offer:
+      "offer" is in the schema twice, "tender" never). The count: of 24
+      tender-offer provisions, 11 had no family, subtype or row (the
+      Offer's commencement, expiration, extensions, amendment
+      restrictions and termination; the Minimum Tender Condition and
+      its waiver rule; the Merger's condition that the Offer was
+      consummated; the Section 251(h) merger without a vote; both
+      parties' Offer-failure termination rights); of 21 stock-deal
+      provisions, 5 had no row (fractional shares, the combined-company
+      governance, Parent's reciprocal no-shop, Parent's recommendation-
+      change termination, the second vote's failure). Added, as rows
+      and codes on existing subtypes (decision 34, work package C4,
+      `applyTenderOfferAndStockDealRows`, the contract regenerated,
+      pinned with the agreements' words in
+      tests/product-table-shapes.test.js): conditions-table "Minimum
+      tender condition", "Offer consummated (Acceptance Time)", "Parent
+      stockholder approval" and the vote standard MAJORITY_OF_VOTES_CAST
+      (Supernus 4.27(b): "a majority in voting power of the outstanding
+      Indivior Shares present in person or represented by proxy ... and
+      entitled to vote"); the mutual termination row "Parent stockholder
+      vote not obtained"; Parent's "Offer expired on a failed Offer
+      Condition" (placed before the written-consent rows work package 19
+      (d) pins as last); the Company's "Offer not commenced or not
+      consummated" and "Parent change of recommendation"; the window
+      code BEFORE_ACCEPTANCE_TIME on both termination windows (Nuvalent
+      8.2 to 8.4: "at any time prior to the Acceptance Time"); the
+      votes rows "Merger without a vote (Section 251(h))" and "Parent
+      stockholders' meeting"; the proxy rows "Schedule TO (Offer
+      Documents)", "Schedule 14D-9" and "Registration Statement (Form
+      S-4)"; the consideration row "Cash in lieu of fractional shares";
+      guidance on each table saying which words land where. Every row
+      is reachable now through the readout's row_label. What waits on
+      Ben, proposed in the note and not built: an Offer step (five
+      subtypes: commencement, expiration, extension, amendment
+      restriction, termination, with the Acceptance Time as the first
+      step's closing), a MINIMUM_CONDITION subtype with a value, an
+      OFFER_FAILURE termination subtype, three LEGAL-RULES lines (the
+      Offer as its own step; an Annex I condition as the first step's
+      closing condition; no approval condition or meeting under Section
+      251(h)), the ratio's form and the adjustment clause as grid
+      columns, a combined-company governance table, a Parent no-shop
+      section or obligor axis with Parent's Superior Proposal row, and
+      a Dividends table for the Special Dividend. Not changed: the
+      schema, LEGAL-RULES, any subtype or fact type. npm run
+      test:active: 774 of 775, the one failure the known Codex-client
+      final-message test. No run, worker or sandbox touched.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
