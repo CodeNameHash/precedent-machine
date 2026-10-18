@@ -1,0 +1,21 @@
+{
+  "schema_version": "PRODUCT_RUN_COST_BASELINE/V1",
+  "run_id": "51577c57-41b1-4b75-bcdf-c84ef2558589",
+  "label": "NCS generation 5, the Anthropic API provider (claude-opus-5), prompt bundle V9, READY 2026-10-18 20:48 UTC",
+  "source": "docs/codex-program/notes/EXTRACTION-COST-LEDGER-2026-10-18.md, section 8 (the SQL of section 10; scripts/product/extraction-cost-ledger.js --run reproduces it)",
+  "metrics": {
+    "cost_usd": 145.68,
+    "facts": 1037,
+    "valid_facts": 1015,
+    "cost_per_valid_fact_usd": 0.1435,
+    "input_tokens_per_agreement_byte": 43.27,
+    "output_tokens_per_agreement_byte": 12.86,
+    "output_tokens_per_valid_fact": 3745,
+    "call_minutes_per_section": 7.01,
+    "wall_minutes_per_section": 4.22,
+    "calls_per_section": 3.78,
+    "sends_per_agreement_byte": 54.2,
+    "failed_call_cost_usd": 6.92,
+    "uncommitted_attempt_cost_usd": 13.84
+  }
+}

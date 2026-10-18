@@ -556,14 +556,15 @@
             "CVR_COMPONENT",
             "CONSIDERATION_PACKAGE"
           ],
-          "guidance": "One row per form of per-share consideration, named by the form code (Cash, Parent stock, CVR, each side of an election), from the conversion clause and the Merger Consideration definition only: what each share is converted into the right to receive, the amount or ratio, the \"per\" basis, any contingency and the defined term. Exchange-fund, deposit, payment, surrender and certificate mechanics are EXCHANGE_MECHANICS and never a row here, whatever cash or CVR words they contain. The conversion of Merger Sub's shares into shares of the Surviving Corporation is a MERGER_STRUCTURE_CLOSING/LEGAL_EFFECT fact, never a row here. The election forms (Cash election, Stock election) are for a deal whose holders elect between forms of consideration only; in any other deal code the form itself (Cash, Acquirer stock).",
+          "guidance": "One row per form of per-share consideration, named by the form code (Cash, Parent stock, CVR, each side of an election), from the conversion clause and the Merger Consideration definition only: what each share is converted into the right to receive, the amount or ratio, the \"per\" basis, any contingency and the defined term. Exchange-fund, deposit, payment, surrender and certificate mechanics are EXCHANGE_MECHANICS and never a row here, whatever cash or CVR words they contain. The conversion of Merger Sub's shares into shares of the Surviving Corporation is a MERGER_STRUCTURE_CLOSING/LEGAL_EFFECT fact, never a row here. The election forms (Cash election, Stock election) are for a deal whose holders elect between forms of consideration only; in any other deal code the form itself (Cash, Acquirer stock). Work package C4, 2026-10-18 (plan finding (128)): tender-offer and stock-deal rows read from GSK / Nuvalent and Indivior / Supernus: in a stock deal the cash paid in lieu of fractional Parent shares is its own row, \"Cash in lieu of fractional shares\" (form CASH, the price it is measured at in the words); the exchange ratio itself is the Parent stock row's amount.",
           "fixed_row_labels": [
             "Cash",
             "Parent stock",
             "CVR",
             "Cash election",
             "Stock election",
-            "Other"
+            "Other",
+            "Cash in lieu of fractional shares"
           ],
           "open_rows": true,
           "row_from_column": "form",
@@ -876,52 +877,10 @@
           "accepts_families": [
             "GENERAL_COVENANTS"
           ],
-          "detail_labels_by_row": {
-            "Registration rights": [
-              "Resale registration",
-              "Effectiveness and amendments",
-              "Stockholder information and approval",
-              "Indemnification",
-              "Expenses",
-              "Rule 144 and legend removal",
-              "Listing and reporting"
-            ]
-          },
-          "detail_from_words_by_row": {
-            "Registration rights": [
-              {
-                "detail": "Indemnification",
-                "words": "indemni|hold\\s+harmless|reimburs|omission\\s+or\\s+alleged\\s+omission|net\\s+proceeds|required\\s+to\\s+pay"
-              },
-              {
-                "detail": "Expenses",
-                "words": "expenses\\s+incurred\\s+in\\s+connection\\s+with\\s+any\\s+registration|registration\\s+expenses|shall\\s+be\\s+paid\\s+by"
-              },
-              {
-                "detail": "Listing and reporting",
-                "words": "\\blisting\\b|Nasdaq|delisting|Depository\\s+Trust|reports?\\s+(?:and\\s+other\\s+documents\\s+)?required|timely\\s+file|Exchange\\s+Act\\s+reports?"
-              },
-              {
-                "detail": "Rule 144 and legend removal",
-                "words": "Rule\\s+144|legend"
-              },
-              {
-                "detail": "Stockholder information and approval",
-                "words": "approved\\s+in\\s+writing|written\\s+approval|review\\s+and\\s+approve|opportunity\\s+to\\s+review|furnish|information\\s+concerning"
-              },
-              {
-                "detail": "Resale registration",
-                "words": "Rule\\s+415|\\bshelf\\b|prospectus\\s+supplement\\s+to|424\\(b\\)|selling\\s+securityholders?|include\\s+the\\s+Registrable\\s+Securities"
-              },
-              {
-                "detail": "Effectiveness and amendments",
-                "words": "effective|amend|supplement|untrue\\s+statement|request\\s+by\\s+the\\s+SEC"
-              }
-            ]
-          },
+          "no_sub_items": true,
           "addition": true,
-          "reason": "Ben, 2026-10-18 (plan finding (163)): \"reg rights I think goes with consideration (but at bottom)\". NCS generation 5, 5.17: the Specified Stockholders' registration rights came back as covenants spread over five rows of the general covenants table.",
-          "guidance": "Every covenant of a registration-rights package for the stock consideration (the resale registration statement or shelf, keeping it effective and amending it, the holders' information and approval rights, the indemnities and their mechanics, the expenses, Rule 144 and legend removal, the listing and reporting covenants for the resale period) is on this table's one row, one fact per operative unit, each a sub-item with row_detail from the row's detail_labels_by_row; the code moves a general covenant whose words name the Registration Statement, Registrable Securities, a prospectus, Rule 144 or Rule 415 here from the general covenants table and names its sub-item from its words (work package 18, 2026-10-18). A deal without registration rights shows no such table."
+          "reason": "Ben, 2026-10-18 (plan finding (163)): \"reg rights I think goes with consideration (but at bottom)\"; on sub-items (plan finding (166)): \"are these from a reg rights agreement? I wouldn't go into anywhere near this depth in this product\". NCS generation 5, 5.17: the Specified Stockholders' registration rights came back as covenants spread over five rows of the general covenants table.",
+          "guidance": "Every covenant of a registration-rights package for the stock consideration (the resale registration statement or shelf, keeping it effective and amending it, the holders' information and approval rights, the indemnities, the expenses, Rule 144 and legend removal, the listing and reporting covenants for the resale period) is on this table's one row, one fact per operative unit, with no row_detail: the row is present or absent, its facts behind it; the code moves a general covenant whose words name the Registration Statement, Registrable Securities, a prospectus, Rule 144 or Rule 415 here from the general covenants table (work package 18, 2026-10-18). A deal without registration rights shows no such table."
         }
       ],
       "print_pages": [
@@ -5665,6 +5624,13 @@
                   "label": "Majority stockholder approval",
                   "tone": "neutral",
                   "source": "legacy_map"
+                },
+                {
+                  "code": "MAJORITY_OF_VOTES_CAST",
+                  "label": "Majority of votes cast",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Work package C4, 2026-10-18 (plan finding (128)): tender-offer and stock-deal rows read from GSK / Nuvalent and Indivior / Supernus. Supernus 4.27(b)."
                 }
               ],
               "fill_from": [
@@ -5804,10 +5770,12 @@
             "Mailing",
             "Meeting",
             "Meeting record date",
-            "Broker search"
+            "Broker search",
+            "Merger without a vote (Section 251(h))",
+            "Parent stockholders' meeting"
           ],
           "open_rows": true,
-          "guidance": "One line per requirement as the print names it: the stockholder approval and its vote standard; Parent / Merger Sub approvals; the proxy filing deadline, mailing and meeting each as a period with its anchor; record date and broker search as present or absent. A new row only for a requirement none covers."
+          "guidance": "One line per requirement as the print names it: the stockholder approval and its vote standard; Parent / Merger Sub approvals; the proxy filing deadline, mailing and meeting each as a period with its anchor; record date and broker search as present or absent. A new row only for a requirement none covers. Work package C4, 2026-10-18 (plan finding (128)): tender-offer and stock-deal rows read from GSK / Nuvalent and Indivior / Supernus: a merger under Section 251(h) without a stockholder vote is the \"Merger without a vote (Section 251(h))\" row (the Company stockholder approval row then reads as not required); a stock deal's Parent meeting is \"Parent stockholders' meeting\" with its own deadline and anchor."
         },
         {
           "table_key": "votes-approvals-meeting-adjournment",
@@ -5977,7 +5945,10 @@
             "Amendment or supplement",
             "Board recommendation in proxy",
             "Solicitation of approval",
-            "Information supplied"
+            "Information supplied",
+            "Schedule TO (Offer Documents)",
+            "Schedule 14D-9",
+            "Registration Statement (Form S-4)"
           ],
           "open_rows": true,
           "subtype_keys": [
@@ -5985,7 +5956,7 @@
             "RECOMMENDATION_INCLUSION",
             "MEETING_CALL_OR_HOLD"
           ],
-          "guidance": "Term / Provision for the proxy statement and SEC steps: one row per step as named, the party in the Who column, the operative words in Provision. Never a row per grammatical subject."
+          "guidance": "Term / Provision for the proxy statement and SEC steps: one row per step as named, the party in the Who column, the operative words in Provision. Never a row per grammatical subject. Work package C4, 2026-10-18 (plan finding (128)): tender-offer and stock-deal rows read from GSK / Nuvalent and Indivior / Supernus: in a tender offer Parent's Schedule TO and the Offer Documents are \"Schedule TO (Offer Documents)\" (who: Parent) and the Company's Schedule 14D-9 with the Company Board Recommendation is \"Schedule 14D-9\" (who: Company); in a stock deal Parent's Form S-4 with the proxy statement included is \"Registration Statement (Form S-4)\" (who: Parent), its effectiveness efforts and mailing after effectiveness on the same row."
         }
       ],
       "print_pages": [
@@ -6047,6 +6018,13 @@
                   "label": "Majority stockholder approval",
                   "tone": "neutral",
                   "source": "legacy_map"
+                },
+                {
+                  "code": "MAJORITY_OF_VOTES_CAST",
+                  "label": "Majority of votes cast",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Work package C4, 2026-10-18 (plan finding (128)): tender-offer and stock-deal rows read from GSK / Nuvalent and Indivior / Supernus. Supernus 4.27(b): a majority in voting power of the outstanding shares present in person or represented by proxy and entitled to vote, the Nasdaq share-issuance standard."
                 }
               ],
               "fill_from": [
@@ -6072,9 +6050,13 @@
             "Antitrust / Regulatory Clearance",
             "S-4 / Proxy Effective",
             "Stock Exchange Listing",
-            "Frustration of conditions"
+            "Frustration of conditions",
+            "Other mutual conditions",
+            "Minimum tender condition",
+            "Offer consummated (Acceptance Time)",
+            "Parent stockholder approval"
           ],
-          "guidance": "One row per mutual condition as the precedent names it (Stockholder Approval with its vote standard; No Legal Restraint; Antitrust / Regulatory Clearance, each regime a sub-item; S-4 / Proxy Effective; Stock Exchange Listing) and the frustration rule (a FRUSTRATION fact: no party may rely on a failed condition its own breach caused) as a row, each as drafted.",
+          "guidance": "One row per mutual condition as the precedent names it (Stockholder Approval with its vote standard; No Legal Restraint; Antitrust / Regulatory Clearance, each regime a sub-item; S-4 / Proxy Effective; Stock Exchange Listing) and the frustration rule (a FRUSTRATION fact: no party may rely on a failed condition its own breach caused) as a row, each as drafted. Work package C4, 2026-10-18 (plan finding (128)): tender-offer and stock-deal rows read from GSK / Nuvalent and Indivior / Supernus: in a tender offer the Offer's conditions (an Annex I) are closing conditions with the Offer as their subject: the Minimum Tender Condition is its own row (the share count or percentage that must be tendered in the words), the Merger's condition that the Offer was consummated is \"Offer consummated (Acceptance Time)\", the Offer's bring-down, officer certificate and no-MAE conditions take the Parent-side table's rows as a one-step deal's do, and \"Stockholder Approval\" reads as not required when the merger is under Section 251(h). In a stock deal Parent's own stockholder approval (of the share issuance) is \"Parent stockholder approval\" with its vote standard, beside the Company's.",
           "fact_type_rows": {
             "STOCKHOLDER_APPROVAL_CONDITION": "Stockholder Approval",
             "LEGAL_RESTRAINT_CONDITION": "No Legal Restraint",
@@ -6083,9 +6065,10 @@
             "S4_CONDITION_COMPONENT": "S-4 / Proxy Effective",
             "LISTING_CONDITION": "Stock Exchange Listing",
             "FRUSTRATION_BREACH_STANDARD": "Frustration of conditions",
-            "METSERA_7_04_FRUSTRATION_BRANCH": "Frustration of conditions"
+            "METSERA_7_04_FRUSTRATION_BRANCH": "Frustration of conditions",
+            "GENERAL_CLOSING_CONDITION": "Other mutual conditions"
           },
-          "statement_words": "obligations? of each (party|of the parties)"
+          "statement_words": "obligations? of each (party|of the parties)|each (party|of the parties)'?s obligations?"
         }
       ],
       "print_pages": [
@@ -6183,7 +6166,9 @@
             "Accuracy of Representations",
             "Performance of Covenants",
             "No Material Adverse Effect",
-            "Officer's Certificate"
+            "Officer's Certificate",
+            "Tax opinion",
+            "Other conditions"
           ],
           "additional_row_reasons": {
             "Performance of Covenants": "Ben's decision 2026-09-13 #24: \"where is cov compliance\" -- the covenant performance condition is a row of its own."
@@ -6192,12 +6177,14 @@
           "guidance": "One line per bring-down tier under Accuracy of Representations (each tier is a fact with its standard, the representations it covers as resolved CROSS_REFERENCE components, and whether materiality qualifiers are disregarded); the covenant performance condition, the no-MAE condition and the officer's certificate are rows of their own.",
           "fact_type_rows": {
             "GENERAL_CLOSING_CONDITION:BRINGDOWN": "Accuracy of Representations",
+            "GENERAL_CLOSING_CONDITION:TAX_OPINION": "Tax opinion",
+            "GENERAL_CLOSING_CONDITION": "Other conditions",
             "COVENANT_COMPLIANCE_STANDARD": "Performance of Covenants",
             "NO_MAE_CONDITION": "No Material Adverse Effect",
             "NO_MAE_CONDITION_CONTINUING": "No Material Adverse Effect",
             "OFFICER_CERTIFICATE_REQUIRED": "Officer's Certificate"
           },
-          "statement_words": "obligations? of (each of )?Parent"
+          "statement_words": "obligations? of (each of )?Parent|Parent'?s obligations?"
         }
       ],
       "print_pages": [
@@ -6294,7 +6281,10 @@
           "fixed_row_labels": [
             "Accuracy of Representations",
             "Performance of Covenants",
-            "Officer's Certificate"
+            "Officer's Certificate",
+            "No Material Adverse Effect",
+            "Tax opinion",
+            "Other conditions"
           ],
           "additional_row_reasons": {
             "Performance of Covenants": "Ben's decision 2026-09-13 #24: \"where is cov compliance\" -- the covenant performance condition is a row of its own."
@@ -6303,12 +6293,14 @@
           "guidance": "One line per bring-down tier under Accuracy of Representations (each tier is a fact with its standard, the representations it covers as resolved CROSS_REFERENCE components, and whether materiality qualifiers are disregarded); the covenant performance condition, the no-MAE condition and the officer's certificate are rows of their own.",
           "fact_type_rows": {
             "GENERAL_CLOSING_CONDITION:BRINGDOWN": "Accuracy of Representations",
+            "GENERAL_CLOSING_CONDITION:TAX_OPINION": "Tax opinion",
+            "GENERAL_CLOSING_CONDITION": "Other conditions",
             "COVENANT_COMPLIANCE_STANDARD": "Performance of Covenants",
             "NO_MAE_CONDITION": "No Material Adverse Effect",
             "NO_MAE_CONDITION_CONTINUING": "No Material Adverse Effect",
             "OFFICER_CERTIFICATE_REQUIRED": "Officer's Certificate"
           },
-          "statement_words": "obligations? of the Company"
+          "statement_words": "obligations? of the Company|Company'?s obligations?"
         }
       ],
       "print_pages": [
@@ -6419,6 +6411,13 @@
                   "label": "Majority stockholder approval",
                   "tone": "neutral",
                   "source": "legacy_map"
+                },
+                {
+                  "code": "MAJORITY_OF_VOTES_CAST",
+                  "label": "Majority of votes cast",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Work package C4, 2026-10-18 (plan finding (128)): tender-offer and stock-deal rows read from GSK / Nuvalent and Indivior / Supernus. Supernus 4.27(b): a majority in voting power of the outstanding shares present in person or represented by proxy and entitled to vote, the Nasdaq share-issuance standard."
                 }
               ],
               "fill_from": [
@@ -6449,7 +6448,8 @@
             "Mutual consent",
             "Outside / End Date",
             "Legal restraint / order",
-            "Stockholder vote not obtained"
+            "Stockholder vote not obtained",
+            "Parent stockholder vote not obtained"
           ],
           "row_from_subtype": true,
           "subtype_rows": {
@@ -6458,7 +6458,7 @@
             "LEGAL_RESTRAINT": "Legal restraint / order",
             "VOTE_FAILURE": "Stockholder vote not obtained"
           },
-          "guidance": "Mutual termination rights, the row from the subtype: Mutual consent (written consent required or not); Outside / End Date (the initial date in outsideDate, an extension date in outsideDateExtension, the extension mechanism a sub-item as drafted); Legal restraint / order (final and non-appealable); Stockholder vote not obtained. exercisedBy codes who may elect."
+          "guidance": "Mutual termination rights, the row from the subtype: Mutual consent (written consent required or not); Outside / End Date (the initial date in outsideDate, an extension date in outsideDateExtension, the extension mechanism a sub-item as drafted); Legal restraint / order (final and non-appealable); Stockholder vote not obtained. exercisedBy codes who may elect. Work package C4, 2026-10-18 (plan finding (128)): tender-offer and stock-deal rows read from GSK / Nuvalent and Indivior / Supernus: a stock deal's second vote has its own row, \"Parent stockholder vote not obtained\"; in a tender offer the outside date and every right run to the Acceptance Time, not the Effective Time."
         },
         {
           "table_key": "termination-rights-buyer-may-terminate",
@@ -6513,6 +6513,13 @@
                     "page": 120,
                     "row_label": "Change of Recommendation"
                   }
+                },
+                {
+                  "code": "BEFORE_ACCEPTANCE_TIME",
+                  "label": "Before the Acceptance Time",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Work package C4, 2026-10-18 (plan finding (128)): tender-offer and stock-deal rows read from GSK / Nuvalent and Indivior / Supernus. Nuvalent 8.4: \"at any time prior to the Acceptance Time\"; 8.4(b): no later than two Business Days after the Expiration Date following the Change of Board Recommendation."
                 }
               ],
               "fill_from": [
@@ -6618,15 +6625,24 @@
           "fixed_row_labels": [
             "Company (Target) breach",
             "Change of Recommendation",
-            "Breach of the no-shop"
+            "Breach of the no-shop",
+            "Offer expired on a failed Offer Condition",
+            "Written consent not delivered",
+            "Support agreement not delivered"
           ],
           "row_from_subtype": true,
           "subtype_rows": {
             "BREACH": "Company (Target) breach",
             "RECOMMENDATION_CHANGE": "Change of Recommendation",
-            "NO_SOLICITATION_BREACH": "Breach of the no-shop"
+            "NO_SOLICITATION_BREACH": "Breach of the no-shop",
+            "WRITTEN_CONSENT_NOT_DELIVERED": "Written consent not delivered",
+            "SUPPORT_AGREEMENT_NOT_DELIVERED": "Support agreement not delivered"
           },
-          "guidance": "Parent's termination rights, the row from the subtype: Company breach (cure period, its end, whether curable, the terminator-breach bar as faultBasedCarveOut); Change of Recommendation (trigger, window); breach of the no-shop. A BREACH fact in this table is Parent terminating for the Company's breach; the Company's right for Parent's breach goes to the company table."
+          "fact_type_rows": {
+            "TERMINATION_RIGHT:WRITTEN_CONSENT_NOT_DELIVERED": "Written consent not delivered",
+            "TERMINATION_RIGHT:SUPPORT_AGREEMENT_NOT_DELIVERED": "Support agreement not delivered"
+          },
+          "guidance": "Parent's termination rights, the row from the subtype: Company breach (cure period, its end, whether curable, the terminator-breach bar as faultBasedCarveOut); Change of Recommendation (trigger, window); breach of the no-shop. A BREACH fact in this table is Parent terminating for the Company's breach; the Company's right for Parent's breach goes to the company table. Work package C4, 2026-10-18 (plan finding (128)): tender-offer and stock-deal rows read from GSK / Nuvalent and Indivior / Supernus: Parent's right to terminate when the Offer expired or was terminated because an Offer Condition failed is \"Offer expired on a failed Offer Condition\"; a window that runs to the Acceptance Time is coded BEFORE_ACCEPTANCE_TIME."
         },
         {
           "table_key": "termination-rights-company-may-terminate",
@@ -6704,6 +6720,13 @@
                   "tone": "neutral",
                   "addition": true,
                   "reason": "Ben's decision 2026-09-14 (decision 34): each termination right is its precedent row, named from the fact's subtype, its terms coded and the right as drafted."
+                },
+                {
+                  "code": "BEFORE_ACCEPTANCE_TIME",
+                  "label": "Before the Acceptance Time",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Work package C4, 2026-10-18 (plan finding (128)): tender-offer and stock-deal rows read from GSK / Nuvalent and Indivior / Supernus. Nuvalent 8.3: \"at any time prior to the Acceptance Time\"."
                 }
               ],
               "fill_from": [
@@ -6762,7 +6785,9 @@
           "fixed_row_labels": [
             "Parent (Buyer) breach",
             "Superior Proposal",
-            "Failure to close"
+            "Failure to close",
+            "Offer not commenced or not consummated",
+            "Parent change of recommendation"
           ],
           "open_rows": true,
           "row_from_subtype": true,
@@ -6771,7 +6796,7 @@
             "SUPERIOR_PROPOSAL": "Superior Proposal",
             "BESPOKE_DATE_RIGHT": "Failure to close"
           },
-          "guidance": "The Company's termination rights, the row from the subtype: Parent breach (cure period, terminator-breach bar); Superior Proposal (window before the vote, fee payable concurrently, compliance with the no-shop as a sub-item as drafted; the conditions on the right stated in a later section are facts on this row); Failure to close (a BESPOKE_DATE_RIGHT or failure-to-consummate right)."
+          "guidance": "The Company's termination rights, the row from the subtype: Parent breach (cure period, terminator-breach bar); Superior Proposal (window before the vote, fee payable concurrently, compliance with the no-shop as a sub-item as drafted; the conditions on the right stated in a later section are facts on this row); Failure to close (a BESPOKE_DATE_RIGHT or failure-to-consummate right). Work package C4, 2026-10-18 (plan finding (128)): tender-offer and stock-deal rows read from GSK / Nuvalent and Indivior / Supernus: the Company's right when Purchaser fails to commence the Offer, lets it expire or fails to accept tendered Shares is \"Offer not commenced or not consummated\"; in a stock deal the Company's right on Parent's adverse recommendation change is \"Parent change of recommendation\", and its right to terminate for its own Superior Proposal stays on \"Superior Proposal\"."
         },
         {
           "table_key": "termination-rights-effect",
@@ -6874,6 +6899,10 @@
                   "WRITTEN_NOTICE_REQUIRED",
                   "BOARD_ACTION_REQUIRED",
                   "STOCKHOLDER_APPROVAL_NOT_REQUIRED"
+                ],
+                "Remedies preserved": [
+                  "YES",
+                  "NO"
                 ]
               },
               "fill_from": [
@@ -6914,7 +6943,8 @@
             "Release of liability",
             "Willful and material breach carve-out",
             "Surviving provisions",
-            "Termination formalities"
+            "Termination formalities",
+            "Remedies preserved"
           ],
           "row_from_subtype": true,
           "subtype_rows": {
@@ -6922,9 +6952,13 @@
             "LIABILITY_RELEASE": "Release of liability",
             "WILLFUL_MATERIAL_BREACH_CARVEOUT": "Willful and material breach carve-out",
             "PROVISION_SURVIVAL": "Surviving provisions",
-            "TERMINATION_NOTICE": "Termination formalities"
+            "TERMINATION_NOTICE": "Termination formalities",
+            "REMEDY_ENTITLEMENT": "Remedies preserved"
           },
-          "guidance": "The effect of termination, the row from the subtype: the agreement becoming void; the release of liability and its carve-outs; the willful and material breach carve-out; the surviving provisions; and the formalities of terminating (notice, board action, no stockholder approval), one cell per formality."
+          "guidance": "The effect of termination, the row from the subtype: the agreement becoming void; the release of liability and its carve-outs; the willful and material breach carve-out; the surviving provisions; and the formalities of terminating (notice, board action, no stockholder approval), one cell per formality.",
+          "fact_type_rows": {
+            "TERMINATION_EFFECT:REMEDY_ENTITLEMENT": "Remedies preserved"
+          }
         }
       ],
       "print_pages": [
@@ -8982,6 +9016,10 @@
                 "Construction": [
                   "YES",
                   "NO"
+                ],
+                "Cumulative remedies": [
+                  "YES",
+                  "NO"
                 ]
               },
               "fill_from": [
@@ -9032,7 +9070,8 @@
             "Severability",
             "Counterparts and electronic execution",
             "Survival",
-            "Construction"
+            "Construction",
+            "Cumulative remedies"
           ],
           "subtype_keys": [
             "GOVERNING_LAW",
@@ -9048,7 +9087,11 @@
             "CONSTRUCTION",
             "EXPENSES"
           ],
-          "guidance": "One row per boilerplate term as the precedent names it; the row is the term the fact addresses (a FORUM fact on the jury waiver is Jury trial waiver; a SPECIFIC_PERFORMANCE_REMEDIES fact on equitable relief, irreparable harm, the bond waiver or closing enforcement is Specific performance, each a sub-item; a REMEDY_COORDINATION or REMEDY_ACTION_EXTENSION fact is Specific performance limitations; an EXPENSES or COST_SHIFT fact is Fee / expense allocation). The Provision cell is the code from that row's list (several cells when the clause states several: the amendment formalities, the notice methods); the clause as drafted beside it. A row the agreement does not address is omitted."
+          "guidance": "One row per boilerplate term as the precedent names it; the row is the term the fact addresses (a FORUM fact on the jury waiver is Jury trial waiver; a SPECIFIC_PERFORMANCE_REMEDIES fact on equitable relief, irreparable harm, the bond waiver or closing enforcement is Specific performance, each a sub-item; a REMEDY_COORDINATION or REMEDY_ACTION_EXTENSION fact is Specific performance limitations; an EXPENSES or COST_SHIFT fact is Fee / expense allocation). The Provision cell is the code from that row's list (several cells when the clause states several: the amendment formalities, the notice methods); the clause as drafted beside it. A row the agreement does not address is omitted.",
+          "fact_type_rows": {
+            "MISC_BOILERPLATE_MECHANIC_PRESENT:CONSTRUCTION": "Construction",
+            "SPECIFIC_PERFORMANCE_REMEDY_PRESENT:CUMULATIVE_RIGHTS": "Cumulative remedies"
+          }
         }
       ],
       "print_pages": [

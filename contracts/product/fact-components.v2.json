@@ -40,7 +40,7 @@
   },
   "rules": [
     "R1 Every component text is a contiguous verbatim substring of its source span, checked by byte offsets; a component that fails is INVALID and the fact is held.",
-    "R2 Children are in source order. A LIST has one LIST_ELEMENT child per element that could vary between deals; nested lists nest ('including cyber-attacks' is a child of 'sabotage').",
+    "R2 Children are in source order. A LIST has one LIST_ELEMENT child per element that could vary between deals; nested lists nest ('including cyber-attacks' is a child of 'sabotage'). A LIST whose elements are all section references or defined terms ('Section 3.9(c), Section 3.20, Section 3.21', the representations a bring-down tier covers) has CROSS_REFERENCE or DEFINED_TERM children, each resolved, and no LIST_ELEMENT.",
     "R3 A LITANY is one component; its synonyms are members, never separate components ('any event, change, circumstance, occurrence, effect or state of facts').",
     "R4 Inherited words carry origin CHAPEAU, INTRO or DEFINITION and origin_structure_node_id. Rendering marks them; a fused statement is never shown as one sentence without [...] at each gap.",
     "R5 No role or component is forced. A missing timing, qualification or forum is absent, not invented. The words 'none', 'not applicable' and section references never appear as component text.",

@@ -1060,7 +1060,7 @@ test('the general covenants table names the publicity sub-items and the words th
 // section, the covenants table's words rule that sends facts there over the
 // readout, its sub-items, the OTHER_PARTY obligor (f) and the By when
 // column (g).
-test('the registration-rights table sits last under Consideration, takes general covenants by words over the readout, with sub-items, an other-party obligor and a By when column', () => {
+test('the registration-rights table sits last under Consideration, takes general covenants by words over the readout as one line, with an other-party obligor and a By when column', () => {
   const consideration = findSectionV3('consideration-hero');
   const table = findTableV3(consideration, 'consideration-registration-rights');
   assert.equal(consideration.tables[consideration.tables.length - 1].table_key, 'consideration-registration-rights');
@@ -1075,11 +1075,14 @@ test('the registration-rights table sits last under Consideration, takes general
   const when = new RegExp(rule.when, 'i');
   for (const words of ['to keep such Registration Statement continuously effective', 'all Registrable Securities covered', 'a prospectus supplement', 'Rule 144(c)(1)', 'pursuant to Rule 415']) assert.ok(when.test(words), words);
   assert.equal(when.test('any notice of deficiency or non-compliance received from Nasdaq'), false);
-  assert.deepEqual(table.detail_labels_by_row['Registration rights'], ['Resale registration', 'Effectiveness and amendments', 'Stockholder information and approval', 'Indemnification', 'Expenses', 'Rule 144 and legend removal', 'Listing and reporting']);
-  const rules = table.detail_from_words_by_row['Registration rights'];
-  assert.equal(rules.length, 7);
-  for (const detail of rules) assert.ok(table.detail_labels_by_row['Registration rights'].includes(detail.detail), detail.detail);
-  assert.deepEqual(rules.slice(0, 2).map((candidate) => candidate.detail), ['Indemnification', 'Expenses'], 'the indemnity before the filing duties that name a prospectus');
+  // Ben, 2026-10-18 (plan finding (166)): "are these from a reg rights agreement? I wouldn't go into anywhere near this depth in this product": one line, no sub-items.
+  assert.equal(table.no_sub_items, true);
+  assert.equal(table.detail_labels_by_row, undefined);
+  assert.equal(table.detail_from_words_by_row, undefined);
+  assert.match(table.reason, /I wouldn't go into anywhere near this depth in this product/);
+  const broken3 = structuredClone(tableShapesV3);
+  findTableV3(broken3.sections.find((s) => s.section_key === 'consideration-hero'), 'consideration-registration-rights').no_sub_items = 'yes';
+  assert.throws(() => validateTableShapesV3(broken3, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_NO_SUB_ITEMS/);
   // (f) Ben: "on A - if the shareholders have to do something, okay for them to be an obligor".
   for (const owner of [covenants, table]) {
     const obligor = owner.columns.find((column) => column.column_id === 'obligor');
@@ -1104,4 +1107,82 @@ test('the registration-rights table sits last under Consideration, takes general
   const broken2 = structuredClone(tableShapesV3);
   findTableV3(broken2.sections.find((s) => s.section_key === 'consideration-hero'), 'consideration-registration-rights').accepts_families = ['NOT_A_FAMILY'];
   assert.throws(() => validateTableShapesV3(broken2, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_ACCEPTS_FAMILIES/);
+});
+
+
+// Work package 19 (d) (manager finding (165); NCS generation 5): the eight
+// VALID facts without a readout each have a row.
+test('the conditions, termination and boilerplate tables name rows for the NCS generation 5 facts that had none', () => {
+  const mutual = findTableV3(findSectionV3('conditions'), 'conditions-table');
+  assert.ok(mutual.fixed_row_labels.includes('Other mutual conditions'));
+  assert.equal(mutual.fact_type_rows.GENERAL_CLOSING_CONDITION, 'Other mutual conditions');
+  for (const [sectionKey, tableKey] of [['conditions-b', 'conditions-b-table'], ['conditions-s', 'conditions-s-table']]) {
+    const table = findTableV3(findSectionV3(sectionKey), tableKey);
+    for (const label of ['No Material Adverse Effect', 'Tax opinion', 'Other conditions']) assert.ok(table.fixed_row_labels.includes(label), `${tableKey}: ${label}`);
+    assert.equal(table.fact_type_rows['GENERAL_CLOSING_CONDITION:TAX_OPINION'], 'Tax opinion');
+    assert.equal(table.fact_type_rows.GENERAL_CLOSING_CONDITION, 'Other conditions');
+    assert.equal(table.fact_type_rows['GENERAL_CLOSING_CONDITION:BRINGDOWN'], 'Accuracy of Representations');
+  }
+  assert.ok(new RegExp(findTableV3(findSectionV3('conditions-s'), 'conditions-s-table').statement_words, 'i').test("As a condition to the Company's obligation to effect the Merger"));
+  const buyer = findTableV3(findSectionV3('termination-rights'), 'termination-rights-buyer-may-terminate');
+  assert.deepEqual(buyer.fixed_row_labels.slice(-2), ['Written consent not delivered', 'Support agreement not delivered']);
+  assert.equal(buyer.fact_type_rows['TERMINATION_RIGHT:WRITTEN_CONSENT_NOT_DELIVERED'], 'Written consent not delivered');
+  assert.equal(buyer.subtype_rows.SUPPORT_AGREEMENT_NOT_DELIVERED, 'Support agreement not delivered');
+  const effect = findTableV3(findSectionV3('termination-rights'), 'termination-rights-effect');
+  assert.ok(effect.fixed_row_labels.includes('Remedies preserved'));
+  assert.equal(effect.fact_type_rows['TERMINATION_EFFECT:REMEDY_ENTITLEMENT'], 'Remedies preserved');
+  const misc = findTableV3(findSectionV3('misc-boilerplate'), 'misc-boilerplate-table');
+  assert.ok(misc.fixed_row_labels.includes('Cumulative remedies'));
+  assert.deepEqual(misc.fact_type_rows, { 'MISC_BOILERPLATE_MECHANIC_PRESENT:CONSTRUCTION': 'Construction', 'SPECIFIC_PERFORMANCE_REMEDY_PRESENT:CUMULATIVE_RIGHTS': 'Cumulative remedies' });
+});
+
+// Work package C4 (plan finding (128)): the rows and codes a two-step tender
+// offer and a stock merger of equals need, pinned with the agreements' own
+// words (GSK / Nuvalent, 2026-06-09; Indivior / Supernus, 2026-08-01).
+test('Work package C4: the conditions, termination, votes, proxy and consideration tables carry the tender-offer and stock-deal rows', () => {
+  const { C4_ROWS, C4_VOTES_CAST_CODE, C4_WINDOW_CODE } = require('../scripts/product/table-shapes-decision-34');
+  const conditions = findTableV3(findSectionV3('conditions'), 'conditions-table');
+  // Nuvalent Annex I 1(a): "represents at least a majority of the Class A Shares outstanding as of the consummation of the Offer (such condition ... the “Minimum Tender Condition”)".
+  assert.ok(conditions.fixed_row_labels.includes('Minimum tender condition'));
+  // Nuvalent 7.1: the Merger waits on the Offer; Supernus 7.1(a): "the Indivior Stockholder Approval shall have been attained".
+  assert.ok(conditions.fixed_row_labels.includes('Offer consummated (Acceptance Time)'));
+  assert.ok(conditions.fixed_row_labels.includes('Parent stockholder approval'));
+  // Supernus 4.27(b): "a majority in voting power of the outstanding Indivior Shares present in person or represented by proxy ... and entitled to vote".
+  assert.ok(conditions.columns.find((c) => c.column_id === 'voteStandard').vocabulary.some((v) => v.code === C4_VOTES_CAST_CODE));
+  assert.equal(C4_VOTES_CAST_CODE, 'MAJORITY_OF_VOTES_CAST');
+
+  const termination = findSectionV3('termination-rights');
+  const mutual = findTableV3(termination, 'termination-rights-mutual');
+  // Supernus 8.1(d)(iv): "the Indivior Stockholder Approval ... shall not have been obtained".
+  assert.ok(mutual.fixed_row_labels.includes('Parent stockholder vote not obtained'));
+  assert.ok(mutual.columns.find((c) => c.column_id === 'voteThreshold').vocabulary.some((v) => v.code === C4_VOTES_CAST_CODE));
+  const buyer = findTableV3(termination, 'termination-rights-buyer-may-terminate');
+  // Nuvalent 8.4(c): "due to the failure of an Offer Condition to be satisfied, the Offer has expired or has been terminated without Purchaser having accepted for purchase the Shares".
+  assert.ok(buyer.fixed_row_labels.includes('Offer expired on a failed Offer Condition'));
+  // Nuvalent 8.4: "at any time prior to the Acceptance Time".
+  assert.ok(buyer.columns.find((c) => c.column_id === 'window').vocabulary.some((v) => v.code === C4_WINDOW_CODE));
+  assert.equal(C4_WINDOW_CODE, 'BEFORE_ACCEPTANCE_TIME');
+  const company = findTableV3(termination, 'termination-rights-company-may-terminate');
+  // Nuvalent 8.3(a)(i) to (iii): "Purchaser fails to timely commence the Offer", "the Offer has expired or has been terminated without Purchaser having accepted for purchase the Shares".
+  assert.ok(company.fixed_row_labels.includes('Offer not commenced or not consummated'));
+  // Supernus 8.1(c)(ii): "the Indivior Board or any committee thereof (A) shall make an Indivior Adverse Recommendation Change".
+  assert.ok(company.fixed_row_labels.includes('Parent change of recommendation'));
+  assert.ok(company.columns.find((c) => c.column_id === 'window').vocabulary.some((v) => v.code === C4_WINDOW_CODE));
+
+  const votesSection = findSectionV3('votes-approvals-meeting');
+  const votes = findTableV3(votesSection, 'votes-approvals-meeting-table');
+  // Nuvalent 2.6: "The Merger will be governed by Section 251(h) of the DGCL ... without a vote of the holders of any Shares".
+  assert.ok(votes.fixed_row_labels.includes('Merger without a vote (Section 251(h))'));
+  // Supernus 6.3(b): "convene and hold a meeting of the Indivior Stockholders ... for the purpose of obtaining the Indivior Stockholder Approval".
+  assert.ok(votes.fixed_row_labels.includes("Parent stockholders' meeting"));
+  assert.ok(votes.columns.find((c) => c.column_id === 'voteStandard').vocabulary.some((v) => v.code === C4_VOTES_CAST_CODE));
+  const proxy = findTableV3(votesSection, 'votes-proxy-sec');
+  // Nuvalent 1.1(c): "a Tender Offer Statement on Schedule TO"; 1.2: "a Solicitation/Recommendation Statement on Schedule 14D-9"; Supernus 6.2(b): "a registration statement on Form S-4, in which the Joint Proxy Statement shall be included".
+  for (const label of ['Schedule TO (Offer Documents)', 'Schedule 14D-9', 'Registration Statement (Form S-4)']) assert.ok(proxy.fixed_row_labels.includes(label), label);
+
+  const components = findTableV3(findSectionV3('consideration-hero'), 'consideration-components');
+  // Supernus 2.8(b): "in lieu of such fraction of a share ... be paid in cash the dollar amount ... determined by multiplying such fraction by the Average Indivior Stock Price".
+  assert.ok(components.fixed_row_labels.includes('Cash in lieu of fractional shares'));
+  assert.equal(Object.keys(C4_ROWS).length, 13);
+  for (const label of Object.values(C4_ROWS)) assert.equal(typeof label, 'string');
 });

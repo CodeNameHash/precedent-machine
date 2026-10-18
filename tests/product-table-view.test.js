@@ -1233,6 +1233,10 @@ test('page footers are hidden from the words the tables show and kept in the sto
   assert.equal(hidePageFooters('DOCUMENTS\n-85-\nREFERRED TO'), 'DOCUMENTS REFERRED TO');
   assert.equal(hidePageFooters('the\n - 7 - \nTransactions'), 'the Transactions');
   assert.equal(hidePageFooters('a 3-4 split and -5- inline stay'), 'a 3-4 split and -5- inline stay', 'only a footer on a line of its own is hidden');
+  // Work package 20 (b): the NCS filing's footers are bare page numbers on a line of their own.
+  assert.equal(hidePageFooters('relating to the Transactions,\n49\nthe Company or Parent'), 'relating to the Transactions, the Company or Parent');
+  assert.equal(hidePageFooters('as follows:\n34\nSection 4.1 Organization'), 'as follows:\nSection 4.1 Organization', 'between single newlines a paragraph boundary keeps one newline');
+  assert.equal(hidePageFooters('shares of 2,000 and 49 the Company'), 'shares of 2,000 and 49 the Company', 'a number inside a line is not a footer');
   assert.equal(hidePageFooters(null), null);
   const fact = {
     fact_id: 'pf-2', family_key: 'NO_SHOP', subtype_key: 'PROHIBITED_ACTION',
@@ -2140,7 +2144,7 @@ test('publicity facts become sub-items of Public announcements named from their 
 // three open rows gather on "Registration rights", each a sub-item from its
 // words; a notice covenant that names none of the words stays where it was.
 // The words are the facts' own components as stored for the run.
-test('registration-rights covenants move to the Registration rights row and take sub-items from their words; a Nasdaq notice stays on General notification', () => {
+test('registration-rights covenants gather on the one Registration rights line under Consideration; a Nasdaq notice stays on General notification', () => {
   const covenant = (id, row, texts, rowDetail) => ({
     fact_id: id, proposal_id: id, family_key: 'GENERAL_COVENANTS', subtype_key: 'OTHER_COVENANT', section_reference: '5.17', structure_node_id: 'n-5-17',
     headline: { label: 'Covenant', distinguishing_component_ids: [`${id}-0`], summary: '' },
@@ -2186,26 +2190,20 @@ test('registration-rights covenants move to the Registration rights row and take
   const table = consideration.tables[consideration.tables.length - 1];
   assert.equal(table.table_key, 'consideration-registration-rights');
   assert.deepEqual(table.rows.map((row) => [row.subject, row.backing_facts.length]), [['Registration rights', 16]]);
-  assert.deepEqual(table.rows[0].sub_rows.map((row) => [row.subject, row.backing_facts.map((entry) => entry.fact_id).sort()]), [
-    ['Resale registration', ['2bf58d52', '8a57ad66']],
-    ['Effectiveness and amendments', ['009dfdb5', '5de42e39', 'ee197fc0']],
-    ['Stockholder information and approval', ['43e27ac9', 'a01a67c4']],
-    ['Indemnification', ['37ea48cb', 'a47dc26b', 'add29195', 'f598ad96']],
-    ['Expenses', ['95c2cf94']],
-    ['Rule 144 and legend removal', ['50ba52cb', 'eb3ace36']],
-    ['Listing and reporting', ['199b43b6', 'f45fa9c4']],
-  ]);
+  // Ben, 2026-10-18 (plan finding (166)): "are these from a reg rights
+  // agreement? I wouldn't go into anywhere near this depth in this
+  // product": one line, the facts behind it, the model's own details
+  // ("Survival", "Legend removal") dropped too.
+  assert.equal(table.rows[0].sub_rows, undefined);
   assert.equal(view.sections.flatMap((section) => section.tables).some((candidate) => candidate.rows.some((row) => ['Registration rights indemnification', 'Registration expenses', 'Access to information', 'Stock exchange listing'].includes(row.subject))), false);
   // (f): the several indemnity's obligor is the stockholders, in their words.
-  const indemnification = table.rows[0].sub_rows.find((row) => row.subject === 'Indemnification');
-  const obligor = indemnification.cells.find((cell) => cell.column_id === 'obligor');
+  const obligor = table.rows[0].cells.find((cell) => cell.column_id === 'obligor');
   const obligorValues = obligor.values || [obligor];
   assert.ok(obligorValues.some((value) => value.code === 'OTHER_PARTY' && value.label === 'Each Specified Stockholder'), JSON.stringify(obligorValues));
   assert.ok(obligorValues.some((value) => value.code === 'PARENT'), 'Parent\'s indemnity keeps its obligor');
   // (g) Ben: "Ok on ETA on covenants": the 424(b)(7) filing's trigger and
   // outside date in By when, from its TRIGGER and PERIOD components.
-  const resale = table.rows[0].sub_rows.find((row) => row.subject === 'Resale registration');
-  const byWhen = resale.cells.find((cell) => cell.column_id === 'byWhen');
+  const byWhen = table.rows[0].cells.find((cell) => cell.column_id === 'byWhen');
   const byWhenValues = byWhen.values || [byWhen];
   assert.ok(byWhenValues.some((value) => value.label === 'Promptly following the Closing Date (and in any event no later than two Business Days thereafter)' && value.derived === 'fill_from_components'), JSON.stringify(byWhenValues));
   assert.ok(table.columns.some((column) => column.column_id === 'byWhen'), 'By when shows when a row fills it');
@@ -2236,4 +2234,100 @@ test('the financing table reads the payoff letter lead time into Period and does
   const period = line.cells.find((cell) => cell.column_id === 'period');
   assert.ok(period && /3/.test(period.label) && /business day/i.test(period.label), JSON.stringify(period));
   assert.equal(table.columns.some((column) => column.column_id === 'byWhen'), false, 'nothing is left for By when once Period has the number');
+});
+
+// Work package 19 (g) (manager finding (165): the row move "does not happen
+// on the stored rows", read from a preview deployed before the rule; Ben's
+// (166): one line, no sub-items). NCS generation 5's 32 general-covenant
+// facts of 5.17 as stored (tests/fixtures/product/ncs-generation-5-5-17-
+// general-covenants.json: ids shortened, components flattened), through
+// buildTableView with the contract as generated.
+test('NCS 5.17 as stored: 29 registration-rights covenants gather on the one Registration rights line under Consideration, three Nasdaq notices stay, no sub-items', () => {
+  const stored = require('./fixtures/product/ncs-generation-5-5-17-general-covenants.json');
+  assert.equal(stored.length, 32);
+  const view = buildTableView({ facts: stored, tableShapes, legalSchema });
+  const consideration = view.sections.find((section) => section.section_key === 'consideration-hero');
+  const table = consideration.tables[consideration.tables.length - 1];
+  assert.equal(table.table_key, 'consideration-registration-rights');
+  assert.deepEqual(table.rows.map((row) => [row.subject, row.backing_facts.length, row.sub_rows]), [['Registration rights', 29, undefined]]);
+  const covenants = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'general-covenants-table');
+  assert.deepEqual(covenants.rows.map((row) => [row.subject, row.backing_facts.map((entry) => entry.fact_id).sort()]), [
+    ['Litigation notification', ['52e8af75']],
+    ['General notification', ['31da8ce7', '369c5c72']],
+  ]);
+  assert.equal(view.sections.flatMap((section) => section.without_readout || []).length, 0);
+  // (f): the stockholders' obligations read in their words; Parent's
+  // obligor readings are stated in the summaries and kept under
+  // stated_in_summary (work package B4's rule).
+  const obligor = table.rows[0].cells.find((cell) => cell.column_id === 'obligor');
+  assert.deepEqual(obligor.values.map((value) => [value.code, value.label]).sort(), [
+    ['OTHER_PARTY', 'Each Specified Stockholder'], ['OTHER_PARTY', 'Parent and each Specified Stockholder'], ['OTHER_PARTY', 'the Specified Stockholders'],
+  ]);
+  assert.deepEqual(obligor.stated_in_summary, ['PARENT']);
+  // (g): the deadlines and timing triggers, never a bare event trigger.
+  const byWhen = table.rows[0].cells.find((cell) => cell.column_id === 'byWhen');
+  const labels = byWhen.values.map((value) => value.label);
+  assert.ok(labels.includes('Promptly following the Closing Date (and in any event no later than two Business Days thereafter)'), labels.join(' | '));
+  assert.ok(labels.includes('After the Registration Statement becomes effective'));
+  assert.equal(labels.some((label) => /upon the discovery|insofar as such losses|as such expenses are incurred/.test(label)), false, 'event triggers are not deadlines');
+});
+
+
+// Work package 19 (d) (manager finding (165); NCS generation 5): the eight
+// VALID facts the page listed without a readout (and the no-Parent-MAE
+// condition beside them), as stored, each on its row.
+test('NCS generation 5\'s facts without a readout each take a row: the mutual and party conditions, the written-consent termination rights, remedies preserved, construction and cumulative remedies', () => {
+  const stored = (id, section, family, subtype, factType, statement, summary, texts) => ({
+    fact_id: id, proposal_id: id, family_key: family, subtype_key: subtype, fact_type: factType, section_reference: section, structure_node_id: `n-${section}`, validation_status: 'VALID', statement,
+    headline: { label: summary.split(' ').slice(0, 3).join(' '), summary, distinguishing_component_ids: [`${id}-0`] },
+    components: texts.map(([kind, text], index) => ({ component_id: `${id}-${index}`, kind, label: 'words', text, origin: 'OWN', source_span_id: 's', start_byte: index * 10, end_byte: index * 10 + 5, gap_before: false, children: [] })),
+  });
+  const facts = [
+    stored('f54d1f70', '6.1', 'CLOSING_CONDITIONS', 'GENERAL_CLOSING_CONDITION', 'GENERAL_CLOSING_CONDITION', 'The obligation of each Party to effect the Merger is subject to the satisfaction at or prior to the Effective Time of the condition that the Information Statement shall have been mailed to all holders of the Company Common Stock following effectiveness of the Form S-4 and at least 20 Business Days prior to the Closing Date.', 'Information Statement mailed to Company stockholders at least 20 Business Days before Closing', [['OBJECT', 'The Information Statement'], ['OPERATION', 'shall have been mailed to all holders of the Company Common Stock'], ['TRIGGER', 'following effectiveness of the Form S-4'], ['PERIOD', 'at least 20 Business Days prior to the Closing Date']]),
+    stored('a7fd4aca', '6.3', 'CLOSING_CONDITIONS', 'TAX_OPINION', 'GENERAL_CLOSING_CONDITION', "As a condition to the Company's obligation to effect the Merger, subject to satisfaction or waiver by the Company at or prior to the Effective Time, the Company shall have received, on the Closing Date but before the Effective Time, an opinion in form and substance reasonably satisfactory to the Company (the Closing Tax Opinion) from Tax Counsel concluding that the Merger will qualify for the Intended Tax Treatment.", 'Company must receive Tax Counsel opinion that the Merger qualifies for the Intended Tax Treatment', [['ACTOR', 'The Company'], ['OPERATION', 'shall have received'], ['TRIGGER', 'on the Closing Date, but before the Effective Time'], ['OBJECT', 'an opinion'], ['STANDARD', 'in form and substance reasonably satisfactory to the Company']]),
+    stored('d5e41bd3', '6.3', 'CLOSING_CONDITIONS', 'GENERAL_CLOSING_CONDITION', 'GENERAL_CLOSING_CONDITION', "As a condition to the Company's obligation to effect the Merger, subject to satisfaction or waiver by the Company at or prior to the Effective Time, the Company shall have timely remitted the entire amount of any and all the required tax deposits necessary to fully proceed with its Notice of Objection.", 'Company must have timely remitted required tax deposits for its Canadian and Alberta objections', [['ACTOR', 'The Company'], ['OPERATION', 'shall have timely remitted'], ['OBJECT', 'the entire amount of any and all the required tax deposits necessary to fully proceed with its Notice of Objection']]),
+    stored('e9bd4f85', '6.3', 'CLOSING_CONDITIONS', 'FRUSTRATION', 'NO_MAE_CONDITION', "As a condition to the Company's obligation to effect the Merger, since the date of this Agreement there shall not have occurred any event that has had or would reasonably be expected to have a Parent Material Adverse Effect.", 'No Parent Material Adverse Effect has occurred since the date of the Agreement', [['TRIGGER', 'Since the date of this Agreement'], ['OPERATION', 'there shall not have occurred'], ['LITANY', 'any event, change, circumstance, occurrence, effect or state of facts'], ['STANDARD', 'that has had or would reasonably be expected to have']]),
+    stored('4df07313', '7.1', 'TERMINATION', 'WRITTEN_CONSENT_NOT_DELIVERED', 'TERMINATION_RIGHT', 'Parent may terminate this Agreement and abandon the Merger if the Written Consent, duly executed by the Consenting Stockholders, shall not have been delivered to Parent and the Company by the Consent Time.', "Parent may terminate if Consenting Stockholders' Written Consent is not delivered by the Consent Time", [['ACTOR', 'by Parent'], ['TRIGGER', 'if the Written Consent, duly executed by the Consenting Stockholders, shall not have been delivered to Parent and the Company'], ['CONDITION', 'by the Consent Time']]),
+    stored('0f4dd949', '7.1', 'TERMINATION', 'SUPPORT_AGREEMENT_NOT_DELIVERED', 'TERMINATION_RIGHT', 'Parent may terminate this Agreement and abandon the Merger if the Support Agreement, duly executed by the Consenting Stockholders, shall not have been delivered to Parent and the Company by the Consent Time.', 'Parent may terminate if the executed Support Agreement is not delivered by the Consent Time', [['ACTOR', 'by Parent'], ['TRIGGER', 'if the Support Agreement, duly executed by the Consenting Stockholders, shall not have been delivered to Parent and the Company'], ['CONDITION', 'by the Consent Time']]),
+    stored('ee3f3736', '7.2', 'TERMINATION', 'REMEDY_ENTITLEMENT', 'TERMINATION_EFFECT', 'Where liability for fraud or willful and material breach is preserved, then, except as otherwise provided in Section 7.3, the non-breaching Party shall be entitled to all rights and remedies available at law or in equity.', 'Non-breaching Party keeps all rights and remedies at law or in equity', [['TRIGGER', 'in which case'], ['EXCEPTION', 'except as otherwise provided in Section 7.3'], ['ACTOR', 'the non-breaching Party'], ['OPERATION', 'shall be entitled to all rights and remedies available at law or in equity']]),
+    stored('17a1ac3c', '7.3', 'MISC_BOILERPLATE', 'CONSTRUCTION', 'MISC_BOILERPLATE_MECHANIC_PRESENT', 'The Company warrants that it does not have an establishment for VAT purposes in any EU Member State, that it is in business for VAT purposes, and that it will make any payment of the Company Termination Fee in the course of such business for VAT purposes.', 'Company warrants no EU VAT establishment and business-course payment of the fee', [['ACTOR', 'The Company warrants'], ['OBJECT', 'that it does not have an establishment for VAT purposes in any EU Member State'], ['OBJECT', 'that it is in business for VAT purposes']]),
+    stored('7358e051', '7.5', 'SPECIFIC_PERFORMANCE_REMEDIES', 'CUMULATIVE_RIGHTS', 'SPECIFIC_PERFORMANCE_REMEDY_PRESENT', 'The rights and remedies of the Parties are cumulative and are not exclusive of any rights or remedies which they would otherwise have hereunder.', "The Parties' rights and remedies are cumulative and not exclusive of other remedies", [['ACTOR', 'The rights and remedies of the Parties'], ['OPERATION', 'are cumulative and are not exclusive'], ['OBJECT', 'of any rights or remedies which they would otherwise have hereunder']]),
+  ];
+  const view = buildTableView({ facts, tableShapes, legalSchema });
+  const placement = new Map();
+  for (const section of view.sections) for (const table of section.tables) for (const row of table.rows) for (const entry of row.backing_facts) placement.set(entry.fact_id, [table.table_key, row.subject]);
+  assert.deepEqual(Object.fromEntries([...placement.entries()].sort()), {
+    '0f4dd949': ['termination-rights-buyer-may-terminate', 'Support agreement not delivered'],
+    '17a1ac3c': ['misc-boilerplate-table', 'Construction'],
+    '4df07313': ['termination-rights-buyer-may-terminate', 'Written consent not delivered'],
+    '7358e051': ['misc-boilerplate-table', 'Cumulative remedies'],
+    a7fd4aca: ['conditions-s-table', 'Tax opinion'],
+    d5e41bd3: ['conditions-s-table', 'Other conditions'],
+    e9bd4f85: ['conditions-s-table', 'No Material Adverse Effect'],
+    ee3f3736: ['termination-rights-effect', 'Remedies preserved'],
+    f54d1f70: ['conditions-table', 'Other mutual conditions'],
+  });
+  assert.equal(view.sections.flatMap((section) => section.without_readout || []).length, 0, 'nothing is left without a readout');
+});
+
+
+// Work package 19 (g) (manager's addendum of 21:10): on the stored rows the
+// general covenants table named the row from the subtype
+// (GENERAL_NOTIFICATION) and made a words_rows row the sub-item, so the
+// move looked as if it had not happened; the fixture's made-up subtype
+// never showed it. A words_rows row wins over the subtype's name, on the
+// same table as across tables.
+test('a words_rows rule on a subtype-named table moves the fact to the rule\'s row, not to a sub-item under its subtype\'s row', () => {
+  const shapes = structuredClone(tableShapes);
+  const covenants = shapes.sections.find((section) => section.section_key === 'general-covenants').tables.find((table) => table.table_key === 'general-covenants-table');
+  covenants.words_rows = [...(covenants.words_rows || []), { row_label: 'Public announcements', when: 'press\\s+release', over_readout: true }];
+  const fact = {
+    fact_id: 'gn-1', proposal_id: 'gn-1', family_key: 'GENERAL_COVENANTS', subtype_key: 'GENERAL_NOTIFICATION', section_reference: '5.14', structure_node_id: 'n-5-14',
+    headline: { label: 'General notification', distinguishing_component_ids: ['gn-1-1'], summary: 'Parent consults the Company before any press release' },
+    components: [['ACTOR', 'Parent'], ['OPERATION', 'shall consult the Company before issuing any press release']].map(([kind, text], index) => ({ component_id: `gn-1-${index}`, kind, label: 'words', text, origin: 'OWN', source_span_id: 's', start_byte: index * 10, end_byte: index * 10 + 5, gap_before: false, children: [] })),
+    conclusions: { table_key: 'general-covenants-table', row_label: 'General notification', cells: [{ column_id: 'obligor', code: 'PARENT', component_ids: ['gn-1-0'] }] },
+  };
+  const view = buildTableView({ facts: [fact], tableShapes: shapes, legalSchema });
+  const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'general-covenants-table');
+  assert.deepEqual(table.rows.map((row) => [row.subject, row.backing_facts.length, row.sub_rows ? row.sub_rows.map((sub) => sub.subject) : undefined]), [['Public announcements', 1, ['Consultation and review']]]);
 });
