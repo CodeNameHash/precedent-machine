@@ -7,20 +7,27 @@
 // page makes: POST /api/product/intake, then POST /api/product/analysis/<run>/run
 // which wakes the hosted sandbox worker.
 //
-//   PRODUCT_INTERNAL_TOKEN=... node scripts/product/start-generation.js <base-url> <sec-url> <generation>
+//   PRODUCT_INTERNAL_TOKEN=... node scripts/product/start-generation.js <base-url> <sec-url> <generation> [--provider ANTHROPIC_API]
 //   PRODUCT_INTERNAL_TOKEN=... node scripts/product/start-generation.js <base-url> --status <run-id>
 
 const token = process.env.PRODUCT_INTERNAL_TOKEN;
-const [baseUrl, second, third] = process.argv.slice(2);
+const argv = process.argv.slice(2);
+// Work package 3 (plan finding (46)): one run on a named hosted provider
+// while the environment default stays (the intake's optional `provider`).
+const providerIndex = argv.indexOf('--provider');
+const provider = providerIndex === -1 ? undefined : argv[providerIndex + 1];
+if (providerIndex !== -1) argv.splice(providerIndex, 2);
+const [baseUrl, second, third] = argv;
 
 function usage(message) {
   console.error(message);
-  console.error('usage: start-generation.js <base-url> <sec-url> <generation> | <base-url> --status <run-id>');
+  console.error('usage: start-generation.js <base-url> <sec-url> <generation> [--provider <hosted provider id>] | <base-url> --status <run-id>');
   process.exit(64);
 }
 
 if (!token) usage('PRODUCT_INTERNAL_TOKEN is not set');
 if (!baseUrl || !/^https?:\/\//.test(baseUrl)) usage('base-url must be an http(s) URL');
+if (providerIndex !== -1 && !/^[A-Z][A-Z0-9_]+$/.test(provider || '')) usage('--provider needs a hosted provider id such as ANTHROPIC_API');
 
 async function call(method, path, body) {
   const response = await fetch(new URL(path, baseUrl), {
@@ -47,6 +54,7 @@ async function call(method, path, body) {
   if (!Number.isInteger(generation) || generation < 0) usage('generation must be a non-negative integer');
   const submitted = await call('POST', '/api/product/intake', {
     url: secUrl, idempotencyKey: require('node:crypto').randomUUID(), explicitGeneration: generation, maxAttempts: 3,
+    ...(provider ? { provider } : {}),
   });
   console.log(`submitted run ${submitted.run_id} (generation ${submitted.generation}, ${submitted.status})`);
   const advanced = await call('POST', `/api/product/analysis/${submitted.run_id}/run`, {});

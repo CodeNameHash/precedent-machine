@@ -58,6 +58,13 @@ function dealTitle(parties, fallback) {
 const INTER = "'Inter', ui-sans-serif, -apple-system, 'Segoe UI', Roboto, sans-serif";
 const PAGE_STYLE = { '--font-sans': INTER, '--font-serif': INTER, '--accent-rgb': '47 86 184', '--accent-soft': '#e9effa', fontFamily: INTER };
 // The state badge as a small rounded-[2px] chip in a soft tint, no border.
+// The run's provider, in the eyebrow row beside the state chip (work package
+// 3: the run page shows which account paid).
+const PROVIDER_LABELS = { ANTHROPIC_API: 'Anthropic API', ANTHROPIC_CLAUDE_CLI_SUBSCRIPTION: 'Claude subscription', OPENAI_CODEX_CLI_SUBSCRIPTION: 'Codex subscription', ANTHROPIC: 'In-request API' };
+function providerLabel(progress) {
+  const id = progress && progress.provider;
+  return id ? (PROVIDER_LABELS[id] || id) : null;
+}
 function stateBadge(progress, published) {
   if (progress && progress.status === 'FAILED') return { label: 'Run failed', className: 'bg-amber-50 text-amber-700' };
   if (progress && progress.status !== 'READY') return { label: 'In progress', className: 'bg-amber-50 text-amber-700' };
@@ -101,6 +108,7 @@ export function ProvisionsPreviewBody({ workspace, runId }) {
               <div className="flex flex-wrap items-center gap-[7px]">
                 <p className="font-ui text-[10px] uppercase tracking-[0.12em] text-[#6b6b6b]">Lawyer preview</p>
                 <span className={`inline-flex items-center rounded-full px-[6px] py-[1px] text-[9px] font-ui font-medium uppercase tracking-wide ${badge.className}`} data-testid="preview-badge">{badge.label}</span>
+                {providerLabel(progress) ? <span className="font-ui text-[9px] uppercase tracking-[0.12em] text-[#6b6b6b]" data-testid="preview-provider">{providerLabel(progress)}</span> : null}
               </div>
               <h1 className="mt-[7px] font-sans text-[23px] font-semibold leading-[1.05] tracking-tight text-[#1f1f1f] md:text-[30px]">{title}</h1>
               {/* Ben, 2026-09-14: "please remove 'State: draft, not published /

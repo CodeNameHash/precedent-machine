@@ -218,3 +218,18 @@ test('an API-provider run requires ANTHROPIC_API_KEY before any claim', async ()
     if (priorKey === undefined) delete process.env.ANTHROPIC_API_KEY; else process.env.ANTHROPIC_API_KEY = priorKey;
   }
 });
+
+// A 429 (or an exhausted balance) on the API account stops the worker with
+// the usage-limit reason, as the CLI paths' limits do, instead of burning
+// attempts (work package 3).
+test('an API account limit stops the worker with the usage-limit reason', async () => {
+  const priorKey = process.env.ANTHROPIC_API_KEY;
+  process.env.ANTHROPIC_API_KEY = 'sk-ant-test-'.repeat(3);
+  try {
+    const limit = new Error('ANTHROPIC_API_USAGE_LIMIT: usage limit on the API account (429): rate limit exceeded');
+    const deps = dependencies(async () => { throw limit; }, { model_config: ANTHROPIC_API_MODEL_CONFIG });
+    await assert.rejects(runHostedWorker(options, output, deps), /PRODUCT_HOSTED_CODEX_USAGE_LIMIT: ANTHROPIC_API_USAGE_LIMIT: usage limit on the API account \(429\)/);
+  } finally {
+    if (priorKey === undefined) delete process.env.ANTHROPIC_API_KEY; else process.env.ANTHROPIC_API_KEY = priorKey;
+  }
+});

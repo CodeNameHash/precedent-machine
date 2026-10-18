@@ -12,9 +12,12 @@ const assert = require('node:assert/strict');
 const test = require('node:test');
 
 const {
-  ANTHROPIC_API_CALL_KIND_MODELS, ANTHROPIC_API_MODEL_CONFIG, ANTHROPIC_API_PROVIDER_ID, CLAUDE_CLI_CALL_KIND_MODELS,
-  anthropicApiCostMicrousd, configuredProductModelConfig, hostedModelConfigFor, isHostedProvider, resolveAnthropicApiCallModel,
+  ANTHROPIC_API_CALL_KIND_MODELS, ANTHROPIC_API_MODEL_CONFIG, ANTHROPIC_API_PRICES, ANTHROPIC_API_PROVIDER_ID, CLAUDE_CLI_CALL_KIND_MODELS,
+  CLAUDE_CLI_MODEL_CONFIG, anthropicApiCostMicrousd, configuredProductModelConfig, hostedModelConfigFor, isHostedProvider, resolveAnthropicApiCallModel,
 } = require('../lib/product/product-model-config');
+const { createProductIntakeHandler } = require('../lib/product/intake-handler');
+const { createProductAnalysisHandler } = require('../lib/product/analysis-handler');
+const { estimateRunCost, parseArguments } = require('../scripts/product/estimate-run-cost');
 const { createAnthropicApiProductModel, isAccountLimit } = require('../lib/product/anthropic-api-model');
 const { createHostedProductModel, SYSTEM_PROMPT } = require('../lib/product/claude-cli-model');
 const { receivedProviderFailure } = require('../lib/product/model-adapter');
@@ -38,7 +41,11 @@ function fakeClient(reply, seen = []) {
 
 test('the API provider is a hosted provider at the Claude CLI tier, metered at the published rates', () => {
   assert.equal(ANTHROPIC_API_CALL_KIND_MODELS, CLAUDE_CLI_CALL_KIND_MODELS);
-  assert.equal(ANTHROPIC_API_MODEL_CONFIG.max_output_tokens, 32000);
+  assert.equal(ANTHROPIC_API_MODEL_CONFIG.max_output_tokens, 64000, 'a 60,000-token extraction completes');
+  assert.equal('rates_usd_per_million' in ANTHROPIC_API_MODEL_CONFIG, false, 'prices live in one constant, not in the stored run config');
+  assert.equal(ANTHROPIC_API_PRICES.source, 'https://platform.claude.com/docs/en/about-claude/pricing');
+  assert.match(ANTHROPIC_API_PRICES.retrieved, /^\d{4}-\d{2}-\d{2}$/);
+  assert.deepEqual(ANTHROPIC_API_PRICES.usd_per_million['claude-opus-5'], { input: 5, cache_write_5m: 6.25, cache_write_1h: 10, cache_read: 0.5, output: 25 });
   assert.equal(ANTHROPIC_API_MODEL_CONFIG.billing_basis, 'ANTHROPIC_API_METERED');
   assert.equal(isHostedProvider(ANTHROPIC_API_PROVIDER_ID), true);
   assert.equal(isHostedProvider('ANTHROPIC'), false, 'the in-request Sonnet provider stays where it is');
@@ -59,7 +66,7 @@ test('a call streams one compact-JSON request at the call kind\'s effort under t
   const result = await model.complete({ call_kind: 'EXTRACTION', prompt_version: 'PRODUCT_ALL_FAMILY_EXTRACTOR/V9', request: { section: '5.02' } });
   assert.equal(seen.length, 1);
   assert.deepEqual(seen[0], {
-    model: 'claude-opus-5', max_tokens: 32000, output_config: { effort: 'high' }, system: SYSTEM_PROMPT,
+    model: 'claude-opus-5', max_tokens: 64000, output_config: { effort: 'high' }, system: SYSTEM_PROMPT,
     messages: [{ role: 'user', content: JSON.stringify({ call_kind: 'EXTRACTION', prompt_version: 'PRODUCT_ALL_FAMILY_EXTRACTOR/V9', section: '5.02' }) }],
   });
   assert.equal('temperature' in seen[0], false, 'no sampling parameter: the model refuses them');
@@ -176,4 +183,82 @@ test('the run route wakes the sandbox for an API run with the deployment\'s key'
     providerId: ANTHROPIC_API_PROVIDER_ID, anthropicApiKey: 'sk-ant-'.repeat(6),
   });
   assert.equal(response.body.execution_mode, 'HOSTED');
+});
+
+test('the intake takes an explicit hosted provider for one run and refuses anything else; the environment default stays', async () => {
+  const submitted = [];
+  const handler = (resolver) => createProductIntakeHandler({
+    getClient: () => ({}), intakeFactory: () => ({ intake() {} }), storeFactory: () => ({}),
+    modelConfigResolver: resolver,
+    foundationFactory: () => ({ submit: async (input) => { submitted.push(input); return { run_id: 'run-1', source_document_id: 's', source_generation: 8, status: 'QUEUED', stage: 'SECTION_ANALYSIS' }; } }),
+  });
+  const recorder = () => ({ statusCode: null, body: null, status(code) { this.statusCode = code; return this; }, json(body) { this.body = body; return this; } });
+  const body = { url: 'https://www.sec.gov/Archives/edgar/data/1/0001/x.htm', idempotencyKey: 'k-1', explicitGeneration: 8 };
+  const chosen = recorder();
+  await handler(() => CLAUDE_CLI_MODEL_CONFIG)({ method: 'POST', body: { ...body, provider: ANTHROPIC_API_PROVIDER_ID } }, chosen);
+  assert.equal(chosen.statusCode, 202);
+  assert.equal(submitted[0].modelConfig, ANTHROPIC_API_MODEL_CONFIG);
+  assert.equal('provider' in submitted[0], false, 'the field is consumed here, not passed to the foundation');
+  const defaulted = recorder();
+  await handler(() => CLAUDE_CLI_MODEL_CONFIG)({ method: 'POST', body }, defaulted);
+  assert.equal(submitted[1].modelConfig, CLAUDE_CLI_MODEL_CONFIG);
+  for (const bad of ['ANTHROPIC', 'SOMETHING_ELSE', 7]) {
+    const refused = recorder();
+    await handler(() => CLAUDE_CLI_MODEL_CONFIG)({ method: 'POST', body: { ...body, provider: bad } }, refused);
+    assert.equal(refused.statusCode, 400, `${bad} is not a hosted provider`);
+  }
+  assert.equal(submitted.length, 2);
+});
+
+test('the run route drives a run on the provider its own model_config names, whatever the environment default', async () => {
+  const runId = '46c45080-6935-49e5-96ae-b6cb0609a924';
+  let wakeInput;
+  const store = {
+    assertAccess: async () => {},
+    getRun: async () => ({ run_id: runId, model_config: ANTHROPIC_API_MODEL_CONFIG }),
+    getAgreementAnalysis: async () => ({ status: 'RUNNING' }),
+  };
+  const handler = createProductRunHandler({
+    getClient: () => ({}), storeFactory: () => store, actorResolver: async () => 'ben',
+    modelConfigResolver: () => CLAUDE_CLI_MODEL_CONFIG,
+    modelFactory: () => assert.fail('no in-process model for a hosted run'),
+    databaseUrlResolver: () => 'https://ecrtoofsyxozazkvsvcl.supabase.co',
+    serviceRoleKeyResolver: () => 'service-role-secret-value',
+    claudeOauthTokenResolver: () => assert.fail('the OAuth token is not read for an API run'),
+    anthropicApiKeyResolver: () => 'sk-ant-'.repeat(6),
+    wakeRun: async (input) => { wakeInput = input; return { command_id: 'command-1' }; },
+  });
+  const response = { statusCode: null, body: null, setHeader() {}, status(code) { this.statusCode = code; return this; }, json(body) { this.body = body; return this; } };
+  await handler({ method: 'POST', query: { id: runId }, headers: { 'x-pm-csrf': 'same-origin' }, body: {} }, response);
+  assert.equal(response.statusCode, 202);
+  assert.equal(wakeInput.providerId, ANTHROPIC_API_PROVIDER_ID);
+  assert.equal(typeof wakeInput.anthropicApiKey, 'string');
+});
+
+test('the analysis read names the run\'s provider', async () => {
+  const runId = '46c45080-6935-49e5-96ae-b6cb0609a924';
+  const handler = createProductAnalysisHandler({
+    getClient: () => ({}),
+    storeFactory: () => ({ getAgreementAnalysis: async () => ({ status: 'RUNNING' }), getRun: async () => ({ run_id: runId, model_config: ANTHROPIC_API_MODEL_CONFIG }) }),
+  });
+  const response = { statusCode: null, body: null, setHeader() {}, status(code) { this.statusCode = code; return this; }, json(body) { this.body = body; return this; } };
+  await handler({ method: 'GET', query: { id: runId } }, response);
+  assert.deepEqual(response.body, { status: 'RUNNING', model_provider: ANTHROPIC_API_PROVIDER_ID });
+});
+
+// The estimate from generation 7's recorded tokens at the published rates.
+test('the estimate script prices generation 7\'s tokens at the price table, with and without cache reads', () => {
+  const estimate = estimateRunCost({ inputTokens: 9853912, outputTokens: 3146447 });
+  assert.equal(estimate.input_usd, 49.27);
+  assert.equal(estimate.output_usd, 78.66);
+  assert.equal(estimate.total_usd, 127.93);
+  assert.equal(estimate.price_source, ANTHROPIC_API_PRICES.source);
+  assert.equal(estimate.price_date, ANTHROPIC_API_PRICES.retrieved);
+  const cached = estimateRunCost({ inputTokens: 9853912, outputTokens: 3146447, cacheReadShare: 2 / 3 });
+  assert.ok(cached.total_usd < estimate.total_usd && cached.total_usd > 90, String(cached.total_usd));
+  assert.equal(estimateRunCost({ inputTokens: 9853912, outputTokens: 3146447, modelId: 'claude-opus-5-5' }).total_usd, 102.34);
+  assert.deepEqual(parseArguments(['9,853,912', '3,146,447']), { modelId: 'claude-opus-5', cacheReadShare: 0, inputTokens: 9853912, outputTokens: 3146447 });
+  assert.deepEqual(parseArguments(['--run', '46c45080-6935-49e5-96ae-b6cb0609a924', '--model', 'claude-opus-5-5']), { modelId: 'claude-opus-5-5', cacheReadShare: 0, runId: '46c45080-6935-49e5-96ae-b6cb0609a924' });
+  assert.throws(() => estimateRunCost({ inputTokens: 1, outputTokens: 1, modelId: 'claude-unknown' }), /no published rates/);
+  assert.throws(() => parseArguments(['1']), /usage/);
 });

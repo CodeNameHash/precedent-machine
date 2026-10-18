@@ -43,6 +43,8 @@ test('buildPreviewWorkspace carries completed sections, progress and an empty re
   assert.equal(workspace.progress.status, 'RUNNING');
   assert.equal(workspace.progress.completed, 1);
   assert.ok(workspace.progress.total >= 1);
+  assert.equal(workspace.progress.provider, null, 'a run without a model_config names no provider');
+  assert.equal(buildPreviewWorkspace({ ...context, run: { ...context.run, model_config: { provider_id: 'ANTHROPIC_API' } }, sections: [section()] }).progress.provider, 'ANTHROPIC_API');
   assert.equal(workspace.review.state.items.length, 0);
   const preview = previewFactsFromWorkspace(workspace);
   assert.equal(preview.facts.length, 1);

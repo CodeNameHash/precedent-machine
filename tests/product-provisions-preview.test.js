@@ -191,3 +191,16 @@ test('draft-level schema drift issues are one quiet line each under the title, i
   assert.doesNotMatch(quiet, /preview-schema-drift/);
   assert.deepEqual(previewFactsFromWorkspace(workspace()).schema_drift, []);
 });
+
+// Work package 3: the run page names the provider that paid, beside the
+// state chip, only when the run names one.
+test('the header names the run\'s provider beside the state chip', () => {
+  const api = workspace();
+  api.progress = { ...api.progress, provider: 'ANTHROPIC_API' };
+  const html = renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: api, runId: 'run-1' }));
+  assert.match(html, /data-testid="preview-provider">Anthropic API</);
+  const subscription = workspace();
+  subscription.progress = { ...subscription.progress, provider: 'ANTHROPIC_CLAUDE_CLI_SUBSCRIPTION' };
+  assert.match(renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: subscription, runId: 'run-1' })), /preview-provider">Claude subscription</);
+  assert.doesNotMatch(renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: workspace(), runId: 'run-1' })), /preview-provider/);
+});
