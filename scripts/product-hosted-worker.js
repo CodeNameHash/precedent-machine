@@ -13,6 +13,7 @@ const { workerStopReason } = require('../lib/product/worker-stop');
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const IDLE_WAIT_MS = 1000;
+const MAX_WORKERS = 8;
 function parseArguments(argv) {
   const values = {};
   for (let index = 0; index < argv.length; index += 2) {
@@ -25,8 +26,12 @@ function parseArguments(argv) {
   }
   if (!UUID.test(values['run-id'] || '')) throw new TypeError('--run-id must be a UUID');
   if (values.actor !== 'ben') throw new TypeError('--actor must be ben');
+  // Work package E1 (implementer E): up to eight section loops on one
+  // sandbox (the sections are independent and 97 per cent of a
+  // generation's call time is output generation); two unless the wake
+  // says otherwise (launch.sh reads PRODUCT_HOSTED_WORKERS).
   const workers = Number(values.workers || 2);
-  if (!Number.isInteger(workers) || workers < 1 || workers > 2) throw new TypeError('--workers must be 1 or 2');
+  if (!Number.isInteger(workers) || workers < 1 || workers > MAX_WORKERS) throw new TypeError(`--workers must be 1 to ${MAX_WORKERS}`);
   return { runId: values['run-id'], actor: values.actor, workers };
 }
 
@@ -39,7 +44,7 @@ function createStore() {
 }
 
 async function runHostedWorker(options, output = process.stdout, dependencies = {}) {
-  if (!options || !UUID.test(options.runId || '') || options.actor !== 'ben' || ![1, 2].includes(options.workers)) {
+  if (!options || !UUID.test(options.runId || '') || options.actor !== 'ben' || !Number.isInteger(options.workers) || options.workers < 1 || options.workers > MAX_WORKERS) {
     throw new TypeError('invalid hosted worker options');
   }
   if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
@@ -57,7 +62,7 @@ async function runHostedWorker(options, output = process.stdout, dependencies = 
   // subscription login the wake passed in.
   const providerId = run?.model_config?.provider_id;
   if (!isHostedProvider(providerId)) throw new Error('PRODUCT_RUN_MODEL_CONFIG_MISMATCH: not a hosted provider');
-  assertConfiguredRunModelConfig(run, hostedModelConfigFor(providerId));
+  assertConfiguredRunModelConfig(run, hostedModelConfigFor(providerId, run));
   if (providerId === CLAUDE_CLI_PROVIDER_ID && !process.env.CLAUDE_CODE_OAUTH_TOKEN) {
     throw new Error('PRODUCT_HOSTED_CLAUDE_LOGIN_REQUIRED');
   }

@@ -6735,6 +6735,144 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       tests/product-extraction-cost-ledger.test.js (7 of 7), added to
       test:active.
 
+      (181) 2026-10-18 23:10 UTC to 2026-10-19 00:40 UTC (implementer
+      E), work package E1 items 2 to 5: the levers ranked, the replay
+      harness, the lean request profile behind the model-config
+      identity, the three-section ablation harness, the gate. No run
+      submitted, woken or retried; no live call (the ablation's live
+      ladder is the manager's to run); nothing written to the preview
+      branch; no key read. The levers, each with its mechanism and its
+      measured dollars and minutes on NCS generation 5 (the note's
+      section 11): 1 the answer's format, components alone with short
+      span aliases (-$28, -107 wall minutes, reading unchanged); 2 the
+      Batch API (half of whatever remains; a batch runner against the
+      section-lease store is the next build, not this one); 3
+      concurrency, eight section loops and the parts of a split
+      section together (-280 minutes to the rate limit, $0); 4 medium
+      effort on extraction (-$17, -63 minutes, if the facts hold); 5
+      claude-opus-5-5 (-$29 on the stored mix); 6 the agreement cached
+      once instead of 14.4 MB of definitions and cross-references sent
+      fresh (-$6 at Opus 5 rates, -$9 at Opus 5.5: 115,000 cached
+      tokens a call cost nearly as much as the 37,000 fresh ones they
+      replace; a trimmed closure, one hop and 1,500 bytes a reference,
+      would be -$13 and is proposed, not built); 7 anchored quotes
+      (-$9, -34 minutes); 8 two stable blocks (-$7); 9 routing and
+      residual on Haiku 5.5 (-$5); 10 nothing on attempts that do not
+      commit (-$14, already fixed, the gate holds it). Stacked:
+      nothing changed in the reading or the model, about $92 and 70
+      minutes at eight loops (1.6x); the same tier with the format,
+      anchors and Opus 5.5, about $66 (2.2x); with medium effort and
+      the cached agreement, if the ablation shows the same facts,
+      about $42 (3.5x); with the Batch API, about $21 (7x); 10x needs
+      every step and the batch runner. 100x is not available while a
+      frontier model writes the facts: the floor is $15 to $23; the
+      next 10x after that is a smaller model writing the facts (Sonnet
+      5.5 at $10, Haiku 5.5 at $0.50 a million output tokens) and
+      would lose whatever those models lose on a merger agreement's
+      qualifications, carve-outs and cross-references, unmeasured on
+      this corpus; the ablation harness runs the same ladder on them
+      when Ben wants that number. Built, in code for every agreement:
+      (a) `scripts/product/replay-run.js` (`lib/product/run-replay.js`):
+      a run finalised again from its stored responses with no model
+      call, every stored request rebuilt into the pipeline's request
+      and keyed as a recording is (`callKey` now hashes call kind,
+      prompt version and request alone), the committed attempt's split
+      reproduced from the work row's error_history, the draft
+      assembled and validated, the proposals compared with the stored
+      ones by id and status (`--match loose` answers a changed request
+      with the stored call of the same section, kind and part and
+      lists the drift; `--sections` a subset; `--dump-snapshot` the
+      rows and context for a rerun without the database). Proven here
+      on the Concho synthetic run: the same draft by content id, zero
+      calls, $0 (tests/product-run-replay.test.js); the NCS generation
+      5 proof (1,015 VALID and 22 held) is one command for the manager
+      where the branch keys are, below. The number of runs: the NCS
+      generation 5 audit says of its 22 holds that "none needs a
+      re-run to be judged", and every rule merged while it ran (work
+      packages 13, 14, 18 and 19, eleven rules) is a compiler or page
+      rule: each is judged by the replay on the stored answers. Of the
+      thirteen generations, the ones run for a prompt, split or schema
+      change needed the model for the sections whose request changed
+      and no other; a validator or page change never did. (b) The
+      lean request profile (`lib/product/product-model-config.js`
+      `ANTHROPIC_API_REQUEST_PROFILES`, `ANTHROPIC_API_LEAN_MODEL_CONFIG`,
+      `PRODUCT_ANTHROPIC_API_CALL_KIND_MAP/V2`, chosen for a new run by
+      `PRODUCT_ANTHROPIC_API_PROFILE=LEAN`; a run created under it
+      advances under it, `hostedModelConfigFor(providerId, run)` and
+      `anthropicApiModelConfigFor` follow the run's own config by
+      identity, the worker, the run route and the runner pass it
+      through): in `buildAgreementSectionDraft({ requestProfile })`
+      the extraction request goes out as `PRODUCT_ALL_FAMILY_EXTRACTOR/V10`
+      with every closure span a short alias, the components alone (no
+      roles, no evidence_quotes), a long component's words as its
+      first and last four words resolved by the validator
+      (`resolveAnchoredQuote`), and under the cached-agreement context
+      the definitions and cross-references listed by section, span
+      and first words while the provider sends the agreement's text
+      once under its own 1-hour breakpoint (`cacheableContent`: the
+      agreement block, one or two stable blocks, the section block;
+      the stored request keeps a marker with the source document's id,
+      bytes and hash; the recorded adapter's key ignores the text);
+      `normaliseLeanResponse` reads the answer back into the compiler's
+      shape and the section carries one LEAN_RESPONSE_NORMALISED note;
+      `compileExtraction({ rolesOptional })` holds nothing for a role
+      and records the role coverage FOUND, reason ROLE_IN_COMPONENTS;
+      `validateAgreementDraft` skips the role check for a V10 call.
+      Proven end to end on Concho 6.3 through the synthetic routing
+      and a lean answer written the way the model would: the fact
+      VALID with real span ids and the anchored words resolved
+      (tests/product-section-ablation.test.js). (c) The ablation
+      harness, `scripts/product/section-ablation.js`
+      (`lib/product/section-ablation.js`): one stored run's sections
+      extracted again under a variant of the profile and the model
+      (the ladder baseline, format, anchors, lean, lean_medium,
+      lean_opus55, lean_opus55_medium, routing_sonnet, routing_haiku),
+      routing and residual answered from the stored calls, only the
+      extraction live (every answer recorded for replay), the stored
+      VALID facts matched to the variant's on the bytes by
+      generation-comparison's rule, tokens, seconds and dollars beside
+      them, the stored row repriced at Opus 5.5; the baseline row is
+      free. The three sections: 3.19 (seven facts, $1.31 as stored),
+      5.2 (27, $3.43), 5.17 (41, $4.98); the six extraction variants
+      about $45 together, the two routing variants under $1 (the
+      note's section 12 has the commands). (d) Concurrency: the parts
+      of a split section go out together up to
+      PRODUCT_EXTRACTION_PART_CONCURRENCY (1 unless set, the serial
+      order so far; the LONG_SECTION_SPLIT issue records it;
+      `mapWithConcurrency` keeps part order and lets a failed part's
+      siblings finish recording), and the hosted worker takes
+      `--workers` 1 to 8 (launch.sh reads PRODUCT_HOSTED_WORKERS, 2
+      unless set). (e) The gate (item 5): `runCostMetrics` per run
+      (cost a VALID fact, input and output tokens an agreement byte,
+      output tokens a fact, call minutes and calls a section, sends a
+      byte, the failed and uncommitted cost) against the NCS
+      generation 5 baseline fixture; `extraction-cost-ledger.js
+      --baseline` exits 3 on a rise over the tolerance unless
+      `--explain metric=reason` names the plan finding that accepted
+      it; tests/product-extraction-cost-ledger.test.js holds the rule
+      and the baseline. Asked of the manager, in order: (1) the proof,
+      `node scripts/product/replay-run.js --run
+      51577c57-41b1-4b75-bcdf-c84ef2558589 --out ncs5-replay.json`
+      where SUPABASE_URL names the preview branch, expected "identical
+      by proposal id and status" with 1,015 VALID and 22 held and
+      zero calls (a difference is a rule merged after the wake,
+      finding (94) and work package 19, and is the fix under test;
+      read it); (2) `extraction-cost-ledger.js --run` on both runs,
+      the two outputs beside the note; (3) the ablation snapshot
+      (`section-ablation.js --run ... --sections 3.19,5.2,5.17
+      --dump-snapshot`) and the baseline variant, then the live ladder
+      at about $46 of Ben's credit on your word; (4) the console's
+      billed usage for the workspace over 13:27 to 20:47 UTC and the
+      workspace's output-tokens-per-minute limit for claude-opus-5
+      (eight loops need 42,000 a minute). Nothing in the LEAN config
+      is the default: V9 runs exactly as before until the ablation
+      table says which rungs hold.
+      Tests: tests/product-run-replay.test.js,
+      tests/product-lean-request-profile.test.js,
+      tests/product-section-ablation.test.js, added to test:active
+      beside the ledger suite; tests/product-hosted-worker-pool.test.js
+      takes the new worker range. npm run test:active: see the push.
+
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
 - [x] Take a database backup and restore it to a separate environment.
