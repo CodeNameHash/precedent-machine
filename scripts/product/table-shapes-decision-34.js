@@ -70,6 +70,22 @@ function ensureFamily(section, familyKey) {
 
 // The fact as drafted: its own words in full, the cited words the click
 // target (decision 26 made this the rule for detail columns).
+// Work package 18 (g): a verbatim column the page fills from the fact's own
+// components of the named kinds when the readout leaves it empty
+// (fill_from_components), hidden when no row fills it.
+function byWhenColumn(reason) {
+  return {
+    column_id: 'byWhen',
+    header: 'By when',
+    render: 'verbatim',
+    fill_from: ['TRIGGER', 'PERIOD'],
+    fill_from_components: true,
+    addition: true,
+    reason,
+    guidance: 'The deadline or trigger the covenant states (a period before or after a date; "promptly following the Closing Date"), the TRIGGER and PERIOD components\' words in source order; the page fills it from the components when the readout has no cell.',
+  };
+}
+
 function asDrafted(reason, fillFrom = ['OPERATION', 'OBJECT', 'CONDITION', 'STANDARD', 'EXCEPTION', 'QUALIFIER']) {
   return {
     column_id: 'asDrafted',
@@ -1506,6 +1522,11 @@ const PUBLICITY_WORDS = [
 // proposes"). Metsera generation 8 has no covenant with these words and
 // is unchanged.
 const REGISTRATION_ROW = 'Registration rights';
+// Ben, 2026-10-18 (plan finding (163)): "reg rights I think goes with
+// consideration (but at bottom)": the row is the one row of a table at the
+// bottom of the Consideration section, not of the general covenants table;
+// the covenants table's words rule sends the facts there (table_key).
+const REGISTRATION_TABLE_KEY = 'consideration-registration-rights';
 const REGISTRATION_WORDS = 'Registration\\s+Statement|Registrable\\s+Securities|\\bprospectus|Rule\\s+144|Rule\\s+415';
 const REGISTRATION_DETAILS = [
   'Resale registration',
@@ -1578,14 +1599,47 @@ function applyVotesAndCovenants(doc) {
   ];
   standard.guidance = 'The efforts or conduct standard the covenant states, coded; the words themselves are in the as-drafted column.';
   covenants.columns = [findColumn(covenants, 'obligor'), standard, asDrafted(why)];
-  covenants.guidance = `${covenants.guidance} The covenant as drafted replaces the scope and exceptions fragments.`;
+  covenants.guidance = `${covenants.guidance} The covenant as drafted replaces the scope and exceptions fragments. By when: the covenant's deadline or trigger, from its TRIGGER and PERIOD components.`;
   covenants.detail_labels_by_row = { ...(covenants.detail_labels_by_row || {}), [PUBLICITY_ROW]: [...PUBLICITY_DETAILS] };
   covenants.detail_from_words_by_row = { ...(covenants.detail_from_words_by_row || {}), [PUBLICITY_ROW]: PUBLICITY_WORDS.map((rule) => ({ ...rule })) };
-  if (!covenants.fixed_row_labels.includes(REGISTRATION_ROW)) covenants.fixed_row_labels = [...covenants.fixed_row_labels, REGISTRATION_ROW];
-  covenants.words_rows = [...(covenants.words_rows || []), { row_label: REGISTRATION_ROW, when: REGISTRATION_WORDS, over_readout: true }];
-  covenants.detail_labels_by_row[REGISTRATION_ROW] = [...REGISTRATION_DETAILS];
-  covenants.detail_from_words_by_row[REGISTRATION_ROW] = REGISTRATION_DETAIL_WORDS.map((rule) => ({ ...rule }));
-  covenants.guidance = `${covenants.guidance} ${REGISTRATION_ROW}: every covenant of a registration-rights package (the resale registration statement or shelf, keeping it effective and amending it, the holders' information and approval rights, the indemnities and their mechanics, the expenses, Rule 144 and legend removal, the listing and reporting covenants for the resale period) is on this row, one fact per operative unit, each a sub-item with row_detail from the row's detail_labels_by_row; the code places a covenant whose words name the Registration Statement, Registrable Securities, a prospectus, Rule 144 or Rule 415 here and names its sub-item from its words (work package 18, 2026-10-18).`;
+  // Work package 18 (f) (Ben, 2026-10-18, plan finding (163): "on A - if
+  // the shareholders have to do something, okay for them to be an
+  // obligor"): a covenant that binds a party that is neither the Company
+  // nor Parent (the Specified Stockholders on NCS 5.17; a sponsor or
+  // guarantor elsewhere) is coded OTHER_PARTY and the page shows the
+  // party's own words in the cell (other_party_code).
+  const obligor = findColumn(covenants, 'obligor');
+  if (!obligor.vocabulary.some((entry) => entry.code === 'OTHER_PARTY')) {
+    obligor.vocabulary.push(code('Other party (named in the words)', 'Ben, 2026-10-18 (plan finding (163)): "on A - if the shareholders have to do something, okay for them to be an obligor". The cell shows the party\'s own words (the Specified Stockholders; a sponsor; a guarantor).', { code: 'OTHER_PARTY' }));
+  }
+  obligor.other_party_code = 'OTHER_PARTY';
+  obligor.guidance = `${obligor.guidance ? `${obligor.guidance} ` : ''}OTHER_PARTY when the words bind a party that is neither the Company nor Parent (stockholders, a sponsor, a guarantor); cite the party's own words, which the page shows in the cell.`;
+  // Work package 18 (g) (Ben, 2026-10-18, plan finding (163): "Ok on ETA on
+  // covenants"): a "By when" column filled from the covenant's TRIGGER and
+  // PERIOD components ("Promptly following the Closing Date (and in any
+  // event no later than two Business Days thereafter)"; a payoff letter
+  // "at least three (3) Business Days prior to the Closing Date"), hidden
+  // when no row fills it; the as-drafted column cites them too.
+  const byWhenReason = 'Ben, 2026-10-18 (plan finding (163)): "Ok on ETA on covenants".';
+  const drafted = asDrafted(why, ['OPERATION', 'OBJECT', 'CONDITION', 'STANDARD', 'EXCEPTION', 'QUALIFIER', 'TRIGGER', 'PERIOD']);
+  covenants.columns = [obligor, standard, byWhenColumn(byWhenReason), drafted];
+  covenants.words_rows = [...(covenants.words_rows || []), { row_label: REGISTRATION_ROW, when: REGISTRATION_WORDS, over_readout: true, table_key: REGISTRATION_TABLE_KEY }];
+  const registration = {
+    table_key: REGISTRATION_TABLE_KEY,
+    group_header: 'REGISTRATION RIGHTS',
+    term_column: { header: 'Covenant', source: 'subject', fill_from: ['TERM'] },
+    columns: [JSON.parse(JSON.stringify(obligor)), JSON.parse(JSON.stringify(standard)), byWhenColumn(byWhenReason), asDrafted(why, drafted.fill_from)],
+    rows_are: 'fixed list',
+    fixed_row_labels: [REGISTRATION_ROW],
+    accepts_families: ['GENERAL_COVENANTS'],
+    detail_labels_by_row: { [REGISTRATION_ROW]: [...REGISTRATION_DETAILS] },
+    detail_from_words_by_row: { [REGISTRATION_ROW]: REGISTRATION_DETAIL_WORDS.map((rule) => ({ ...rule })) },
+    addition: true,
+    reason: 'Ben, 2026-10-18 (plan finding (163)): "reg rights I think goes with consideration (but at bottom)". NCS generation 5, 5.17: the Specified Stockholders\' registration rights came back as covenants spread over five rows of the general covenants table.',
+    guidance: `Every covenant of a registration-rights package for the stock consideration (the resale registration statement or shelf, keeping it effective and amending it, the holders' information and approval rights, the indemnities and their mechanics, the expenses, Rule 144 and legend removal, the listing and reporting covenants for the resale period) is on this table's one row, one fact per operative unit, each a sub-item with row_detail from the row's detail_labels_by_row; the code moves a general covenant whose words name the Registration Statement, Registrable Securities, a prospectus, Rule 144 or Rule 415 here from the general covenants table and names its sub-item from its words (work package 18, 2026-10-18). A deal without registration rights shows no such table.`,
+  };
+  const consideration = findSection(doc, 'consideration-hero');
+  consideration.tables = [...consideration.tables.filter((table) => table.table_key !== REGISTRATION_TABLE_KEY), registration];
   covenants.guidance = `${covenants.guidance} ${PUBLICITY_ROW}: every publicity fact is on this row, one fact per operative unit (the announcement release and its approval; the consent, consultation and review duties; the consistency proviso; each carve-out; the Law, court-process or listing-agreement exception), each a sub-item with row_detail from the row's detail_labels_by_row; the code names the sub-item from the fact's own words when a label's words are present (work package 18, 2026-10-18).`;
 
   removeSection(doc, 'advisers-fees-expenses');
@@ -1698,6 +1752,13 @@ function applyFinancing(doc) {
     },
     guidance: 'The financing covenants and the guaranty, the row from the fact\'s subtype (subtype_rows): the efforts to obtain the financing and any alternative financing, the Company\'s cooperation, payoff letters (the lead time in the period column), the acknowledgment that financing is not a condition, note offers or consents, who bears the costs and risks; then a parent performance guaranty, the limited guaranty\'s delivery and status, the no-default representation, and the provisions protecting the financing sources (no recourse, their forum and jury waiver, their third-party beneficiary rights), one cell per protection; the code from that row\'s list, the clause as drafted. A deal without financing has no facts here and no section.',
   });
+  // Work package 18 (g) (Ben: "Ok on ETA on covenants"): a By when column
+  // from TRIGGER and PERIOD, beside the Period number (a component the
+  // Period column reads is not repeated here); the as-drafted column cites
+  // TRIGGER and PERIOD too.
+  const financingDrafted = table.columns.find((column) => column.column_id === 'asDrafted');
+  financingDrafted.fill_from = [...financingDrafted.fill_from, 'TRIGGER', 'PERIOD'];
+  table.columns.splice(table.columns.indexOf(financingDrafted), 0, byWhenColumn('Ben, 2026-10-18 (plan finding (163)): "Ok on ETA on covenants".'));
   table.fact_type_rows = {
     FINANCING_OBTAIN_EFFORTS_STANDARD: 'Obtain financing', NO_FINANCING_CONDITION_ACKNOWLEDGMENT: 'No financing condition', PAYOFF_DELIVERY_LEAD_TIME_DAYS: 'Payoff letters',
     LIMITED_GUARANTY_DELIVERED: 'Limited guaranty delivered',

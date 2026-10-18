@@ -932,8 +932,9 @@ test('a registration-rights covenant moves from General notification to Registra
   assert.equal(compiled.proposals.length, 1);
   const [fact] = compiled.proposals;
   assert.equal(fact.validation_status, 'VALID', compiled.issues.map((issue) => `${issue.code}: ${issue.message}`).join('\n'));
+  assert.equal(fact.conclusions.table_key, 'consideration-registration-rights', 'Ben: "reg rights I think goes with consideration (but at bottom)"');
   assert.equal(fact.conclusions.row_label, 'Registration rights');
   assert.equal(fact.conclusions.row_detail, 'Effectiveness and amendments');
-  assert.deepEqual(JSON.parse(compiled.issues.find((issue) => issue.code === 'ROW_FROM_WORDS').message), { client_ref: 'p1', from: 'General notification', to: 'Registration rights' });
+  assert.deepEqual(JSON.parse(compiled.issues.find((issue) => issue.code === 'ROW_FROM_WORDS').message), { client_ref: 'p1', from: 'General notification', from_table_key: 'general-covenants-table', to: 'Registration rights', to_table_key: 'consideration-registration-rights' });
   assert.deepEqual(JSON.parse(compiled.issues.find((issue) => issue.code === 'ROW_DETAIL_FROM_WORDS').message), { client_ref: 'p1', from: null, row_label: 'Registration rights', to: 'Effectiveness and amendments' });
 });
