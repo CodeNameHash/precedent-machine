@@ -5245,6 +5245,96 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       open row for a mutual condition the fixed list does not name (the
       Information Statement mailing period here), or the "without a
       readout" list as now. No code changed for this finding.
+      (94) 2026-10-18 20:40 UTC (implementer A), work package 18 (the
+      manager's message of 20:05 accepting finding (91)'s proposal; the
+      message says "finding (93) in your range", which the NCS read of
+      20:02 had taken, so this is (94)). (a) A quote of inherited origin
+      (INTRO, CHAPEAU, DEFINITION, CROSS_REFERENCE) cited on a span the
+      closure knows that does not hold it is taken from the one closure
+      span of a kind its origin allows that holds it verbatim
+      (lib/product/agreement-draft.js resolveEvidenceQuote, after the
+      full-section scan: the matching loop is now matchesWithin(span);
+      the known-span case sets the same context as work package 13 (a),
+      so the COMPONENT_SPAN_RELOCATED note is the same note, its entry
+      carrying known_span: true to say the id written was a known span);
+      two candidates or none keep the hold ("byte range missing"); own
+      words are never moved across spans. Test with NCS 4.7's real words:
+      the Article III and IV chapeau spans and 4.7 as stored for the run,
+      the three INTRO quotes cited on the Article III span relocate to
+      the Article IV chapeau at their byte offsets, VALID with the note;
+      a twin chapeau span keeps the hold; an OWN quote on the known span
+      keeps the hold. Every stored fact the rule would have kept VALID,
+      from the rows on the preview branch (every non-VALID fact of NCS
+      generation 5 and Metsera generation 8 with a top-level component of
+      inherited origin on a known span lacking its quote, counted against
+      the closure's spans of the allowed kind): NCS 4.7's three
+      (24a5363e, a8752fe4, 0adef215; nine components, each with exactly
+      one holder, the Article IV chapeau c0b36c15); Metsera generation 8:
+      none. (b) An AMOUNT whose words name a reference quantity and state
+      no number carries { canonical: null, unit: null, form: 'REFERENCE' }
+      and a VALUE_IS_REFERENCE note (lib/product/fact-components.js
+      isReferenceValue: a quantity noun (amount, premium, price, fee,
+      sum, cost, value, consideration, payment, expense, salary,
+      compensation, rate, balance) with where it is set forth
+      ("set forth in", "specified in", "described in" ...) or the payment
+      it was ("last ... paid", "most recent ... payable", "current ... in
+      effect"); a Section, Schedule or Rule citation is not a number; a
+      digit, a count in words or a formula is not a reference;
+      buildComponentTree returns references beside formulas, the
+      validator accepts the form, the extractor notes it; contract R6
+      says so). Evidence: NCS 5.11's aeb3313d, "the last aggregate annual
+      premium paid by the Company prior to the date hereof", the one
+      stored fact of either run the rule keeps VALID (the other four
+      AMOUNT holds in the stored rows are work package 14's none-counts
+      and formula, held before that package reached the deploy). Tests:
+      the unit cases, the tree, and a compiled 5.11 fact VALID with the
+      note beside a prose amount that still holds. (c) The publicity
+      row's sub-items: the general covenants table's "Public
+      announcements" row carries detail_labels_by_row and a new
+      detail_from_words_by_row (scripts/product/table-shapes-decision-34.js
+      PUBLICITY_DETAILS and PUBLICITY_WORDS; lib/product/table-shapes.js
+      validates each rule's detail against the row's labels and each
+      pattern; the contract regenerated, 49 tables, 158 columns). The
+      rule, lib/product/fact-conclusions.js detailFromWords: the first
+      rule matching the fact's own components, else its statement and
+      summary, names the sub-item; the rule wins over the detail the
+      model wrote so a corpus reads in one vocabulary, a fact no rule
+      names keeps the model's detail. Applied at extraction
+      (agreement-draft, note ROW_DETAIL_FROM_WORDS naming from and to) and
+      to stored facts in buildTableView, so NCS generation 5's rows read
+      this way without a run. The labels, proposed for Ben to name, in
+      the order the sub-items show: Announcement release; Consent to
+      releases; Consultation and review; Consistent with prior
+      statements; Carve-out: ordinary course; Carve-out: employees;
+      Carve-out: disputes; Carve-out: investor and media communications;
+      Carve-out: sponsor disclosure; Law or exchange exception. The rules
+      read the carve-outs and the consistency proviso before the duties
+      they qualify (NCS's "without providing the other Parties the
+      opportunity for such consultation and review, issue a press release
+      ... consistent with prior press releases" is the consistency line)
+      and the Law or exchange exception last, since every duty repeats
+      it. On NCS 5.14's twelve stored facts: Announcement release 2 (the
+      joint release; its approval), Consultation and review 2 (the
+      consult-and-review duty; the no-issuance-before-consultation duty),
+      Consistent with prior statements 1, Carve-out: ordinary course 1,
+      employees 1, disputes 1, sponsor disclosure 3 (limited partners;
+      the website posting; the sponsor consistency proviso), Law or
+      exchange exception 1. On Metsera generation 8's publicity row (6.08,
+      seven stored facts with seven model-written details, not five):
+      Announcement release (the initial press release), Consent to
+      releases (the prior written consent; its not-unreasonably-withheld
+      standard), Consultation and review (consult; review and comment),
+      Consistent with prior statements (previously approved information),
+      Carve-out: investor and media communications (analysts, investors
+      and media): five lines in the shared vocabulary where the model had
+      seven of its own; the manager judges whether that is improved. Both
+      deals pinned in tests/product-table-view.test.js with the facts'
+      own words; the shape pinned in tests/product-table-shapes.test.js
+      (labels, rule order, a rule naming no label fails validation); the
+      extraction path in tests/product-fact-components-extraction.test.js.
+      docs/core/CODEBASE-GUIDE.md updated. npm run test:active: the known
+      failure only (the count in the commit). Nothing submitted or
+      retried.
       (120) 2026-10-18 19:10 to 19:45 UTC (implementer C), Q5: the limb
       names harvested. `scripts/product/harvest-rep-limbs.js` (library
       `lib/product/rep-limb-harvest.js`, `tests/product-rep-limb-harvest.test.js`)
