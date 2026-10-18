@@ -1493,6 +1493,43 @@ const PUBLICITY_WORDS = [
   { detail: 'Law or exchange exception', words: 'required\\s+by\\s+(?:applicable\\s+)?Law|listing\\s+agreement|court\\s+process|securities\\s+exchange' },
 ];
 
+// Work package 18 (d) (plan finding (93); NCS generation 5, 5.17;
+// 2026-10-18): the Specified Stockholders' registration rights came back
+// as 41 facts scattered over "General notification" (13), "Access to
+// information", "Stock exchange listing", "Litigation notification" and
+// three open rows. The general covenants table gets a fixed "Registration
+// rights" row; a words_rows rule naming the Registration Statement,
+// Registrable Securities, a prospectus, Rule 144 or Rule 415 places a
+// covenant there, over the row the model chose (over_readout), and the
+// row's sub-items follow from the words. The labels are the code's
+// proposal; Ben names them ("he decides the names; the code only
+// proposes"). Metsera generation 8 has no covenant with these words and
+// is unchanged.
+const REGISTRATION_ROW = 'Registration rights';
+const REGISTRATION_WORDS = 'Registration\\s+Statement|Registrable\\s+Securities|\\bprospectus|Rule\\s+144|Rule\\s+415';
+const REGISTRATION_DETAILS = [
+  'Resale registration',
+  'Effectiveness and amendments',
+  'Stockholder information and approval',
+  'Indemnification',
+  'Expenses',
+  'Rule 144 and legend removal',
+  'Listing and reporting',
+];
+// First match wins: the indemnity and its mechanics before the filing
+// duties that mention a prospectus, the listing and reporting covenants
+// before Rule 144 (the reporting covenant names Rule 144 too), the
+// stockholders' approval right before the resale filing it governs.
+const REGISTRATION_DETAIL_WORDS = [
+  { detail: 'Indemnification', words: 'indemni|hold\\s+harmless|reimburs|omission\\s+or\\s+alleged\\s+omission|net\\s+proceeds|required\\s+to\\s+pay' },
+  { detail: 'Expenses', words: 'expenses\\s+incurred\\s+in\\s+connection\\s+with\\s+any\\s+registration|registration\\s+expenses|shall\\s+be\\s+paid\\s+by' },
+  { detail: 'Listing and reporting', words: '\\blisting\\b|Nasdaq|delisting|Depository\\s+Trust|reports?\\s+(?:and\\s+other\\s+documents\\s+)?required|timely\\s+file|Exchange\\s+Act\\s+reports?' },
+  { detail: 'Rule 144 and legend removal', words: 'Rule\\s+144|legend' },
+  { detail: 'Stockholder information and approval', words: 'approved\\s+in\\s+writing|written\\s+approval|review\\s+and\\s+approve|opportunity\\s+to\\s+review|furnish|information\\s+concerning' },
+  { detail: 'Resale registration', words: 'Rule\\s+415|\\bshelf\\b|prospectus\\s+supplement\\s+to|424\\(b\\)|selling\\s+securityholders?|include\\s+the\\s+Registrable\\s+Securities' },
+  { detail: 'Effectiveness and amendments', words: 'effective|amend|supplement|untrue\\s+statement|request\\s+by\\s+the\\s+SEC' },
+];
+
 function applyVotesAndCovenants(doc) {
   const why = `${BEN}: no column shows a cited fragment.`;
   const votesSection = findSection(doc, 'votes-approvals-meeting');
@@ -1544,6 +1581,11 @@ function applyVotesAndCovenants(doc) {
   covenants.guidance = `${covenants.guidance} The covenant as drafted replaces the scope and exceptions fragments.`;
   covenants.detail_labels_by_row = { ...(covenants.detail_labels_by_row || {}), [PUBLICITY_ROW]: [...PUBLICITY_DETAILS] };
   covenants.detail_from_words_by_row = { ...(covenants.detail_from_words_by_row || {}), [PUBLICITY_ROW]: PUBLICITY_WORDS.map((rule) => ({ ...rule })) };
+  if (!covenants.fixed_row_labels.includes(REGISTRATION_ROW)) covenants.fixed_row_labels = [...covenants.fixed_row_labels, REGISTRATION_ROW];
+  covenants.words_rows = [...(covenants.words_rows || []), { row_label: REGISTRATION_ROW, when: REGISTRATION_WORDS, over_readout: true }];
+  covenants.detail_labels_by_row[REGISTRATION_ROW] = [...REGISTRATION_DETAILS];
+  covenants.detail_from_words_by_row[REGISTRATION_ROW] = REGISTRATION_DETAIL_WORDS.map((rule) => ({ ...rule }));
+  covenants.guidance = `${covenants.guidance} ${REGISTRATION_ROW}: every covenant of a registration-rights package (the resale registration statement or shelf, keeping it effective and amending it, the holders' information and approval rights, the indemnities and their mechanics, the expenses, Rule 144 and legend removal, the listing and reporting covenants for the resale period) is on this row, one fact per operative unit, each a sub-item with row_detail from the row's detail_labels_by_row; the code places a covenant whose words name the Registration Statement, Registrable Securities, a prospectus, Rule 144 or Rule 415 here and names its sub-item from its words (work package 18, 2026-10-18).`;
   covenants.guidance = `${covenants.guidance} ${PUBLICITY_ROW}: every publicity fact is on this row, one fact per operative unit (the announcement release and its approval; the consent, consultation and review duties; the consistency proviso; each carve-out; the Law, court-process or listing-agreement exception), each a sub-item with row_detail from the row's detail_labels_by_row; the code names the sub-item from the fact's own words when a label's words are present (work package 18, 2026-10-18).`;
 
   removeSection(doc, 'advisers-fees-expenses');

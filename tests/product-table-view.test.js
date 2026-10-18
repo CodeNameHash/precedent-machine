@@ -2133,3 +2133,52 @@ test('publicity facts become sub-items of Public announcements named from their 
   const otherTable = otherView.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'general-covenants-table');
   assert.deepEqual(otherTable.rows[0].sub_rows.map((row) => row.subject), ['Form 8-K filing']);
 });
+
+// Work package 18 (d) (plan finding (93); NCS generation 5, 5.17; 2026-10-18):
+// the registration-rights covenants the model spread over "General
+// notification", "Access to information", "Stock exchange listing" and
+// three open rows gather on "Registration rights", each a sub-item from its
+// words; a notice covenant that names none of the words stays where it was.
+// The words are the facts' own components as stored for the run.
+test('registration-rights covenants move to the Registration rights row and take sub-items from their words; a Nasdaq notice stays on General notification', () => {
+  const covenant = (id, row, texts, rowDetail) => ({
+    fact_id: id, proposal_id: id, family_key: 'GENERAL_COVENANTS', subtype_key: 'OTHER_COVENANT', section_reference: '5.17', structure_node_id: 'n-5-17',
+    headline: { label: 'Covenant', distinguishing_component_ids: [`${id}-0`], summary: '' },
+    components: texts.map((text, index) => ({ component_id: `${id}-${index}`, kind: index === 0 ? 'ACTOR' : 'OPERATION', label: 'words', text, origin: 'OWN', source_span_id: 's', start_byte: index * 10, end_byte: index * 10 + 5, gap_before: false, children: [] })),
+    conclusions: { table_key: 'general-covenants-table', row_label: row, ...(rowDetail ? { row_detail: rowDetail } : {}), cells: [{ column_id: 'obligor', code: 'PARENT', component_ids: [`${id}-0`] }] },
+  });
+  const facts = [
+    covenant('2bf58d52', 'General notification', ['Promptly following the Closing Date', '(and in any event no later than two Business Days thereafter)', 'Parent', 'shall either (a) file with the SEC', 'a prospectus supplement to the Registration Statement on Form S-3 (SEC file number 333-288045), filed June 13, 2025, pursuant to Rule 424(b)(7) under the Securities Act', 'or (b) file with the SEC a Registration Statement pursuant to Rule 415 under the Securities Act']),
+    covenant('8a57ad66', 'General notification', ['Statement (or any prospectus or prospectus supplement forming a part of such Registration Statement), as initially filed', 'shall include the Registrable Securities of the Specified Stockholders and any permitted transferee thereof', 'and name the Specified Stockholders or any permitted transferees as selling securityholders', '(subject to receipt of information reasonably requested by Parent necessary to complete such prospectus supplement)']),
+    covenant('5de42e39', 'General notification', ['Parent', 'shall use its reasonable best efforts', 'to keep such Registration Statement continuously effective under the Securities Act', 'until the date on which all Registrable Securities covered by such Registration Statement have been sold']),
+    covenant('009dfdb5', 'General notification', ['Parent', 'shall use reasonable best efforts', 'to prepare and file with the SEC such amendments and supplements to the Registration Statement and the prospectus used in connection therewith', 'as may be reasonably necessary', 'to keep the Registration Statement effective and to comply with the provisions of the Securities Act with respect to the disposition of all Registrable Securities covered by the Registration Statement']),
+    covenant('ee197fc0', 'General notification', ['Parent', 'shall notify the Specified Stockholders', 'promptly upon discovery', 'upon the discovery of the happening of any event as a result of which', 'the Registration Statement or any supplement to any prospectus forming a part of the Registration Statement contains an untrue statement of a material fact or omits any fact necessary to make the statements therein not misleading in the light of the circumstances under which they were made']),
+    covenant('43e27ac9', 'Access to information', ['Parent', 'shall not file such Registration Statement, prospectus or prospectus supplement', 'unless such disclosures have been approved in writing by the Specified Stockholders', '(such approval not to be unreasonably withheld, conditioned or delayed)']),
+    covenant('a01a67c4', 'Access to information', ['Prior to the Closing Date and until the date on which all Registrable Securities covered by such Registration Statement have been sold', 'the Specified Stockholders', 'shall cooperate with Parent and use reasonable best efforts to', 'promptly furnish to Parent all information concerning it', 'as is required by the SEC to be included in the Registration Statement']),
+    covenant('f598ad96', 'Registration rights indemnification', ['Parent', 'hereby agrees to indemnify and hold harmless', 'to the fullest extent permitted by Law', 'each Specified Stockholder, and their respective Affiliates, directors, officers, employees, partners, equityholders, managers and each other Person, if any, who controls such Specified Stockholder within the meaning of the Securities Act', '(x) any untrue statement or alleged untrue statement of any material fact contained in the Registration Statement or, in the light of the circumstances under which such statements were made, in any preliminary, final or summary prospectus contained therein'], 'Untrue statements in the Registration Statement'),
+    covenant('a47dc26b', 'Registration rights indemnification', ['provided, however', 'the aggregate amount which any such Specified Stockholder shall be required to pay pursuant to this Section 5.17(l)', 'shall in no case be greater than', 'the amount of the net proceeds actually received by such Specified Stockholder upon the sale of the Registrable Securities pursuant to the registration statement giving rise to such Claim'], 'Cap on liability'),
+    covenant('95c2cf94', 'Registration expenses', ['All expenses incurred in connection with any registration of Registrable Securities pursuant to this Agreement', 'including all SEC fees, blue sky registration and filing fees, listing notices and filing fees, printing fees and expenses, transfer agents’ and registrars’ fees and expenses and all fees and expenses of Parent’s outside counsel and independent accountants of Parent', 'shall be paid by Parent', 'Parent']),
+    covenant('50ba52cb', 'Registration rights', ['Upon the written request of a Specified Stockholder', 'Parent', 'shall promptly facilitate', 'the removal of any restrictive legends with respect to any Parent Ordinary Shares', 'in connection with a sale under the Registration Statement or when such Parent Ordinary Shares are eligible for resale under Rule 144 under the Securities Act'], 'Legend removal'),
+    covenant('eb3ace36', 'General notification', ['From and after the Closing Date and until the date on which all Registrable Securities covered by such Registration Statement have been sold', 'Parent', 'shall use its commercially reasonable efforts to', '(d) remain in compliance with the current public', 'information requirements of Rule 144(c)(1) under the Securities Act']),
+    covenant('f45fa9c4', 'Stock exchange listing', ['From and after the Closing Date and until the date on which all Registrable Securities covered by such Registration Statement have been sold', 'Parent', 'shall use its commercially reasonable efforts to', '(a) maintain the listing of the Parent Ordinary Shares on Nasdaq Global Select']),
+    covenant('199b43b6', 'General notification', ['From and after the Closing Date and until the date on which all Registrable Securities covered by such Registration Statement have been sold', 'Parent', 'shall use its commercially reasonable efforts to', '(c) timely file all reports required to be filed with the SEC pursuant to the Exchange Act']),
+    covenant('31da8ce7', 'General notification', ['Parent', 'shall promptly notify the Specified Stockholders in writing of', '(x) any notice of deficiency or non-compliance received from Nasdaq']),
+    // The survival limb names none of the words; the open row the model
+    // wrote for it begins with the row's label, so it comes along.
+    covenant('add29195', 'Registration rights indemnification', ['Such indemnity and reimbursement of expenses', 'shall remain in full force and effect', 'regardless of any investigation made by or on behalf of such indemnified party', 'shall survive the transfer of such securities by such holder'], 'Survival'),
+  ];
+  const view = buildTableView({ facts, tableShapes, legalSchema });
+  const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'general-covenants-table');
+  assert.deepEqual(table.rows.map((row) => [row.subject, row.backing_facts.length]), [['General notification', 1], ['Registration rights', 15]]);
+  assert.deepEqual(table.rows[0].backing_facts.map((entry) => entry.fact_id), ['31da8ce7'], 'the Nasdaq notice names none of the words and stays');
+  assert.deepEqual(table.rows[1].sub_rows.map((row) => [row.subject, row.backing_facts.map((entry) => entry.fact_id).sort()]), [
+    ['Resale registration', ['2bf58d52', '8a57ad66']],
+    ['Effectiveness and amendments', ['009dfdb5', '5de42e39', 'ee197fc0']],
+    ['Stockholder information and approval', ['43e27ac9', 'a01a67c4']],
+    ['Indemnification', ['a47dc26b', 'add29195', 'f598ad96']],
+    ['Expenses', ['95c2cf94']],
+    ['Rule 144 and legend removal', ['50ba52cb', 'eb3ace36']],
+    ['Listing and reporting', ['199b43b6', 'f45fa9c4']],
+  ]);
+  assert.equal(table.rows.some((row) => ['Registration rights indemnification', 'Registration expenses', 'Access to information', 'Stock exchange listing'].includes(row.subject)), false);
+});
