@@ -4639,6 +4639,33 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       node (its own numbering) before the main agreement, so the CVR
       Agreement is extracted. NCS at 20:20 UTC: RUNNING, 85 of 104, 0
       failed, $127.17.
+      (163) 2026-10-18 20:45 UTC, Ben's decisions, verbatim: "For CVRs
+      - I want to build a separate product for that os I'd leave
+      those"; "For query - we do need to build a query function etc but
+      we should be thoughtful on how we do that once we have solid data
+      we're happy with - add to the future planning (probably the first
+      thing we build as it will drive the side bar etc)"; "Q5 - we need
+      to get to canonical (and perhaps some of them are sub reps under
+      a category) - wait untiil we have a few deals and see if we can
+      AI it?"; "on A - if the shareholders have to do something, okay
+      for them to be an obligor. Ok on ETA on covenants. reg rights I
+      think goes with consideration (but at bottom)". Applied: work
+      package 18 (e) is withdrawn; in its place an exhibit that is a
+      separate agreement (a Form of CVR Agreement) is out of this
+      product's scope: one OUT_OF_SCOPE_EXHIBIT note, no UNRESOLVED
+      fact-type issue per family, no extraction call. Legacy Query and
+      Compare stay unrouted (no deletion now); the Query on layered
+      facts is a plan item under section 7's later features, first
+      after the data is trusted, and implementer C writes its design
+      note for Ben now (what the sidebar needs, the conclusions-cell
+      filter across agreements, no code). Q5 waits for Olaplex and
+      Apogee; then an AI pass proposes canonical names and the
+      sub-representations under a category, for Ben's decision. A: an
+      obligor code for a party that is neither Company nor Parent when
+      the words bind it; a "By when" column on the covenant tables from
+      TRIGGER and PERIOD; the registration-rights facts as a table at
+      the bottom of the Consideration section, not on the covenants
+      table; (h) stays as it is.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
@@ -5494,6 +5521,18 @@ are adapted to the stable accepted-fact contract.
 Add any of these later only when a concrete product need justifies it.
 
 ### Features to improve later
+
+- Query on layered facts (Ben, 2026-10-18: "we do need to build a
+  query function etc but we should be thoughtful on how we do that once
+  we have solid data we're happy with - add to the future planning
+  (probably the first thing we build as it will drive the side bar
+  etc)"): the first feature after the internal release, built on the
+  activated releases' conclusions cells across agreements; its design
+  note is implementer C's (finding (163)); legacy Query and Compare
+  stay unrouted until then.
+- A CVR product of its own (Ben, 2026-10-18: "For CVRs - I want to build
+  a separate product for that"): a Form of CVR Agreement exhibit is out
+  of this product's scope.
 
 This is the future-feature list, not launch work. Update each feature here;
 the online status page displays the same entries. Status starts as Deferred,
