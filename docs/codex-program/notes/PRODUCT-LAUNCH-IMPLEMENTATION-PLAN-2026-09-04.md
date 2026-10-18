@@ -3224,6 +3224,21 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       manager monitors it and reads it section by section as
       generations 6 and 7 were read; the API path (finding (46)) is held
       for NCS after a cache breakpoint.
+      (52) 2026-10-18 03:10 UTC, generation 8 at 15 of 85 (1.01 to 2.03,
+      III-INTRO, 3.01 to 3.05; 175 proposals, 173 VALID; one attempt of a
+      split part failed on output shape and is retrying under its
+      attempts). Articles I and II and the capitalization read as
+      generation 7's did, the absences as the capitalization table's
+      Other provisions, the 3.02 and 3.03 definitions in Defined Terms.
+      Two gaps, both to work package 5: three fair summaries dropped at
+      16 words against the 15-word cap (1.03's filing of the Certificate
+      of Merger; the Article III introduction's two General Exceptions
+      summaries), so the cap tolerates 18 while the extractor is still
+      asked for 15; and three families have no table in the shapes
+      (TAX_MATTERS, FINANCING_COVENANTS, GUARANTY_FINANCING_PARTY), so
+      2.02's transfer-tax allocation fact is on no page at all: a Tax
+      Matters section and a Financing section with rows from the
+      subtype, page defaults for the stored facts.
       Then every section of the output is read
       against the text the way generation 3 was, and the run log is read
       for the sections that returned no facts (3.08, 3.21 to 3.23, 4.03,
