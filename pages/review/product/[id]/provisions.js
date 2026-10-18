@@ -144,6 +144,7 @@ export function ProvisionsPreviewBody({ workspace, runId }) {
               legalSchema={legalSchemaV2}
               sectionTextByFactId={preview.sectionTextByFactId}
               reviewItemsByFactId={preview.reviewItemsByFactId}
+              heldFacts={preview.held_facts || []}
             />
           </div>
         </>

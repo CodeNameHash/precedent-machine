@@ -1713,10 +1713,14 @@ test('the election options table: one row per election from the facts, the cash 
   const tables = view.sections.flatMap((section) => section.tables);
   const options = tables.find((table) => table.table_key === 'consideration-election-options');
   assert.ok(options, 'the table exists');
-  assert.deepEqual(options.rows.map((row) => row.subject), ['Stock election', 'Mixed election'], 'the two elections NCS offers, in the fixed order; the default is no row');
-  assert.deepEqual(options.columns.map((column) => column.column_id), ['exchangeRatio', 'valueTerms'], 'no cash number: the cash column is not rendered');
-  assert.deepEqual(options.hidden_columns, [{ column_id: 'cashPerShare', header: 'Cash per share', reason: 'empty' }]);
-  const [stock, mixedRow] = options.rows;
+  // Ben, 2026-10-18 (plan finding (85)): an option no fact is for reads
+  // "Not a deal feature"; the default is no row.
+  assert.deepEqual(options.rows.map((row) => [row.subject, row.absent === true]), [['Cash election', true], ['Stock election', false], ['Mixed election', false]], 'the two elections NCS offers, in the fixed order, and the one it does not');
+  assert.equal(options.absent_row_label, 'Not a deal feature');
+  assert.equal(options.rows[0].absent_label, undefined, 'no held fact: the table\'s own absent words');
+  assert.deepEqual(options.columns.map((column) => column.column_id), ['exchangeRatio', 'valueTerms'], 'no cash number and no linked value term: those columns are not rendered (the empty value column goes with the as-drafted columns, the empty cash column is named in hidden_columns)');
+  assert.deepEqual(options.hidden_columns.map((column) => column.column_id), ['cashPerShare']);
+  const [, stock, mixedRow] = options.rows;
   const cell = (row, columnId) => row.cells.find((candidate) => candidate.column_id === columnId);
   assert.equal(stock.subject_note, 'Share Consideration');
   assert.equal(cell(stock, 'exchangeRatio').label, '0.5537', 'the readout\'s own ratio, every digit');
@@ -1760,7 +1764,7 @@ test('the election options: a bare numeric definition fills an empty ratio or ca
     components: [{ ...facts.cashRatio.components[0], component_id: 'def-psca-t', text: '“Per Share Cash Amount”' }, { ...facts.cashRatio.components[1], component_id: 'def-psca-op', text: 'means $12.50' }] };
   const view = buildTableView({ facts: [share, cashOnly, facts.shareRatio, perShareCash, facts.cashConsideration, facts.cashRatio], tableShapes, legalSchema });
   const options = view.sections.flatMap((section) => section.tables).find((table) => table.table_key === 'consideration-election-options');
-  assert.deepEqual(options.rows.map((row) => row.subject), ['Cash election', 'Stock election']);
+  assert.deepEqual(options.rows.map((row) => [row.subject, row.absent === true]), [['Cash election', false], ['Stock election', false], ['Mixed election', true]]);
   const [cash, stock] = options.rows;
   // Each value column is filled on one line of a two-row table, so Ben's
   // column rule (plan finding (42)) folds it into that line as a trailing
@@ -1863,4 +1867,79 @@ test('the capitalization table shows a count of none as 0, with and without a re
     assert.deepEqual(issued.value, { canonical: 0, unit: 'COUNT' });
     assert.deepEqual(issued.component_ids, ['pref-amt']);
   }
+});
+
+// Work package 16 (plan finding (85)), Ben's decisions on the election
+// options table, verbatim: (2) "I'D SAY \"NOT A DEAL FEATURE\""; (3) "KEEP
+// ELECTIONS BUT ONLY WHEN THERE IS AN ELECTIOB"; (4) "WHAT DO YOU MEAN MINE
+// TO SAY? SHOYUULDN'T ALL THE INFO BE LINKED/ACCURTE?". The manager's rule
+// on held facts: "a held fact is 'held', never 'not a feature'".
+test('the election options: a value term whose definition names the option\'s ratio term is linked to that option with its derivation; a term naming another option\'s longer term is not', () => {
+  const facts = ncsElectionFacts();
+  const component = (id, kind, text, start, extra = {}) => ({ component_id: id, kind, label: id, text, origin: 'OWN', source_span_id: 's', start_byte: start, end_byte: start + text.length, gap_before: false, children: [], ...extra });
+  // NCS 2.1's definition, as generation 5 stored it: the summary paraphrases, the words are exact.
+  const mixedValue = {
+    fact_id: 'def-mixed-value', proposal_id: 'def-mixed-value', family_key: 'KEY_DEFINED_TERMS', subtype_key: 'OTHER_DEFINED_TERM', fact_type: 'OTHER_DEFINED_TERM_RECORDED', section_reference: '2.1', structure_node_id: 'n-2-1', validation_status: 'VALID',
+    headline: { label: 'Other defined term', summary: 'Mixed Share Consideration Value means the mixed exchange ratio times the Parent Closing Price', distinguishing_component_ids: ['def-mixed-value-t'] },
+    components: [component('def-mixed-value-t', 'TERM', '“Mixed Share Consideration Value”', 0), component('def-mixed-value-op', 'OPERATION', 'means the product of (x) the Mixed Share Consideration Exchange Ratio, multiplied by (y) the Parent Closing Price', 40)],
+  };
+  const view = buildTableView({ facts: [...Object.values(facts), mixedValue], tableShapes, legalSchema });
+  const options = view.sections.flatMap((section) => section.tables).find((table) => table.table_key === 'consideration-election-options');
+  const cell = (row, columnId) => row.cells.find((candidate) => candidate.column_id === columnId);
+  const stock = options.rows.find((row) => row.subject === 'Stock election');
+  const mixedRow = options.rows.find((row) => row.subject === 'Mixed election');
+  assert.ok(options.columns.some((column) => column.column_id === 'valuePerShare'), 'the value column is rendered once a term is linked');
+  const value = cell(mixedRow, 'valuePerShare');
+  assert.equal(value.label, 'Mixed Share Consideration Value means the mixed exchange ratio times the Parent Closing Price', 'the Defined Terms entry\'s text');
+  assert.equal(value.derived, 'definition_link');
+  assert.equal(value.via, 'Mixed Share Consideration Exchange Ratio', 'the derivation: the definition names the option\'s ratio term');
+  assert.deepEqual(value.fact_ids, ['def-mixed-value'], 'the cell cites the definition');
+  assert.equal(cell(stock, 'valuePerShare').kind, 'dash', '"Share Consideration Exchange Ratio" inside "Mixed Share Consideration Exchange Ratio" links nothing to the stock election');
+  assert.equal(cell(stock, 'valueTerms').kind, 'dash');
+});
+
+test('the election options: an option whose only fact is held by validation reads held, never "Not a deal feature"; a held fact of a filled option backs its row', () => {
+  const facts = ncsElectionFacts();
+  // NCS 2.1's held cash leg, its words as the run stored them in the proposal.
+  const heldCashLeg = {
+    fact_id: 'held-cash-leg', proposal_id: 'held-cash-leg', family_key: 'CONSIDERATION', subtype_key: 'CASH_COMPONENT', fact_type: 'PER_SHARE_CASH_CONSIDERATION', section_reference: '2.1', structure_node_id: 'n-2-1', validation_status: 'INVALID',
+    headline: { label: 'Cash component', summary: 'Mixed Election Stock receives the Cash Consideration, subject to the Maximum Cash Election Amount', distinguishing_component_ids: ['hcl-obj'] },
+    components: [
+      { component_id: 'hcl-actor', kind: 'ACTOR', label: 'Each Share of Company Common Stock', text: 'for each Share of Company Common Stock', origin: 'OWN', children: [] },
+      { component_id: 'hcl-cond', kind: 'CONDITION', label: 'Mixed election made and not revoked', text: 'with respect to which an election to receive mixed consideration has been made and not validly revoked pursuant to Section 2.5', origin: 'OWN', children: [] },
+      { component_id: 'hcl-term', kind: 'DEFINED_TERM', label: 'Mixed Election Stock', text: '(the “Mixed Election Stock”)', origin: 'OWN', children: [] },
+      { component_id: 'hcl-obj', kind: 'OBJECT', label: 'Cash Consideration', text: 'the Cash Consideration', origin: 'OWN', children: [] },
+      { component_id: 'hcl-amt', kind: 'AMOUNT', label: 'Cash Consideration formula', text: '“Cash Consideration” means cash in an amount equal to the product of (x) the Cash Exchange Ratio, multiplied by (y) the Parent Closing Price.', origin: 'DEFINITION', value: null, children: [] },
+    ],
+  };
+  // A held stock-election fact and no valid one: the row reads held.
+  const heldStock = { ...facts.share, fact_id: 'held-share', proposal_id: 'held-share', validation_status: 'INVALID', conclusions: undefined };
+  const tables = (view) => view.sections.flatMap((section) => section.tables).find((table) => table.table_key === 'consideration-election-options');
+  const held = tables(buildTableView({ facts: [facts.mixed, facts.cashRatio, facts.cashConsideration, facts.mixedRatio], heldFacts: [heldStock, heldCashLeg], tableShapes, legalSchema }));
+  assert.deepEqual(held.rows.map((row) => [row.subject, row.absent === true, row.held === true, row.absent_label || null]), [
+    ['Cash election', true, false, null],
+    ['Stock election', true, true, 'Held: this option\'s fact is held by validation'],
+    ['Mixed election', false, false, null],
+  ]);
+  assert.deepEqual(held.rows[1].backing_facts.map((entry) => [entry.fact_id, entry.held]), [['held-share', true]]);
+  assert.deepEqual(held.rows[2].backing_facts.map((entry) => [entry.fact_id, entry.held || false]), [['mixed', false], ['held-cash-leg', true]], 'the held cash leg backs the filled mixed row');
+  // Without an election at all, no held fact makes a table.
+  assert.equal(tables(buildTableView({ facts: [facts.cashRatio], heldFacts: [heldCashLeg], tableShapes, legalSchema })).rows.some((row) => !row.absent), false);
+});
+
+test('without an election, a per-share row coded as an election form folds into its plain form', () => {
+  const facts = ncsElectionFacts();
+  // A stock component the extractor coded STOCK_ELECTION in a deal with no election words and no numbers: no option row, so the row is Acquirer stock.
+  const stock = { ...facts.share, components: facts.share.components.filter((component) => !['share-cond', 'share-ratio'].includes(component.component_id)),
+    conclusions: { ...facts.share.conclusions, cells: facts.share.conclusions.cells.filter((cell) => cell.column_id !== 'amount') } };
+  const view = buildTableView({ facts: [stock], tableShapes, legalSchema });
+  const tables = view.sections.flatMap((section) => section.tables);
+  assert.equal(tables.some((table) => table.table_key === 'consideration-election-options'), false, 'no ratio, cash or value term: no option row');
+  const components = tables.find((table) => table.table_key === 'consideration-components');
+  assert.deepEqual(components.rows.map((row) => [row.subject, row.folded_from || null]), [['Acquirer stock', 'STOCK_ELECTION']]);
+  const form = components.rows[0].cells.find((cell) => cell.column_id === 'form');
+  assert.deepEqual([form.code, form.label, form.folded_from], ['PARENT_STOCK', 'Acquirer stock', 'STOCK_ELECTION']);
+  // With an election (the full NCS facts), the election rows stay.
+  const withElection = buildTableView({ facts: Object.values(facts), tableShapes, legalSchema }).sections.flatMap((section) => section.tables).find((table) => table.table_key === 'consideration-components');
+  assert.deepEqual(withElection.rows.map((row) => row.subject), ['Stock election', 'Acquirer stock']);
 });

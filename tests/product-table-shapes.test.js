@@ -941,8 +941,17 @@ test('the consideration election options table names its rows, columns and page 
   assert.deepEqual(options.fixed_row_labels, ['Cash election', 'Stock election', 'Mixed election']);
   assert.deepEqual(options.subtype_keys, ['CASH_COMPONENT', 'STOCK_COMPONENT', 'ELECTION']);
   assert.deepEqual(options.columns.map((column) => [column.column_id, column.render, column.display || null]), [
-    ['exchangeRatio', 'value', null], ['cashPerShare', 'value', null], ['valueTerms', 'verbatim', 'fact_text'], ['definedAs', 'term', 'subject_note'],
+    ['exchangeRatio', 'value', null], ['cashPerShare', 'value', null], ['valuePerShare', 'verbatim', 'fact_text'], ['valueTerms', 'verbatim', 'fact_text'], ['definedAs', 'term', 'subject_note'],
   ]);
+  // Ben, 2026-10-18 (plan finding (85)): "I'D SAY \"NOT A DEAL FEATURE\""; "KEEP ELECTIONS BUT ONLY WHEN THERE IS AN ELECTIOB".
+  assert.equal(options.absent_row_label, 'Not a deal feature');
+  assert.equal(options.election_options.value_column, 'valuePerShare');
+  assert.ok(new RegExp(options.election_options.value_term, 'i').test('Mixed Share Consideration Value'));
+  assert.equal(new RegExp(options.election_options.value_term, 'i').test('Cash Consideration'), false);
+  assert.match(options.election_options.held_row_label, /held/i);
+  const componentsTable = findTableV3(section, 'consideration-components');
+  assert.deepEqual(componentsTable.election_forms, { options_table_key: 'consideration-election-options', plain_form_by_code: { CASH_ELECTION: 'CASH', STOCK_ELECTION: 'PARENT_STOCK' } });
+  assert.match(componentsTable.guidance, /election forms .* only/);
   assert.match(options.guidance, /never a row when the agreement has no election/);
   const rule = options.election_options;
   assert.deepEqual(Object.keys(rule.rows), options.fixed_row_labels);
@@ -982,4 +991,10 @@ test('the consideration election options table names its rows, columns and page 
   assert.throws(() => validateTableShapesV3(doc, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_ELECTION_OPTIONS_WITHOUT_FIXED_LIST/);
   doc = broken(); doc.sections.find((s) => s.section_key === 'consideration-hero').tables.find((t) => t.table_key === 'consideration-components').combined_definition_from.term_words = '(';
   assert.throws(() => validateTableShapesV3(doc, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_COMBINED_DEFINITION_FROM/);
+  doc = broken(); optionsOf(doc).election_options.value_column = 'exchangeRatio';
+  assert.throws(() => validateTableShapesV3(doc, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_ELECTION_OPTIONS_COLUMN/);
+  doc = broken(); optionsOf(doc).election_options.value_term = '(';
+  assert.throws(() => validateTableShapesV3(doc, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_ELECTION_OPTIONS_VALUE_TERMS/);
+  doc = broken(); doc.sections.find((s) => s.section_key === 'consideration-hero').tables.find((t) => t.table_key === 'consideration-components').election_forms.plain_form_by_code = { CASH_ELECTION: 'NO_SUCH_CODE' };
+  assert.throws(() => validateTableShapesV3(doc, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_ELECTION_FORMS_CODE_UNKNOWN/);
 });

@@ -168,11 +168,14 @@ export default function PublishedSummary({
   provenanceByFactId = null, sectionTextByFactId = null,
   onDecision = null, onComment = null, onReset = null,
   heading = 'Published summary',
+  // Work package 16: the run's held layered facts, read by the election
+  // options table alone.
+  heldFacts = null,
 }) {
   const flatFacts = useMemo(() => (groups || []).flatMap((group) => group.facts), [groups]);
   const tableView = useMemo(
-    () => (tableShapes ? buildTableView({ facts: flatFacts, tableShapes, legalSchema }) : null),
-    [tableShapes, legalSchema, flatFacts],
+    () => (tableShapes ? buildTableView({ facts: flatFacts, heldFacts: heldFacts || [], tableShapes, legalSchema }) : null),
+    [tableShapes, legalSchema, flatFacts, heldFacts],
   );
   const hasTables = !!(tableView && tableView.sections.some((section) => section.tables.some((table) => table.rows.length > 0)));
   const resolvedView = view || (hasTables ? 'tables' : 'layers');

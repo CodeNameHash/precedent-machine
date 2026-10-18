@@ -28,6 +28,7 @@
 
 const BEN = "Ben's decision 2026-09-14 (decision 34)";
 const WP13 = 'Work package 13 (c), 2026-10-18 (plan finding (79), NCS generation 5, 2.1)';
+const WP16 = 'Work package 16, 2026-10-18 (plan finding (85), Ben on the election options table)';
 
 function findSection(doc, key) {
   const section = doc.sections.find((s) => s.section_key === key);
@@ -1174,17 +1175,32 @@ function applyConsideration(doc) {
   // as the components table has it, or "Share election" as NCS drafts it)
   // and whether an unfilled option should read as not offered; until then
   // an option with no fact has no row.
+  // Ben, 2026-10-18 (plan finding (85)), on the four questions, verbatim:
+  // (1) "STOCK"; (2) "I'D SAY \"NOT A DEAL FEATURE\""; (3) "KEEP ELECTIONS
+  // BUT ONLY WHEN THERE IS AN ELECTIOB"; (4) "WHAT DO YOU MEAN MINE TO SAY?
+  // SHOYUULDN'T ALL THE INFO BE LINKED/ACCURTE?". So (work package 16): the
+  // row is "Stock election"; an option no fact of the run is for reads "Not
+  // a deal feature", and one whose only fact is held by validation reads
+  // held, never "not a feature" (the held fact's own words place it); the
+  // components table keeps its election rows only when the deal has an
+  // election (this table has a filled row), else the fixed forms alone;
+  // and a value term whose definition names an option's own term or one
+  // of its ratio terms is linked to that option's row by the code reading
+  // the definitions, its derivation cited: a term ending in "Value" under
+  // Value per share, any other under Value terms.
   const options = {
     table_key: 'consideration-election-options',
     group_header: 'ELECTION OPTIONS',
     term_column: { header: 'Election', source: 'subject', fill_from: ['TERM', 'DEFINED_TERM', 'CONDITION'] },
     rows_are: 'fixed list',
     fixed_row_labels: ['Cash election', 'Stock election', 'Mixed election'],
+    absent_row_label: 'Not a deal feature',
     subtype_keys: ['CASH_COMPONENT', 'STOCK_COMPONENT', 'ELECTION'],
-    guidance: 'Only for a deal whose holders elect between forms of consideration; never a row when the agreement has no election. One row per option a holder may elect (cash only, stock only, a stated mix), from the conversion clause: the exchange ratio (Parent shares per Company share) and the cash per share that option receives, and the defined term the agreement gives it. A no-election default is the election mechanics table\'s "If no election" row, never an option here. The page fills an empty ratio or cash cell from the agreement\'s own definition of a term the option names when that definition is a bare number (a "Cash Exchange Ratio" that "means 0.1371").',
+    guidance: 'Only for a deal whose holders elect between forms of consideration; never a row when the agreement has no election. One row per option a holder may elect (cash only, stock only, a stated mix), from the conversion clause: the exchange ratio (Parent shares per Company share) and the cash per share that option receives, and the defined term the agreement gives it. A no-election default is the election mechanics table\'s "If no election" row, never an option here. The page fills an empty ratio or cash cell from the agreement\'s own definition of a term the option names when that definition is a bare number (a "Cash Exchange Ratio" that "means 0.1371"), links every value term whose definition names the option\'s term or ratio term, and shows an option no fact is for as "Not a deal feature".',
     columns: [
       { column_id: 'exchangeRatio', header: 'Exchange ratio', render: 'value', value_kind: 'AMOUNT', fill_from: ['AMOUNT', 'THRESHOLD'], addition: true, reason: `${WP13}: the Parent shares each Company share receives under the option, as stated.` },
       { column_id: 'cashPerShare', header: 'Cash per share', render: 'value', value_kind: 'AMOUNT', fill_from: ['AMOUNT', 'THRESHOLD'], addition: true, reason: `${WP13}: the cash each Company share receives under the option, as stated.` },
+      { column_id: 'valuePerShare', header: 'Value per share', render: 'verbatim', display: 'fact_text', fill_from: ['DEFINED_TERM', 'OPERATION', 'OBJECT'], addition: true, reason: `${WP16}: the value the agreement defines for the option\'s consideration (a "Mixed Share Consideration Value" defined as the option\'s ratio times a closing price), as drafted, linked through the definitions.` },
       { column_id: 'valueTerms', header: 'Value terms', render: 'verbatim', display: 'fact_text', fill_from: ['DEFINED_TERM', 'OPERATION', 'OBJECT'], addition: true, reason: `${WP13}: the value terms the option names (a "Cash Consideration" defined as a ratio times a closing price), each with its definition, when the option's value is a formula rather than a number.` },
       { column_id: 'definedAs', header: 'Defined as', render: 'term', fill_from: ['DEFINED_TERM', 'TERM'], display: 'subject_note', addition: true, reason: `${WP13}: the defined term the agreement gives the option's consideration ("Share Consideration", "Mixed Consideration").` },
     ],
@@ -1200,9 +1216,20 @@ function applyConsideration(doc) {
       terms_column: 'valueTerms',
       term_column: 'definedAs',
       value_terms: '(?:Consideration|Value|Amount|Price|Ratio)$',
+      // Work package 16: the linked value term's column, by its name, and
+      // the words of a row whose only fact is held.
+      value_column: 'valuePerShare',
+      value_term: 'Value$',
+      held_row_label: 'Held: this option\'s fact is held by validation',
     },
   };
   section.tables.splice(section.tables.indexOf(components) + 1, 0, options);
+  // Ben, 2026-10-18 (plan finding (85)): "KEEP ELECTIONS BUT ONLY WHEN
+  // THERE IS AN ELECTIOB". When the election options table has no filled
+  // row, a per-share row coded as an election form folds into its plain
+  // form on the page (lib/product/table-view.js foldElectionForms).
+  components.election_forms = { options_table_key: 'consideration-election-options', plain_form_by_code: { CASH_ELECTION: 'CASH', STOCK_ELECTION: 'PARENT_STOCK' } };
+  components.guidance = `${components.guidance} The election forms (Cash election, Stock election) are for a deal whose holders elect between forms of consideration only; in any other deal code the form itself (Cash, Acquirer stock).`;
   const mae = findSection(doc, 'mae-definitions');
   for (const table of mae.tables) for (const column of table.columns) if (column.render === 'verbatim') column.display = 'fact_text';
 }
