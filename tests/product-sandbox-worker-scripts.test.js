@@ -66,14 +66,16 @@ test('a wake on a gone sandbox fails as PRODUCT_SANDBOX_GONE and the run route a
 
 test('the update script names the create script when the sandbox is gone, and stays silent otherwise', () => {
   const message = resumeFailureMessage(apiError(400, 'Status code 400 is not ok: Cannot resume sandbox: no snapshot available'));
-  assert.match(message, /^sandbox pm-codex-preview-worker no longer resumes \(.*no snapshot available\); re-create it with node scripts\/product\/create-sandbox-worker\.js --provider <hosted provider id>$/);
+  assert.match(message, /^sandbox pm-codex-preview-worker no longer resumes \(.*no snapshot available\); re-create it with node scripts\/product\/create-sandbox-worker\.js --provider <hosted provider id> --name pm-codex-preview-worker$/);
+  assert.match(resumeFailureMessage(apiError(404, 'not found'), 'pm-codex-preview-worker-2'), /sandbox pm-codex-preview-worker-2 no longer resumes .* --name pm-codex-preview-worker-2$/);
   assert.equal(resumeFailureMessage(apiError(500, 'Status code 500 is not ok')), null);
 });
 
 test('the create script takes the provider from --provider, else PRODUCT_MODEL_PROVIDER, else the API, and only a hosted one', () => {
-  assert.deepEqual(parseArguments([], {}), { branch: 'codex/product-implementation-plan-20260904', providerId: ANTHROPIC_API_PROVIDER_ID });
-  assert.deepEqual(parseArguments([], { PRODUCT_MODEL_PROVIDER: CLAUDE_CLI_PROVIDER_ID }), { branch: 'codex/product-implementation-plan-20260904', providerId: CLAUDE_CLI_PROVIDER_ID });
-  assert.deepEqual(parseArguments(['--provider', CODEX_PROVIDER_ID, '--branch', 'main'], { PRODUCT_MODEL_PROVIDER: CLAUDE_CLI_PROVIDER_ID }), { branch: 'main', providerId: CODEX_PROVIDER_ID });
+  const pool = ['pm-codex-preview-worker', 'pm-codex-preview-worker-2'];
+  assert.deepEqual(parseArguments([], {}), { branch: 'codex/product-implementation-plan-20260904', providerId: ANTHROPIC_API_PROVIDER_ID, names: pool });
+  assert.deepEqual(parseArguments([], { PRODUCT_MODEL_PROVIDER: CLAUDE_CLI_PROVIDER_ID }), { branch: 'codex/product-implementation-plan-20260904', providerId: CLAUDE_CLI_PROVIDER_ID, names: pool });
+  assert.deepEqual(parseArguments(['--provider', CODEX_PROVIDER_ID, '--branch', 'main'], { PRODUCT_MODEL_PROVIDER: CLAUDE_CLI_PROVIDER_ID }), { branch: 'main', providerId: CODEX_PROVIDER_ID, names: pool });
   assert.deepEqual(parseArguments(['main'], {}).branch, 'main');
   assert.throws(() => parseArguments(['--provider', 'ANTHROPIC'], {}), /hosted provider id/);
   assert.throws(() => parseArguments(['--other'], {}), /unknown option/);
@@ -235,4 +237,110 @@ test('the launcher starts the worker only under its flock', () => {
   // API provider, never required, and unset with the key for every other.
   assert.ok(lines.some((line) => /^\s*unset ANTHROPIC_API_KEY ANTHROPIC_WORKSPACE_ID$/.test(line)), 'the key and the workspace id leave together');
   assert.equal(lines.some((line) => /ANTHROPIC_WORKSPACE_ID:-/.test(line)), false, 'the workspace id is never required');
+});
+
+// Plan finding (140): the scripts serve the pool. Without --name they walk
+// every sandbox of the pool; with --name one; a name outside the pool is
+// refused. The update script skips a sandbox whose launcher lock is held (a
+// worker is live on it) unless --force says otherwise.
+const { createSandboxPool } = require('../scripts/product/create-sandbox-worker');
+const updateScript = require('../scripts/product/update-sandbox-worker');
+const { SANDBOX_POOL } = require('../lib/product/sandbox-wake');
+
+test('the create script takes --name for one sandbox of the pool, else the whole pool, and refuses a name outside it', () => {
+  assert.deepEqual(parseArguments(['--name', 'pm-codex-preview-worker-2'], {}).names, ['pm-codex-preview-worker-2']);
+  assert.deepEqual(parseArguments(['--name', 'pm-codex-preview-worker', '--provider', CLAUDE_CLI_PROVIDER_ID], {}).names, ['pm-codex-preview-worker']);
+  assert.deepEqual(parseArguments([], {}).names, [...SANDBOX_POOL]);
+  assert.throws(() => parseArguments(['--name', 'pm-codex-preview-worker-3'], {}), /--name must be a sandbox of the pool \(pm-codex-preview-worker, pm-codex-preview-worker-2\), not pm-codex-preview-worker-3/);
+  assert.throws(() => parseArguments(['--name', 'worker'], {}), /--name must be a sandbox of the pool/);
+});
+
+test('the create script provisions each missing sandbox of the pool under its own name and leaves an existing one to the update script', async () => {
+  const api = fakeSandboxApi({ onGet: (params, sandbox) => {
+    if (params.name === 'pm-codex-preview-worker') return sandbox('sbx_first');
+    throw apiError(404, 'Status code 404 is not ok: not found');
+  } });
+  const lines = [];
+  const results = await createSandboxPool({ Sandbox: api, branch: 'main', providerId: CLAUDE_CLI_PROVIDER_ID, credentials, log: (line) => lines.push(line) });
+  assert.deepEqual(Object.keys(results), ['pm-codex-preview-worker', 'pm-codex-preview-worker-2']);
+  assert.deepEqual(results['pm-codex-preview-worker'], { created: false, sandboxId: 'sbx_first' });
+  assert.deepEqual(results['pm-codex-preview-worker-2'], { created: true, sandboxId: 'sbx_new', commit: 'abc1234', providerId: CLAUDE_CLI_PROVIDER_ID, clis: ['@anthropic-ai/claude-code'] });
+  assert.deepEqual(api.calls.creates.map((params) => params.name), ['pm-codex-preview-worker-2']);
+  assert.deepEqual(api.calls.creates[0], { name: 'pm-codex-preview-worker-2', persistent: true, runtime: 'node22', timeout: 4 * 60 * 60 * 1000, snapshotExpiration: 0, ...credentials });
+  const output = lines.join('\n');
+  assert.match(output, /sandbox pm-codex-preview-worker already exists \(sbx_first\); use update-sandbox-worker\.js/);
+  assert.match(output, /creating persistent sandbox pm-codex-preview-worker-2 for ANTHROPIC_CLAUDE_CLI_SUBSCRIPTION/);
+  assert.match(output, /done: pm-codex-preview-worker-2 \(sbx_new\) on main at abc1234, provider ANTHROPIC_CLAUDE_CLI_SUBSCRIPTION, CLIs installed: @anthropic-ai\/claude-code/);
+  assert.doesNotMatch(output, /vercel-token-value/);
+  // One name: that sandbox alone.
+  const one = fakeSandboxApi({ onGet: () => { throw apiError(404, 'not found'); } });
+  await createSandboxPool({ Sandbox: one, names: ['pm-codex-preview-worker-2'], branch: 'main', providerId: ANTHROPIC_API_PROVIDER_ID, credentials, log: () => {} });
+  assert.deepEqual(one.calls.creates.map((params) => params.name), ['pm-codex-preview-worker-2']);
+  await assert.rejects(createSandboxWorker({ Sandbox: one, name: 'pm-codex-preview-worker-9', branch: 'main', providerId: ANTHROPIC_API_PROVIDER_ID, credentials, log: () => {} }), /not a sandbox of the pool/);
+});
+
+test('the update script takes --name, --force and the branch, and refuses a name outside the pool', () => {
+  assert.deepEqual(updateScript.parseArguments([]), { branch: 'codex/product-implementation-plan-20260904', names: [...SANDBOX_POOL], force: false });
+  assert.deepEqual(updateScript.parseArguments(['main', '--name', 'pm-codex-preview-worker-2', '--force']), { branch: 'main', names: ['pm-codex-preview-worker-2'], force: true });
+  assert.deepEqual(updateScript.parseArguments(['--branch', 'main']).branch, 'main');
+  assert.throws(() => updateScript.parseArguments(['--name', 'pm-codex-preview-worker-3']), /--name must be a sandbox of the pool/);
+  assert.throws(() => updateScript.parseArguments(['bad branch']), /unexpected characters/);
+  assert.throws(() => updateScript.parseArguments(['--other']), /unknown option/);
+});
+
+// A fake sandbox for the update script: the lock answer per name, the
+// checkout a git repository, every command recorded.
+function fakeUpdateApi({ busy = [], gone = [] } = {}) {
+  const calls = { gets: [], commands: {} };
+  return {
+    calls,
+    async get(params) {
+      calls.gets.push(params.name);
+      if (gone.includes(params.name)) throw apiError(400, 'Status code 400 is not ok: Cannot resume sandbox: no snapshot available');
+      calls.commands[params.name] = calls.commands[params.name] || [];
+      return {
+        async runCommand({ cmd, args }) {
+          const joined = `${cmd} ${args.join(' ')}`;
+          calls.commands[params.name].push(joined);
+          const out = /flock -n/.test(joined) ? (busy.includes(params.name) ? 'busy\n' : 'free\n')
+            : /test -d/.test(joined) ? 'yes\n' : /rev-parse/.test(joined) ? 'abc1234\n' : /modules load/.test(joined) ? 'modules load\n' : '';
+          return { exitCode: 0, async stdout() { return out; }, async stderr() { return ''; } };
+        },
+      };
+    },
+  };
+}
+
+test('the update script updates each free sandbox of the pool, skips one whose worker holds the launcher lock unless forced, and names the create command for a gone one', async () => {
+  const api = fakeUpdateApi({ busy: ['pm-codex-preview-worker'] });
+  const lines = [];
+  const results = await updateScript.updateSandboxPool({ Sandbox: api, branch: 'main', credentials, log: (line) => lines.push(line) });
+  assert.deepEqual(results, {
+    'pm-codex-preview-worker': { updated: false, skipped: 'WORKER_RUNNING' },
+    'pm-codex-preview-worker-2': { updated: true, before: 'abc1234', after: 'abc1234' },
+  });
+  assert.deepEqual(api.calls.gets, ['pm-codex-preview-worker', 'pm-codex-preview-worker-2']);
+  const busyCommands = api.calls.commands['pm-codex-preview-worker'];
+  assert.equal(busyCommands.length, 1, 'the lock check alone on the busy sandbox');
+  assert.match(busyCommands[0], /flock -n \/vercel\/\.codex\/pm-worker\.lock true/);
+  const freeCommands = api.calls.commands['pm-codex-preview-worker-2'];
+  assert.ok(freeCommands.some((command) => command === 'git fetch --quiet origin main'));
+  assert.ok(freeCommands.some((command) => command === 'git checkout --quiet -B main origin/main'));
+  assert.ok(freeCommands.some((command) => command === 'npm ci --no-audit --no-fund --omit=dev'));
+  const output = lines.join('\n');
+  assert.match(output, /skipped pm-codex-preview-worker: a worker holds its launcher lock \(\/vercel\/\.codex\/pm-worker\.lock\); update it when its run is READY or FAILED, or pass --force/);
+  assert.match(output, /done: pm-codex-preview-worker-2 now runs main at abc1234/);
+  assert.doesNotMatch(output, /vercel-token-value/);
+  // --force updates under the lock, and says so.
+  const forced = fakeUpdateApi({ busy: ['pm-codex-preview-worker'] });
+  const forcedLines = [];
+  const forcedResult = await updateScript.updateSandboxWorker({ Sandbox: forced, name: 'pm-codex-preview-worker', branch: 'main', force: true, credentials, log: (line) => forcedLines.push(line) });
+  assert.equal(forcedResult.updated, true);
+  assert.ok(forced.calls.commands['pm-codex-preview-worker'].some((command) => /npm ci/.test(command)));
+  assert.match(forcedLines.join('\n'), /updating pm-codex-preview-worker under a running worker \(--force\)/);
+  // A gone sandbox: the line naming the create command for that name.
+  const gone = fakeUpdateApi({ gone: ['pm-codex-preview-worker-2'] });
+  await assert.rejects(updateScript.updateSandboxWorker({ Sandbox: gone, name: 'pm-codex-preview-worker-2', branch: 'main', credentials, log: () => {} }),
+    /^Error: sandbox pm-codex-preview-worker-2 no longer resumes \(.*no snapshot available\); re-create it with node scripts\/product\/create-sandbox-worker\.js --provider <hosted provider id> --name pm-codex-preview-worker-2$/);
+  await assert.rejects(updateScript.updateSandboxWorker({ Sandbox: gone, name: 'other', branch: 'main', credentials, log: () => {} }), /not a sandbox of the pool/);
 });

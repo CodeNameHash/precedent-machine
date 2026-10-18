@@ -933,3 +933,14 @@ test('an absent row with its own label (a held option) renders that label and da
   assert.match(html, /data-held="true"[^>]*>(?:(?!<\/tr>).)*Held: this option(?:&#x27;|')s fact is held by validation/s);
   assert.equal((html.match(/data-absent="true"/g) || []).length, 2);
 });
+
+// Work package 17: held facts under their section, quietly, with the reason.
+test('held facts render under their section with the reason in words, collapsed to a count', () => {
+  const view = { sections: [{ section_key: 'representations-qualifiers', title: 'Representations', tables: [], facts_without_readout: [], held_facts: [
+    { fact_id: 'h1', section_reference: '3.4', headline: 'Status representation', reason: '“the Company represents and warrants to Parent and Merger Sub as follows:”: its quote cites a span the section does not have' },
+  ] }], defined_terms: [] };
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts: [] }));
+  assert.match(html, /data-testid="held-facts"/);
+  assert.match(html, /1 fact held by validation · see why/);
+  assert.doesNotMatch(html, /held-fact-reason/, 'the reasons open on a click; the count is the quiet line');
+});

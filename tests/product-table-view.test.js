@@ -1962,3 +1962,106 @@ test('without an election, a per-share row coded as an election form folds into 
   const withElection = buildTableView({ facts: Object.values(facts), tableShapes, legalSchema }).sections.flatMap((section) => section.tables).find((table) => table.table_key === 'consideration-components');
   assert.deepEqual(withElection.rows.map((row) => row.subject), ['Stock election', 'Acquirer stock']);
 });
+
+// Work package 17 (manager, 2026-10-18): "Adverse Recommendation Change"
+// entered Defined Terms as "any of the foregoing actions", the resolved
+// words; the two NCS 5.3 sentences that define it list the actions.
+test('a definition resolved to a back-reference shows the words it refers to, from the fact\'s own words before the term, with a note; two such facts merge', () => {
+  const component = (id, kind, text, start, extra = {}) => ({ component_id: id, kind, label: id, text, origin: 'OWN', source_span_id: 's', start_byte: start, end_byte: start + text.length, gap_before: false, children: [], ...extra });
+  const arc = (id, start, objectText) => ({
+    fact_id: id, proposal_id: id, family_key: 'NO_SHOP', subtype_key: 'RECOMMENDATION_CHANGE', fact_type: 'RECOMMENDATION_CHANGE', section_reference: '5.3', structure_node_id: 'n-5-3', validation_status: 'VALID',
+    statement: `Except to the extent permitted by Section 5.2(c), the Company Board shall not ${objectText}.`,
+    headline: { label: 'Change of recommendation', summary: `Company Board shall not ${objectText}`, distinguishing_component_ids: [`${id}-obj`] },
+    components: [
+      component(`${id}-exc`, 'EXCEPTION', 'Except to the extent permitted by Section 5.2(c)', start),
+      component(`${id}-actor`, 'ACTOR', 'the Company Board and each committee of the Company Board shall not, and shall not authorize or publicly propose to', start + 60),
+      component(`${id}-obj`, 'OBJECT', objectText, start + 200),
+      component(`${id}-term`, 'DEFINED_TERM', '(any of the foregoing actions, an “Adverse Recommendation Change”)', start + 320, { resolves_to: { text: 'any of the foregoing actions' } }),
+    ],
+  });
+  const withhold = arc('arc-1', 0, 'withhold, withdraw or adversely qualify (or modify or amend in a manner adverse to Parent) the Company Board Recommendation');
+  const approve = arc('arc-2', 1000, 'authorize, approve, adopt or recommend any Acquisition Proposal');
+  const view = buildTableView({ facts: [withhold, approve], tableShapes, legalSchema });
+  const entry = view.defined_terms.find((candidate) => candidate.term === 'Adverse Recommendation Change');
+  assert.ok(entry, 'the term is an entry');
+  assert.match(entry.definition, /^any of the foregoing actions: Except to the extent permitted by Section 5\.2\(c\) the Company Board and each committee .* withhold, withdraw or adversely qualify .* the Company Board Recommendation; any of the foregoing actions: Except .* authorize, approve, adopt or recommend any Acquisition Proposal$/);
+  assert.equal(entry.note, 'The resolved words are a back-reference; the list shown is the fact\'s own words before the term.');
+  assert.deepEqual(entry.fact_ids, ['arc-1', 'arc-2']);
+  // A resolved definition that is not a back-reference is unchanged.
+  const plain = { ...withhold, fact_id: 'plain', proposal_id: 'plain', components: [component('plain-term', 'DEFINED_TERM', 'the “Company Board Recommendation”', 0, { resolves_to: { text: 'the recommendation of the Company Board that the stockholders adopt this Agreement' } })] };
+  const plainEntry = buildTableView({ facts: [plain], tableShapes, legalSchema }).defined_terms.find((candidate) => candidate.term === 'Company Board Recommendation');
+  assert.equal(plainEntry.definition, 'the recommendation of the Company Board that the stockholders adopt this Agreement');
+  assert.equal(plainEntry.note, undefined);
+  // With no own words before the term, the fact's statement is the list.
+  const statementOnly = { ...approve, fact_id: 'so', proposal_id: 'so', components: [approve.components[3]] };
+  const soEntry = buildTableView({ facts: [statementOnly], tableShapes, legalSchema }).defined_terms.find((candidate) => candidate.term === 'Adverse Recommendation Change');
+  assert.match(soEntry.definition, /^any of the foregoing actions: Except to the extent permitted by Section 5\.2\(c\), the Company Board shall not authorize, approve, adopt or recommend any Acquisition Proposal\.$/);
+  assert.match(soEntry.note, /the fact's statement/);
+});
+
+// Work package 17: the facts validation held are shown under their
+// section with the reason in words (NCS 3.4: ten facts on an unknown span).
+test('held facts are listed under their family\'s section with their reason, and a section with only held facts is shown', () => {
+  const held = (id, reason) => ({
+    fact_id: id, proposal_id: id, family_key: 'REPRESENTATIONS', subtype_key: 'STATUS_REPRESENTATION', fact_type: 'REPRESENTATION_ACCURACY_STANDARD', section_reference: '3.4', structure_node_id: 'n-3-4', validation_status: 'INVALID',
+    headline: { label: 'Status representation', summary: 'Company has corporate power and authority to execute, deliver and perform the Agreement', distinguishing_component_ids: [`${id}-c`] },
+    components: [{ component_id: `${id}-c`, kind: 'ACTOR', label: 'party', text: 'the Company represents and warrants to Parent and Merger Sub as follows:', origin: 'INTRO', children: [] }],
+    ...(reason ? { held_reason: reason } : {}),
+  });
+  const view = buildTableView({ facts: [], heldFacts: [held('h1', '“the Company represents and warrants to Parent and Merger Sub as follows:”: its quote cites a span the section does not have'), held('h2', null)], tableShapes, legalSchema });
+  const section = view.sections.find((candidate) => candidate.held_facts);
+  assert.ok(section, 'the section is shown for its held facts alone');
+  assert.equal(section.section_key, 'representations-qualifiers');
+  assert.deepEqual(section.tables, []);
+  assert.deepEqual(section.held_facts.map((entry) => [entry.fact_id, entry.section_reference, entry.headline, entry.reason]), [
+    ['h1', '3.4', 'Status representation', '“the Company represents and warrants to Parent and Merger Sub as follows:”: its quote cites a span the section does not have'],
+    ['h2', '3.4', 'Status representation', 'held by validation'],
+  ]);
+});
+
+// Work package 17, item 4 (manager, 2026-10-18 19:22 UTC): NCS 5.6's
+// "Company submits form of Written Consent to Consenting Stockholders
+// instead of holding a stockholder meeting" and "Company uses reasonable
+// best efforts to obtain Written Consent by the Consent Time" carry
+// resolved DEFINED_TERM components (the Consenting Stockholders, the
+// Consent Time). A fact that is not itself a definition keeps its own
+// placement: its family's table by its readout; its resolved terms add
+// Defined Terms entries beside it, never instead of it. Only a definition
+// fact is placed by its term.
+test('a non-definition fact with resolved defined terms keeps its row and adds the entries beside it; a definition fact enters Defined Terms alone', () => {
+  const component = (id, kind, text, start, extra = {}) => ({ component_id: id, kind, label: id, text, origin: 'OWN', source_span_id: 's', start_byte: start, end_byte: start + text.length, gap_before: false, children: [], ...extra });
+  const consenting = { resolves_to: { text: 'Advent-NCS Acquisition L.P. and Advent International Corporation' } };
+  // The two facts as generation 5 stored them (payloads read from the preview branch).
+  const submit = {
+    fact_id: 'ncs-5-6-submit', proposal_id: 'ncs-5-6-submit', family_key: 'PROXY_MEETING', subtype_key: 'WRITTEN_CONSENT_SOLICITATION', fact_type: 'MEETING_CONVENE_OBLIGATION', section_reference: '5.6', structure_node_id: 'n-5-6', validation_status: 'VALID',
+    statement: 'Immediately after the execution of this Agreement and in lieu of calling a meeting of the Company\'s stockholders, the Company shall submit the form of Written Consent attached hereto as Exhibit A and the Consenting Stockholders (Advent-NCS Acquisition L.P. and Advent International Corporation).',
+    headline: { label: 'Written consent solicitation', summary: 'Company submits form of Written Consent to Consenting Stockholders instead of holding a stockholder meeting', distinguishing_component_ids: ['s-obj'] },
+    components: [component('s-trig', 'TRIGGER', 'Immediately after the execution of this Agreement', 0), component('s-q', 'QUALIFIER', 'in lieu of calling a meeting of the Company’s stockholders', 60), component('s-actor', 'ACTOR', 'the Company', 120), component('s-eff', 'EFFORTS_STANDARD', 'shall submit', 140), component('s-obj', 'OBJECT', 'the form of Written Consent attached hereto as Exhibit A', 160), component('s-term', 'DEFINED_TERM', 'the Consenting Stockholders', 230, consenting)],
+    conclusions: { table_key: 'votes-approvals-meeting-table', row_label: 'Written Consent submission', cells: [{ column_id: 'detail', text: 'the Company shall submit the form of Written Consent attached hereto as Exhibit A and the Consenting Stockholders', component_ids: ['s-actor', 's-eff', 's-obj', 's-term'] }, { column_id: 'anchor', code: 'AFTER_AGREEMENT_DATE', component_ids: ['s-trig'] }] },
+  };
+  const obtain = {
+    ...submit, fact_id: 'ncs-5-6-obtain', proposal_id: 'ncs-5-6-obtain',
+    statement: 'The Company will use reasonable best efforts to obtain the Written Consent from the Consenting Stockholders by no later than 11:59 p.m. Central Time on the day following the date hereof (such time, the “Consent Time”).',
+    headline: { label: 'Written consent solicitation', summary: 'Company uses reasonable best efforts to obtain Written Consent by the Consent Time', distinguishing_component_ids: ['o-obj'] },
+    components: [component('o-actor', 'ACTOR', 'The Company', 500), component('o-eff', 'EFFORTS_STANDARD', 'will use reasonable best efforts', 520), component('o-op', 'OPERATION', 'to obtain', 560), component('o-obj', 'OBJECT', 'the Written Consent', 575), component('o-term', 'DEFINED_TERM', 'the Consenting Stockholders', 600, consenting), component('o-date', 'DATE', 'by no later than 11:59 p.m. Central Time on the day following the date hereof', 640), component('o-term2', 'DEFINED_TERM', '(such time, the “Consent Time”)', 720, { resolves_to: { text: '11:59 p.m. Central Time on the day following the date hereof' } })],
+    conclusions: { table_key: 'votes-approvals-meeting-table', row_label: 'Written Consent receipt', cells: [{ column_id: 'detail', text: 'The Company will use reasonable best efforts to obtain the Written Consent', component_ids: ['o-actor', 'o-eff', 'o-op', 'o-obj'] }, { column_id: 'anchor', code: 'AFTER_AGREEMENT_DATE', component_ids: ['o-date'] }] },
+  };
+  // A definition fact of its own, placed by its term alone.
+  const definition = {
+    fact_id: 'def-consent-time', proposal_id: 'def-consent-time', family_key: 'KEY_DEFINED_TERMS', subtype_key: 'OTHER_DEFINED_TERM', fact_type: 'OTHER_DEFINED_TERM_RECORDED', section_reference: '5.6', structure_node_id: 'n-5-6', validation_status: 'VALID',
+    headline: { label: 'Other defined term', summary: 'Consent Time means 11:59 p.m. Central Time on the day following the date hereof', distinguishing_component_ids: ['def-ct'] },
+    components: [component('def-ct', 'DEFINED_TERM', '(such time, the “Consent Time”)', 900, { resolves_to: { text: '11:59 p.m. Central Time on the day following the date hereof' } })],
+  };
+  const view = buildTableView({ facts: [submit, obtain, definition], tableShapes, legalSchema });
+  const meeting = view.sections.flatMap((section) => section.tables).find((table) => table.table_key === 'votes-approvals-meeting-table');
+  assert.deepEqual(meeting.rows.map((row) => [row.subject, row.backing_facts.map((entry) => entry.fact_id)]), [
+    ['Written Consent submission', ['ncs-5-6-submit']], ['Written Consent receipt', ['ncs-5-6-obtain']],
+  ], 'the facts keep their rows on their family\'s table');
+  assert.equal(view.sections.flatMap((section) => section.facts_without_readout || []).length, 0);
+  const terms = Object.fromEntries(view.defined_terms.map((entry) => [entry.term, entry]));
+  assert.equal(terms['the Consenting Stockholders'].definition, 'Advent-NCS Acquisition L.P. and Advent International Corporation');
+  assert.equal(terms['the Consenting Stockholders'].fact_id, 'ncs-5-6-submit', 'the entry sits beside the fact, which stays on its row');
+  assert.equal(terms['Consent Time'].fact_id, 'def-consent-time', 'the definition fact owns its term\'s entry');
+  assert.equal(terms['Consent Time'].definition, 'Consent Time means 11:59 p.m. Central Time on the day following the date hereof');
+  assert.equal(view.sections.flatMap((section) => section.tables).flatMap((table) => table.rows).some((row) => row.backing_facts.some((entry) => entry.fact_id === 'def-consent-time')), false, 'a definition fact has no row');
+});

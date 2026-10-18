@@ -632,3 +632,30 @@ test('stripIntroRowCodes drops the General Exceptions codes from a representatio
   const intro = { ...rep, row_label: 'General Exceptions', row_detail: 'SEC Filings' };
   assert.deepEqual(stripIntroRowCodes(intro, table).dropped, []);
 });
+
+// Work package 17: the savings clause lands on its row by its words
+// (NCS 5.2(d), stored as EXCEPTION_PREREQUISITE with no readout).
+test('defaultConclusions places the no-shop savings clause on its row by words_rows, with Yes read from the words, and leaves the breach prerequisite alone', () => {
+  const { defaultConclusions } = require('../lib/product/fact-conclusions');
+  const component = (id, kind, text) => ({ component_id: id, kind, label: id, text, origin: 'OWN', children: [] });
+  const savings = {
+    family_key: 'NO_SHOP', subtype_key: 'EXCEPTION_PREREQUISITE', fact_type: 'EXCEPTION_PREREQUISITE',
+    statement: 'Parent and Merger Sub acknowledge and agree that any determination or action by the Company or the Company Board in accordance with Section 5.2(c) shall not be deemed to be a breach or violation of Section 5.2(a).',
+    headline: { label: 'Fiduciary savings clause', summary: 'Company and Company Board actions under the fiduciary exception are not a no-shop breach' },
+    components: [component('c1', 'ACTOR', 'Parent and Merger Sub'), component('c2', 'OPERATION', 'acknowledge and agree'), component('c3', 'OBJECT', 'any determination or action by the Company or the Company Board'), component('c4', 'CONDITION', 'in accordance with Section 5.2(c)'), component('c5', 'TERM', 'shall not be deemed to be a breach or violation of this Section 5.2(a)')],
+  };
+  const readout = defaultConclusions(savings, tableShapes);
+  assert.equal(readout.table_key, 'nosol-fiduciary-table');
+  assert.equal(readout.row_label, 'Fiduciary actions are not a breach');
+  assert.equal(readout.rule, 'words_rows');
+  assert.deepEqual(readout.cells.find((cell) => cell.column_id === 'provision'), { column_id: 'provision', code: 'YES', component_ids: ['c5'] }, 'Yes, citing the words that say so');
+  assert.ok(readout.cells.some((cell) => cell.column_id === 'asDrafted'));
+  // Metsera's form.
+  const metsera = { ...savings, components: [component('m1', 'OBJECT', 'any action taken by the Company Board in compliance with Section 5.02(d)'), component('m2', 'OPERATION', 'shall not constitute a breach of Section 5.02(a)')] };
+  assert.equal(defaultConclusions(metsera, tableShapes).row_label, 'Fiduciary actions are not a breach');
+  // The prerequisite that the proposal did not result from a breach is not this row.
+  const prerequisite = { ...savings, statement: 'The permissions are available only where the Acquisition Proposal did not result from a breach of Section 5.2(a).', headline: { label: 'No breach prerequisite', summary: 'Proposal must not result from a breach' },
+    components: [component('p1', 'OBJECT', 'a bona fide unsolicited Acquisition Proposal from a Person'), component('p2', 'CONDITION', 'that did not result from a breach of Section 5.2(a) or Section 5.2(b)')] };
+  const other = defaultConclusions(prerequisite, tableShapes);
+  assert.notEqual(other && other.row_label, 'Fiduciary actions are not a breach');
+});

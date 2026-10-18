@@ -195,6 +195,23 @@ test('draft-level schema drift issues are one quiet line each under the title, i
   assert.deepEqual(previewFactsFromWorkspace(workspace()).schema_drift, []);
 });
 
+// Plan finding (140): the worker sandbox the run is on, beside the provider,
+// while the run is in progress; nothing once it is READY or before a wake.
+test('the header names the run\'s sandbox beside the provider while the run is in progress', () => {
+  const running = workspace();
+  running.progress = { ...running.progress, status: 'RUNNING', provider: 'ANTHROPIC_CLAUDE_CLI_SUBSCRIPTION', sandbox: 'pm-codex-preview-worker-2' };
+  const html = renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: running, runId: 'run-1' }));
+  assert.match(html, /data-testid="preview-provider">Claude subscription</);
+  assert.match(html, /data-testid="preview-sandbox">on pm-codex-preview-worker-2</);
+  assert.ok(html.indexOf('preview-provider') < html.indexOf('preview-sandbox'));
+  const ready = workspace();
+  ready.progress = { ...ready.progress, status: 'READY', sandbox: 'pm-codex-preview-worker-2' };
+  assert.doesNotMatch(renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: ready, runId: 'run-1' })), /preview-sandbox/);
+  const unplaced = workspace();
+  unplaced.progress = { ...unplaced.progress, status: 'RUNNING', sandbox: null };
+  assert.doesNotMatch(renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: unplaced, runId: 'run-1' })), /preview-sandbox/);
+});
+
 // Work package 3: the run page names the provider that paid, beside the
 // state chip, only when the run names one.
 test('the header names the run\'s provider beside the state chip', () => {
@@ -206,4 +223,31 @@ test('the header names the run\'s provider beside the state chip', () => {
   subscription.progress = { ...subscription.progress, provider: 'ANTHROPIC_CLAUDE_CLI_SUBSCRIPTION' };
   assert.match(renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: subscription, runId: 'run-1' })), /preview-provider">Claude subscription</);
   assert.doesNotMatch(renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: workspace(), runId: 'run-1' })), /preview-provider/);
+});
+
+// Work package 17 (manager, 2026-10-18): a held fact's reason in plain
+// words from the run's issues (NCS 3.4: the proposal's own issue says "byte
+// range missing" per component; the section's issue names the unknown span).
+test('heldReason puts a held fact\'s problems into words, naming the component and the unknown span', () => {
+  const { heldReason } = require('../lib/product/provisions-preview');
+  const proposal = { proposal_id: 'p', components: [
+    { component_id: 'a', kind: 'ACTOR', text: 'the Company represents and warrants to Parent and Merger Sub as follows:', children: [] },
+    { component_id: 'b', kind: 'OPERATION', text: 'has all requisite corporate power and authority to execute and deliver this Agreement and to perform its obligations hereunder', children: [] },
+  ] };
+  const own = [{ code: 'INVALID_FACT_COMPONENTS', message: JSON.stringify(['0: byte range missing', '1: byte range missing']) }];
+  const node = [{ code: 'INVALID_FACT_COMPONENTS', message: JSON.stringify({ client_ref: 'p1', problems: ['0: quote not found in source (UNKNOWN_SOURCE_COMPONENT)', '0: byte range missing', '1: byte range missing'] }) }];
+  assert.equal(heldReason(proposal, own, node), '“the Company represents and warrants to Parent and Merger Sub as follows:”: its quote cites a span the section does not have; “has all requisite corporate power and authority to execute and deliver this…”: could not be placed in the source text');
+  const amount = { proposal_id: 'q', components: [{ component_id: 'x', kind: 'AMOUNT', text: '“Cash Consideration” means cash in an amount equal to the product of (x) the Cash Exchange Ratio, multiplied by (y) the Parent Closing Price.', children: [] }] };
+  assert.equal(heldReason(amount, [{ code: 'INVALID_FACT_COMPONENTS', message: JSON.stringify({ client_ref: 'part1:p4', problems: ['0: no parsable value in "“Cash Consideration” means cash"', '0: AMOUNT needs a canonical value'] }) }]), '““Cash Consideration” means cash in an amount equal to the product of (x) the…”: no number could be read from its words');
+  assert.equal(heldReason(amount, []), 'held by validation');
+  assert.equal(heldReason(amount, [{ code: 'INTRO_NOT_QUALIFICATION', message: 'p3' }]), 'intro not qualification: p3');
+});
+
+test('previewFactsFromWorkspace attaches held_reason to each held fact from the run\'s issues', () => {
+  const heldId = `p-99-${fixture.facts[0].fact_id}`;
+  const preview = previewFactsFromWorkspace(workspace({ issues: [
+    { schema_version: 'PRODUCT_ISSUE/V1', issue_id: 'i-held', kind: 'VALIDATION', code: 'INVALID_FACT_COMPONENTS', message: JSON.stringify(['0: byte range missing']), proposal_id: heldId, structure_node_id: NODE, family_key: fixture.facts[0].family_key },
+  ] }));
+  assert.equal(preview.held_facts.length, 1);
+  assert.match(preview.held_facts[0].held_reason, /could not be placed in the source text/);
 });

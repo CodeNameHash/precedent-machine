@@ -410,6 +410,15 @@ function applyNoShop(doc) {
       ['No breach of the no-shop required', yesNo(why)],
       ['Acceptable confidentiality agreement required', yesNo(why)],
       ['Information parity with Parent', yesNo(why)],
+      // Work package 17 (manager, 2026-10-18 19:10 UTC, from the NCS read,
+      // finding (83)): the no-shop savings clause. NCS 5.2(d): "Parent and
+      // Merger Sub acknowledge and agree that any determination or action
+      // by the Company or the Company Board in accordance with Section
+      // 5.2(c) shall not be deemed to be a breach or violation of Section
+      // 5.2(a)" had no row and sat under "without a readout"; Metsera's
+      // 5.02 has the "shall not constitute a breach" form. Yes when the
+      // agreement says so; the words place the fact (words_rows).
+      ['Fiduciary actions are not a breach', yesNo(why)],
     ],
     reason: why,
     subtypeKeys: ['EXCEPTION_PREREQUISITE'],
@@ -428,8 +437,20 @@ function applyNoShop(doc) {
       { code: 'IS_A_SUPERIOR_PROPOSAL', words: '(?:is|constitutes) a Superior Proposal' },
     ],
   };
+  // The savings clause by its words, whatever the fact type the model
+  // chose (NCS: EXCEPTION_PREREQUISITE; the words are the rule): an action
+  // or determination under the fiduciary exception that "shall not be
+  // deemed to be", "shall not constitute" or "is not" a breach. "did not
+  // result from a breach" (the prerequisite) is not this row.
+  engagement.words_rows = [{
+    row_label: 'Fiduciary actions are not a breach',
+    when: '(?:shall|will|does|do|is|are)\\s+not\\s+(?:be\\s+deemed\\s+(?:to\\s+be\\s+|to\\s+constitute\\s+)?|constitute\\s+|be\\s+)(?:a\\s+|an\\s+)?(?:breach|violation)',
+    code: 'YES',
+  }];
+  findColumn(engagement, 'provision').code_from_words_by_row['Fiduciary actions are not a breach'] = [{ code: 'YES', words: 'not\\s+(?:be\\s+deemed|constitute|be)[\\s\\S]{0,40}(?:breach|violation)' }];
   engagement.fact_type_rows = { EXCEPTION_PREREQUISITE: 'Engagement standard' };
   engagement.fact_type_rows_when = { EXCEPTION_PREREQUISITE: '(?=[\\s\\S]*negotiat)(?=[\\s\\S]*(?:Qualifying|Superior Proposal|could (?:reasonably be expected to )?lead))' };
+  engagement.guidance += ' Fiduciary actions are not a breach: the savings clause, YES when the agreement says that a determination or action by the Company or its Board under the fiduciary exception shall not be deemed to be, or shall not constitute, a breach of the no-shop (work package 17, 2026-10-18); never the prerequisite that the proposal did not result from a breach, which is its own row.';
   engagement.guidance += ' Board determination standard: always one code, from the words of the standard: "would be, or would be reasonably likely to be, inconsistent with its fiduciary duties" is REASONABLY_LIKELY_TO_BE_INCONSISTENT_WITH_FIDUCIARY_DUTIES; "inconsistent with its fiduciary duties" alone is INCONSISTENT_WITH_FIDUCIARY_DUTIES; "would violate" WOULD_VIOLATE_FIDUCIARY_DUTIES; "required by" REQUIRED_BY_FIDUCIARY_DUTIES; never a readout without the code (generation 8, 5.02(f): the row read with no code). Engagement standard: also the permission to negotiate with (or furnish information to) the Person making a Qualifying Company Takeover Proposal or a proposal that constitutes or could reasonably be expected to lead to a Superior Proposal, the code the standard the proposal must meet (work package 7, 2026-10-18).';
   const change = provisionTable({
     tableKey: 'nosol-fiduciary-change-of-recommendation',

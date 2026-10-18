@@ -405,6 +405,32 @@ function FactsWithoutReadout({ entries, sectionKey, onSelect }) {
   );
 }
 
+// Work package 17 (manager, 2026-10-18): the facts validation held, under
+// their section with the reason in plain words, in the same quiet style as
+// the facts without a readout, so an empty table says why (NCS 3.4).
+function HeldFacts({ entries, sectionKey, onSelect }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="mt-[6px] text-[9.5px] font-ui text-[#6b6b6b]" data-testid="held-facts">
+      <button type="button" onClick={() => setOpen((current) => !current)} className={LINK}>
+        {entries.length} fact{entries.length === 1 ? '' : 's'} held by validation · {open ? 'hide' : 'see why'}
+      </button>
+      {open ? (
+        <ul className="mt-[2.5px] space-y-[1px] pl-[4.5px]">
+          {entries.map((entry, index) => (
+            <li key={`${entry.fact_id}-${index}`} data-testid="held-fact">
+              <button type="button" onClick={() => onSelect({ tableKey: `${sectionKey}:held`, rowIndex: index, columnId: null, componentId: null, factId: entry.fact_id })} className="text-[#1f1f1f] underline-offset-2 hover:underline">
+                {entry.section_reference ? `§ ${entry.section_reference}` : entry.fact_id}{entry.headline ? ` · ${entry.headline}` : ''}
+              </button>
+              <span data-testid="held-fact-reason">{` — ${entry.reason}`}</span>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </div>
+  );
+}
+
 const DEFINED_TERMS_KEY = 'defined-terms';
 
 // A section's header band (Ben, 2026-09-14: "their pages are 'cleaner' in
@@ -449,6 +475,7 @@ function DefinedTermRow({ term }) {
       </td>
       <td className={`${TD} font-body text-[12.5px] leading-relaxed text-inkMid`}>
         {open ? (term.definition || <span className="text-inkFaint">Definition not in the closure</span>) : <button type="button" onClick={() => setOpen(true)} className={LINK}>Show</button>}
+        {open && term.note ? <div className={`mt-[2px] ${QUIET}`} data-testid="defined-term-note">{term.note}</div> : null}
       </td>
     </tr>
   );
@@ -757,6 +784,9 @@ export default function ProvisionTables({
                   </div>
                   {section.facts_without_readout?.length ? (
                     <FactsWithoutReadout entries={section.facts_without_readout} sectionKey={section.section_key} onSelect={setSelection} />
+                  ) : null}
+                  {section.held_facts?.length ? (
+                    <HeldFacts entries={section.held_facts} sectionKey={section.section_key} onSelect={setSelection} />
                   ) : null}
                 </div>
               )}
