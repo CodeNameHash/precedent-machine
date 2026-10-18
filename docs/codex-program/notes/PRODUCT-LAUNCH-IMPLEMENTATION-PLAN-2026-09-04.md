@@ -6626,6 +6626,109 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       schema, LEGAL-RULES, any subtype or fact type. npm run
       test:active: 774 of 775, the one failure the known Codex-client
       final-message test. No run, worker or sandbox touched.
+      (129) 2026-10-18 22:15 to 23:05 UTC (implementer C), work package
+      C5, the three intakes of 21:44 UTC held at
+      DOCUMENT_IDENTITY_REVIEW. Read by SQL on the preview branch
+      (product_document_identity_reviews joined to product_analysis_runs
+      and product_source_documents), nothing resolved, no run woken. The
+      gate: lib/product/sec-intake.js extractDocumentIdentity scores the
+      exhibit on nine rules (CIK, accession, exhibit type confirmed,
+      exhibit type conflict, filename conflict, parties, agreement date,
+      revision, completeness); one failure makes identity_status
+      NEEDS_REVIEW, lib/product/phase-1-foundation.js attaches the
+      structure with the reasons, product_phase1_attach_structure writes
+      the review row and leaves the run QUEUED at
+      DOCUMENT_IDENTITY_REVIEW, and the hosted worker refuses such a run
+      (PRODUCT_HOSTED_IDENTITY_REVIEW_REQUIRED). The rows, all OPEN,
+      resolution null: cd1d3e91 (Vertex / Crinetics, review 27850060)
+      reasons ["AGREEMENT_DATE_UNCONFIRMED"]; 436276fe (Lilly /
+      Centessa, review 6afe2802) ["PARTIES_UNCONFIRMED"]; 94cd879e (Novo
+      Nordisk / Akero, review a40bb6cd) ["PARTIES_UNCONFIRMED"]. Each
+      flag reproduced locally by running the committed extractor over
+      the exhibit through the canonical-text conversion, and each is a
+      parser miss on a sound document, not a doubt about which document
+      it is: all three are the complete, original, execution-version
+      EX-2.1 (revision "original", looks_like_complete_document true, no
+      amendment language). Crinetics: parties found (Vertex PARENT,
+      Clark Merger Sub MERGER_SUB, Crinetics COMPANY), exhibit
+      confirmed; the cover line reads "DATED AS OF JULY 6, 2026," with a
+      trailing comma and isoAgreementDate anchors its pattern on the
+      year at the end of the line, so the line fails and the preamble's
+      "dated as of July 6, 2026 (this "Agreement" ...)" is mid-line,
+      which the rule never reads; the date is in the document twice and
+      consistent. Centessa: date 2026-03-31 confirmed; the preamble
+      names Eli Lilly and Company ("Parent"), LDH XV Corporation
+      ("Purchaser") and Centessa Pharmaceuticals plc "(the "Company"
+      and, together with Parent and Purchaser, the "Parties")"; the
+      embedded-role pattern requires the closing parenthesis straight
+      after "Company", so the compound parenthetical loses the Company,
+      and without a Company partyIdentity falls back to the cover
+      caption, which it reads only from a line beginning "by and among"
+      while this cover says "among"; parties []. Akero: date 2025-10-09
+      confirmed; the preamble reads "by and among: Novo Nordisk A/S, a
+      Danish aktieselsab ("Parent"); NN Invest Sub, Inc, ... ("Merger
+      Sub"); and Akero Therapeutics, Inc., ... (the "Company")"; the
+      name character class has no "/" so "Novo Nordisk A/S" never
+      matches, the buyer is missing, the caption fallback fails on
+      "among:" and parties is []. Avadel (91fe48a1) passed because its
+      cover carries "dated as of October 22, 2025" alone on a line and
+      its preamble's two parties, Alkermes plc ("Parent") and Avadel
+      Pharmaceuticals plc ("Company"), fit the pattern. What the
+      function accepts: product_phase1_resolve_identity(p_run_id,
+      p_resolution) (current body in
+      supabase/migrations/20260905190000_product_substantive_section_work.sql,
+      service_role only) requires the run at DOCUMENT_IDENTITY_REVIEW
+      (else 55000, replayed silently when the same resolution was
+      already stored), requires p_resolution non-null and not {}
+      (22023), and checks nothing else about its shape: it stores the
+      JSON verbatim as resolution, marks the review RESOLVED, inserts
+      product_section_work for every leaf SECTION node and moves the run
+      to QUEUED at SECTION_ANALYSIS. What submits it: POST
+      /api/product/analysis/<run_id>/identity
+      (pages/api/product/analysis/[id]/identity.js,
+      lib/product/identity-handler.js), reached from the "Confirm this
+      agreement" button on the intake panel of pages/review/index.js
+      (components/product/ProductIntakePanel.jsx, which lists the
+      parties, filing, date and the reasons); the handler ignores the
+      request body and sends the one fixed resolution {"confirmed":
+      true, "confirmed_by": <actor>}, the actor being the session
+      subject from the browser or AUTH_USERNAME (default "ben") for the
+      internal bearer token; no script, worker or other route resolves a
+      review. So the exact resolution for each of the three, were Ben to
+      say yes, is the same call: POST
+      /api/product/analysis/cd1d3e91-2e20-45de-9657-a42c689eff68/identity,
+      .../436276fe-d733-4d03-bd2e-59c84fb55766/identity and
+      .../94cd879e-08e0-4b68-8115-8424b1fa096d/identity with an empty
+      JSON body, each stored as {"confirmed": true, "confirmed_by":
+      "ben"} (or by SQL as select
+      product_phase1_resolve_identity('<run_id>', '{"confirmed": true,
+      "confirmed_by": "ben"}')). Is any of it a lawyer's decision: no.
+      The gate asks only whether this is the agreement intended, and for
+      all three it is; the confirmation is mechanical. Two things for
+      Ben to know before the word is given: (a) confirming does not
+      repair the record, the source document keeps parties [] for
+      Centessa and Akero and agreement_date null for Crinetics, which
+      the review and preview pages then show as unknown (the display
+      repair in lib/product/review-handler.js only recovers suffix-only
+      names, not empty lists); (b) resolving moves each run to QUEUED at
+      SECTION_ANALYSIS, which costs nothing until a worker is woken
+      (Ben: "I don't think we intake until E is done and we have reduced
+      cost"). The repeatable fix (Ben: "everything to be driven by
+      coding and not just a layer on top so all edits need to be
+      repeatable across corpus"), proposed and not built in this
+      package: in sec-intake.js let the date rule drop trailing
+      punctuation on the cover line, let the embedded-role rule accept a
+      compound parenthetical (the "Company" and, together with ..., the
+      "Parties"), add "/" to the entity-name character class (A/S), and
+      let the caption fallback read a cover line beginning "among" or
+      "among:"; each pinned with these three preambles as fixtures. The
+      fix helps the next deals on the >$1bn list (note of (127)); for
+      these three the stored source document is found by URL on
+      re-submission and never re-scored, so their records stay as
+      extracted unless the source row is re-intaken. Documentation only;
+      no code, schema or rule changed. npm run test:active:
+      774 of 775, the one failure the known Codex-client final-message
+      test. No run, worker or sandbox touched.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
