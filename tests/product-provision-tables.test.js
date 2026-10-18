@@ -278,8 +278,12 @@ test('the provision rail groups sections the old app\'s way, one anchor per sect
   // covers the header, headings, tables and sidebar.
   assert.match(html, /<nav[^>]*class="[^"]*bg-black[^"]*"[^>]*data-testid="provision-rail"/);
   const groups = html.match(/data-testid="provision-rail-group"/g) || [];
-  assert.equal(groups.length, 17);
+  // 17 old-app groups plus Tax Matters and Financing (work package 5, plan
+  // finding (52): three families had no page).
+  assert.equal(groups.length, 19);
   assert.match(html, /href="#provision-section-structure-mechanics"/);
+  assert.match(html, /href="#provision-section-tax-matters"/);
+  assert.match(html, /href="#provision-section-financing"/);
   assert.match(html, /href="#provision-section-conditions-s"/);
   assert.ok(html.indexOf('Structure &amp; Mechanics') < html.indexOf('Consideration'));
   assert.ok(html.indexOf('Conditions to Closing') < html.indexOf('Termination Rights'));

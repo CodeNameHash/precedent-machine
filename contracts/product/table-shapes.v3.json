@@ -7550,6 +7550,617 @@
       }
     },
     {
+      "section_key": "tax-matters",
+      "title": "Tax Matters",
+      "legacy_config": null,
+      "v2_family_keys": [
+        {
+          "key": "TAX_MATTERS",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "tax-matters-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "provision",
+              "header": "Summary",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "TAXABLE_ACQUISITION",
+                  "label": "Taxable acquisition",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                },
+                {
+                  "code": "REORGANIZATION_368A",
+                  "label": "Tax-free reorganization (Section 368(a))",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                },
+                {
+                  "code": "OTHER_INTENDED_TREATMENT",
+                  "label": "Other intended treatment",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                },
+                {
+                  "code": "NO_INCONSISTENT_ACTION",
+                  "label": "No action inconsistent with the intended treatment",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                },
+                {
+                  "code": "SILENT",
+                  "label": "Not addressed",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                },
+                {
+                  "code": "CONSISTENT_REPORTING_REQUIRED",
+                  "label": "Report consistently with the intended treatment",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                },
+                {
+                  "code": "COOPERATION_REQUIRED",
+                  "label": "Cooperation and representation letters required",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                },
+                {
+                  "code": "PAID_BY_PARENT",
+                  "label": "Paid by Parent",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                },
+                {
+                  "code": "PAID_BY_COMPANY",
+                  "label": "Paid by the Company",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                },
+                {
+                  "code": "PAID_BY_SURVIVING_CORPORATION",
+                  "label": "Paid by the Surviving Corporation",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                },
+                {
+                  "code": "SHARED_EQUALLY",
+                  "label": "Shared equally",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                },
+                {
+                  "code": "PAID_BY_HOLDER",
+                  "label": "Paid by the holder",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                },
+                {
+                  "code": "WITHHOLDING_PERMITTED",
+                  "label": "Withholding permitted",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                },
+                {
+                  "code": "WITHHELD_AMOUNTS_TREATED_AS_PAID",
+                  "label": "Withheld amounts treated as paid",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                },
+                {
+                  "code": "REQUIRED",
+                  "label": "Required",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                },
+                {
+                  "code": "NOT_REQUIRED",
+                  "label": "Not required",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                },
+                {
+                  "code": "YES",
+                  "label": "Yes",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                },
+                {
+                  "code": "NO",
+                  "label": "No",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                }
+              ],
+              "vocabulary_by_row": {
+                "Intended tax treatment": [
+                  "TAXABLE_ACQUISITION",
+                  "REORGANIZATION_368A",
+                  "OTHER_INTENDED_TREATMENT"
+                ],
+                "Tax treatment protection": [
+                  "NO_INCONSISTENT_ACTION",
+                  "SILENT"
+                ],
+                "Tax reporting consistency": [
+                  "CONSISTENT_REPORTING_REQUIRED",
+                  "SILENT"
+                ],
+                "Tax opinion cooperation": [
+                  "COOPERATION_REQUIRED",
+                  "SILENT"
+                ],
+                "Transfer tax allocation": [
+                  "PAID_BY_PARENT",
+                  "PAID_BY_COMPANY",
+                  "PAID_BY_SURVIVING_CORPORATION",
+                  "SHARED_EQUALLY",
+                  "PAID_BY_HOLDER"
+                ],
+                "Withholding": [
+                  "WITHHOLDING_PERMITTED",
+                  "WITHHELD_AMOUNTS_TREATED_AS_PAID"
+                ],
+                "FIRPTA certificate": [
+                  "REQUIRED",
+                  "NOT_REQUIRED"
+                ],
+                "Special tax mechanic": [
+                  "YES",
+                  "NO"
+                ]
+              },
+              "fill_from": [
+                "STANDARD",
+                "EFFORTS_STANDARD",
+                "OPERATION",
+                "CONDITION",
+                "EXCEPTION",
+                "QUALIFIER",
+                "ACTOR",
+                "FORUM"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18.",
+              "guidance": "One code from this row's own list (vocabulary_by_row); several cells with distinct codes when the clause states several of them (the acts a no-shop prohibits, the events an intervening-event definition excludes); never a code from another row's list."
+            },
+            {
+              "column_id": "asDrafted",
+              "header": "As drafted",
+              "render": "verbatim",
+              "display": "fact_text",
+              "fill_from": [
+                "OPERATION",
+                "OBJECT",
+                "CONDITION",
+                "STANDARD",
+                "EXCEPTION",
+                "QUALIFIER"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18.",
+              "guidance": "Shown as the fact's own words as drafted (every component in source order); cite the operative words."
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Intended tax treatment",
+            "Tax treatment protection",
+            "Tax reporting consistency",
+            "Tax opinion cooperation",
+            "Transfer tax allocation",
+            "Withholding",
+            "FIRPTA certificate",
+            "Special tax mechanic"
+          ],
+          "row_from_subtype": true,
+          "subtype_rows": {
+            "INTENDED_TAX_TREATMENT": "Intended tax treatment",
+            "TAX_TREATMENT_PROTECTION": "Tax treatment protection",
+            "TAX_REPORTING_CONSISTENCY": "Tax reporting consistency",
+            "TAX_OPINION_COOPERATION": "Tax opinion cooperation",
+            "TRANSFER_TAX_ALLOCATION": "Transfer tax allocation",
+            "WITHHOLDING_MECHANIC": "Withholding",
+            "FIRPTA_CERTIFICATE": "FIRPTA certificate",
+            "TAX_INTEGRATION_OR_SPECIAL_MECHANIC": "Special tax mechanic"
+          },
+          "guidance": "The tax covenants, the row from the fact's subtype (subtype_rows): the intended tax treatment and the covenants protecting and reporting it, cooperation on tax opinions, who bears transfer taxes (one code), withholding, the FIRPTA certificate and any special mechanic; the code from that row's list, the clause as drafted.",
+          "fact_type_rows": {
+            "INTENDED_TAX_TREATMENT_KIND": "Intended tax treatment",
+            "TAX_OPINION_COOPERATION_COVENANT": "Tax opinion cooperation",
+            "TAX_TREATMENT_PROTECTION_COVENANT": "Tax treatment protection",
+            "TRANSFER_TAX_ALLOCATION": "Transfer tax allocation"
+          },
+          "default_rows_from_subtype": true
+        }
+      ],
+      "print_pages": [],
+      "rail": {
+        "group": "Tax Matters",
+        "label": "Tax Matters",
+        "hex": "#6E8AA8"
+      }
+    },
+    {
+      "section_key": "financing",
+      "title": "Financing",
+      "legacy_config": null,
+      "v2_family_keys": [
+        {
+          "key": "FINANCING_COVENANTS",
+          "confidence": "high"
+        },
+        {
+          "key": "GUARANTY_FINANCING_PARTY",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "financing-covenants-table",
+          "group_header": "FINANCING COVENANTS",
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "provision",
+              "header": "Summary",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "REASONABLE_BEST_EFFORTS",
+                  "label": "Reasonable best efforts",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                },
+                {
+                  "code": "BEST_EFFORTS",
+                  "label": "Best efforts",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                },
+                {
+                  "code": "COMMERCIALLY_REASONABLE_EFFORTS",
+                  "label": "Commercially reasonable efforts",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                },
+                {
+                  "code": "NO_FINANCING_COVENANT",
+                  "label": "No financing covenant",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                },
+                {
+                  "code": "REQUIRED",
+                  "label": "Required",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                },
+                {
+                  "code": "NOT_REQUIRED",
+                  "label": "Not required",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                },
+                {
+                  "code": "YES",
+                  "label": "Yes",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                },
+                {
+                  "code": "NO",
+                  "label": "No",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                },
+                {
+                  "code": "PARENT_BEARS_COSTS",
+                  "label": "Parent bears financing costs",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                },
+                {
+                  "code": "COMPANY_INDEMNIFIED",
+                  "label": "Company indemnified for cooperation",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                },
+                {
+                  "code": "SHARED",
+                  "label": "Shared",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                }
+              ],
+              "vocabulary_by_row": {
+                "Obtain financing": [
+                  "REASONABLE_BEST_EFFORTS",
+                  "BEST_EFFORTS",
+                  "COMMERCIALLY_REASONABLE_EFFORTS",
+                  "NO_FINANCING_COVENANT"
+                ],
+                "Alternative financing": [
+                  "REQUIRED",
+                  "NOT_REQUIRED"
+                ],
+                "Target cooperation": [
+                  "REASONABLE_BEST_EFFORTS",
+                  "BEST_EFFORTS",
+                  "COMMERCIALLY_REASONABLE_EFFORTS",
+                  "NOT_REQUIRED"
+                ],
+                "Payoff letters": [
+                  "REQUIRED",
+                  "NOT_REQUIRED"
+                ],
+                "No financing condition": [
+                  "YES",
+                  "NO"
+                ],
+                "Note offer or consent": [
+                  "REQUIRED",
+                  "NOT_REQUIRED"
+                ],
+                "Cost and risk allocation": [
+                  "PARENT_BEARS_COSTS",
+                  "COMPANY_INDEMNIFIED",
+                  "SHARED"
+                ]
+              },
+              "fill_from": [
+                "STANDARD",
+                "EFFORTS_STANDARD",
+                "OPERATION",
+                "CONDITION",
+                "EXCEPTION",
+                "QUALIFIER",
+                "ACTOR",
+                "FORUM"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18.",
+              "guidance": "One code from this row's own list (vocabulary_by_row); several cells with distinct codes when the clause states several of them (the acts a no-shop prohibits, the events an intervening-event definition excludes); never a code from another row's list."
+            },
+            {
+              "column_id": "period",
+              "header": "Period",
+              "render": "value",
+              "value_kind": "PERIOD",
+              "fill_from": [
+                "PERIOD",
+                "TRIGGER",
+                "DATE"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18. The payoff letter lead time in business days, or a financing deadline."
+            },
+            {
+              "column_id": "asDrafted",
+              "header": "As drafted",
+              "render": "verbatim",
+              "display": "fact_text",
+              "fill_from": [
+                "OPERATION",
+                "OBJECT",
+                "CONDITION",
+                "STANDARD",
+                "EXCEPTION",
+                "QUALIFIER"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18.",
+              "guidance": "Shown as the fact's own words as drafted (every component in source order); cite the operative words."
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Obtain financing",
+            "Alternative financing",
+            "Target cooperation",
+            "Payoff letters",
+            "No financing condition",
+            "Note offer or consent",
+            "Cost and risk allocation"
+          ],
+          "row_from_subtype": true,
+          "subtype_rows": {
+            "OBTAIN_FINANCING": "Obtain financing",
+            "ALTERNATIVE_FINANCING": "Alternative financing",
+            "TARGET_COOPERATION": "Target cooperation",
+            "PAYOFF": "Payoff letters",
+            "NO_FINANCING_CONDITION": "No financing condition",
+            "NOTE_OFFER_OR_CONSENT": "Note offer or consent",
+            "COST_AND_RISK_ALLOCATION": "Cost and risk allocation"
+          },
+          "guidance": "The financing covenants, the row from the fact's subtype (subtype_rows): the efforts to obtain the financing and any alternative financing, the Company's cooperation, payoff letters (the lead time in the period column), the acknowledgment that financing is not a condition, note offers or consents, and who bears the costs and risks; the code from that row's list, the clause as drafted.",
+          "fact_type_rows": {
+            "FINANCING_OBTAIN_EFFORTS_STANDARD": "Obtain financing",
+            "NO_FINANCING_CONDITION_ACKNOWLEDGMENT": "No financing condition",
+            "PAYOFF_DELIVERY_LEAD_TIME_DAYS": "Payoff letters"
+          },
+          "default_rows_from_subtype": true
+        },
+        {
+          "table_key": "financing-guaranty-table",
+          "group_header": "GUARANTY AND FINANCING SOURCES",
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "provision",
+              "header": "Summary",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "YES",
+                  "label": "Yes",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                },
+                {
+                  "code": "NO",
+                  "label": "No",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                },
+                {
+                  "code": "NO_RECOURSE_AGAINST_FINANCING_SOURCES",
+                  "label": "No recourse against financing sources",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                },
+                {
+                  "code": "FINANCING_SOURCE_FORUM_AND_JURY_WAIVER",
+                  "label": "Financing sources forum and jury waiver",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                },
+                {
+                  "code": "FINANCING_SOURCES_THIRD_PARTY_BENEFICIARIES",
+                  "label": "Financing sources as third-party beneficiaries",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18."
+                }
+              ],
+              "vocabulary_by_row": {
+                "Performance guaranty": [
+                  "YES",
+                  "NO"
+                ],
+                "Limited guaranty delivered": [
+                  "YES",
+                  "NO"
+                ],
+                "Guaranty not in default": [
+                  "YES",
+                  "NO"
+                ],
+                "Financing source protection": [
+                  "NO_RECOURSE_AGAINST_FINANCING_SOURCES",
+                  "FINANCING_SOURCE_FORUM_AND_JURY_WAIVER",
+                  "FINANCING_SOURCES_THIRD_PARTY_BENEFICIARIES"
+                ]
+              },
+              "fill_from": [
+                "STANDARD",
+                "EFFORTS_STANDARD",
+                "OPERATION",
+                "CONDITION",
+                "EXCEPTION",
+                "QUALIFIER",
+                "ACTOR",
+                "FORUM"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18.",
+              "guidance": "One code from this row's own list (vocabulary_by_row); several cells with distinct codes when the clause states several of them (the acts a no-shop prohibits, the events an intervening-event definition excludes); never a code from another row's list."
+            },
+            {
+              "column_id": "asDrafted",
+              "header": "As drafted",
+              "render": "verbatim",
+              "display": "fact_text",
+              "fill_from": [
+                "OPERATION",
+                "OBJECT",
+                "CONDITION",
+                "STANDARD",
+                "EXCEPTION",
+                "QUALIFIER"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18.",
+              "guidance": "Shown as the fact's own words as drafted (every component in source order); cite the operative words."
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Performance guaranty",
+            "Limited guaranty delivered",
+            "Guaranty not in default",
+            "Financing source protection"
+          ],
+          "row_from_subtype": true,
+          "subtype_rows": {
+            "PERFORMANCE_GUARANTY": "Performance guaranty",
+            "LIMITED_GUARANTY_DELIVERY_OR_STATUS_REP": "Limited guaranty delivered",
+            "GUARANTY_NO_DEFAULT_REP": "Guaranty not in default",
+            "FINANCING_SOURCE_PROTECTION": "Financing source protection"
+          },
+          "guidance": "The guaranty and the protections of the financing sources, the row from the fact's subtype (subtype_rows): a parent performance guaranty, the limited guaranty's delivery and status, the no-default representation, and the provisions protecting the financing sources (no recourse, their forum and jury waiver, their third-party beneficiary rights), one cell per protection; the clause as drafted.",
+          "fact_type_rows": {
+            "LIMITED_GUARANTY_DELIVERED": "Limited guaranty delivered"
+          },
+          "default_rows_from_subtype": true
+        }
+      ],
+      "print_pages": [],
+      "rail": {
+        "group": "Financing",
+        "label": "Financing",
+        "hex": "#6E8AA8"
+      }
+    },
+    {
       "section_key": "misc-boilerplate",
       "title": "Miscellaneous / Boilerplate",
       "legacy_config": "components/review/table-configs/misc-boilerplate.config.js",

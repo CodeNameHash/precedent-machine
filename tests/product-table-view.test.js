@@ -1318,3 +1318,32 @@ test('readout-less facts for the deemed-breach and no-restricting-agreement sent
   const placed = tables.flatMap((table) => table.rows).some((row) => row.backing_facts.some((entry) => entry.fact_id === 'other'));
   assert.equal(placed, false, 'a prohibited act whose words match neither sentence takes no default row');
 });
+
+// Work package 5 (plan finding (52)): "2.02's transfer-tax allocation fact
+// is on no page at all". A stored fact of the three formerly tableless
+// families takes its row without a readout: by fact type where the shape
+// names one, by its subtype otherwise (default_rows_from_subtype).
+test('readout-less tax and financing facts take their subtype rows in the Tax Matters and Financing sections', () => {
+  const stored = (id, family, subtype, factType, text, summary) => ({
+    fact_id: id, proposal_id: id, family_key: family, subtype_key: subtype, fact_type: factType, section_reference: '2.02', structure_node_id: 'n-2-02',
+    statement: text, headline: { label: subtype, distinguishing_component_ids: [`${id}-op`], summary },
+    components: [{ component_id: `${id}-op`, kind: 'OPERATION', label: 'operation', text, origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 40, gap_before: false, children: [] }],
+  });
+  const transfer = stored('transfer', 'TAX_MATTERS', 'TRANSFER_TAX_ALLOCATION', 'TRANSFER_TAX_ALLOCATION', 'All transfer, documentary, sales, use, stamp, registration and other similar Taxes shall be paid by Parent', 'Parent pays transfer taxes');
+  const withholding = stored('withhold', 'TAX_MATTERS', 'WITHHOLDING_MECHANIC', 'OTHER_TAX_MECHANIC', 'Parent, the Surviving Corporation and the Paying Agent shall be entitled to deduct and withhold such amounts as are required under applicable Tax Law', 'Payors may withhold amounts required by Tax Law');
+  const payoff = stored('payoff', 'FINANCING_COVENANTS', 'PAYOFF', 'PAYOFF_DELIVERY_LEAD_TIME_DAYS', 'The Company shall deliver customary payoff letters at least three Business Days prior to the Closing Date', 'Company delivers payoff letters three Business Days before Closing');
+  const guaranty = stored('guaranty', 'GUARANTY_FINANCING_PARTY', 'LIMITED_GUARANTY_DELIVERY_OR_STATUS_REP', 'LIMITED_GUARANTY_DELIVERED', 'Concurrently with the execution of this Agreement, the Guarantor has delivered the Limited Guaranty to the Company', 'Guarantor delivered the Limited Guaranty at signing');
+  const view = buildTableView({ facts: [transfer, withholding, payoff, guaranty], tableShapes, legalSchema });
+  const section = (key) => { const found = view.sections.find((candidate) => candidate.section_key === key); assert.ok(found, `${key} renders`); return found; };
+  const rowOf = (table, subject) => { const row = table.rows.find((candidate) => candidate.subject === subject); assert.ok(row, `${table.table_key} has ${subject}`); return row; };
+  const taxTable = section('tax-matters').tables.find((table) => table.table_key === 'tax-matters-table');
+  assert.ok(rowOf(taxTable, 'Transfer tax allocation').backing_facts.some((entry) => entry.fact_id === 'transfer'), 'the fact type names the row');
+  assert.ok(rowOf(taxTable, 'Withholding').backing_facts.some((entry) => entry.fact_id === 'withhold'), 'a fact type the shape does not name falls back to the subtype row');
+  const financing = section('financing');
+  assert.ok(rowOf(financing.tables.find((table) => table.table_key === 'financing-covenants-table'), 'Payoff letters').backing_facts.some((entry) => entry.fact_id === 'payoff'));
+  assert.ok(rowOf(financing.tables.find((table) => table.table_key === 'financing-guaranty-table'), 'Limited guaranty delivered').backing_facts.some((entry) => entry.fact_id === 'guaranty'));
+  for (const key of ['tax-matters', 'financing']) assert.deepEqual(section(key).facts_without_readout.map((entry) => entry.fact_id), [], `${key} lists nothing as without a readout`);
+  // The as-drafted cell shows the fact's own words.
+  const transferRow = rowOf(taxTable, 'Transfer tax allocation');
+  assert.ok(transferRow.cells.some((cell) => cell.column_id === 'asDrafted' && /transfer/i.test(cell.text || cell.label || '')), JSON.stringify(transferRow.cells));
+});

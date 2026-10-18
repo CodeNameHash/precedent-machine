@@ -870,6 +870,10 @@ const RAIL_GROUPS = [
   { group: 'Termination Fees', hex: '#B14E63', sections: [['termination-fees', 'Termination Fees'], ['tail-fee', 'Tail Fee Mechanics']] },
   { group: 'Employee Benefits', hex: '#6E8AA8', sections: [['employee-benefits', 'Employee Benefits']] },
   { group: 'Other Covenants', hex: '#6E8AA8', sections: [['general-covenants', 'Other Covenants'], ['dno-indemnification', 'D&O Indemnification']] },
+  // Work package 5 (plan finding (52), 2026-10-18): the tax and financing
+  // families had no section, so their facts were on no page.
+  { group: 'Tax Matters', hex: '#6E8AA8', sections: [['tax-matters', 'Tax Matters']] },
+  { group: 'Financing', hex: '#6E8AA8', sections: [['financing', 'Financing']] },
   { group: 'Miscellaneous / Boilerplate', hex: '#8A8782', sections: [['misc-boilerplate', 'Miscellaneous / Boilerplate']] },
   { group: 'No Other Reps / Fraud', hex: '#8A8782', sections: [['no-other-reps-fraud', 'No Other Reps / Fraud']] },
   { group: 'Definitions', hex: '#4E6FA6', sections: [['defined-terms', 'Defined Terms']] },

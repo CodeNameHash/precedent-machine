@@ -1328,6 +1328,125 @@ function applyVotesAndCovenants(doc) {
   removeSection(doc, 'advisers-fees-expenses');
 }
 
+// ==========================================================================
+// Work package 5 (plan finding (52), Metsera generation 8, 2026-10-18):
+// three families had no table in the shapes (TAX_MATTERS,
+// FINANCING_COVENANTS, GUARANTY_FINANCING_PARTY), so 2.02's transfer-tax
+// allocation fact was on no page at all. A Tax Matters section and a
+// Financing section, each table's rows from the fact's subtype, with page
+// defaults for the stored facts (fact_type_rows for the families' required
+// fact types; default_rows_from_subtype for every other subtype).
+// ==========================================================================
+
+function subtypeSection(doc, { sectionKey, title, familyKeys, tables }) {
+  doc.sections.push({
+    section_key: sectionKey,
+    title,
+    legacy_config: null,
+    v2_family_keys: familyKeys.map((key) => ({ key, confidence: 'high' })),
+    tables,
+    print_pages: [],
+  });
+}
+
+function applyTaxMatters(doc) {
+  const why = `${BEN}: every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18.`;
+  const table = provisionTable({
+    tableKey: 'tax-matters-table',
+    rows: [
+      ['Intended tax treatment', [
+        code('Taxable acquisition', why, { code: 'TAXABLE_ACQUISITION' }),
+        code('Tax-free reorganization (Section 368(a))', why, { code: 'REORGANIZATION_368A' }),
+        code('Other intended treatment', why, { code: 'OTHER_INTENDED_TREATMENT' }),
+      ]],
+      ['Tax treatment protection', [code('No action inconsistent with the intended treatment', why, { code: 'NO_INCONSISTENT_ACTION' }), code('Not addressed', why, { code: 'SILENT' })]],
+      ['Tax reporting consistency', [code('Report consistently with the intended treatment', why, { code: 'CONSISTENT_REPORTING_REQUIRED' }), code('Not addressed', why, { code: 'SILENT' })]],
+      ['Tax opinion cooperation', [code('Cooperation and representation letters required', why, { code: 'COOPERATION_REQUIRED' }), code('Not addressed', why, { code: 'SILENT' })]],
+      ['Transfer tax allocation', [
+        code('Paid by Parent', why, { code: 'PAID_BY_PARENT' }),
+        code('Paid by the Company', why, { code: 'PAID_BY_COMPANY' }),
+        code('Paid by the Surviving Corporation', why, { code: 'PAID_BY_SURVIVING_CORPORATION' }),
+        code('Shared equally', why, { code: 'SHARED_EQUALLY' }),
+        code('Paid by the holder', why, { code: 'PAID_BY_HOLDER' }),
+      ]],
+      ['Withholding', [code('Withholding permitted', why, { code: 'WITHHOLDING_PERMITTED' }), code('Withheld amounts treated as paid', why, { code: 'WITHHELD_AMOUNTS_TREATED_AS_PAID' })]],
+      ['FIRPTA certificate', [code('Required', why, { code: 'REQUIRED' }), code('Not required', why, { code: 'NOT_REQUIRED' })]],
+      ['Special tax mechanic', yesNo(why)],
+    ],
+    reason: why,
+    subtypeRows: {
+      INTENDED_TAX_TREATMENT: 'Intended tax treatment', TAX_TREATMENT_PROTECTION: 'Tax treatment protection', TAX_REPORTING_CONSISTENCY: 'Tax reporting consistency',
+      TAX_OPINION_COOPERATION: 'Tax opinion cooperation', TRANSFER_TAX_ALLOCATION: 'Transfer tax allocation', WITHHOLDING_MECHANIC: 'Withholding',
+      FIRPTA_CERTIFICATE: 'FIRPTA certificate', TAX_INTEGRATION_OR_SPECIAL_MECHANIC: 'Special tax mechanic',
+    },
+    guidance: 'The tax covenants, the row from the fact\'s subtype (subtype_rows): the intended tax treatment and the covenants protecting and reporting it, cooperation on tax opinions, who bears transfer taxes (one code), withholding, the FIRPTA certificate and any special mechanic; the code from that row\'s list, the clause as drafted.',
+  });
+  table.fact_type_rows = {
+    INTENDED_TAX_TREATMENT_KIND: 'Intended tax treatment', TAX_OPINION_COOPERATION_COVENANT: 'Tax opinion cooperation',
+    TAX_TREATMENT_PROTECTION_COVENANT: 'Tax treatment protection', TRANSFER_TAX_ALLOCATION: 'Transfer tax allocation',
+  };
+  table.default_rows_from_subtype = true;
+  subtypeSection(doc, { sectionKey: 'tax-matters', title: 'Tax Matters', familyKeys: ['TAX_MATTERS'], tables: [table] });
+}
+
+function applyFinancing(doc) {
+  const why = `${BEN}: every covenant reads as a code from its row's list and the clause as drafted; work package 5, 2026-10-18.`;
+  const efforts = [
+    code('Reasonable best efforts', why, { code: 'REASONABLE_BEST_EFFORTS' }),
+    code('Best efforts', why, { code: 'BEST_EFFORTS' }),
+    code('Commercially reasonable efforts', why, { code: 'COMMERCIALLY_REASONABLE_EFFORTS' }),
+  ];
+  const covenants = provisionTable({
+    tableKey: 'financing-covenants-table',
+    groupHeader: 'FINANCING COVENANTS',
+    rows: [
+      ['Obtain financing', [...efforts, code('No financing covenant', why, { code: 'NO_FINANCING_COVENANT' })]],
+      ['Alternative financing', [code('Required', why, { code: 'REQUIRED' }), code('Not required', why, { code: 'NOT_REQUIRED' })]],
+      ['Target cooperation', [...efforts, code('Not required', why, { code: 'NOT_REQUIRED' })]],
+      ['Payoff letters', [code('Required', why, { code: 'REQUIRED' }), code('Not required', why, { code: 'NOT_REQUIRED' })]],
+      ['No financing condition', yesNo(why)],
+      ['Note offer or consent', [code('Required', why, { code: 'REQUIRED' }), code('Not required', why, { code: 'NOT_REQUIRED' })]],
+      ['Cost and risk allocation', [
+        code('Parent bears financing costs', why, { code: 'PARENT_BEARS_COSTS' }),
+        code('Company indemnified for cooperation', why, { code: 'COMPANY_INDEMNIFIED' }),
+        code('Shared', why, { code: 'SHARED' }),
+      ]],
+    ],
+    numberColumns: [periodColumn('Period', `${why} The payoff letter lead time in business days, or a financing deadline.`)],
+    reason: why,
+    subtypeRows: {
+      OBTAIN_FINANCING: 'Obtain financing', ALTERNATIVE_FINANCING: 'Alternative financing', TARGET_COOPERATION: 'Target cooperation', PAYOFF: 'Payoff letters',
+      NO_FINANCING_CONDITION: 'No financing condition', NOTE_OFFER_OR_CONSENT: 'Note offer or consent', COST_AND_RISK_ALLOCATION: 'Cost and risk allocation',
+    },
+    guidance: 'The financing covenants, the row from the fact\'s subtype (subtype_rows): the efforts to obtain the financing and any alternative financing, the Company\'s cooperation, payoff letters (the lead time in the period column), the acknowledgment that financing is not a condition, note offers or consents, and who bears the costs and risks; the code from that row\'s list, the clause as drafted.',
+  });
+  covenants.fact_type_rows = { FINANCING_OBTAIN_EFFORTS_STANDARD: 'Obtain financing', NO_FINANCING_CONDITION_ACKNOWLEDGMENT: 'No financing condition', PAYOFF_DELIVERY_LEAD_TIME_DAYS: 'Payoff letters' };
+  covenants.default_rows_from_subtype = true;
+  const guaranty = provisionTable({
+    tableKey: 'financing-guaranty-table',
+    groupHeader: 'GUARANTY AND FINANCING SOURCES',
+    rows: [
+      ['Performance guaranty', yesNo(why)],
+      ['Limited guaranty delivered', yesNo(why)],
+      ['Guaranty not in default', yesNo(why)],
+      ['Financing source protection', [
+        code('No recourse against financing sources', why, { code: 'NO_RECOURSE_AGAINST_FINANCING_SOURCES' }),
+        code('Financing sources forum and jury waiver', why, { code: 'FINANCING_SOURCE_FORUM_AND_JURY_WAIVER' }),
+        code('Financing sources as third-party beneficiaries', why, { code: 'FINANCING_SOURCES_THIRD_PARTY_BENEFICIARIES' }),
+      ]],
+    ],
+    reason: why,
+    subtypeRows: {
+      PERFORMANCE_GUARANTY: 'Performance guaranty', LIMITED_GUARANTY_DELIVERY_OR_STATUS_REP: 'Limited guaranty delivered',
+      GUARANTY_NO_DEFAULT_REP: 'Guaranty not in default', FINANCING_SOURCE_PROTECTION: 'Financing source protection',
+    },
+    guidance: 'The guaranty and the protections of the financing sources, the row from the fact\'s subtype (subtype_rows): a parent performance guaranty, the limited guaranty\'s delivery and status, the no-default representation, and the provisions protecting the financing sources (no recourse, their forum and jury waiver, their third-party beneficiary rights), one cell per protection; the clause as drafted.',
+  });
+  guaranty.fact_type_rows = { LIMITED_GUARANTY_DELIVERED: 'Limited guaranty delivered' };
+  guaranty.default_rows_from_subtype = true;
+  subtypeSection(doc, { sectionKey: 'financing', title: 'Financing', familyKeys: ['FINANCING_COVENANTS', 'GUARANTY_FINANCING_PARTY'], tables: [covenants, guaranty] });
+}
+
 function applyDecision34(doc) {
   applyAntitrust(doc);
   applyEquityAwards(doc);
@@ -1339,6 +1458,8 @@ function applyDecision34(doc) {
   applyEmployeeBenefits(doc);
   applyMisc(doc);
   applyDnoIndemnification(doc);
+  applyTaxMatters(doc);
+  applyFinancing(doc);
   applyConsideration(doc);
   applyRepresentations(doc);
   applyCapitalization(doc);

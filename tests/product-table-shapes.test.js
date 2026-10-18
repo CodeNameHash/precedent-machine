@@ -789,3 +789,57 @@ test('the intervening-event table has a Board determination standard row with th
   brokenTable.fact_type_rows_when = 'Intervening Event';
   assert.throws(() => validateTableShapesV3(broken, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_FACT_TYPE_ROWS_WHEN/);
 });
+
+// Work package 5 (plan finding (52)): three families had no table, so
+// generation 8's 2.02 transfer-tax allocation fact was on no page at all.
+// A Tax Matters section and a Financing section, rows from the subtype,
+// page defaults for the stored facts (fact_type_rows for the required
+// fact types; default_rows_from_subtype for the rest).
+test('Tax Matters and Financing sections carry one row per subtype, defaults for the stored facts and their own rail groups', () => {
+  const tax = findSectionV3('tax-matters');
+  assert.deepEqual(tax.v2_family_keys.map((entry) => entry.key), ['TAX_MATTERS']);
+  assert.equal(tax.rail.group, 'Tax Matters');
+  const taxTable = findTableV3(tax, 'tax-matters-table');
+  assert.deepEqual(taxTable.fixed_row_labels, ['Intended tax treatment', 'Tax treatment protection', 'Tax reporting consistency', 'Tax opinion cooperation', 'Transfer tax allocation', 'Withholding', 'FIRPTA certificate', 'Special tax mechanic']);
+  assert.deepEqual(Object.keys(taxTable.subtype_rows).sort(), legalSchemaV2.families.find((family) => family.family_key === 'TAX_MATTERS').subtypes.map((subtype) => subtype.subtype_key).sort());
+  assert.equal(taxTable.row_from_subtype, true);
+  assert.equal(taxTable.default_rows_from_subtype, true);
+  assert.deepEqual(taxTable.fact_type_rows, {
+    INTENDED_TAX_TREATMENT_KIND: 'Intended tax treatment',
+    TAX_OPINION_COOPERATION_COVENANT: 'Tax opinion cooperation',
+    TAX_TREATMENT_PROTECTION_COVENANT: 'Tax treatment protection',
+    TRANSFER_TAX_ALLOCATION: 'Transfer tax allocation',
+  });
+  assert.ok(taxTable.columns.some((column) => column.display === 'fact_text'), 'the fact as drafted is a column');
+
+  const financing = findSectionV3('financing');
+  assert.deepEqual(financing.v2_family_keys.map((entry) => entry.key), ['FINANCING_COVENANTS', 'GUARANTY_FINANCING_PARTY']);
+  assert.equal(financing.rail.group, 'Financing');
+  const covenants = findTableV3(financing, 'financing-covenants-table');
+  assert.deepEqual(Object.keys(covenants.subtype_rows).sort(), legalSchemaV2.families.find((family) => family.family_key === 'FINANCING_COVENANTS').subtypes.map((subtype) => subtype.subtype_key).sort());
+  assert.deepEqual(covenants.fact_type_rows, { FINANCING_OBTAIN_EFFORTS_STANDARD: 'Obtain financing', NO_FINANCING_CONDITION_ACKNOWLEDGMENT: 'No financing condition', PAYOFF_DELIVERY_LEAD_TIME_DAYS: 'Payoff letters' });
+  assert.ok(covenants.columns.some((column) => column.column_id === 'period'), 'payoff lead time and cooperation periods have a column');
+  const guaranty = findTableV3(financing, 'financing-guaranty-table');
+  assert.deepEqual(Object.keys(guaranty.subtype_rows).sort(), legalSchemaV2.families.find((family) => family.family_key === 'GUARANTY_FINANCING_PARTY').subtypes.map((subtype) => subtype.subtype_key).sort());
+  assert.deepEqual(guaranty.fact_type_rows, { LIMITED_GUARANTY_DELIVERED: 'Limited guaranty delivered' });
+  for (const table of [taxTable, covenants, guaranty]) assert.equal(table.default_rows_from_subtype, true, table.table_key);
+
+  // Every V2 family now has a page.
+  const placed = new Set(tableShapesV3.sections.flatMap((section) => (section.v2_family_keys || []).map((entry) => entry.key)));
+  for (const family of legalSchemaV2.families) assert.ok(placed.has(family.family_key), `${family.family_key} has no section`);
+
+  // The order: after D&O, before the boilerplate.
+  const keys = tableShapesV3.sections.map((section) => section.section_key);
+  assert.ok(keys.indexOf('dno-indemnification') < keys.indexOf('tax-matters'));
+  assert.ok(keys.indexOf('tax-matters') < keys.indexOf('financing'));
+  assert.ok(keys.indexOf('financing') < keys.indexOf('misc-boilerplate'));
+
+  // default_rows_from_subtype is a boolean and needs subtype rows to default to.
+  const broken = structuredClone(tableShapesV3);
+  const brokenTable = broken.sections.find((s) => s.section_key === 'tax-matters').tables[0];
+  brokenTable.default_rows_from_subtype = 'yes';
+  assert.throws(() => validateTableShapesV3(broken, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_DEFAULT_ROWS_FROM_SUBTYPE/);
+  brokenTable.default_rows_from_subtype = true;
+  delete brokenTable.row_from_subtype;
+  assert.throws(() => validateTableShapesV3(broken, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_DEFAULT_ROWS_FROM_SUBTYPE_WITHOUT_SUBTYPE_ROWS/);
+});
