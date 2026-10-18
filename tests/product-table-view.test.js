@@ -1469,3 +1469,73 @@ test('a definition fact taken into Defined Terms is never listed under a section
   assert.deepEqual(view.sections.filter((section) => section.facts_without_readout.some((entry) => entry.fact_id === 'def-law')).map((section) => section.section_key), []);
   assert.equal(view.sections.flatMap((section) => section.tables).some((table) => table.rows.some((row) => row.backing_facts.some((entry) => entry.fact_id === 'def-law'))), false);
 });
+
+// Work package 7 (c): the Board determination standard rows carried no code
+// when the model returned none though the STANDARD words name it. The page
+// codes the empty cell from the words, the stricter reading when the words
+// say "reasonably likely to be inconsistent", and marks the derivation.
+test('an empty Board determination standard cell is coded from the fact\'s words, the derivation marked', () => {
+  const standard = (id, tableKey, words) => ({
+    fact_id: id, proposal_id: id, family_key: 'NO_SHOP', subtype_key: 'EXCEPTION_PREREQUISITE', fact_type: 'EXCEPTION_PREREQUISITE', section_reference: '5.02(c)', structure_node_id: 'n-5-02', validation_status: 'VALID',
+    statement: `The Board may take such action only if it has concluded in good faith that failure to do so ${words}.`,
+    headline: { label: 'Board standard', distinguishing_component_ids: [`${id}-std`], summary: 'Board acts only when its fiduciary duties so require' },
+    components: [{ component_id: `${id}-std`, kind: 'STANDARD', label: 'standard', text: words, origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: words.length, gap_before: false, children: [] }],
+    conclusions: { table_key: tableKey, row_label: 'Board determination standard', cells: [] },
+  });
+  const cellOf = (view, tableKey) => view.sections.flatMap((section) => section.tables).find((table) => table.table_key === tableKey)
+    .rows.find((row) => row.subject === 'Board determination standard').cells.find((cell) => cell.column_id === 'provision');
+  const likely = cellOf(buildTableView({ facts: [standard('likely', 'nosol-fiduciary-table', 'would be, or would be reasonably likely to be, inconsistent with its fiduciary duties under applicable Law')], tableShapes, legalSchema }), 'nosol-fiduciary-table');
+  assert.equal(likely.code, 'REASONABLY_LIKELY_TO_BE_INCONSISTENT_WITH_FIDUCIARY_DUTIES');
+  assert.equal(likely.derived, 'code_from_words');
+  assert.deepEqual(likely.component_ids, ['likely-std'], 'the cell cites the words that named the code');
+  const plain = cellOf(buildTableView({ facts: [standard('plain', 'nosol-intervening-table', 'would be inconsistent with its fiduciary duties under applicable Law')], tableShapes, legalSchema }), 'nosol-intervening-table');
+  assert.equal(plain.code, 'INCONSISTENT_WITH_FIDUCIARY_DUTIES');
+  // The intervening table's provision column is derived on its termination
+  // row alone; the other rows keep the readouts' cells (every row's cell
+  // was overwritten with a dash before work package 7).
+  const excluded = { ...standard('excluded', 'nosol-intervening-table', 'other than events relating to an Acquisition Proposal'), subtype_key: 'INTERVENING_EVENT', family_key: 'KEY_DEFINED_TERMS', conclusions: { table_key: 'nosol-intervening-table', row_label: 'Excluded events', cells: [{ column_id: 'provision', code: 'ACQUISITION_PROPOSAL_RELATED', component_ids: ['excluded-std'] }] } };
+  const excludedView = buildTableView({ facts: [excluded], tableShapes, legalSchema });
+  const excludedCell = excludedView.sections.flatMap((section) => section.tables).find((table) => table.table_key === 'nosol-intervening-table').rows.find((row) => row.subject === 'Excluded events').cells.find((cell) => cell.column_id === 'provision');
+  assert.equal(excludedCell.code, 'ACQUISITION_PROPOSAL_RELATED', 'a model-returned code on a non-derived row survives');
+  // A code the model did return is never overwritten.
+  const coded = { ...standard('coded', 'nosol-fiduciary-table', 'would be inconsistent with its fiduciary duties'), conclusions: { table_key: 'nosol-fiduciary-table', row_label: 'Board determination standard', cells: [{ column_id: 'provision', code: 'WOULD_VIOLATE_FIDUCIARY_DUTIES', component_ids: ['coded-std'] }] } };
+  const kept = cellOf(buildTableView({ facts: [coded], tableShapes, legalSchema }), 'nosol-fiduciary-table');
+  assert.equal(kept.code, 'WOULD_VIOLATE_FIDUCIARY_DUTIES');
+  assert.equal(kept.derived, undefined);
+});
+
+// Work package 7 (d): six no-shop facts of generation 8's 5.02 had no row.
+test('the six 5.02 permissions take their rows or the other-provisions entry by default', () => {
+  const noShop = (id, subtype, text, summary) => ({
+    fact_id: id, proposal_id: id, family_key: 'NO_SHOP', subtype_key: subtype, fact_type: subtype, section_reference: '5.02', structure_node_id: 'n-5-02', validation_status: 'VALID',
+    statement: text, headline: { label: subtype, distinguishing_component_ids: [`${id}-op`], summary },
+    components: [{ component_id: `${id}-op`, kind: 'OPERATION', label: 'operation', text, origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: text.length, gap_before: false, children: [] }],
+  });
+  const facts = [
+    noShop('clarify', 'EXCEPTION_PREREQUISITE', 'the Company may contact the Person making a Company Takeover Proposal solely to clarify the terms and conditions thereof', 'Company may contact a bidder solely to clarify its takeover proposal terms'),
+    noShop('terms', 'EXCEPTION_PREREQUISITE', 'the Company and its Representatives may inform a Person of the existence of the provisions of this Section 5.02', 'Company and Representatives may tell a bidder the terms of these no-solicitation provisions'),
+    noShop('law', 'EXCEPTION_PREREQUISITE', 'the Company may make any disclosure to its stockholders that the Board determines in good faith is required by applicable Law', 'Company may make disclosures its Board determines are required by applicable Law'),
+    noShop('not-change', 'RECOMMENDATION_CHANGE', 'the foregoing disclosure permissions shall not be deemed to permit the Board to make an Adverse Recommendation Change', 'Disclosure permissions alone do not permit a change of recommendation'),
+    noShop('negotiate', 'EXCEPTION_PREREQUISITE', 'the Company may engage in negotiations or discussions with the Person making a Qualifying Company Takeover Proposal', 'Company may negotiate with the Person making a Qualifying Company Takeover Proposal'),
+    noShop('takeover', 'RECOMMENDATION_CHANGE', 'an Adverse Recommendation Change shall not change the approval of the Board for purposes of causing any Takeover Law to be inapplicable to the Merger', 'Adverse Recommendation Change does not withdraw board approval for takeover statutes'),
+  ];
+  const view = buildTableView({ facts, tableShapes, legalSchema });
+  const tables = view.sections.flatMap((section) => section.tables);
+  const table = (key) => { const found = tables.find((candidate) => candidate.table_key === key); assert.ok(found, key); return found; };
+  const rowOf = (key, subject) => { const row = table(key).rows.find((candidate) => candidate.subject === subject); assert.ok(row, `${key}: ${subject}`); return row; };
+  const permitted = rowOf('nosol-noshop-core-mechanics', 'Permitted contact: clarification and the no-shop\'s terms');
+  assert.deepEqual(permitted.backing_facts.map((entry) => entry.fact_id).sort(), ['clarify', 'terms']);
+  const permittedCell = permitted.cells.find((cell) => cell.column_id === 'provision');
+  assert.equal(permittedCell.values ? permittedCell.values[0].code : permittedCell.code, 'YES');
+  const notChange = rowOf('nosol-fiduciary-change-of-recommendation', 'Not a Change of Recommendation');
+  assert.deepEqual(notChange.backing_facts.map((entry) => entry.fact_id).sort(), ['law', 'not-change']);
+  const codes = (cell) => (cell.values ? cell.values.map((value) => value.code) : [cell.code]).sort();
+  assert.deepEqual(codes(notChange.cells.find((cell) => cell.column_id === 'provision')), ['DISCLOSURE_PERMISSION_NOT_A_CHANGE', 'DISCLOSURE_REQUIRED_BY_LAW']);
+  assert.ok(rowOf('nosol-fiduciary-table', 'Engagement standard').backing_facts.some((entry) => entry.fact_id === 'negotiate'));
+  const changeTable = table('nosol-fiduciary-change-of-recommendation');
+  assert.ok(changeTable.other_provisions, 'the takeover-statute carve-out is an other provision');
+  assert.ok(JSON.stringify(changeTable.other_provisions).includes('takeover'), JSON.stringify(changeTable.other_provisions).slice(0, 300));
+  assert.equal(changeTable.rows.some((row) => row.backing_facts.some((entry) => entry.fact_id === 'takeover')), false, 'never a row');
+  const unplaced = view.sections.flatMap((section) => section.facts_without_readout.map((entry) => entry.fact_id));
+  assert.deepEqual(unplaced, [], 'every one of the six has a place');
+});

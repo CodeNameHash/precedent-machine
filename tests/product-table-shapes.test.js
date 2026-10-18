@@ -760,9 +760,9 @@ test('the no-shop notice table is 5.02(d)\'s own mechanics as fixed rows, one ti
   assert.deepEqual(core.detail_labels_by_row, { 'Representative control standard': ['Representative breach is Company breach'] });
   assert.match(core.guidance, /row_detail "Representative breach is Company breach" and the code YES \(Ben, 2026-10-17: "yes to both"\)/);
   assert.deepEqual(core.columns[0].vocabulary_by_row['Representative control standard'].slice(-2), ['YES', 'NO']);
-  assert.deepEqual(core.fact_type_rows, { PROHIBITED_ACTION: 'Representative control standard' });
-  assert.ok(new RegExp(core.fact_type_rows_when, 'i').test('Any violation of the restrictions set forth in this Section 5.02(a) by any Representative of the Company acting in its authorized capacity shall be a breach of this Section 5.02(a) by the Company'));
-  assert.equal(new RegExp(core.fact_type_rows_when, 'i').test('The Company shall cause its Representatives not to solicit any Takeover Proposal'), false);
+  assert.equal(core.fact_type_rows.PROHIBITED_ACTION, 'Representative control standard');
+  assert.ok(new RegExp(core.fact_type_rows_when.PROHIBITED_ACTION, 'i').test('Any violation of the restrictions set forth in this Section 5.02(a) by any Representative of the Company acting in its authorized capacity shall be a breach of this Section 5.02(a) by the Company'));
+  assert.equal(new RegExp(core.fact_type_rows_when.PROHIBITED_ACTION, 'i').test('The Company shall cause its Representatives not to solicit any Takeover Proposal'), false);
 });
 
 // Ben, 2026-10-17 (plan finding (42)): "you're missing the fiduciary
@@ -875,4 +875,55 @@ test('the material contracts representation\'s limbs are sub-items of the Materi
   assert.throws(() => validateTableShapesV3(broken, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_LIMB_ROWS_FROM_SUBTYPE_ROW_UNKNOWN/);
   brokenTable.limb_rows_from_subtype = { NO_SHOP: { PROHIBITED_ACTION: { row_label: 'Material Contracts', row_detail: 'No default' } } };
   assert.throws(() => validateTableShapesV3(broken, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_LIMB_ROWS_FROM_SUBTYPE_FAMILY/);
+});
+
+// Work package 7 (manager, 2026-10-18, generation 8's 5.02 against Ben's
+// comments), (c) and (d): the Board determination standard rows code
+// themselves from the words when the model gives none; six no-shop facts
+// get rows or an other-provisions entry, with page defaults gated per fact
+// type; and three new shape fields are validated.
+test('work package 7: codes from words on the Board determination standard rows, the permitted-contact row, the disclosure codes, per-type gates and the takeover-statute other provision', () => {
+  const core = findTableV3(findSectionV3('nosol-noshop'), 'nosol-noshop-core-mechanics');
+  const permitted = 'Permitted contact: clarification and the no-shop\'s terms';
+  assert.ok(core.fixed_row_labels.includes(permitted));
+  assert.deepEqual(core.columns[0].vocabulary_by_row[permitted], ['YES', 'NO']);
+  assert.equal(core.fact_type_rows.EXCEPTION_PREREQUISITE, permitted);
+  assert.ok(new RegExp(core.fact_type_rows_when.EXCEPTION_PREREQUISITE, 'i').test('the Company may contact the Person making the Company Takeover Proposal solely to clarify the terms and conditions thereof'));
+  assert.ok(new RegExp(core.fact_type_rows_when.EXCEPTION_PREREQUISITE, 'i').test('the Company may inform the Person of the existence of the provisions of this Section 5.02'));
+  assert.equal(new RegExp(core.fact_type_rows_when.EXCEPTION_PREREQUISITE, 'i').test('the Company may make any disclosure required by applicable Law'), false);
+  assert.deepEqual(core.columns[0].code_from_words_by_row[permitted].map((rule) => rule.code), ['YES']);
+
+  const fiduciary = findTableV3(findSectionV3('nosol-fiduciary'), 'nosol-fiduciary-table');
+  const boardRules = fiduciary.columns[0].code_from_words_by_row['Board determination standard'];
+  assert.deepEqual(boardRules.map((rule) => rule.code), ['REASONABLY_LIKELY_TO_BE_INCONSISTENT_WITH_FIDUCIARY_DUTIES', 'INCONSISTENT_WITH_FIDUCIARY_DUTIES', 'WOULD_VIOLATE_FIDUCIARY_DUTIES', 'REQUIRED_BY_FIDUCIARY_DUTIES']);
+  assert.ok(new RegExp(boardRules[0].words, 'i').test('would be, or would be reasonably likely to be, inconsistent with its fiduciary duties'));
+  assert.equal(new RegExp(boardRules[0].words, 'i').test('would be inconsistent with its fiduciary duties'), false, 'the stricter reading needs the words');
+  assert.ok(new RegExp(boardRules[1].words, 'i').test('would be inconsistent with its fiduciary duties'));
+  assert.deepEqual(findTableV3(findSectionV3('nosol-intervening'), 'nosol-intervening-table').columns[0].code_from_words_by_row['Board determination standard'], boardRules);
+  assert.match(fiduciary.guidance, /Board determination standard: always one code/);
+  assert.equal(fiduciary.fact_type_rows.EXCEPTION_PREREQUISITE, 'Engagement standard');
+  assert.ok(new RegExp(fiduciary.fact_type_rows_when.EXCEPTION_PREREQUISITE, 'i').test('the Company may engage in negotiations with the Person making a Qualifying Company Takeover Proposal'));
+
+  const change = findTableV3(findSectionV3('nosol-fiduciary'), 'nosol-fiduciary-change-of-recommendation');
+  assert.deepEqual(change.columns[0].vocabulary_by_row['Not a Change of Recommendation'].slice(-2), ['DISCLOSURE_REQUIRED_BY_LAW', 'DISCLOSURE_PERMISSION_NOT_A_CHANGE']);
+  assert.deepEqual(change.fact_type_rows, { EXCEPTION_PREREQUISITE: 'Not a Change of Recommendation', RECOMMENDATION_CHANGE: 'Not a Change of Recommendation' });
+  assert.ok(new RegExp(change.fact_type_rows_when.EXCEPTION_PREREQUISITE, 'i').test('the Company may make any disclosure to its stockholders if the Board determines in good faith that such disclosure is required by applicable Law'));
+  assert.ok(new RegExp(change.fact_type_rows_when.RECOMMENDATION_CHANGE, 'i').test('the foregoing disclosure permissions shall not be deemed to permit the Board to make an Adverse Recommendation Change'));
+  assert.equal(new RegExp(change.fact_type_rows_when.RECOMMENDATION_CHANGE, 'i').test('the Board may make an Adverse Recommendation Change in response to an Intervening Event if failure to do so would be inconsistent with its fiduciary duties'), false);
+  assert.deepEqual(change.other_provisions_from_subtype.subtype_keys, ['RECOMMENDATION_CHANGE']);
+  assert.ok(new RegExp(change.other_provisions_from_subtype.when, 'i').test('An Adverse Recommendation Change shall not change the approval of the Board for purposes of causing any Takeover Law to be inapplicable'));
+  assert.match(change.guidance, /other provision \(work package 7/);
+  assert.match(legalSchemaV2.families.find((family) => family.family_key === 'NO_SHOP').layer_rules, /The permissions inside the no-shop are facts of their own/);
+
+  // Validation: a per-type gate names a fact_type_rows key; a words rule
+  // names one of the row's codes; the other-provisions pattern compiles.
+  const broken = () => structuredClone(tableShapesV3);
+  let doc = broken(); doc.sections.find((s) => s.section_key === 'nosol-noshop').tables[0].fact_type_rows_when = { NO_SUCH_TYPE: 'x' };
+  assert.throws(() => validateTableShapesV3(doc, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_FACT_TYPE_ROWS_WHEN/);
+  doc = broken(); doc.sections.find((s) => s.section_key === 'nosol-fiduciary').tables[0].columns[0].code_from_words_by_row['Board determination standard'] = [{ code: 'NOT_A_CODE', words: 'x' }];
+  assert.throws(() => validateTableShapesV3(doc, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_CODE_FROM_WORDS_CODE_UNKNOWN/);
+  doc = broken(); doc.sections.find((s) => s.section_key === 'nosol-fiduciary').tables[0].columns[0].code_from_words_by_row = { 'No such row': [{ code: 'INCONSISTENT_WITH_FIDUCIARY_DUTIES', words: 'x' }] };
+  assert.throws(() => validateTableShapesV3(doc, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_CODE_FROM_WORDS_ROW_UNKNOWN/);
+  doc = broken(); doc.sections.find((s) => s.section_key === 'nosol-fiduciary').tables[1].other_provisions_from_subtype = { subtype_keys: ['RECOMMENDATION_CHANGE'], when: '(' };
+  assert.throws(() => validateTableShapesV3(doc, legalSchemaV2, factComponentsV2), /TABLE_SHAPES_OTHER_PROVISIONS_FROM_SUBTYPE/);
 });

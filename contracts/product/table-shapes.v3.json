@@ -3507,6 +3507,10 @@
                   "WAIVE_STANDSTILL",
                   "AMEND_TAKEOVER_DEFENSES"
                 ],
+                "Permitted contact: clarification and the no-shop's terms": [
+                  "YES",
+                  "NO"
+                ],
                 "Representative control standard": [
                   "SHALL_CAUSE_REPRESENTATIVES",
                   "SHALL_DIRECT_AND_USE_REASONABLE_BEST_EFFORTS",
@@ -3534,7 +3538,15 @@
               ],
               "addition": true,
               "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted.",
-              "guidance": "One code from this row's own list (vocabulary_by_row); several cells with distinct codes when the clause states several of them (the acts a no-shop prohibits, the events an intervening-event definition excludes); never a code from another row's list."
+              "guidance": "One code from this row's own list (vocabulary_by_row); several cells with distinct codes when the clause states several of them (the acts a no-shop prohibits, the events an intervening-event definition excludes); never a code from another row's list.",
+              "code_from_words_by_row": {
+                "Permitted contact: clarification and the no-shop's terms": [
+                  {
+                    "code": "YES",
+                    "words": "[\\s\\S]"
+                  }
+                ]
+              }
             },
             {
               "column_id": "asDrafted",
@@ -3561,6 +3573,7 @@
             "Return or destruction of information",
             "Data-room access terminated",
             "No-shop restriction (prohibited acts)",
+            "Permitted contact: clarification and the no-shop's terms",
             "Representative control standard",
             "Standstill enforcement (don't ask, don't waive)"
           ],
@@ -3570,16 +3583,20 @@
             "RETURN_OR_DESTROY_REQUIREMENT",
             "SUBSEQUENT_VDR_REMOVAL"
           ],
-          "guidance": "The core no-shop mechanics, one row per question. Go-shop: YES only when the agreement grants a go-shop period. Cease existing discussions, Return or destruction of information and Data-room access terminated: from the cease-discussions clause (CEASE_DISCUSSIONS_REQUIREMENT, RETURN_OR_DESTROY_REQUIREMENT, SUBSEQUENT_VDR_REMOVAL). No-shop restriction (prohibited acts): the PROHIBITED_ACTION facts, one cell per act the clause prohibits (a clause that prohibits soliciting, initiating, knowingly encouraging and furnishing information yields four cells). Representative control standard: the words that bind the Company's Representatives (\"shall cause its Representatives not to\" is SHALL_CAUSE_REPRESENTATIVES; \"shall not authorize or permit\" is SHALL_NOT_AUTHORIZE_OR_PERMIT). Standstill enforcement: the clause on waiving or enforcing standstills. Omit a row the agreement does not address. The sentence deeming a breach by a Representative a breach by the Company (\"any violation of the restrictions ... by any Representative of the Company ... acting in its authorized capacity on behalf of the Company ... shall be a breach of this Section 5.02(a) by the Company\") is a PROHIBITED_ACTION fact on the Representative control standard row with row_detail \"Representative breach is Company breach\" and the code YES (Ben, 2026-10-17: \"yes to both\").",
+          "guidance": "The core no-shop mechanics, one row per question. Go-shop: YES only when the agreement grants a go-shop period. Cease existing discussions, Return or destruction of information and Data-room access terminated: from the cease-discussions clause (CEASE_DISCUSSIONS_REQUIREMENT, RETURN_OR_DESTROY_REQUIREMENT, SUBSEQUENT_VDR_REMOVAL). No-shop restriction (prohibited acts): the PROHIBITED_ACTION facts, one cell per act the clause prohibits (a clause that prohibits soliciting, initiating, knowingly encouraging and furnishing information yields four cells). Representative control standard: the words that bind the Company's Representatives (\"shall cause its Representatives not to\" is SHALL_CAUSE_REPRESENTATIVES; \"shall not authorize or permit\" is SHALL_NOT_AUTHORIZE_OR_PERMIT). Standstill enforcement: the clause on waiving or enforcing standstills. Omit a row the agreement does not address. The sentence deeming a breach by a Representative a breach by the Company (\"any violation of the restrictions ... by any Representative of the Company ... acting in its authorized capacity on behalf of the Company ... shall be a breach of this Section 5.02(a) by the Company\") is a PROHIBITED_ACTION fact on the Representative control standard row with row_detail \"Representative breach is Company breach\" and the code YES (Ben, 2026-10-17: \"yes to both\"). Permitted contact: clarification and the no-shop's terms: YES for the EXCEPTION_PREREQUISITE facts permitting the Company (or its Representatives) to contact a bidder solely to clarify the terms of its proposal, and to inform a bidder of the existence or terms of these no-solicitation provisions, one fact per permission, each on this row (work package 7, 2026-10-18).",
           "detail_labels_by_row": {
             "Representative control standard": [
               "Representative breach is Company breach"
             ]
           },
           "fact_type_rows": {
-            "PROHIBITED_ACTION": "Representative control standard"
+            "PROHIBITED_ACTION": "Representative control standard",
+            "EXCEPTION_PREREQUISITE": "Permitted contact: clarification and the no-shop's terms"
           },
-          "fact_type_rows_when": "(?=[\\s\\S]*Representative)(?=[\\s\\S]*(?:shall be|constitute|deemed)[^.]{0,60}breach)"
+          "fact_type_rows_when": {
+            "PROHIBITED_ACTION": "(?=[\\s\\S]*Representative)(?=[\\s\\S]*(?:shall be|constitute|deemed)[^.]{0,60}breach)",
+            "EXCEPTION_PREREQUISITE": "(?:clarif|existence (?:of|and) (?:the )?(?:provisions|terms)|(?:terms|provisions) of (?:this|these|the) (?:Section|no-shop|non-solicitation|no-solicitation)|inform[\\s\\S]{0,80}(?:provisions|terms) of this Section)"
+          }
         },
         {
           "table_key": "nosol-noshop-notice",
@@ -3955,7 +3972,45 @@
               ],
               "addition": true,
               "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted.",
-              "guidance": "One code from this row's own list (vocabulary_by_row); several cells with distinct codes when the clause states several of them (the acts a no-shop prohibits, the events an intervening-event definition excludes); never a code from another row's list."
+              "guidance": "One code from this row's own list (vocabulary_by_row); several cells with distinct codes when the clause states several of them (the acts a no-shop prohibits, the events an intervening-event definition excludes); never a code from another row's list.",
+              "code_from_words_by_row": {
+                "Board determination standard": [
+                  {
+                    "code": "REASONABLY_LIKELY_TO_BE_INCONSISTENT_WITH_FIDUCIARY_DUTIES",
+                    "words": "reasonably likely to be[\\s\\S]{0,20}inconsistent"
+                  },
+                  {
+                    "code": "INCONSISTENT_WITH_FIDUCIARY_DUTIES",
+                    "words": "inconsistent with[\\s\\S]{0,40}fiduciary"
+                  },
+                  {
+                    "code": "WOULD_VIOLATE_FIDUCIARY_DUTIES",
+                    "words": "violat[\\s\\S]{0,30}fiduciary"
+                  },
+                  {
+                    "code": "REQUIRED_BY_FIDUCIARY_DUTIES",
+                    "words": "required (?:by|under)[\\s\\S]{0,30}fiduciary"
+                  }
+                ],
+                "Engagement standard": [
+                  {
+                    "code": "CONTINUES_TO_CONSTITUTE_A_SUPERIOR_PROPOSAL",
+                    "words": "continues to constitute"
+                  },
+                  {
+                    "code": "CONSTITUTES_OR_COULD_REASONABLY_BE_EXPECTED_TO_LEAD_TO_A_SUPERIOR_PROPOSAL",
+                    "words": "could reasonably be expected to (?:lead to|result in)"
+                  },
+                  {
+                    "code": "CONSTITUTES_OR_COULD_LEAD_TO_A_SUPERIOR_PROPOSAL",
+                    "words": "could lead to"
+                  },
+                  {
+                    "code": "IS_A_SUPERIOR_PROPOSAL",
+                    "words": "(?:is|constitutes) a Superior Proposal"
+                  }
+                ]
+              }
             },
             {
               "column_id": "asDrafted",
@@ -3987,7 +4042,13 @@
           "subtype_keys": [
             "EXCEPTION_PREREQUISITE"
           ],
-          "guidance": "The conditions on which the Company may engage with a bidder (EXCEPTION_PREREQUISITE facts): the standard the proposal must meet (Engagement standard), the board's determination standard, and whether the proposal must be unsolicited, must not result from a breach, must be under an acceptable confidentiality agreement, and whether Parent must receive the same information (Information parity). Each is its own fact and row."
+          "guidance": "The conditions on which the Company may engage with a bidder (EXCEPTION_PREREQUISITE facts): the standard the proposal must meet (Engagement standard), the board's determination standard, and whether the proposal must be unsolicited, must not result from a breach, must be under an acceptable confidentiality agreement, and whether Parent must receive the same information (Information parity). Each is its own fact and row. Board determination standard: always one code, from the words of the standard: \"would be, or would be reasonably likely to be, inconsistent with its fiduciary duties\" is REASONABLY_LIKELY_TO_BE_INCONSISTENT_WITH_FIDUCIARY_DUTIES; \"inconsistent with its fiduciary duties\" alone is INCONSISTENT_WITH_FIDUCIARY_DUTIES; \"would violate\" WOULD_VIOLATE_FIDUCIARY_DUTIES; \"required by\" REQUIRED_BY_FIDUCIARY_DUTIES; never a readout without the code (generation 8, 5.02(f): the row read with no code). Engagement standard: also the permission to negotiate with (or furnish information to) the Person making a Qualifying Company Takeover Proposal or a proposal that constitutes or could reasonably be expected to lead to a Superior Proposal, the code the standard the proposal must meet (work package 7, 2026-10-18).",
+          "fact_type_rows": {
+            "EXCEPTION_PREREQUISITE": "Engagement standard"
+          },
+          "fact_type_rows_when": {
+            "EXCEPTION_PREREQUISITE": "(?=[\\s\\S]*negotiat)(?=[\\s\\S]*(?:Qualifying|Superior Proposal|could (?:reasonably be expected to )?lead))"
+          }
         },
         {
           "table_key": "nosol-fiduciary-change-of-recommendation",
@@ -4111,6 +4172,20 @@
                   "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
                 },
                 {
+                  "code": "DISCLOSURE_REQUIRED_BY_LAW",
+                  "label": "Disclosure required by applicable Law",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
+                },
+                {
+                  "code": "DISCLOSURE_PERMISSION_NOT_A_CHANGE",
+                  "label": "A disclosure permission alone does not permit a change",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
+                },
+                {
                   "code": "YES",
                   "label": "Yes",
                   "tone": "neutral",
@@ -4138,7 +4213,9 @@
                   "DELIVERY_OF_NOTICE_TO_PARENT",
                   "DETERMINATION_THAT_PROPOSAL_IS_SUPERIOR",
                   "FACTUALLY_ACCURATE_PUBLIC_STATEMENT",
-                  "STOP_LOOK_AND_LISTEN_COMMUNICATION"
+                  "STOP_LOOK_AND_LISTEN_COMMUNICATION",
+                  "DISCLOSURE_REQUIRED_BY_LAW",
+                  "DISCLOSURE_PERMISSION_NOT_A_CHANGE"
                 ],
                 "Force the vote": [
                   "YES",
@@ -4157,7 +4234,19 @@
               ],
               "addition": true,
               "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted.",
-              "guidance": "One code from this row's own list (vocabulary_by_row); several cells with distinct codes when the clause states several of them (the acts a no-shop prohibits, the events an intervening-event definition excludes); never a code from another row's list."
+              "guidance": "One code from this row's own list (vocabulary_by_row); several cells with distinct codes when the clause states several of them (the acts a no-shop prohibits, the events an intervening-event definition excludes); never a code from another row's list.",
+              "code_from_words_by_row": {
+                "Not a Change of Recommendation": [
+                  {
+                    "code": "DISCLOSURE_REQUIRED_BY_LAW",
+                    "words": "required (?:by|under) (?:applicable )?Law"
+                  },
+                  {
+                    "code": "DISCLOSURE_PERMISSION_NOT_A_CHANGE",
+                    "words": "(?:not|no|nor)[\\s\\S]{0,80}(?:permit|constitute|authoriz)"
+                  }
+                ]
+              }
             },
             {
               "column_id": "period",
@@ -4200,7 +4289,22 @@
           "subtype_keys": [
             "RECOMMENDATION_CHANGE"
           ],
-          "guidance": "Change of recommendation (RECOMMENDATION_CHANGE facts): whether and when the board may change its recommendation (Board change right); the acts the agreement defines as an Adverse Recommendation Change, one cell per act, from the definition wherever it sits; what the agreement says is not such a change; and whether the stockholder meeting must be held even after a change (Force the vote). The period column carries a reaffirmation period."
+          "guidance": "Change of recommendation (RECOMMENDATION_CHANGE facts): whether and when the board may change its recommendation (Board change right); the acts the agreement defines as an Adverse Recommendation Change, one cell per act, from the definition wherever it sits; what the agreement says is not such a change; and whether the stockholder meeting must be held even after a change (Force the vote). The period column carries a reaffirmation period. Not a Change of Recommendation: also the permission to make disclosures the Board determines are required by applicable Law (an EXCEPTION_PREREQUISITE fact, DISCLOSURE_REQUIRED_BY_LAW) and the sentence that such a disclosure permission alone does not permit an Adverse Recommendation Change (a RECOMMENDATION_CHANGE fact, DISCLOSURE_PERMISSION_NOT_A_CHANGE). The sentence that an Adverse Recommendation Change does not withdraw the board's approval for the purposes of the takeover statutes is a RECOMMENDATION_CHANGE fact with no readout: the page shows it beneath this table as an other provision (work package 7, 2026-10-18).",
+          "fact_type_rows": {
+            "EXCEPTION_PREREQUISITE": "Not a Change of Recommendation",
+            "RECOMMENDATION_CHANGE": "Not a Change of Recommendation"
+          },
+          "fact_type_rows_when": {
+            "EXCEPTION_PREREQUISITE": "(?=[\\s\\S]*disclos)(?=[\\s\\S]*required (?:by|under) (?:applicable )?Law)",
+            "RECOMMENDATION_CHANGE": "(?=[\\s\\S]*(?:disclos|communicat|public statement|Rule 14d-9|14e-2))(?=[\\s\\S]*(?:not|no|nor)[\\s\\S]{0,80}(?:permit|constitute|authoriz))(?=[\\s\\S]*[Rr]ecommendation)"
+          },
+          "other_provisions_from_subtype": {
+            "subtype_keys": [
+              "RECOMMENDATION_CHANGE"
+            ],
+            "when": "(?:[Tt]akeover (?:[Ss]tatute|[Ll]aw)|[Aa]nti-?takeover|Section 203|DGCL)",
+            "label": "Other provisions"
+          }
         }
       ],
       "print_pages": [
@@ -4373,6 +4477,26 @@
                 "rows": [
                   "Parent termination right on a change"
                 ]
+              },
+              "code_from_words_by_row": {
+                "Board determination standard": [
+                  {
+                    "code": "REASONABLY_LIKELY_TO_BE_INCONSISTENT_WITH_FIDUCIARY_DUTIES",
+                    "words": "reasonably likely to be[\\s\\S]{0,20}inconsistent"
+                  },
+                  {
+                    "code": "INCONSISTENT_WITH_FIDUCIARY_DUTIES",
+                    "words": "inconsistent with[\\s\\S]{0,40}fiduciary"
+                  },
+                  {
+                    "code": "WOULD_VIOLATE_FIDUCIARY_DUTIES",
+                    "words": "violat[\\s\\S]{0,30}fiduciary"
+                  },
+                  {
+                    "code": "REQUIRED_BY_FIDUCIARY_DUTIES",
+                    "words": "required (?:by|under)[\\s\\S]{0,30}fiduciary"
+                  }
+                ]
               }
             },
             {
@@ -4416,7 +4540,7 @@
             "Matching period",
             "Parent termination right on a change"
           ],
-          "guidance": "The intervening-event path. Intervening Event provision: YES when the board may change its recommendation for an Intervening Event (a RECOMMENDATION_CHANGE or EXCEPTION_PREREQUISITE fact on that path). Definition: the KEY_DEFINED_TERMS/INTERVENING_EVENT fact, as drafted, no code. Excluded events: one cell per event the definition excludes. Board determination standard: the fiduciary standard the board must meet to change its recommendation for an Intervening Event, one code (a clause such as \"has concluded in good faith, after consultation with its outside counsel, that failure to make an Adverse Recommendation Change on account of the Intervening Event would be, or would be reasonably likely to be, inconsistent with its fiduciary duties\" is REASONABLY_LIKELY_TO_BE_INCONSISTENT_WITH_FIDUCIARY_DUTIES on this row; the consultation is content of the summary). Notice period and Matching period: the NOTICE_PERIOD and INITIAL_MATCH_PERIOD facts that govern a change for an Intervening Event (the superior-proposal path's periods go to the matching-rights table), the number in the period column. Parent termination right on a change is derived by the page from the TERMINATION/RECOMMENDATION_CHANGE fact; never fill it.",
+          "guidance": "The intervening-event path. Intervening Event provision: YES when the board may change its recommendation for an Intervening Event (a RECOMMENDATION_CHANGE or EXCEPTION_PREREQUISITE fact on that path). Definition: the KEY_DEFINED_TERMS/INTERVENING_EVENT fact, as drafted, no code. Excluded events: one cell per event the definition excludes. Board determination standard: the fiduciary standard the board must meet to change its recommendation for an Intervening Event, one code (a clause such as \"has concluded in good faith, after consultation with its outside counsel, that failure to make an Adverse Recommendation Change on account of the Intervening Event would be, or would be reasonably likely to be, inconsistent with its fiduciary duties\" is REASONABLY_LIKELY_TO_BE_INCONSISTENT_WITH_FIDUCIARY_DUTIES on this row; the consultation is content of the summary). Notice period and Matching period: the NOTICE_PERIOD and INITIAL_MATCH_PERIOD facts that govern a change for an Intervening Event (the superior-proposal path's periods go to the matching-rights table), the number in the period column. Parent termination right on a change is derived by the page from the TERMINATION/RECOMMENDATION_CHANGE fact; never fill it. Board determination standard: always one code from the words of the standard (REASONABLY_LIKELY_TO_BE_INCONSISTENT_WITH_FIDUCIARY_DUTIES for \"would be, or would be reasonably likely to be, inconsistent\"; INCONSISTENT_WITH_FIDUCIARY_DUTIES for \"inconsistent\" alone; WOULD_VIOLATE_FIDUCIARY_DUTIES; REQUIRED_BY_FIDUCIARY_DUTIES), never a readout without it (generation 8, 5.02(f); work package 7).",
           "fact_type_rows": {
             "EXCEPTION_PREREQUISITE": "Board determination standard",
             "RECOMMENDATION_CHANGE": "Board determination standard"

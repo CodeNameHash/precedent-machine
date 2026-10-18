@@ -254,6 +254,22 @@ const BOARD_STANDARDS = (why) => [
   code('Required by fiduciary duties', why, { code: 'REQUIRED_BY_FIDUCIARY_DUTIES' }),
 ];
 
+// Work package 7 (manager, 2026-10-18, generation 8's 5.02 against Ben's
+// comments): the Board determination standard rows carried no code when
+// the model returned none though the fact's STANDARD words name it. The
+// page derives the code from the words when the cell is empty
+// (code_from_words_by_row, lib/product/table-view.js), first match wins:
+// "reasonably likely to be inconsistent" before "inconsistent" alone, the
+// stricter reading; the derivation is marked on the cell.
+const BOARD_STANDARD_WORDS = Object.freeze([
+  { code: 'REASONABLY_LIKELY_TO_BE_INCONSISTENT_WITH_FIDUCIARY_DUTIES', words: 'reasonably likely to be[\\s\\S]{0,20}inconsistent' },
+  { code: 'INCONSISTENT_WITH_FIDUCIARY_DUTIES', words: 'inconsistent with[\\s\\S]{0,40}fiduciary' },
+  { code: 'WOULD_VIOLATE_FIDUCIARY_DUTIES', words: 'violat[\\s\\S]{0,30}fiduciary' },
+  { code: 'REQUIRED_BY_FIDUCIARY_DUTIES', words: 'required (?:by|under)[\\s\\S]{0,30}fiduciary' },
+]);
+const PERMITTED_CONTACT_ROW = 'Permitted contact: clarification and the no-shop\'s terms';
+const NOT_A_CHANGE_ROW = 'Not a Change of Recommendation';
+
 function applyNoShop(doc) {
   removeSection(doc, 'nosol');
   const why = `${BEN}: every no-shop row answers its own question with a code from its row's list and the clause as drafted.`;
@@ -284,6 +300,10 @@ function applyNoShop(doc) {
         code('Waive or release a standstill', why, { code: 'WAIVE_STANDSTILL' }),
         code('Amend or exempt from takeover defenses', why, { code: 'AMEND_TAKEOVER_DEFENSES' }),
       ]],
+      // Work package 7 (d): 5.02's permission to contact a bidder solely to
+      // clarify its proposal's terms, and to tell it the no-shop's terms,
+      // is one row answering Yes.
+      [PERMITTED_CONTACT_ROW, yesNo(why)],
       ['Representative control standard', [
         code('Shall cause its Representatives not to', why, { code: 'SHALL_CAUSE_REPRESENTATIVES' }),
         code('Shall direct and use reasonable best efforts to cause', why, { code: 'SHALL_DIRECT_AND_USE_REASONABLE_BEST_EFFORTS' }),
@@ -361,8 +381,17 @@ function applyNoShop(doc) {
   core.guidance += ' The sentence deeming a breach by a Representative a breach by the Company ("any violation of the restrictions ... by any Representative of the Company ... acting in its authorized capacity on behalf of the Company ... shall be a breach of this Section 5.02(a) by the Company") is a PROHIBITED_ACTION fact on the Representative control standard row with row_detail "Representative breach is Company breach" and the code YES (Ben, 2026-10-17: "yes to both").';
   // A stored readout-less PROHIBITED_ACTION fact whose words are that
   // sentence takes the row by default (generation 7's, if any).
-  core.fact_type_rows = { PROHIBITED_ACTION: 'Representative control standard' };
-  core.fact_type_rows_when = '(?=[\\s\\S]*Representative)(?=[\\s\\S]*(?:shall be|constitute|deemed)[^.]{0,60}breach)';
+  // Work package 7 (d): the permitted-contact permissions (EXCEPTION_PREREQUISITE
+  // facts whose words say clarify, or the existence or terms of this
+  // Section) take their row by default; fact_type_rows_when is one gate
+  // per fact type.
+  core.fact_type_rows = { PROHIBITED_ACTION: 'Representative control standard', EXCEPTION_PREREQUISITE: PERMITTED_CONTACT_ROW };
+  core.fact_type_rows_when = {
+    PROHIBITED_ACTION: '(?=[\\s\\S]*Representative)(?=[\\s\\S]*(?:shall be|constitute|deemed)[^.]{0,60}breach)',
+    EXCEPTION_PREREQUISITE: '(?:clarif|existence (?:of|and) (?:the )?(?:provisions|terms)|(?:terms|provisions) of (?:this|these|the) (?:Section|no-shop|non-solicitation|no-solicitation)|inform[\\s\\S]{0,80}(?:provisions|terms) of this Section)',
+  };
+  findColumn(core, 'provision').code_from_words_by_row = { [PERMITTED_CONTACT_ROW]: [{ code: 'YES', words: '[\\s\\S]' }] };
+  core.guidance += ` ${PERMITTED_CONTACT_ROW}: YES for the EXCEPTION_PREREQUISITE facts permitting the Company (or its Representatives) to contact a bidder solely to clarify the terms of its proposal, and to inform a bidder of the existence or terms of these no-solicitation provisions, one fact per permission, each on this row (work package 7, 2026-10-18).`;
   notice.fact_type_rows = { PROHIBITED_ACTION: 'No agreement restricting information to Parent' };
   notice.fact_type_rows_when = '(?=[\\s\\S]*agreement)(?=[\\s\\S]*restrict)(?=[\\s\\S]*Parent)';
   noShop.tables = [core, notice];
@@ -384,6 +413,22 @@ function applyNoShop(doc) {
     subtypeKeys: ['EXCEPTION_PREREQUISITE'],
     guidance: 'The conditions on which the Company may engage with a bidder (EXCEPTION_PREREQUISITE facts): the standard the proposal must meet (Engagement standard), the board\'s determination standard, and whether the proposal must be unsolicited, must not result from a breach, must be under an acceptable confidentiality agreement, and whether Parent must receive the same information (Information parity). Each is its own fact and row.',
   });
+  // Work package 7 (c) and (d): the Board determination standard's code is
+  // read from the words when the model gives none; the permission to
+  // negotiate with the Person making a Qualifying Company Takeover Proposal
+  // is the Engagement standard row.
+  findColumn(engagement, 'provision').code_from_words_by_row = {
+    'Board determination standard': BOARD_STANDARD_WORDS.map((rule) => ({ ...rule })),
+    'Engagement standard': [
+      { code: 'CONTINUES_TO_CONSTITUTE_A_SUPERIOR_PROPOSAL', words: 'continues to constitute' },
+      { code: 'CONSTITUTES_OR_COULD_REASONABLY_BE_EXPECTED_TO_LEAD_TO_A_SUPERIOR_PROPOSAL', words: 'could reasonably be expected to (?:lead to|result in)' },
+      { code: 'CONSTITUTES_OR_COULD_LEAD_TO_A_SUPERIOR_PROPOSAL', words: 'could lead to' },
+      { code: 'IS_A_SUPERIOR_PROPOSAL', words: '(?:is|constitutes) a Superior Proposal' },
+    ],
+  };
+  engagement.fact_type_rows = { EXCEPTION_PREREQUISITE: 'Engagement standard' };
+  engagement.fact_type_rows_when = { EXCEPTION_PREREQUISITE: '(?=[\\s\\S]*negotiat)(?=[\\s\\S]*(?:Qualifying|Superior Proposal|could (?:reasonably be expected to )?lead))' };
+  engagement.guidance += ' Board determination standard: always one code, from the words of the standard: "would be, or would be reasonably likely to be, inconsistent with its fiduciary duties" is REASONABLY_LIKELY_TO_BE_INCONSISTENT_WITH_FIDUCIARY_DUTIES; "inconsistent with its fiduciary duties" alone is INCONSISTENT_WITH_FIDUCIARY_DUTIES; "would violate" WOULD_VIOLATE_FIDUCIARY_DUTIES; "required by" REQUIRED_BY_FIDUCIARY_DUTIES; never a readout without the code (generation 8, 5.02(f): the row read with no code). Engagement standard: also the permission to negotiate with (or furnish information to) the Person making a Qualifying Company Takeover Proposal or a proposal that constitutes or could reasonably be expected to lead to a Superior Proposal, the code the standard the proposal must meet (work package 7, 2026-10-18).';
   const change = provisionTable({
     tableKey: 'nosol-fiduciary-change-of-recommendation',
     groupHeader: 'CHANGE OF RECOMMENDATION',
@@ -403,11 +448,14 @@ function applyNoShop(doc) {
         code('Enter into an LOI / acquisition / merger agreement (other than an ACA)', why, { code: 'ENTER_INTO_AN_LOI_ACQUISITION_MERGER_AGREEMENT_OTHER_THAN_AN_ACA' }),
         code('Publicly propose any of the foregoing', why, { code: 'PUBLICLY_PROPOSE_ANY_OF_THE_FOREGOING' }),
       ]],
-      ['Not a Change of Recommendation', [
+      [NOT_A_CHANGE_ROW, [
         code('Delivery of a notice to Parent', why, { code: 'DELIVERY_OF_NOTICE_TO_PARENT' }),
         code('Determination that a proposal is or could lead to a Superior Proposal', why, { code: 'DETERMINATION_THAT_PROPOSAL_IS_SUPERIOR' }),
         code('Factually accurate public statement', why, { code: 'FACTUALLY_ACCURATE_PUBLIC_STATEMENT' }),
         code('Stop, look and listen communication', why, { code: 'STOP_LOOK_AND_LISTEN_COMMUNICATION' }),
+        // Work package 7 (d): 5.02's disclosure permissions beside the two above.
+        code('Disclosure required by applicable Law', why, { code: 'DISCLOSURE_REQUIRED_BY_LAW' }),
+        code('A disclosure permission alone does not permit a change', why, { code: 'DISCLOSURE_PERMISSION_NOT_A_CHANGE' }),
       ]],
       ['Force the vote', yesNo(why)],
     ],
@@ -416,6 +464,30 @@ function applyNoShop(doc) {
     subtypeKeys: ['RECOMMENDATION_CHANGE'],
     guidance: 'Change of recommendation (RECOMMENDATION_CHANGE facts): whether and when the board may change its recommendation (Board change right); the acts the agreement defines as an Adverse Recommendation Change, one cell per act, from the definition wherever it sits; what the agreement says is not such a change; and whether the stockholder meeting must be held even after a change (Force the vote). The period column carries a reaffirmation period.',
   });
+  // Work package 7 (d): the required-by-Law disclosure permission and the
+  // sentence that a disclosure permission alone permits no change of
+  // recommendation take the Not a Change of Recommendation row by default,
+  // their code from their words; the sentence that an Adverse
+  // Recommendation Change does not withdraw the board's approval for the
+  // takeover statutes is an Other provisions entry of this table, never a
+  // row.
+  change.fact_type_rows = { EXCEPTION_PREREQUISITE: NOT_A_CHANGE_ROW, RECOMMENDATION_CHANGE: NOT_A_CHANGE_ROW };
+  change.fact_type_rows_when = {
+    EXCEPTION_PREREQUISITE: '(?=[\\s\\S]*disclos)(?=[\\s\\S]*required (?:by|under) (?:applicable )?Law)',
+    RECOMMENDATION_CHANGE: '(?=[\\s\\S]*(?:disclos|communicat|public statement|Rule 14d-9|14e-2))(?=[\\s\\S]*(?:not|no|nor)[\\s\\S]{0,80}(?:permit|constitute|authoriz))(?=[\\s\\S]*[Rr]ecommendation)',
+  };
+  findColumn(change, 'provision').code_from_words_by_row = {
+    [NOT_A_CHANGE_ROW]: [
+      { code: 'DISCLOSURE_REQUIRED_BY_LAW', words: 'required (?:by|under) (?:applicable )?Law' },
+      { code: 'DISCLOSURE_PERMISSION_NOT_A_CHANGE', words: '(?:not|no|nor)[\\s\\S]{0,80}(?:permit|constitute|authoriz)' },
+    ],
+  };
+  change.other_provisions_from_subtype = {
+    subtype_keys: ['RECOMMENDATION_CHANGE'],
+    when: '(?:[Tt]akeover (?:[Ss]tatute|[Ll]aw)|[Aa]nti-?takeover|Section 203|DGCL)',
+    label: 'Other provisions',
+  };
+  change.guidance += ` ${NOT_A_CHANGE_ROW}: also the permission to make disclosures the Board determines are required by applicable Law (an EXCEPTION_PREREQUISITE fact, DISCLOSURE_REQUIRED_BY_LAW) and the sentence that such a disclosure permission alone does not permit an Adverse Recommendation Change (a RECOMMENDATION_CHANGE fact, DISCLOSURE_PERMISSION_NOT_A_CHANGE). The sentence that an Adverse Recommendation Change does not withdraw the board's approval for the purposes of the takeover statutes is a RECOMMENDATION_CHANGE fact with no readout: the page shows it beneath this table as an other provision (work package 7, 2026-10-18).`;
   fiduciary.tables = [engagement, change];
 
   // --- Intervening event --------------------------------------------------
@@ -455,6 +527,8 @@ function applyNoShop(doc) {
   // stored generation shows it too (generation 7 extracted 5.02(f)'s
   // standard without a readout).
   interveningTable.fact_type_rows = { EXCEPTION_PREREQUISITE: 'Board determination standard', RECOMMENDATION_CHANGE: 'Board determination standard' };
+  findColumn(interveningTable, 'provision').code_from_words_by_row = { 'Board determination standard': BOARD_STANDARD_WORDS.map((rule) => ({ ...rule })) };
+  interveningTable.guidance += ' Board determination standard: always one code from the words of the standard (REASONABLY_LIKELY_TO_BE_INCONSISTENT_WITH_FIDUCIARY_DUTIES for "would be, or would be reasonably likely to be, inconsistent"; INCONSISTENT_WITH_FIDUCIARY_DUTIES for "inconsistent" alone; WOULD_VIOLATE_FIDUCIARY_DUTIES; REQUIRED_BY_FIDUCIARY_DUTIES), never a readout without it (generation 8, 5.02(f); work package 7).';
   interveningTable.fact_type_rows_when = '(?=[\\s\\S]*Intervening Event)(?=[\\s\\S]*fiduciary dut)';
   intervening.tables = [interveningTable];
 
