@@ -8264,6 +8264,63 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       a clean checkout of the commit: 835 tests, 834 pass, the one
       failure the known Codex-client final-message test.
 
+      (186) 2026-10-19 04:50 to 05:40 UTC (implementer E), the manager's
+      two items from the first ladder's log (job
+      pm-ablation-20261019T040851Z on the experiments sandbox; nothing
+      run here, the manager runs the ladder again after this push).
+      (1) The replay rungs missed on byte identity (baseline on all
+      three sections, deterministic_routing on all three): the
+      ablation's replay now answers loosely, as replay-run.js does
+      (lib/product/cost-ablation.js createVariantModel, match 'loose'
+      by default): the stored call of the same section, kind and part
+      answers, and the row lists the drift ("replayed (2 answered
+      loosely: RESIDUAL, EXTRACTION part 1)"); an exact hit is a replay
+      with no note; a miss is only a section the stored run never
+      called. So the baseline row is the stored answer re-compiled by
+      today's code and the deterministic_routing row the stored
+      extraction with the routing replaced, as asked. (2) The 227,287
+      input tokens on direct_definitions' 5.17 extraction (505
+      seconds, 23,521 output of which 15,374 thinking) are the CLI's
+      own accounting of a block the API caches, not the rung sending
+      more than it should. Measured here with the real table shapes
+      (Concho 6.3 under the DEFAULT profile, cacheableContent): the
+      two stable blocks are 387 KB, table_shapes 213 KB and
+      family_contracts 143 KB of it, about 143,000 tokens at the
+      ledger's 2.7 bytes a token, against 63 KB (about 23,000 tokens)
+      with the routed families' contracts; the section block for 5.17
+      is the rest, about 84,000 tokens, which direct_definitions
+      trimmed as designed. On the API the stable blocks are written
+      once a run and read at $0.20 a million on every call; `claude -p`
+      sends and counts them fresh on every call (ledger section 4:
+      Metsera wrote 9.7m and read 0.59m). By the ledger's method the
+      same call on the API is $0.84 (84,000 fresh at $4, $0.34;
+      143,000 read, $0.03, plus one write a run, $1.15; 23,521 output
+      at $20, $0.47); at the fresh rate the CLI's count implies it
+      would be $1.38; on the subscription it is $0 but it is 143,000
+      tokens of the subscription's capacity per extraction call, about
+      15m tokens a run, and the CLI's prompt time. The thinking share
+      on that call, 65 per cent, is the CLI's report (the API path's
+      assumed 36 is Metsera's average; a long section at high effort
+      thinks more). Done about it, in code: the CLI's default config
+      now carries REQUEST_PROFILES.DEFAULT_CLI, the DEFAULT request
+      with the routed families' contracts (`PRODUCT_CLAUDE_CLI_CALL_KIND_MAP/V2`
+      keeps its id: no run was created under it between the two
+      pushes; the identity is the whole config, so a run created from
+      now on carries DEFAULT_CLI), and the ladder runs a rung whose
+      profile says contracts_scope 'all' with the routed contracts on
+      the CLI (`profileForProvider`, the row's profile column says so;
+      the API keeps the all-families block). The projected baseline's
+      cache-write line (0.25m tokens a run) stands corrected by this
+      measurement to about 0.15m written once per extraction block
+      plus the routing and residual blocks, $1.2 a run at $8 a million;
+      the projected total is unchanged to the dollar. Tests:
+      tests/product-cost-ablation.test.js (the loose replay and its
+      drift, the exact mode still missing),
+      tests/product-default-request-profile.test.js and
+      tests/product-fresh-sheet-experiments.test.js (DEFAULT_CLI, the
+      per-provider profile), tests/product-lean-request-profile.test.js.
+      npm run test:active: see the push.
+
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
 - [x] Take a database backup and restore it to a separate environment.

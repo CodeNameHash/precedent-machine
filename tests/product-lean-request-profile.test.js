@@ -51,7 +51,7 @@ test('the lean config is a known API config by identity, with its own profile, a
   assert.doesNotThrow(() => assertRunModelConfig(run, hostedModelConfigFor('ANTHROPIC_API', run, {})));
   assert.throws(() => assertRunModelConfig(run, ANTHROPIC_API_MODEL_CONFIG), /PRODUCT_RUN_MODEL_CONFIG_MISMATCH/);
   for (const model of ['claude-sonnet-5-5', 'claude-haiku-5-5']) assert.ok(ANTHROPIC_API_PRICES.usd_per_million[model].output > 0);
-  assert.deepEqual(Object.keys(ANTHROPIC_API_REQUEST_PROFILES), ['V9', 'LEAN', 'DEFAULT']);
+  assert.deepEqual(Object.keys(ANTHROPIC_API_REQUEST_PROFILES), ['V9', 'LEAN', 'DEFAULT', 'DEFAULT_CLI']);
 });
 
 test('under the lean profile the provider lays the agreement block, two stable blocks and the section out, and stores the agreement as a marker', () => {

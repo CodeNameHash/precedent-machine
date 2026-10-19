@@ -294,11 +294,11 @@ NCS generation 6 on that default, by this ledger's method, on the API:
 | --- | ---: | ---: |
 | Extraction output (3.69m less 1.11m of roles and evidence quotes and 0.35m of verbatim words) at $20 | 2.34m | 46.8 |
 | Extraction fresh input (5.77m less 0.35m of 64-hex ids) at $4 | 5.42m | 21.7 |
-| Cache writes, one stable block per call kind for the run, at $8 | 0.25m | 2.0 |
+| Cache writes, one stable block per call kind for the run, at $8 (measured with the real table shapes, finding (186): the extraction's two blocks are 387 KB, about 143,000 tokens; 0.15m with the routing and residual blocks) | 0.15m | 1.2 |
 | Cache reads at $0.20 | 5.5m | 1.1 |
 | Routing and residual, 236 calls on Haiku 5.5 | 1.4m in, 0.1m out | 0.5 |
 | Uncommitted attempts | | 0 |
-| Total | | about 72 |
+| Total | | about 71 |
 
 Against $145.68: about half the money, $0.07 a VALID fact. Time: 2.34m output tokens at 87 a second are 448 call-minutes; eight loops with the parts together, about 70 wall minutes for the 104 sections against 439, and the longest section (5.1, its parts together) about 12 minutes. On the subscription CLI the money is $0 and the time the same. The projected baseline file carries these figures for the gate until the first run under the default measures them.
 
@@ -323,4 +323,6 @@ Ben, 2026-10-19: "imagine itself like a nasa engineer in Apollo 13, having to fi
 Together, the built rungs that hold under the byte match take the default's $72 to about $55 (3 and 5), and the designed ones with the model tier (4) and the Batch API (9) to about $12: that, with the $0 of the subscription CLI, is the 10x Ben named, with the facts judged the same way at every step. The time floor stays the longest section's output (finding (181)); rung 7 removes the attempts the cap costs, and rungs 1 and 2 take two calls off every section's critical path.
 
 Run on the third sandbox, in the order the money goes: `default`, `deterministic_routing` (free), `direct_definitions`, `fact_budget`, `anchors_sonnet55`, `offsets`, `trimmed`; the `--analysis-dir` files to `compare-generations.js` for each.
+
+On the subscription CLI the same all-families block is sent and counted fresh on every call (`claude -p` caches on its own terms, section 4), about 143,000 tokens of the subscription's capacity per extraction call; the CLI's default therefore sends the routed families' contracts (`DEFAULT_CLI`, about 23,000 tokens of stable blocks), the same request otherwise, and the ladder does the same on the CLI for any rung that names every family (finding (186)).
 

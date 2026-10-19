@@ -153,4 +153,9 @@ test('the fresh-sheet rungs are on the ladder and the CLI can run the determinis
   assert.equal(ABLATION_VARIANTS.direct_definitions.profile.definitions_scope, 'direct');
   assert.equal(ABLATION_VARIANTS.fact_budget.profile.fact_budget, true);
   for (const name of ['default', 'deterministic_routing', 'direct_definitions', 'fact_budget', 'anchors_sonnet55']) assert.equal(variantAvailability(ABLATION_VARIANTS[name], CLAUDE_CLI_PROVIDER_ID).runnable, true, name);
+  // Finding (186): on the CLI the all-families block becomes the routed families' contracts; the API keeps it.
+  const { profileForProvider } = require('../lib/product/cost-ablation');
+  assert.equal(profileForProvider(ABLATION_VARIANTS.default.profile, CLAUDE_CLI_PROVIDER_ID).contracts_scope, 'routed');
+  assert.equal(profileForProvider(ABLATION_VARIANTS.default.profile, 'ANTHROPIC_API').contracts_scope, 'all');
+  assert.match(variantAvailability(ABLATION_VARIANTS.default, CLAUDE_CLI_PROVIDER_ID).notes.join(' '), /routed families' contracts are sent/);
 });

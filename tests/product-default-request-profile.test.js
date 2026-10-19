@@ -37,7 +37,9 @@ test('the default profile and configs: new runs take them on both providers, ear
   assert.deepEqual(resolveClaudeCliCallModel(CLAUDE_CLI_DEFAULT_MODEL_CONFIG, 'RESIDUAL'), { model: 'claude-haiku-5-5', effort: 'low' });
   assert.deepEqual(resolveClaudeCliCallModel(CLAUDE_CLI_DEFAULT_MODEL_CONFIG, 'EXTRACTION'), { model: 'claude-opus-5', effort: 'high' }, 'the CLI keeps Opus 5 for extraction until the ablation has run its rung');
   assert.deepEqual(resolveClaudeCliCallModel(CLAUDE_CLI_MODEL_CONFIG, 'ROUTING'), { model: 'claude-opus-5', effort: 'low' }, 'V1 unchanged');
-  assert.equal(requestProfileFor(CLAUDE_CLI_DEFAULT_MODEL_CONFIG).name, 'DEFAULT');
+  // Finding (186): the CLI counts the stable blocks fresh on every call, so its default sends the routed families' contracts; the request is otherwise the same.
+  assert.equal(requestProfileFor(CLAUDE_CLI_DEFAULT_MODEL_CONFIG).name, 'DEFAULT_CLI');
+  assert.deepEqual(REQUEST_PROFILES.DEFAULT_CLI, { ...REQUEST_PROFILES.DEFAULT, name: 'DEFAULT_CLI', contracts_scope: 'routed' });
   assert.equal(requestProfileFor(CLAUDE_CLI_MODEL_CONFIG).name, 'V9');
   assert.equal(claudeCliModelConfigFor({ ...CLAUDE_CLI_DEFAULT_MODEL_CONFIG, max_output_tokens: 1 }), CLAUDE_CLI_DEFAULT_MODEL_CONFIG);
   assert.equal(claudeCliModelConfigFor({ ...CLAUDE_CLI_DEFAULT_MODEL_CONFIG, tools: 'all' }), null);

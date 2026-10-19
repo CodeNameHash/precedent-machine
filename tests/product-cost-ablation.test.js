@@ -201,7 +201,13 @@ test('the variant model replays the stored kinds, records a live answer once and
   assert.equal(again.cost_microusd, 75);
   const offline = createVariantModel({ variant, replayIndex: index, nodeByReference: new Map([['1.1', 'n1']]), liveModel: null, recorder: createRecorder() });
   await assert.rejects(() => offline.complete(extraction), (error) => error.code === 'LIVE_CALL_REQUIRED');
-  await assert.rejects(() => model.complete({ call_kind: 'ROUTING', prompt_version: 'R/V3', request: { instruction: 'other', section_reference: '1.1' } }), (error) => error.code === 'REPLAY_MISS');
+  // The replay answers loosely by default (the first ladder's replay rungs all missed on byte identity): the stored call of the same section, kind and part, with the drift listed; the exact mode still misses.
+  const moved = await model.complete({ call_kind: 'ROUTING', prompt_version: 'R/V3', request: { instruction: 'other', section_reference: '1.1' } });
+  assert.deepEqual(moved.response, { families: ['TERMINATION'] });
+  assert.deepEqual(model.drifts.map((drift) => [drift.section_reference, drift.call_kind, drift.part]), [['1.1', 'ROUTING', null]]);
+  const exact = createVariantModel({ variant, replayIndex: index, nodeByReference: new Map([['1.1', 'n1']]), liveModel: null, recorder: createRecorder(), match: 'exact' });
+  await assert.rejects(() => exact.complete({ call_kind: 'ROUTING', prompt_version: 'R/V3', request: { instruction: 'other', section_reference: '1.1' } }), (error) => error.code === 'REPLAY_MISS');
+  await assert.rejects(() => model.complete({ call_kind: 'ROUTING', prompt_version: 'R/V3', request: { instruction: 'other', section_reference: '9.9' } }), (error) => error.code === 'REPLAY_MISS', 'a section the stored run never called');
 });
 
 test('the ablation table renders a stored row per section and a row per variant', () => {
