@@ -124,6 +124,7 @@ const rpcArguments = {
   product_phase3_restore_review: ['p_run_id', 'p_expected_version', 'p_restore_version', 'p_actor', 'p_action_id', 'p_idempotency_key'],
   product_phase3_get_review: ['p_run_id', 'p_actor'],
   product_phase3_list_reference_sources: ['p_actor'],
+  product_phase2_release_section: ['p_run_id', 'p_node_id', 'p_worker_id', 'p_attempt_token', 'p_reason'],
   product_sandbox_assign: ['p_run_id', 'p_pool'],
   product_sandbox_release: ['p_run_id', 'p_reason'],
 };

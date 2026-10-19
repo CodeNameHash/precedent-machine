@@ -188,10 +188,13 @@ test('identity resolves exact caption parties from paired representations articl
     .replace('<h2>ARTICLE II</h2><h3>REPRESENTATIONS</h3>', '<h2>Article III REPRESENTATIONS AND WARRANTIES OF REMIX</h2>')
     .replace('<h2>ARTICLE III</h2><h3>TERMINATION</h3>', '<h2>Article IV REPRESENTATIONS AND WARRANTIES OF PASSAGE AND MERGER SUB</h2>');
   const source = await createSecIntakeAdapter({ fetchImpl: async () => secResponse(html), clock: () => FIXED_TIME }).intake({ url: SEC_URL });
+  // Work package C6 (plan finding (130)): the caption keeps the
+  // abbreviation's period ("INC."), as the exhibit writes the name; the
+  // earlier pin had the old rule's "INC".
   assert.deepEqual(source.parties, [
-    { name: 'PASSAGE BIO, INC', role: 'PARENT' },
-    { name: 'PEREGRINE MERGER SUB, INC', role: 'MERGER_SUB' },
-    { name: 'REMIX THERAPEUTICS, INC', role: 'COMPANY' },
+    { name: 'PASSAGE BIO, INC.', role: 'PARENT' },
+    { name: 'PEREGRINE MERGER SUB, INC.', role: 'MERGER_SUB' },
+    { name: 'REMIX THERAPEUTICS, INC.', role: 'COMPANY' },
   ]);
 });
 

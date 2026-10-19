@@ -71,6 +71,50 @@ Thirty-four candidates; 31 outside the corpus. Rows 6 (Metsera), 7 (Verona), 14 
 
 Fourth, for the CVR drafting the corpus already partly covers: **Curium / Lantheus** (row 12, a one-step merger with a $12 CVR and a private-equity-backed acquirer, so a financing covenant and a reverse termination fee are likely) or **Novo Nordisk / Akero** (row 17, a one-step merger with a CVR by a non-US acquirer).
 
+## Pre-intake structure check (2026-10-19, implementer B, plan finding (108))
+
+`node scripts/product/structure-check.js <url> --schema LEGAL_SCHEMA/V2 --provider ANTHROPIC_CLAUDE_CLI_SUBSCRIPTION` run on every Exhibit 2.1 above (Metsera's original as 6a and its Amendment No. 1 as 6b): the intake route's own fetch, canonical text, document identity and structure build, locally, with no database and no model call. Nothing was submitted. "Nodes" is the structure the intake would store; "Identity" is the Phase 1 identity gate's answer with its reasons (implementer C's work package C6 is on the parser misses); the fingerprint is the first twelve hex characters of the submission fingerprint `product_phase1_create_run` would compute for these bytes under LEGAL_SCHEMA/V2, PRODUCT_LAYERED_COMPONENTS/V9, the Claude CLI subscription config, generation 0 and three attempts (SEC serves the exhibit's bytes with small variations between fetches, so a later fetch can carry another source document id and fingerprint; the canonical text is what stays the same).
+
+| # | Acquirer / target | Built | Nodes | Articles | Annexes and exhibits at the root (children) | Identity | Fingerprint (LEGAL_SCHEMA/V2, the subscription, generation 0) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | Johnson & Johnson / Intra-Cellular Therapies | yes | 326 (9 ARTICLE, 96 SECTION, 220 LIMB) | I, II, III, IV, V, VI, VII, VIII, IX | none | CONFIRMED | 1ab908373270 |
+| 2 | Novartis / Avidity Biosciences | yes | 396 (9 ARTICLE, 99 SECTION, 287 LIMB) | 1, 2, 3, 4, 5, 6, 7, 8, 9 | Exhibit-A (0) | NEEDS_REVIEW (PARTIES_UNCONFIRMED) | 0b50b51c3bbc |
+| 3 | Sun Pharmaceutical / Organon | yes | 437 (10 ARTICLE, 101 SECTION, 325 LIMB) | I, II, III, IV, V, VI, VII, VIII, IX, X | none | CONFIRMED | eee5ba025171 |
+| 4 | AbbVie / Apogee Therapeutics | yes | 386 (9 ARTICLE, 98 SECTION, 278 LIMB) | I, II, III, IV, V, VI, VII, VIII | Exhibit-A (1), Exhibit-B (0), Exhibit-C (0), Exhibit-D (0) | CONFIRMED | 6418d16c6cf3 |
+| 5 | GSK / Nuvalent | yes | 314 (9 ARTICLE, 100 SECTION, 204 LIMB) | I, II, III, IV, V, VI, VII, VIII, IX | Annex-I (3) | CONFIRMED | 34a3e65e27aa |
+| 6a | Pfizer / Metsera | yes | 284 (9 ARTICLE, 85 SECTION, 189 LIMB) | I, II, III, IV, V, VI, VII, VIII, IX | Exhibit-A (0), Exhibit-B (0) | CONFIRMED | 5ac33ddce57f |
+| 6b | Pfizer / Metsera | yes | 13 (0 ARTICLE, 12 SECTION, 0 LIMB) | none | none | NEEDS_REVIEW (PARTIES_UNCONFIRMED, AGREEMENT_DATE_UNCONFIRMED, REVISION_UNCONFIRMED, DOCUMENT_INCOMPLETE) | f44c97fc6c9c |
+| 7 | Merck & Co. / Verona Pharma | yes | 383 (11 ARTICLE, 98 SECTION, 273 LIMB) | I, II, III, IV, V, VI, VII, VIII, IX, X, XI | none | CONFIRMED | 637ace33e2af |
+| 8 | Vertex Pharmaceuticals / Crinetics Pharmaceuticals | yes | 337 (9 ARTICLE, 85 SECTION, 242 LIMB) | I, II, III, IV, V, VI, VII, VIII, IX | Exhibit-A (0) | NEEDS_REVIEW (AGREEMENT_DATE_UNCONFIRMED) | 353e05383f64 |
+| 9 | Merck & Co. / Cidara Therapeutics | yes | 22 (10 ARTICLE, 6 SECTION, 5 LIMB) | I, II, III, IV, V, VI, VII, VIII, IX, X | none | CONFIRMED | 23009886d339 |
+| 10 | Sanofi / Blueprint Medicines | yes | 340 (9 ARTICLE, 102 SECTION, 228 LIMB) | I, II, III, IV, V, VI, VII, VIII, IX | Annex-I (3) | CONFIRMED | ed4ba5fa2fc9 |
+| 11 | Genmab / Merus | yes | 385 (7 ARTICLE, 96 SECTION, 281 LIMB) | I, II, III, IV, V, VI, VII | Annex-I (1), Exhibit-A (0), Exhibit-B (0), Exhibit-C (0), Exhibit-D (0) | CONFIRMED | 87edb4514357 |
+| 12 | Curium / Lantheus Holdings | yes | 388 (9 ARTICLE, 95 SECTION, 283 LIMB) | I, II, III, IV, V, VI, VII, VIII, IX | Exhibit-A (0), Exhibit-B (0) | CONFIRMED | 7c2f189c9868 |
+| 13 | Gilead Sciences / Arcellx | yes | 322 (9 ARTICLE, 85 SECTION, 227 LIMB) | 1, 2, 3, 4, 5, 6, 7, 8, 9 | Exhibit-A (0), Annex-I (2) | CONFIRMED | 2b194078a5cb |
+| 14 | Eli Lilly / Centessa Pharmaceuticals | yes | 391 (9 ARTICLE, 100 SECTION, 281 LIMB) | I, II, III, IV, V, VI, VII, VIII, IX | none | NEEDS_REVIEW (PARTIES_UNCONFIRMED) | 2ba6fa556a4e |
+| 15 | Merck & Co. / Terns Pharmaceuticals | yes | 321 (9 ARTICLE, 90 SECTION, 221 LIMB) | I, II, III, IV, V, VI, VII, VIII, IX | Exhibit-A (0), Annex-I (8) | CONFIRMED | 9e939527aadb |
+| 16 | Biogen / Apellis Pharmaceuticals | yes | 100 (6 ARTICLE, 37 SECTION, 56 LIMB) | I, II, III, IV, V, VI | none | CONFIRMED | a0f27d1b40c5 |
+| 17 | Novo Nordisk / Akero Therapeutics | yes | 2 (0 ARTICLE, 1 SECTION, 0 LIMB) | none | Exhibit-A (0) | NEEDS_REVIEW (PARTIES_UNCONFIRMED) | a74fd4640b17 |
+| 18 | BioMarin / Amicus Therapeutics | yes | 2 (0 ARTICLE, 1 SECTION, 0 LIMB) | none | Exhibit-A (0) | CONFIRMED | fd2543165bea |
+| 19 | Angelini Pharma / Catalyst Pharmaceuticals | yes | 273 (9 ARTICLE, 0 SECTION, 263 LIMB) | I, II, III, IV, V, VI, VII, VIII, IX | none | CONFIRMED | 8f4ffcfdc3b0 |
+| 20 | Merck KGaA / SpringWorks Therapeutics | yes | 402 (9 ARTICLE, 98 SECTION, 294 LIMB) | I, II, III, IV, V, VI, VII, VIII, IX | Annex-A (11) | CONFIRMED | 7682574ee279 |
+| 21 | Roche / 89bio | yes | 531 (15 ARTICLE, 138 SECTION, 377 LIMB) | I, II, III, IV, V, VI, VII, VIII, IX | Exhibit-A (0), Exhibit-B (6) | CONFIRMED | 23930b279770 |
+| 22 | Eli Lilly / AtaiBeckley | yes | 344 (8 ARTICLE, 100 SECTION, 235 LIMB) | I, II, III, IV, V, VI, VII, VIII | none | CONFIRMED | 2ba463207547 |
+| 23 | Neurocrine Biosciences / Soleno Therapeutics | yes | 420 (10 ARTICLE, 100 SECTION, 309 LIMB) | I, II, III, IV, V, VI, VII, VIII, IX, X | Annex-I (8) | CONFIRMED | 5e562ea78162 |
+| 24 | Servier / Day One Biopharmaceuticals | yes | 346 (10 ARTICLE, 90 SECTION, 245 LIMB) | I, II, III, IV, V, VI, VII, VIII, IX, X | Exhibit-A (0), Exhibit-B (0) | NEEDS_REVIEW (AGREEMENT_DATE_UNCONFIRMED) | 5c3ee32c0fe0 |
+| 25 | Alkermes / Avadel Pharmaceuticals | yes | 445 (16 ARTICLE, 85 SECTION, 343 LIMB) | I, II, III, IV, V, VI, VII, VIII, IX, X | Exhibit-A (6) | CONFIRMED | e1f9ccc82f94 |
+| 26 | argenx / Forte Biosciences | yes | 310 (9 ARTICLE, 86 SECTION, 214 LIMB) | 1, 2, 3, 4, 5, 6, 7, 8, 9 | Exhibit-A (0), Annex-I (2) | CONFIRMED | 53031d73a576 |
+| 27 | GSK / RAPT Therapeutics | yes | 80 (7 ARTICLE, 44 SECTION, 28 LIMB) | I, II, III, IV, V, VI, VII | none | CONFIRMED | 4c793742600e |
+| 28 | Sanofi / Dynavax Technologies | yes | 35 (13 ARTICLE, 5 SECTION, 16 LIMB) | I, II, III, IV, V, VI, VII, VIII, IX, X, XI, XII, XIII | none | CONFIRMED | 390d2b23b13b |
+| 29 | Chiesi / KalVista Pharmaceuticals | yes | 14 (0 ARTICLE, 2 SECTION, 11 LIMB) | none | Exhibit-A (0), Annex-I (8) | CONFIRMED | 8c7bdeece2e2 |
+| 30 | Viatris / Pacira BioSciences | yes | 357 (10 ARTICLE, 94 SECTION, 252 LIMB) | 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 | Exhibit-A (0), Exhibit-B (0), Annex-I (9) | CONFIRMED | fb73178ce412 |
+| 31 | Novartis / Tourmaline Bio | yes | 350 (8 ARTICLE, 97 SECTION, 244 LIMB) | 1, 2, 3, 4, 5, 6, 7, 8 | Exhibit-A (0), Annex-I (2) | CONFIRMED | 1cfb9160d1f2 |
+| 32 | Eli Lilly / Ventyx Biosciences | yes | 344 (8 ARTICLE, 94 SECTION, 241 LIMB) | I, II, III, IV, V, VI, VII, VIII | none | CONFIRMED | b71bdba6b84f |
+| 33 | Eli Lilly / Verve Therapeutics | yes | 336 (9 ARTICLE, 102 SECTION, 224 LIMB) | I, II, III, IV, V, VI, VII, VIII, IX | Annex-I (2) | CONFIRMED | 5b19ae1747d1 |
+| 34 | Indivior Pharmaceuticals / Supernus Pharmaceuticals | yes | 714 (9 ARTICLE, 132 SECTION, 572 LIMB) | I, II, III, IV, V, VI, VII, VIII, IX | none | NEEDS_REVIEW (PARTIES_UNCONFIRMED, AGREEMENT_DATE_UNCONFIRMED) | 81ee341fea97 |
+
+Read of the table: every one of the 35 builds (the seven annex failures of finding (107) included); 28 of 35 identities are CONFIRMED, the seven NEEDS_REVIEW on PARTIES_UNCONFIRMED (Avidity, Centessa, Akero, Supernus, the Metsera amendment), AGREEMENT_DATE_UNCONFIRMED (Crinetics, Day One, Supernus, the Metsera amendment) and, for the amendment alone, REVISION_UNCONFIRMED and DOCUMENT_INCOMPLETE, which is right for an amendment. Eleven carry a tender offer's Annex I at the root with its conditions as limbs. Eight agreements come out under-sectioned, a quieter failure than an error, and the reason this check exists: Akero (2 nodes), Amicus (2), KalVista (14), Cidara (22), Dynavax (35), RAPT (80), Apellis (100) and Catalyst (273 nodes but 0 SECTION) all head their sections with a bare decimal on its own line ("3.17 Employee Matters; Benefit Plans." then the text on the next line; about 160 such lines each, the contents table and the body), without the word "Section", and the sectionizer keeps few or none of them; Akero, Amicus and KalVista also name their articles "Section 1. MERGER TRANSACTION" and get no ARTICLE at all. An intake of any of these would run the model over a handful of huge nodes. The fix belongs in the sectionizer's heading rules, for every agreement (plan finding (108) proposes it); until it lands, these eight are not ready to intake.
+
 ## Sources
 
 - Biobucks, Biotech M&A Tracker 2026: https://www.biobucks.co/biotech-ma-tracker-2026

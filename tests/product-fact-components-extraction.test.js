@@ -1036,7 +1036,7 @@ test('a cross-reference to "this Article VI" resolves to the article node and th
 // Work package 20 (implementer B's defects (5) to (7) and rule, finding
 // (105); the manager's (168); 2026-10-18). The fixtures below are cut from
 // the NCS filing as stored for generation 5.
-function wp20Compile({ canonical, reference, contextSpans = [], proposals, sectionText = canonical }) {
+function wp20Compile({ canonical, reference, contextSpans = [], proposals, sectionText = canonical, answer = {} }) {
   const sectionNode = 'w'.repeat(64);
   const sectionStart = bytes(canonical) - bytes(sectionText);
   const full = { span_id: 'x'.repeat(64), kind: 'FULL_SECTION', structure_node_id: sectionNode, start_byte: sectionStart, end_byte: bytes(canonical), exact_text: sectionText };
@@ -1046,21 +1046,28 @@ function wp20Compile({ canonical, reference, contextSpans = [], proposals, secti
     chapeau_span_ids: spans.filter((span) => span.kind === 'CHAPEAU').map((span) => span.span_id), spans,
   };
   const doc = { source_document_id: 'z'.repeat(64), canonical_text: canonical };
-  const built = proposals.map((proposal, index) => ({
-    client_ref: `p${index + 1}`, group_ref: `g${index + 1}`, family_key: 'REPRESENTATIONS', subtype_key: 'STATUS_REPRESENTATION', fact_type: 'REPRESENTATION_ACCURACY_STANDARD',
-    roles: { LEGAL_ACTOR_OR_SUBJECT: 'the Company', LEGAL_OPERATION: 'represents and warrants', OPERATIVE_OBJECT: 'the matter' },
-    value: null,
-    headline: { label: 'Representation', distinguishing_refs: [proposal.components[0].ref], summary: 'The Company represents the matter stated in the section' },
-    ...proposal,
-  }));
+  const built = proposals.map((proposal, index) => {
+    const merged = {
+      client_ref: `p${index + 1}`, group_ref: `g${index + 1}`, family_key: 'REPRESENTATIONS', subtype_key: 'STATUS_REPRESENTATION', fact_type: 'REPRESENTATION_ACCURACY_STANDARD',
+      roles: { LEGAL_ACTOR_OR_SUBJECT: 'the Company', LEGAL_OPERATION: 'represents and warrants', OPERATIVE_OBJECT: 'the matter' },
+      value: null,
+      headline: { label: 'Representation', distinguishing_refs: [proposal.components[0].ref], summary: 'The Company represents the matter stated in the section' },
+      ...proposal,
+    };
+    // A key given as undefined is a key the model left out.
+    for (const key of Object.keys(merged)) if (merged[key] === undefined) delete merged[key];
+    return merged;
+  });
   const body = {
     proposals: built,
     groups: built.map((proposal) => ({ client_ref: proposal.group_ref, family_key: proposal.family_key, subtype_key: proposal.subtype_key })),
     links: [],
+    ...answer,
   };
   const result = compileExtraction({ sourceDocument: doc, legalSchema: legalSchemaV2, node: { node_id: sectionNode, reference, kind: 'SECTION' }, closure, call, response: body, routedFamilies: ['REPRESENTATIONS'], ownedNodeIds: new Set([sectionNode]) });
   return { ...result, full, doc };
 }
+function* walkComponents(list) { for (const component of list || []) { yield component; yield* walkComponents(component.children); } }
 const wp20Own = (fullSpanId) => (ref, kind, label, quote, extra = {}) => ({ ref, kind, label, quote, source_span_id: fullSpanId, occurrence: 0, origin: 'OWN', children: [], ...extra });
 const issueLines = (result) => result.issues.map((issue) => `${issue.code}: ${issue.message}`).join('\n');
 
@@ -1269,4 +1276,215 @@ test('an enumerated exception of a representation cut as its own fact is held; t
   }] });
   assert.equal(qualification.proposals[0].validation_status, 'VALID', issueLines(qualification));
   assert.equal(qualification.issues.some((issue) => issue.code === 'REPRESENTATION_EXCEPTION_NOT_A_FACT'), false);
+});
+
+// Work package 21 (finding (172); the manager's message of 22:30 UTC;
+// implementer E's ledger, levers 1 and 7): the validator accepts the
+// shorter answer the extractor will be asked for. A span may be cited by
+// an integer alias from the response's span_aliases table, by a
+// deterministic alias (agreement-draft.js spanAliases: F, C1, O1, D1, X1)
+// or by a unique prefix of its id; words may be named by a quote, by
+// absolute byte offsets or by anchors (first and last words); a proposal
+// without evidence_quotes takes its evidence from its own components;
+// roles may be left out. Whichever form the model writes, the fact is the
+// same; offsets that disagree with a quote, lie outside the span or cite
+// an alias the table lacks hold the fact by name.
+test('a span cited by alias or id prefix, words named by offsets or anchors, evidence derived from the own components and roles left out compile to the same fact as the full form', () => {
+  const { spanAliases } = require('../lib/product/agreement-draft');
+  const canonical = 'Section 3.27 Reorganization Qualification. Neither the Company nor any of its Subsidiaries has taken any action that would reasonably be expected to prevent or preclude the Merger from qualifying for the Intended Tax Treatment. The Company has taken any action it deems fit in the ordinary course.\n';
+  const fullId = 'x'.repeat(64);
+  const own = wp20Own(fullId);
+  const byteAt = (text) => bytes(canonical.slice(0, canonical.indexOf(text)));
+  const subject = 'Neither the Company nor any of its Subsidiaries';
+  const operation = 'has taken any action';
+  const object = 'prevent or preclude the Merger from qualifying for the Intended Tax Treatment';
+  const full = (components, extra = {}) => ({
+    subtype_key: 'NEGATIVE_REPRESENTATION',
+    statement: 'The Company represents that neither it nor any Subsidiary has taken any action that would prevent the Intended Tax Treatment.',
+    evidence_quotes: [{ quote: operation, source_span_id: fullId, occurrence: 0 }],
+    components,
+    ...extra,
+  });
+  const heading = 'Section 3.27 Reorganization Qualification.';
+  const chapeau = { span_id: 'abcdef12'.repeat(8), kind: 'CHAPEAU', structure_node_id: 'h'.repeat(64), start_byte: 0, end_byte: bytes(heading), exact_text: heading };
+  const inherited = { ref: 'c0', kind: 'TERM', label: 'heading', quote: heading, source_span_id: chapeau.span_id, occurrence: 0, origin: 'CHAPEAU', children: [] };
+  const baseline = wp20Compile({ canonical, reference: '3.27', contextSpans: [chapeau], proposals: [full([
+    inherited,
+    own('c1', 'ACTOR', 'subject', subject),
+    own('c2', 'OPERATION', 'no action taken', operation),
+    own('c3', 'OBJECT', 'tax treatment', object),
+  ])] });
+  const [before] = baseline.proposals;
+  assert.equal(before.validation_status, 'VALID', issueLines(baseline));
+  const closureSpans = baseline.source_closure ? baseline.source_closure.spans : null;
+  assert.equal(spanAliases([{ span_id: fullId, kind: 'FULL_SECTION' }]).toAlias.get(fullId), 's1', "E's lean alias of the one span");
+  // Component ids follow the fact id, which follows the evidence spans, so
+  // the comparison is of the words, bytes and headline, not the ids.
+  const shape = (proposal) => JSON.stringify({ status: proposal.validation_status, components: proposal.components.map((c) => [c.kind, c.text, c.start_byte, c.end_byte, c.origin]), headline: [proposal.headline.label, proposal.headline.summary, proposal.headline.distinguishing_component_ids.length] });
+  // (1) an integer alias from the response's table, E's lean alias (s2 is
+  // the full section: the chapeau comes first in this closure) and a hex
+  // prefix; words by absolute offsets, by E's span-relative quote_offsets
+  // and by anchors under E's names; no evidence_quotes, no roles.
+  const short = wp20Compile({ canonical, reference: '3.27', contextSpans: [chapeau], answer: { span_aliases: { 1: fullId } }, proposals: [{
+    subtype_key: 'NEGATIVE_REPRESENTATION',
+    statement: 'The Company represents that neither it nor any Subsidiary has taken any action that would prevent the Intended Tax Treatment.',
+    roles: undefined,
+    components: [
+      { ref: 'c0', kind: 'TERM', label: 'heading', quote_offsets: [0, heading.length], source_span_id: 'abcdef12abcdef12', origin: 'CHAPEAU', children: [] },
+      { ref: 'c1', kind: 'ACTOR', label: 'subject', start_byte: byteAt(subject), end_byte: byteAt(subject) + bytes(subject), source_span_id: 1, origin: 'OWN', children: [] },
+      { ref: 'c2', kind: 'OPERATION', label: 'no action taken', quote_offsets: [canonical.indexOf(operation), canonical.indexOf(operation) + operation.length], source_span_id: 's2', origin: 'OWN', children: [] },
+      { ref: 'c3', kind: 'OBJECT', label: 'tax treatment', quote_from: 'prevent or preclude', quote_to: 'Intended Tax Treatment', source_span_id: 1, origin: 'OWN', children: [] },
+    ],
+  }] });
+  const [after] = short.proposals;
+  assert.equal(after.validation_status, 'VALID', issueLines(short));
+  assert.equal(shape(after), shape(before), 'the same fact from the short form');
+  assert.equal(after.evidence_derived, true);
+  assert.equal(after.source_span_ids.length, 4, 'every component is the evidence');
+  assert.deepEqual(after.components.map((component) => component.text), [heading, subject, operation, object]);
+  assert.equal(short.issues.some((issue) => /ROLE|PROPOSAL_ROLES/.test(issue.code) && issue.kind !== 'NOTE'), false, issueLines(short));
+  // Offsets name the occurrence by position: the second "has taken any action" is the second one.
+  const second = canonical.lastIndexOf(operation);
+  const positioned = wp20Compile({ canonical, reference: '3.27', proposals: [full([
+    own('c1', 'ACTOR', 'subject', subject),
+    { ref: 'c2', kind: 'OPERATION', label: 'later action', start_byte: bytes(canonical.slice(0, second)), end_byte: bytes(canonical.slice(0, second)) + bytes(operation), source_span_id: fullId, origin: 'OWN', children: [] },
+  ])] });
+  assert.equal(positioned.proposals[0].components[1].start_byte, bytes(canonical.slice(0, second)));
+  // (2) anchors that name two runs are held; an occurrence picks one.
+  const ambiguous = wp20Compile({ canonical, reference: '3.27', proposals: [full([
+    own('c1', 'ACTOR', 'subject', subject),
+    { ref: 'c2', kind: 'OPERATION', label: 'action', quote_start: 'has taken', quote_end: 'any action', source_span_id: 's1', origin: 'OWN', children: [] },
+  ])] });
+  assert.equal(ambiguous.proposals[0].validation_status, 'INVALID');
+  assert.ok(ambiguous.issues.some((issue) => issue.code === 'INVALID_FACT_COMPONENTS' && /ANCHORS_AMBIGUOUS/.test(issue.message)), issueLines(ambiguous));
+  const picked = wp20Compile({ canonical, reference: '3.27', proposals: [full([
+    own('c1', 'ACTOR', 'subject', subject),
+    { ref: 'c2', kind: 'OPERATION', label: 'action', quote_start: 'has taken', quote_end: 'any action', occurrence: 1, source_span_id: 's1', origin: 'OWN', children: [] },
+  ])] });
+  assert.equal(picked.proposals[0].validation_status, 'VALID', issueLines(picked));
+  assert.equal(picked.proposals[0].components[1].start_byte, bytes(canonical.slice(0, second)));
+  assert.equal(picked.proposals[0].components[1].text, operation);
+  // Anchors absent from the span hold.
+  const absent = wp20Compile({ canonical, reference: '3.27', proposals: [full([
+    own('c1', 'ACTOR', 'subject', subject),
+    { ref: 'c2', kind: 'OPERATION', label: 'action', quote_start: 'has refrained', quote_end: 'from action', source_span_id: 's1', origin: 'OWN', children: [] },
+  ])] });
+  assert.equal(absent.proposals[0].validation_status, 'INVALID');
+  assert.ok(absent.issues.some((issue) => /ANCHORS_NOT_FOUND/.test(issue.message)), issueLines(absent));
+  // (3) an alias no closure span answers to is an unknown span, as an unknown id is.
+  const unknown = wp20Compile({ canonical, reference: '3.27', proposals: [full([
+    own('c1', 'ACTOR', 'subject', subject),
+    { ref: 'c2', kind: 'OPERATION', label: 'action', quote: operation, source_span_id: 'Q9', occurrence: 0, origin: 'OWN', children: [] },
+  ])] });
+  assert.equal(unknown.proposals[0].validation_status, 'VALID', 'own words on an unknown alias resolve through the section, as work package 13 (a) says');
+  // (4) offsets outside the canonical text are held, never a crash; offsets that disagree with a quote beside them hold by name; an integer alias the table lacks holds by name.
+  const outside = wp20Compile({ canonical, reference: '3.27', proposals: [full([
+    own('c1', 'ACTOR', 'subject', subject),
+    { ref: 'c2', kind: 'OPERATION', label: 'action', start_byte: 10, end_byte: 5, source_span_id: 's1', origin: 'OWN', children: [] },
+  ])] });
+  assert.equal(outside.proposals[0].validation_status, 'INVALID');
+  assert.ok(outside.issues.some((issue) => /INVALID_OFFSETS/.test(issue.message)), issueLines(outside));
+  const disagree = wp20Compile({ canonical, reference: '3.27', proposals: [full([
+    own('c1', 'ACTOR', 'subject', subject),
+    { ref: 'c2', kind: 'OPERATION', label: 'action', quote: operation, start_byte: byteAt(subject), end_byte: byteAt(subject) + bytes(subject), source_span_id: fullId, occurrence: 0, origin: 'OWN', children: [] },
+  ])] });
+  assert.equal(disagree.proposals[0].validation_status, 'INVALID');
+  assert.ok(disagree.issues.some((issue) => /OFFSETS_DISAGREE_WITH_QUOTE/.test(issue.message)), issueLines(disagree));
+  const agree = wp20Compile({ canonical, reference: '3.27', proposals: [full([
+    own('c1', 'ACTOR', 'subject', subject),
+    { ref: 'c2', kind: 'OPERATION', label: 'action', quote: operation, start_byte: byteAt(operation), end_byte: byteAt(operation) + bytes(operation), source_span_id: fullId, occurrence: 0, origin: 'OWN', children: [] },
+  ])] });
+  assert.equal(agree.proposals[0].validation_status, 'VALID', issueLines(agree));
+  const noAlias = wp20Compile({ canonical, reference: '3.27', answer: { span_aliases: { 1: fullId } }, proposals: [full([
+    own('c1', 'ACTOR', 'subject', subject),
+    { ref: 'c2', kind: 'OPERATION', label: 'action', quote: operation, source_span_id: 2, occurrence: 0, origin: 'OWN', children: [] },
+  ])] });
+  assert.equal(noAlias.proposals[0].validation_status, 'INVALID');
+  assert.ok(noAlias.issues.some((issue) => /SPAN_ALIAS_UNKNOWN/.test(issue.message)), issueLines(noAlias));
+  // Offsets inside the canonical text but outside the cited span hold by name.
+  const elsewhere = wp20Compile({ canonical, reference: '3.27', contextSpans: [chapeau], proposals: [full([
+    own('c1', 'ACTOR', 'subject', subject),
+    { ref: 'c2', kind: 'OPERATION', label: 'action', start_byte: byteAt(operation), end_byte: byteAt(operation) + bytes(operation), source_span_id: chapeau.span_id, origin: 'OWN', children: [] },
+  ])] });
+  assert.equal(elsewhere.proposals[0].validation_status, 'INVALID');
+  assert.ok(elsewhere.issues.some((issue) => /OFFSETS_OUTSIDE_SPAN/.test(issue.message)), issueLines(elsewhere));
+  // (5) a link may cite spans by alias.
+  const linked = wp20Compile({ canonical, reference: '3.27', proposals: [
+    full([own('c1', 'ACTOR', 'subject', subject), own('c2', 'OPERATION', 'no action taken', operation)]),
+    full([own('c1', 'ACTOR', 'subject', subject), own('c2', 'OBJECT', 'tax treatment', object)], { subtype_key: 'STATUS_REPRESENTATION' }),
+  ] });
+  assert.equal(linked.proposals.length, 2);
+  void closureSpans;
+});
+
+// Work package 21 on a stored call: NCS generation 5's 6.4 as the model
+// answered it (tests/fixtures/product/ncs-generation-5-6-4-extraction-call.json,
+// the bytes rebased to a window from the Article VI heading), compiled as
+// written and again with span aliases and words by offsets or by the
+// shortest unique anchors, no evidence_quotes and no roles: the same facts.
+test('the stored 6.4 call compiles to the same facts from the full answer and from the short forms', () => {
+  const fixture = require('./fixtures/product/ncs-generation-5-6-4-extraction-call.json');
+  const nodesById = new Map(fixture.structure.nodes.map((node) => [node.node_id, node]));
+  const node = nodesById.get(fixture.closure.structure_node_id);
+  const owned = new Set(fixture.structure.nodes.filter((candidate) => { for (let cursor = candidate; cursor; cursor = cursor.parent_id ? nodesById.get(cursor.parent_id) : null) if (cursor.node_id === node.node_id) return true; return false; }).map((candidate) => candidate.node_id));
+  const compile = (response) => compileExtraction({
+    sourceDocument: fixture.source_document, legalSchema: legalSchemaV2, node, closure: fixture.closure, call, response,
+    routedFamilies: [...new Set([...fixture.routed_families, ...response.proposals.map((proposal) => proposal.family_key)])], ownedNodeIds: owned, tableShapes, agreementStructure: fixture.structure,
+  });
+  const shape = (proposal) => JSON.stringify({
+    status: proposal.validation_status, statement: proposal.statement, headline: [proposal.headline.label, proposal.headline.summary],
+    components: (function strip(list) { return list.map((component) => [component.kind, component.origin, component.text, component.start_byte, component.end_byte, component.resolves_to?.structure_node_id || null, strip(component.children)]); }(proposal.components)),
+    conclusions: proposal.conclusions ? [proposal.conclusions.table_key, proposal.conclusions.row_label, (proposal.conclusions.cells || []).map((cell) => [cell.column_id, cell.code || null, cell.text || null])] : null,
+  });
+  const baseline = compile(fixture.answer);
+  assert.equal(baseline.proposals.length, 3);
+  assert.ok(baseline.proposals.every((proposal) => proposal.validation_status === 'VALID'), issueLines(baseline));
+  assert.ok(baseline.proposals.some((proposal) => [...walkComponents(proposal.components)].some((component) => component.kind === 'CROSS_REFERENCE' && /this Article VI/.test(component.text) && component.resolves_to?.structure_node_id)), 'the Article VI reference resolves (work package 19 (c))');
+  // The manager's alias form: a per-call table of small integers, supplied with the answer.
+  const aliases = new Map(fixture.closure.spans.map((span, index) => [span.span_id, String(index + 1)]));
+  const shorten = (mode) => {
+    const answer = JSON.parse(JSON.stringify(fixture.answer));
+    answer.span_aliases = Object.fromEntries([...aliases.entries()].map(([id, number]) => [number, id]));
+    answer.proposals.forEach((proposal, index) => {
+      delete proposal.roles;
+      delete proposal.evidence_quotes;
+      const compiled = baseline.proposals[index];
+      (function walk(raw, done) {
+        (raw || []).forEach((item, position) => {
+          item.source_span_id = aliases.get(item.source_span_id) || item.source_span_id;
+          const compiledItem = done ? done[position] : null;
+          if (mode === 'offsets' && compiledItem && Number.isInteger(compiledItem.start_byte) && compiledItem.text === item.quote) {
+            item.start_byte = compiledItem.start_byte; item.end_byte = compiledItem.end_byte; delete item.quote;
+          } else if (mode === 'anchors' && compiledItem && Number.isInteger(compiledItem.start_byte)) {
+            const span = fixture.closure.spans.find((candidate) => candidate.span_id === compiledItem.source_span_id) || fixture.closure.spans.find((candidate) => candidate.span_id === fixture.closure.full_section_span_id);
+            const words = item.quote.split(/\s+/).filter(Boolean);
+            for (let n = 3; n <= 8 && words.length > 2 * n; n += 1) {
+              const first = words.slice(0, n).join(' '); const last = words.slice(-n).join(' ');
+              const runs = []; let at = span.exact_text.indexOf(first);
+              while (at >= 0) { const end = span.exact_text.indexOf(last, at); if (end >= 0) runs.push(span.exact_text.slice(at, end + last.length)); at = span.exact_text.indexOf(first, at + 1); }
+              if (runs.length === 1 && runs[0] === item.quote) { item.quote_start = first; item.quote_end = last; delete item.quote; delete item.occurrence; break; }
+            }
+          }
+          walk(item.children, compiledItem?.children);
+        });
+      }(proposal.components, compiled.components));
+    });
+    for (const link of answer.links || []) link.source_span_ids = (link.source_span_ids || []).map((id) => aliases.get(id) || id);
+    return answer;
+  };
+  for (const mode of ['offsets', 'anchors']) {
+    const short = shorten(mode);
+    const text = JSON.stringify({ ...short, span_aliases: undefined });
+    assert.ok(!/[0-9a-f]{64}/.test(text), `${mode}: no 64-hex span id left in the answer outside its alias table`);
+    assert.equal(Object.keys(short.span_aliases).length, fixture.closure.spans.length);
+    assert.ok(!text.includes('"roles"') && !text.includes('evidence_quotes'));
+    if (mode === 'offsets') assert.ok(!text.includes('"quote"'), 'every component by offsets');
+    const result = compile(short);
+    assert.equal(result.proposals.length, 3, issueLines(result));
+    result.proposals.forEach((proposal, index) => {
+      assert.equal(shape(proposal), shape(baseline.proposals[index]), `${mode}: proposal ${index + 1} is the same fact`);
+      assert.equal(proposal.evidence_derived, true);
+    });
+    assert.ok(Buffer.byteLength(text, 'utf8') < Buffer.byteLength(JSON.stringify(fixture.answer), 'utf8') * 0.7, `${mode}: the answer is under 70 per cent of the full form`);
+  }
 });

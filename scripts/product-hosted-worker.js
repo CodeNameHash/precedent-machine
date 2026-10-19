@@ -10,9 +10,20 @@ const {
 } = require('../lib/product/product-model-config');
 const { assertDisposableDatabaseUrl } = require('../lib/product/sandbox-wake');
 const { workerStopReason } = require('../lib/product/worker-stop');
+const { hostedWorkerId, isWorkerStopRequested, releaseDeadClaims } = require('../lib/product/attempt-resume');
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const IDLE_WAIT_MS = 1000;
+// The signals a stop arrives on (work package D3, plan finding (142)): the
+// worker finishes the call in flight, hands its claims back with the parts
+// done on the row, and exits with the reason; a plain wake resumes.
+const STOP_SIGNALS = Object.freeze(['SIGTERM', 'SIGINT', 'SIGHUP']);
+const SANDBOX_NAME_PATTERN = /^[a-z0-9-]{1,60}$/;
+
+function sandboxNameFromEnv(env = process.env) {
+  const name = env.PRODUCT_SANDBOX_NAME;
+  return typeof name === 'string' && SANDBOX_NAME_PATTERN.test(name) ? name : null;
+}
 const MAX_WORKERS = 8;
 function parseArguments(argv) {
   const values = {};
@@ -44,6 +55,26 @@ function createStore() {
 }
 
 async function runHostedWorker(options, output = process.stdout, dependencies = {}) {
+  // A stop requested by a signal (or by the caller's `stop` in tests): the
+  // loops end after the call in flight, the attempt is released, not failed.
+  const stop = { requested: false, signal: null };
+  const requestStop = (signal) => {
+    if (stop.requested) return;
+    stop.requested = true;
+    stop.signal = signal;
+    output.write(`${JSON.stringify({ at: new Date().toISOString(), event: 'WORKER_STOP_REQUESTED', signal, run_id: options?.runId || null })}\n`);
+  };
+  const signals = dependencies.signals === false ? [] : STOP_SIGNALS;
+  for (const signal of signals) process.on(signal, () => requestStop(signal));
+  if (typeof dependencies.onStopHandle === 'function') dependencies.onStopHandle(requestStop);
+  try {
+    return await runHostedWorkerLoops(options, output, dependencies, stop);
+  } finally {
+    for (const signal of signals) process.removeAllListeners(signal);
+  }
+}
+
+async function runHostedWorkerLoops(options, output, dependencies, stop) {
   if (!options || !UUID.test(options.runId || '') || options.actor !== 'ben' || !Number.isInteger(options.workers) || options.workers < 1 || options.workers > MAX_WORKERS) {
     throw new TypeError('invalid hosted worker options');
   }
@@ -76,6 +107,15 @@ async function runHostedWorker(options, output = process.stdout, dependencies = 
   if (run.stage === 'DOCUMENT_IDENTITY_REVIEW') throw new Error('PRODUCT_HOSTED_IDENTITY_REVIEW_REQUIRED');
   if (run.status === 'READY') return run;
   if (run.status === 'FAILED') throw new Error('PRODUCT_HOSTED_EXPLICIT_RETRY_REQUIRED');
+  // After a restart (work package D3): the claims a dead process of this
+  // sandbox still holds are handed back now, with the parts they completed
+  // on the row, instead of waiting the lease out with no record.
+  const sandbox = dependencies.sandbox === undefined ? sandboxNameFromEnv() : dependencies.sandbox;
+  const released = await releaseDeadClaims({
+    store, runId: options.runId, sandbox, isAlive: dependencies.isAlive,
+    log: (event) => output.write(`${JSON.stringify({ at: new Date().toISOString(), ...event })}\n`),
+  });
+  if (released.length > 0) output.write(`${JSON.stringify({ event: 'DEAD_CLAIMS_RELEASED', run_id: options.runId, sections: released.length })}\n`);
 
   let lastReportedMarker = '';
   let stopped = false;
@@ -84,12 +124,13 @@ async function runHostedWorker(options, output = process.stdout, dependencies = 
       const workerStore = number === 1 ? store : makeStore();
       const model = makeModel(run);
       let priorMarker = '';
-      while (!stopped) {
+      while (!stopped && !stop.requested) {
         await workerStore.recoverExpiredSections({ runId: options.runId });
-        if (stopped) break;
+        if (stopped || stop.requested) break;
         const analysis = await advance({
           runId: options.runId, store: workerStore, legalSchema, model,
-          workerId: `product-hosted:${process.pid}:${number}`, leaseSeconds: 900,
+          workerId: hostedWorkerId({ sandbox, pid: process.pid, loop: number }), leaseSeconds: 900,
+          stopRequested: () => stop.requested,
           // Every lease renewal outcome on the worker's output (tee'd to
           // the sandbox log by launch.sh): generation 6 lost 2.02 three
           // times to an expired lease with nothing to read.
@@ -119,6 +160,9 @@ async function runHostedWorker(options, output = process.stdout, dependencies = 
       return null;
     } catch (error) {
       stopped = true;
+      // A stop the worker asked for (a signal; work package D3): the attempt
+      // was handed back by the runner; the worker exits with the reason.
+      if (isWorkerStopRequested(error)) throw new Error(`PRODUCT_HOSTED_WORKER_STOPPED: ${stop.signal || 'stop requested'}`);
       // A usage limit on the Codex or Claude login or the API account, or
       // an API key the account refuses for want of its workspace header,
       // is not a section failure: the worker stops with the reason so the
@@ -145,8 +189,10 @@ async function runHostedWorker(options, output = process.stdout, dependencies = 
 if (require.main === module) {
   runHostedWorker(parseArguments(process.argv.slice(2))).catch((error) => {
     process.stderr.write(`${error.name || 'Error'}: ${error.message}\n`);
-    process.exitCode = 1;
+    // 143 as a SIGTERM exit: the launcher's log says the worker stopped on
+    // request, not that it failed.
+    process.exitCode = /^PRODUCT_HOSTED_WORKER_STOPPED/.test(error.message) ? 143 : 1;
   });
 }
 
-module.exports = { parseArguments, runHostedWorker };
+module.exports = { STOP_SIGNALS, parseArguments, runHostedWorker, sandboxNameFromEnv };

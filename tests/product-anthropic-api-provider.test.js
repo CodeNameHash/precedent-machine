@@ -233,6 +233,8 @@ test('the wake carries the API key into the sandbox for the API provider only, a
     SUPABASE_URL: 'https://ecrtoofsyxozazkvsvcl.supabase.co',
     SUPABASE_SERVICE_ROLE_KEY: 'service-role-secret-value',
     PRODUCT_MODEL_PROVIDER: ANTHROPIC_API_PROVIDER_ID,
+    // The sandbox the run is on, for the worker's ids (work package D3).
+    PRODUCT_SANDBOX_NAME: 'pm-codex-preview-worker',
     ANTHROPIC_API_KEY: 'sk-ant-'.repeat(6),
   });
   assert.doesNotMatch(JSON.stringify(result), /sk-ant-/);
@@ -240,7 +242,7 @@ test('the wake carries the API key into the sandbox for the API provider only, a
   // name, for this provider only, and never into the result.
   const withWorkspace = await wakeSandboxProductRun({ ...base, providerId: ANTHROPIC_API_PROVIDER_ID, anthropicApiKey: 'sk-ant-'.repeat(6), anthropicWorkspaceId: ' wrkspc_01WORKSPACE ' });
   assert.equal(commandInput.env.ANTHROPIC_WORKSPACE_ID, 'wrkspc_01WORKSPACE');
-  assert.deepEqual(Object.keys(commandInput.env), ['SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'PRODUCT_MODEL_PROVIDER', 'ANTHROPIC_API_KEY', 'ANTHROPIC_WORKSPACE_ID']);
+  assert.deepEqual(Object.keys(commandInput.env), ['SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'PRODUCT_MODEL_PROVIDER', 'PRODUCT_SANDBOX_NAME', 'ANTHROPIC_API_KEY', 'ANTHROPIC_WORKSPACE_ID']);
   assert.doesNotMatch(JSON.stringify(withWorkspace), /wrkspc_/);
   await wakeSandboxProductRun({ ...base, providerId: ANTHROPIC_API_PROVIDER_ID, anthropicApiKey: 'sk-ant-'.repeat(6), anthropicWorkspaceId: '' });
   assert.equal('ANTHROPIC_WORKSPACE_ID' in commandInput.env, false, 'an empty setting is no setting');
