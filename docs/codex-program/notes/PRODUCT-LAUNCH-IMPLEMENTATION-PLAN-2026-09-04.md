@@ -7131,6 +7131,99 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       no code, schema or rule changed. npm run test:active:
       774 of 775, the one failure the known Codex-client final-message
       test. No run, worker or sandbox touched.
+      (130) 2026-10-18 23:00 to 2026-10-19 00:10 UTC (implementer C),
+      work package C6, the identity extractor's parser misses of (129)
+      fixed as rules for every agreement, in lib/product/sec-intake.js
+      (Ben: "everything to be driven by coding and not just a layer on
+      top so all edits need to be repeatable across corpus"). (a) The
+      agreement date now has two sources that must agree: the cover's
+      "Dated as of" line, trailing punctuation and a missing "as of"
+      allowed ("DATED AS OF JULY 6, 2026,"; Indivior / Supernus "Dated
+      August 1, 2026"), and the preamble sentence, read mid-line only
+      around the agreement's own definition (the first (this
+      "Agreement") or ("Agreement")) and only when the date is followed
+      by that definition or by the parties' "among" / "between" ("dated
+      as of July 6, 2026 (this "Agreement" ...)", "is made and entered
+      into as of October 25, 2025, among"), so a recital's "Mutual
+      Confidentiality Agreement dated January 23, 2026, between the
+      Company and Parent" (Chiesi / KalVista) is never read; one
+      distinct value is the date, two are AGREEMENT_DATE_CONFLICT. (b)
+      The role parenthetical accepts the compound closing form (the
+      "Company" and, together with Parent and Purchaser, the "Parties")
+      (Lilly / Centessa; Merck / Verona Pharma; Genmab / Merus), and
+      "Bidco", "Acquiror" and "Acquirer" join the role words. (c) A
+      party's name admits "/", accents, both apostrophes, digits first
+      ("89bio, Inc.") and up to three short comma segments ("NN Invest
+      Sub, Inc", "Merck KGaA, Darmstadt, Germany"); the legal
+      description between name and role may carry its own unquoted
+      parenthetical ("a company limited by shares (Aktiengesellschaft)
+      incorporated under the laws of Switzerland"; "(Aktieselskab)";
+      "(naamloze vennootschap)"); a party may start after "by and
+      among:" or "among:" with a colon; and the preamble's verbs ahead
+      of "among" / "between" are stripped from a name that started at an
+      earlier comma (the old rule stored "among GlaxoSmithKline LLC",
+      "among Pfizer Inc." and "among SANOFI" as Parent names). (d) The
+      cover caption is read under "among", "among:" and "by and among",
+      description lines ("a Delaware corporation;") skipped, names not
+      joined across "and" (the old rule stored "VOL HOLDINGS LLC VERONA
+      PHARMA PLC" as one party), the list ending at the date line or the
+      contents, and a trailing period kept ("INDIVIOR PHARMACEUTICALS,
+      INC."). Pinned in tests/product-party-identity.test.js with the
+      words of Crinetics, Centessa, Akero, Verona Pharma, Merus, 89bio,
+      Merck KGaA, Avidity, argenx, Nuvalent, Tourmaline, Supernus,
+      KalVista and Avadel (eight tests, the ten earlier ones unchanged
+      and passing). The sweep: every exhibit of the 34 deals of (127)
+      (35 URLs, the Metsera original and its amendment both) fetched to
+      the scratchpad, converted with convertSecHtmlToCanonicalText and
+      scored with extractDocumentIdentity, no intake. Before the fix, 28
+      of 34 passed the gate, and of those 28, nine carried wrong or
+      incomplete parties (the three "among X" Parent names; Verona's two
+      names joined; "Germany" as Merck KGaA's name; "Inc." as 89bio's;
+      Merus and Verona with no roles; argenx and Tourmaline without
+      their Parent); six stopped: Avidity (PARTIES_UNCONFIRMED, the
+      nested "(Aktiengesellschaft)"), Crinetics and Day One
+      (AGREEMENT_DATE_UNCONFIRMED, the cover comma), Centessa and Akero
+      (PARTIES_UNCONFIRMED), Supernus (both: no role words, "Dated"
+      without "as of"). After the fix, 33 of 34 pass with every party
+      named and given its role, and one stops, on rule (a): Alkermes /
+      Avadel, AGREEMENT_DATE_CONFLICT, because the exhibit itself
+      carries two dates, "dated as of October 22, 2025" on the cover and
+      in the CVR Agreement's recital, "dated as of October 21, 2025" in
+      the preamble sentence; the rule is right to stop, and which date
+      is the agreement's is Ben's to say (the stored run 91fe48a1 passed
+      the old cover-only rule with 2025-10-22). The Metsera amendment
+      stops on PARTIES_UNCONFIRMED, REVISION_UNCONFIRMED and
+      DOCUMENT_INCOMPLETE, as an amendment should. Seen in passing, not
+      changed: the canonical text keeps undecoded HTML entities
+      ("soci&eacute;t&eacute; anonyme" in Sanofi / Blueprint,
+      "simplifi&eacute;e" in Servier / Day One), a conversion defect in
+      lib/canonical-v2/sec-html-canonical-text.js for implementer A; it
+      did not stop either deal. How the three held runs are resolved: by
+      product_phase1_resolve_identity with the resolution of (129), not
+      by a fresh intake. The repository shows a fresh intake would not
+      be cleaner: lib/product/phase-1-foundation.js looks the source
+      document up by URL (findSourceDocumentByUrl) before it calls the
+      SEC adapter, so a new submission of the same URL under a new
+      idempotency key reuses the stored SOURCE_DOCUMENT/V1 payload
+      (parties [], agreement_date null, identity_status NEEDS_REVIEW),
+      creates a second run and stops at the same gate with the same
+      reasons, the fixed extractor never running; the source row cannot
+      be dropped to force a re-fetch while the held runs reference it.
+      The fixed extractor serves new URLs only (the 30 deals of (127)
+      not yet submitted). What waits on the manager and Ben: deploy the
+      extractor before the next intakes; resolve the three held runs
+      with {"confirmed": true, "confirmed_by": "ben"} when Ben says so,
+      accepting that their stored identity stays as extracted; and,
+      proposed and not built, a re-score path for a stored source
+      document (a service-role function that re-runs
+      extractDocumentIdentity over the stored canonical_text and
+      rewrites the payload's parties, agreement_date, revision,
+      identity_status and identity_review_reasons, with the
+      identity_version raised to DOCUMENT_IDENTITY/V2 so a record says
+      which rules scored it), which would also repair the three. Not
+      changed: the schema, the migrations, identity_version, any route.
+      npm run test:active: SUITE_RESULT. No run resolved, woken or
+      submitted; no worker or sandbox touched.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
