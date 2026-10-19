@@ -4842,6 +4842,28 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       the ledger's method, the deterministic ones built behind flags
       now. The required performance is the facts as read now, judged by
       compare-generations on the agreement's bytes. Findings from (184).
+      (178) 2026-10-19 03:35 UTC: implementer D's (142) and (142a) and
+      implementer A's (201) merged (head 25423061; the active suite in
+      the next finding). D3 read: an attempt resumes after a worker
+      stop (completed calls of an interrupted attempt reused at zero
+      cost under the new attempt's identity, every failure record on
+      the history carrying its attempt token and part, the lease
+      recovery writing the expired attempt, a stopping worker handing
+      its claim back with the parts done, a restarted worker releasing
+      its own dead claims); a second gap found and fixed on the way
+      (work package 15's part failure never reached the section's
+      history on the hosted path, so the re-split by part of (84) and
+      (88) never fired there). Migration 20261019003000 applied to the
+      preview branch at 03:33 UTC; the pool sandboxes are updated to
+      head after this push, while no worker holds their lock. (201)
+      corrects (176): A's proof is that today's compile of NCS's stored
+      answers by quotes, by offsets (1,063 of 1,066; 4.7's three lose
+      their introduction components under the offsets rule) and by
+      unique anchors (1,066 of 1,066) gives the same facts and the same
+      22 holds, not that the stored statuses re-validate. The two
+      paused runs: no live sandbox assignment, two stale RUNNING rows
+      each with leases lapsed at 02:43, released on the next wake by
+      D3's restarted-worker rule.
       (130) merged (head 42f536d2; the active suite in the next
       finding). Read: E's levers ranked with measured dollars on NCS
       generation 5 (the answer format with span aliases -$28 and -107
@@ -6740,6 +6762,19 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       origin (E's (181) and (182) merged by hand, lib/product/agreement-
       draft.js); npm run test:active on the merged tree: 803 of 804, the
       one failure the known Codex-client final-message test.
+      (201) 2026-10-19 03:30 UTC (implementer A), one correction to
+      (176)'s reading of (200): the proof is not that "the stored NCS
+      answers re-validate to the same 1,015 and 22". The stored statuses
+      are the generation's (1,037 proposals, 1,015 VALID, 22 held, under
+      the rules of 2026-10-18 13:27 to 20:47 UTC); today's compile of the
+      151 answered calls gives 1,066 proposals, 1,044 VALID and 22 held
+      by quotes, superseded attempts included and work packages 13 to 20
+      applied. What (200) proves is that today's compile by quotes and
+      today's compile by offsets (1,063 of 1,066, 4.7's three losing
+      their introduction components under the offsets rule) or by unique
+      anchors (1,066 of 1,066) are the same facts, the 22 held the same
+      way with the same issues. Nothing else changed; no code in this
+      finding.
       (120) 2026-10-18 19:10 to 19:45 UTC (implementer C), Q5: the limb
       names harvested. `scripts/product/harvest-rep-limbs.js` (library
       `lib/product/rep-limb-harvest.js`, `tests/product-rep-limb-harvest.test.js`)
