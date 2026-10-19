@@ -8185,9 +8185,82 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       tests/product-anthropic-api-provider.test.js,
       tests/product-claude-cli-provider.test.js and
       tests/product-lean-request-profile.test.js take the new default
-      and the identity follow. Part 2, the fresh sheet (every
-      assumption of the pipeline questioned, the deterministic
+      and the identity follow. npm run test:active on a clean checkout
+      of the commit: 829 tests, 827 pass; the known Codex-client
+      final-message test, and a wall-clock timing test
+      (canonical-v2-sec-html-canonical-text, "without per-region
+      full-document scans") that ran while two suites shared the
+      machine and passes alone, 13 of 13. Part 2, the fresh sheet
+      (every assumption of the pipeline questioned, the deterministic
       experiments behind flags), is finding (185).
+
+      (185) 2026-10-19 05:10 to 06:30 UTC (implementer E), work package
+      E3 part 2, the fresh sheet (Ben, finding (177): "It can
+      experiment, tear up ideas etc. cone at completely fresh"). No run
+      submitted or woken; no live call. The sheet is section 14 of the
+      ledger note: eleven assumptions the pipeline carries, each with
+      the experiment the ablation job runs (a rung), the saving by the
+      ledger's method against the default's projected $72 and 70
+      minutes, and what it risks; built where no new model behaviour
+      is needed, designed where the build is the next step. Built in
+      this push, behind request-profile flags (lib/product/agreement-draft.js),
+      none the default's until the ablation says so: (1)
+      `routing_mode: 'deterministic_first'`: where the deterministic
+      evidence is all heading rules and anchoring defined terms
+      (SECTION_FAMILY_RULE_CLASSIFIED, SECTION_FAMILY_DEFINED_TERM_ANCHORED;
+      `deterministicRoutingDecision`), the routing is the code's and
+      the routing call is not made; the residual pass and the
+      compiler's widening stay; `compileRouting` records
+      model_call_id null and routing_source DETERMINISTIC, the section
+      carries a ROUTING_DETERMINISTIC note, the section's coverage has
+      no call behind it. A limit, stated: product_section_routings'
+      model_call_id is NOT NULL with a foreign key to the model calls
+      (migration 20260905043000), so a hosted run cannot store a
+      routing with no call yet; the rung runs in the ablation, which
+      writes no store, and the step before a run takes the flag is a
+      migration (a nullable model_call_id, or the routing row citing
+      the residual call that did run), implementer D's table. On NCS,
+      118 routing calls
+      to about 40; $0.3 at Haiku and about 8 wall minutes, and one
+      fewer thing to fail. (2) `definitions_scope: 'direct'`: the
+      definitions whose defined term (the quoted term the paragraph
+      opens with, `definedTermOf`) appears in the section's own words
+      go whole, the transitive ones are listed by first words for the
+      model to ask for by alias (`directDefinitionSpanIds`; a
+      paragraph without a readable term goes whole, never lost). With
+      `trimmed`, the 16.36 MB sent on NCS falls to about 7 MB: $11 of
+      the $72. (3) `fact_budget: true`: the request carries the
+      expected count and a ceiling from the section's operative bytes
+      (one fact per 290 bytes on NCS generation 5, 1,015 over 295,516;
+      `factBudgetFor`) as a check the instruction says is not a
+      target; an answer past the ceiling is a FACT_BUDGET_EXCEEDED
+      note, never a hold. (4) The ladder gains `default` (the new
+      default's profile and models; on the CLI the rung that confirms
+      Opus 5.5 there), `deterministic_routing` (no call: the stored
+      answers route where the words do not, so the row says how many
+      sections the words decide and whether the facts hold),
+      `direct_definitions`, `fact_budget` and `anchors_sonnet55`
+      (Sonnet 5.5 writing the facts: $36 of the $72 if the bytes
+      hold). Designed, with their cost on the sheet: the residual skip
+      where the words routed a one-paragraph section; the statement
+      derived from the OWN components; facts as NDJSON lines so a cap
+      costs a fact, not an attempt (5.1's three attempts); the Batch
+      API's three waves (50 per cent); section batching for the thirty
+      sections under 1,500 bytes. Stacked: the built rungs that hold
+      take the default's $72 to about $55, the model tier and the
+      Batch API to about $12, which with the subscription's $0 is the
+      10x Ben named, the facts judged the same way at every step.
+      Proven on Concho 6.3 through the synthetic routing
+      (tests/product-fresh-sheet-experiments.test.js, 6 tests): the
+      heading "No Solicitation" routes the section with no ROUTING
+      call and the fact compiles VALID; the direct definitions keep
+      the terms the section names and list the others; the budget is
+      in the request and an answer past the ceiling is a note while
+      the facts are still compiled; the rungs run on the CLI. For the
+      manager: the third sandbox's ladder, in the order the money
+      goes: default, deterministic_routing (free), direct_definitions,
+      fact_budget, anchors_sonnet55, offsets, trimmed; each with
+      `--analysis-dir` to compare-generations.
 
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
