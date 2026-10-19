@@ -8260,7 +8260,9 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       manager: the third sandbox's ladder, in the order the money
       goes: default, deterministic_routing (free), direct_definitions,
       fact_budget, anchors_sonnet55, offsets, trimmed; each with
-      `--analysis-dir` to compare-generations.
+      `--analysis-dir` to compare-generations. npm run test:active on
+      a clean checkout of the commit: 835 tests, 834 pass, the one
+      failure the known Codex-client final-message test.
 
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
