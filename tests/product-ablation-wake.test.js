@@ -10,7 +10,7 @@ const { buildAgreementStructure } = require('../lib/product/agreement-structure'
 const { buildAgreementDraft } = require('../lib/product/agreement-draft');
 const { createProductAblationHandler } = require('../lib/product/ablation-handler');
 const { createClaudeCliProductModel } = require('../lib/product/claude-cli-model');
-const { ABLATION_VARIANTS, createRecorder, renderAblationTable, runSectionAblation, variantAvailability } = require('../lib/product/cost-ablation');
+const { ABLATION_VARIANTS, createRecorder, estimateAblationTokens, renderAblationTable, runSectionAblation, variantAvailability } = require('../lib/product/cost-ablation');
 const { createRecordedModelAdapter } = require('../lib/product/model-adapter');
 const { ANTHROPIC_API_PROVIDER_ID, CLAUDE_CLI_PROVIDER_ID } = require('../lib/product/product-model-config');
 const { internalBearerActor } = require('../lib/product/request-auth');
@@ -228,7 +228,7 @@ test('the CLI path of the cost ablation runs the expressible variants through th
   assert.ok(calls.some((call) => call.call_kind === 'EXTRACTION' && call.prompt_version === 'PRODUCT_ALL_FAMILY_EXTRACTOR/V10'));
   const table = renderAblationTable(ablations);
   assert.match(table, /\| lean \| all \| not run \|.*API-only rung/);
-  assert.match(table, /\| format \| 3\.1 \| 1 \(0\) \| 1 \/ 0 \/ 0 of 1 \| 0 \|.*\$0\.00 at list \$0\.01 \| 1 live \(claude-opus-5;effort=high\) thinking \d+ of \d+ output \(\d+%, reported\)/);
+  assert.match(table, /\| format \| 3\.1 \| 1 \(0\) \| 1 \/ 0 \/ 0 of 1 \| 0 \|.*\$0\.00 at list \$0\.01 \| \$0\.0\d \| \$0\.0\d \| 1 live \(claude-opus-5;effort=high\) thinking \d+ of \d+ output \(\d+%, reported\)/);
   // The recording answers a second pass with no call at all: a recorded adapter in place of the CLI.
   const recording = { schema_version: 'PRODUCT_MODEL_RECORDING/V1', calls: recorder.entries().map((entry) => ({ ...entry, raw_response: JSON.parse(entry.raw_response.content[0].text) })) };
   assert.equal(recording.calls.length, 3, 'one extraction, one routing, one residual were live');
@@ -419,4 +419,42 @@ test('the ablation route opens to the internal bearer token alone, starts the jo
   response = responseDouble();
   await handler({ method: 'GET', headers: bearer }, response);
   assert.equal(response.statusCode, 405);
+});
+
+// Plan finding (189): the full-agreement confirmation runs over every
+// section ('all'), and the subscription tokens it would take are
+// estimated from the stored run's own calls before anything runs.
+test('sections "all" runs every section the stored run has a closure for, and the estimate prices the ladder from the stored calls without a call', async () => {
+  const { rows, draft } = await storedRun();
+  const baseline = await runSectionAblation({ run: rows, sections: ['all'], variantName: 'baseline', providerId: CLAUDE_CLI_PROVIDER_ID });
+  assert.equal(baseline.sections.length, draft.sections.length);
+  assert.ok(baseline.sections.every((section) => section.error === null), JSON.stringify(baseline.sections.map((section) => section.error).filter(Boolean)));
+  assert.equal(baseline.sections.reduce((sum, section) => sum + section.extraction.live_calls, 0), 0);
+  const table = renderAblationTable([baseline]);
+  assert.match(table, new RegExp(`\\| baseline \\| all ${draft.sections.length} sections \\|`));
+  const estimate = estimateAblationTokens({ run: rows, sections: ['all'], variants: ['anchors_opus55_medium', 'anchors_sonnet55', 'baseline'] });
+  const storedCalls = rows.tables.product_model_calls.filter((call) => call.call_kind === 'EXTRACTION');
+  assert.equal(estimate.sections, draft.sections.length);
+  assert.equal(estimate.stored_extraction_calls, storedCalls.length);
+  assert.equal(estimate.stored_output_tokens, storedCalls.length * 50);
+  const [opus, sonnet, replayed] = estimate.variants;
+  assert.equal(opus.input_tokens, estimate.stored_input_tokens);
+  assert.equal(opus.output_tokens, Math.round(estimate.stored_output_tokens * 0.6));
+  assert.equal(sonnet.output_tokens, Math.round(estimate.stored_output_tokens * 0.73));
+  assert.deepEqual([replayed.input_tokens, replayed.output_tokens], [0, 0], 'a replay rung costs nothing');
+  assert.equal(estimate.total_output_tokens, opus.output_tokens + sonnet.output_tokens);
+  // The script prints the same estimate from a snapshot and runs nothing.
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pm-ablation-estimate-'));
+  fs.writeFileSync(path.join(dir, 'rows.json'), JSON.stringify({ schema_version: 'PRODUCT_RUN_SNAPSHOT/V1', ...rows }));
+  const script = require('../scripts/product/cost-ablation');
+  const logs = [];
+  const originalLog = console.log;
+  console.log = (line) => logs.push(String(line));
+  try {
+    await script.main(['--snapshot', path.join(dir, 'rows.json'), '--sections', 'all', '--variant', 'anchors_opus55_medium,anchors_sonnet55', '--provider', CLAUDE_CLI_PROVIDER_ID, '--estimate']);
+  } finally {
+    console.log = originalLog;
+  }
+  assert.match(logs.join('\n'), new RegExp(`estimate over ${draft.sections.length} sections`));
+  assert.match(logs.join('\n'), /anchors_opus55_medium: about [0-9,]+ input and [0-9,]+ output tokens/);
 });

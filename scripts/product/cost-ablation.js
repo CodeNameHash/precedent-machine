@@ -20,13 +20,13 @@
 //   node scripts/product/compare-generations.js --v1-file ablation-analysis/stored.analysis.json --v2-file ablation-analysis/lean.analysis.json --out lean-vs-stored.md
 
 const fs = require('node:fs');
-const { ABLATION_VARIANTS, analysisFromResults, analysisFromStoredRows, createRecorder, renderAblationTable, runSectionAblation, variantAvailability } = require('../../lib/product/cost-ablation');
+const { ABLATION_VARIANTS, analysisFromResults, analysisFromStoredRows, createRecorder, estimateAblationTokens, renderAblationTable, runSectionAblation, variantAvailability } = require('../../lib/product/cost-ablation');
 const { ANTHROPIC_API_PROVIDER_ID, CLAUDE_CLI_PROVIDER_ID } = require('../../lib/product/product-model-config');
 const path = require('node:path');
 const { createEnvironmentClient, loadRunContext, loadTableRows, readRunSnapshot, writeRunSnapshot } = require('../../lib/product/run-rows');
 
 function parseArgs(argv) {
-  const args = { run: null, snapshot: null, sections: [], variants: [], live: false, record: null, recording: null, out: null, json: null, dumpSnapshot: null, analysisDir: null, provider: null };
+  const args = { run: null, snapshot: null, sections: [], variants: [], live: false, record: null, recording: null, out: null, json: null, dumpSnapshot: null, analysisDir: null, provider: null, estimate: false };
   for (let i = 0; i < argv.length; i += 1) {
     if (argv[i] === '--run') args.run = argv[i += 1];
     else if (argv[i] === '--snapshot') args.snapshot = argv[i += 1];
@@ -40,6 +40,7 @@ function parseArgs(argv) {
     else if (argv[i] === '--dump-snapshot') args.dumpSnapshot = argv[i += 1];
     else if (argv[i] === '--analysis-dir') args.analysisDir = argv[i += 1];
     else if (argv[i] === '--provider') args.provider = argv[i += 1];
+    else if (argv[i] === '--estimate') args.estimate = true;
     else { console.error(`unknown argument ${argv[i]}`); process.exit(64); }
   }
   if ((!args.run && !args.snapshot) || !args.sections.length) { console.error('usage: cost-ablation.js (--run <id> | --snapshot <file>) --sections a,b,c [--variant name,...] [--live] [--record file] [--recording file] [--out table.md] [--json results.json] [--dump-snapshot file] [--analysis-dir dir] [--provider ANTHROPIC_CLAUDE_CLI_SUBSCRIPTION|ANTHROPIC_API]'); process.exit(64); }
@@ -59,8 +60,10 @@ function parseArgs(argv) {
 async function loadAblationRows(client, runId, sections) {
   const context = await loadRunContext(client, runId);
   const closures = await loadTableRows(client, 'product_source_closures', runId);
-  const nodeIds = closures.filter((closure) => sections.includes(closure.section_reference)).map((closure) => closure.structure_node_id);
-  const missing = sections.filter((reference) => !closures.some((closure) => closure.section_reference === reference));
+  // 'all': every section of the run (plan finding (189)).
+  const wanted = sections.length === 1 && sections[0] === 'all' ? closures.map((closure) => closure.section_reference) : sections;
+  const nodeIds = closures.filter((closure) => wanted.includes(closure.section_reference)).map((closure) => closure.structure_node_id);
+  const missing = wanted.filter((reference) => !closures.some((closure) => closure.section_reference === reference));
   if (missing.length) throw new Error(`sections not in the run: ${missing.join(', ')}`);
   const proposals = await loadTableRows(client, 'product_proposals', runId, { filter: { structure_node_id: nodeIds } });
   const proposalIds = proposals.map((row) => row.proposal_id);
@@ -121,6 +124,14 @@ async function main(argv) {
     run = await loadAblationRows(createEnvironmentClient(), args.run, args.sections);
   }
   if (args.dumpSnapshot) { writeRunSnapshot(args.dumpSnapshot, run); console.log(`wrote ${args.dumpSnapshot}`); }
+  if (args.estimate) {
+    // The subscription tokens the ladder would take, from the stored run's own calls; nothing runs.
+    const estimate = estimateAblationTokens({ run, sections: args.sections, variants: args.variants });
+    console.log(`estimate over ${estimate.sections} sections (${estimate.stored_extraction_calls} stored extraction calls, ${estimate.stored_input_tokens.toLocaleString('en-US')} input and ${estimate.stored_output_tokens.toLocaleString('en-US')} output tokens stored):`);
+    for (const item of estimate.variants) console.log(`  ${item.variant}: about ${item.input_tokens.toLocaleString('en-US')} input and ${item.output_tokens.toLocaleString('en-US')} output tokens; ${item.serial_seconds.toLocaleString('en-US')} s of output serial, about ${item.wall_minutes_at_loops} min at eight loops`);
+    console.log(`  total: about ${estimate.total_input_tokens.toLocaleString('en-US')} input and ${estimate.total_output_tokens.toLocaleString('en-US')} output tokens`);
+    return [];
+  }
   if (!args.variants.length) return [];
   const recorder = createRecorder(args.recording ? JSON.parse(fs.readFileSync(args.recording, 'utf8')).calls : []);
   const factory = args.live ? liveModelFactory(args.provider) : null;

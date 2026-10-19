@@ -7,7 +7,7 @@ const test = require('node:test');
 const { buildAgreementStructure } = require('../lib/product/agreement-structure');
 const { LEAN_PROMPT_VERSION, buildAgreementSectionDraft } = require('../lib/product/agreement-draft');
 const { ANTHROPIC_API_REQUEST_PROFILES } = require('../lib/product/product-model-config');
-const { ABLATION_VARIANTS, analysisFromResults, compareFacts, createRecorder, createVariantModel, recordingKey, renderAblationTable, runSectionAblation, thinkingOf } = require('../lib/product/cost-ablation');
+const { ABLATION_VARIANTS, ablationTotals, analysisFromResults, compareFacts, createRecorder, createVariantModel, fixedLayoutPrices, recordingKey, renderAblationTable, replayMisfit, runSectionAblation, thinkingOf } = require('../lib/product/cost-ablation');
 const { indexStoredCalls } = require('../lib/product/run-replay');
 const { substantiveSections } = require('../lib/product/source-context');
 const { conchoSource, createSyntheticConchoModel } = require('./product-phase-2.test.js');
@@ -214,14 +214,16 @@ test('the ablation table renders a stored row per section and a row per variant'
   const ablations = [{
     variant: 'format', note: 'n', sections: [{
       section_reference: '5.2', stored_facts: { valid: 27, held: 0 }, facts: { valid: 26, held: 1 }, comparison: { counts: { stored: 27, matched: 24, partial: 2, unmatched: 1, new: 1 } },
-      extraction: { fresh_input_tokens: 1000, cache_read_tokens: 2000, cache_write_tokens: 0, output_tokens: 500, duration_ms: 60000, cost_microusd: 150000, live_calls: 3, model_ids: ['claude-opus-5;effort=high'] },
-      stored_extraction: { fresh_input_tokens: 122046, cache_read_tokens: 99061, cache_write_tokens: 44917, output_tokens: 92732, duration_ms: 1032000, cost_microusd: 3430000, model_ids: ['claude-opus-5;effort=high'], repriced_opus_5_5_usd: 2.7 },
+      extraction: { fresh_input_tokens: 1000, cache_read_tokens: 2000, cache_write_tokens: 0, output_tokens: 500, duration_ms: 60000, cost_microusd: 150000, live_calls: 3, model_ids: ['claude-opus-5;effort=high'], ...fixedLayoutPrices({ fresh_input_tokens: 1000, cache_read_tokens: 2000, cache_write_tokens: 0, output_tokens: 500 }, 'claude-opus-5;effort=high') },
+      stored_extraction: { fresh_input_tokens: 122046, cache_read_tokens: 99061, cache_write_tokens: 44917, output_tokens: 92732, duration_ms: 1032000, cost_microusd: 3430000, model_ids: ['claude-opus-5;effort=high'], repriced_opus_5_5_usd: 2.7, ...fixedLayoutPrices({ fresh_input_tokens: 122046, cache_read_tokens: 99061, cache_write_tokens: 44917, output_tokens: 92732 }, 'claude-opus-5;effort=high') },
       routing_families: ['NO_SHOP'], stored_routing_families: ['NO_SHOP'], lean_note: null,
     }],
   }];
   const table = renderAblationTable(ablations);
   assert.match(table, /\| stored run \| 5\.2 \| 27 \(0\) \|/);
-  assert.match(table, /\| format \| 5\.2 \| 26 \(1\) \| 24 \/ 2 \/ 1 of 27 \| 1 \| 1,000 \| 2,000 \| 0 \| 500 \| 60 \| \$0\.15 \| 3 live/);
+  assert.match(table, /\| format \| 5\.2 \| 26 \(1\) \| 24 \/ 2 \/ 1 of 27 \| 1 \| 1,000 \| 2,000 \| 0 \| 500 \| 60 \| \$0\.15 \| \$0\.04 \| \$0\.01 \| 3 live/, 'the two fixed-layout prices sit between the cost and the note');
+  assert.match(table, /\| stored run \| 5\.2 \| 27 \(0\) \| \| \| 122,046 \| 99,061 \| 44,917 \| 92,732 \| 1032 \| \$3\.43 \| \$4\.98 \| \$2\.45 \|/);
+  assert.match(table, /\| format \| all 1 sections \| 26 \(1\) \| 24 \/ 2 \/ 1 of 27 \| 1 \| 1,000 \| 2,000 \| 0 \| 500 \| 60 \| \$0\.15 \| \$0\.04 \| \$0\.01 \| the rung's totals/, 'the totals row');
 });
 
 // Plan finding (187), the first ladder's defects (1) and (2): the recording
@@ -267,4 +269,57 @@ test('two rungs that share a recorder and differ only in model or effort never r
   assert.deepEqual(sonnet.answered.map((entry) => entry.output_tokens), [10]);
   assert.deepEqual(opus.answered.map((entry) => entry.output_tokens), [20]);
   assert.deepEqual(thinkingOf(opus.answered), { list_cost_microusd: 20000, visible_output_tokens: 12, thinking_tokens: 8, thinking_share: 0.4, thinking_source: 'reported' });
+});
+
+// Plan finding (189): the fixed-layout prices, the totals, the replay
+// fitness check with its live fallback, and the routing rungs' note.
+test('the fixed-layout prices bracket a call at the model\'s published rates, and a rung\'s totals sum its sections', () => {
+  const usage = { fresh_input_tokens: 1000, cache_read_tokens: 2000, cache_write_tokens: 3000, output_tokens: 500 };
+  assert.deepEqual(fixedLayoutPrices(usage, 'claude-opus-5-5;effort=high'), { list_price_written_usd: 0.06, list_price_read_usd: 0.01 });
+  assert.deepEqual(fixedLayoutPrices(usage, 'claude-sonnet-5-5;effort=high'), { list_price_written_usd: 0.03, list_price_read_usd: 0.01 });
+  assert.deepEqual(fixedLayoutPrices(usage, 'unknown-model'), { list_price_written_usd: null, list_price_read_usd: null });
+  const section = (reference, valid, matched) => ({ section_reference: reference, facts: { valid, held: 0 }, comparison: { counts: { stored: valid, matched, partial: 0, unmatched: valid - matched, new: 1 } }, extraction: { fresh_input_tokens: 10, cache_read_tokens: 20, cache_write_tokens: 30, output_tokens: 40, duration_ms: 1000, cost_microusd: 0, list_cost_microusd: 5000, list_price_written_usd: 0.5, list_price_read_usd: 0.25 } });
+  const totals = ablationTotals({ sections: [section('1.1', 7, 7), section('2.2', 27, 26), { section_reference: '3.3', error: { message: 'x' } }] });
+  assert.deepEqual(totals, { sections: 2, failed: 1, valid: 34, held: 0, stored: 34, matched: 33, partial: 0, unmatched: 1, new: 2, fresh_input_tokens: 20, cache_read_tokens: 40, cache_write_tokens: 60, output_tokens: 80, duration_ms: 2000, cost_microusd: 0, list_cost_microusd: 10000, list_price_written_usd: 1, list_price_read_usd: 0.5 });
+  assert.equal(ablationTotals({ sections: [] }), null);
+});
+
+test('a stored extraction that does not fit today\'s routing or grouping is extracted live with the reason on the row, or is a miss naming the part and the group when no provider is there', async () => {
+  const storedCall = {
+    model_call_id: 'e1', structure_node_id: 'n1', call_kind: 'EXTRACTION', prompt_version: 'X/V9', provider_id: 'P', model_id: 'claude-opus-5;effort=high', created_at: '2026-10-18T00:00:00Z',
+    request: { instruction: 'extract', family_contracts: [{ family_key: 'TERMINATION' }], source_closure: { section_reference: '1.1', operative: [{ span_id: 'a', start_byte: 0, end_byte: 10 }], extraction_part: { part: 1, of: 2 } } },
+    response: { proposals: [{ client_ref: 'p1', family_key: 'TERMINATION' }], groups: [{ client_ref: 'g1', family_key: 'TERMINATION' }], links: [] },
+    input_tokens: 1, output_tokens: 1, cost_microusd: 0, duration_ms: 1,
+  };
+  const index = indexStoredCalls([storedCall], { referenceByNode: new Map([['n1', '1.1']]) });
+  const nodeByReference = new Map([['1.1', 'n1']]);
+  const fits = { call_kind: 'EXTRACTION', prompt_version: 'X/V9', request: { instruction: 'extract today', routed_families: ['TERMINATION'], source_closure: { section_reference: '1.1', operative: [{ span_id: 'a', start_byte: 0, end_byte: 10 }], extraction_part: { part: 1, of: 2 } } } };
+  assert.equal(replayMisfit(fits, index, nodeByReference), null, 'the same families and spans: the loose replay fits');
+  const otherFamily = { ...fits, request: { ...fits.request, routed_families: ['NO_SHOP'] } };
+  assert.match(replayMisfit(otherFamily, index, nodeByReference).reason, /groups name TERMINATION outside today's routed families \(NO_SHOP\)/);
+  const otherGrouping = { ...fits, request: { ...fits.request, source_closure: { ...fits.request.source_closure, operative: [{ span_id: 'a', start_byte: 0, end_byte: 10 }, { span_id: 'b', start_byte: 11, end_byte: 20 }] } } };
+  assert.match(replayMisfit(otherGrouping, index, nodeByReference).reason, /grouping moved/);
+  assert.equal(replayMisfit({ ...fits, request: { ...fits.request, source_closure: { ...fits.request.source_closure, section_reference: '9.9' } } }, index, nodeByReference), null, 'no stored call at all is the replay\'s own miss');
+  // With a provider: the part is extracted live and the fallback is on the row.
+  let live = 0;
+  const liveModel = { async complete(input) { live += 1; return { provider_id: 'P', model_id: 'claude-opus-5;effort=high', raw_request: input.request, raw_response: { content: [{ type: 'text', text: '{"proposals":[],"groups":[],"links":[]}' }] }, response: { proposals: [], groups: [], links: [] }, input_tokens: 1, output_tokens: 1, cost_microusd: 0, duration_ms: 1 }; } };
+  const variant = { ...ABLATION_VARIANTS.routing_haiku, name: 'routing_haiku' };
+  const model = createVariantModel({ variant, replayIndex: index, nodeByReference, liveModel, recorder: createRecorder(), selectionFor: () => ({ model: 'claude-opus-5', effort: 'high' }), profile: variant.profile });
+  const answer = await model.complete(otherFamily);
+  assert.deepEqual(answer.response, { proposals: [], groups: [], links: [] });
+  assert.equal(live, 1);
+  assert.deepEqual(model.fallbacks.map((entry) => [entry.section_reference, entry.part]), [['1.1', 1]]);
+  const replayed = await model.complete(fits);
+  assert.equal(replayed.response.groups[0].family_key, 'TERMINATION', 'a fitting request still replays');
+  assert.equal(live, 1);
+  // Without a provider: a miss naming the part and the group, never a compiler throw.
+  const offline = createVariantModel({ variant, replayIndex: index, nodeByReference, liveModel: null, recorder: createRecorder() });
+  await assert.rejects(() => offline.complete(otherFamily), (error) => error.code === 'REPLAY_MISS' && /EXTRACTION for 1\.1 part 1: the stored call's groups name TERMINATION/.test(error.message) && /no provider/.test(error.message));
+});
+
+test('a rung that replays the extraction while its routing ran live is marked as routing agreement only, and a rung that replays everything is not', () => {
+  const row = (variant, factEvidence) => ({ variant, sections: [{ section_reference: '1.1', fact_evidence: factEvidence, facts: { valid: 1, held: 0 }, comparison: { counts: { stored: 1, matched: 1, partial: 0, unmatched: 0, new: 0 } }, extraction: { fresh_input_tokens: 0, cache_read_tokens: 0, cache_write_tokens: 0, output_tokens: 0, duration_ms: 0, cost_microusd: 0, live_calls: 0, routing_live_calls: 2, model_ids: [] } }] });
+  const table = renderAblationTable([row('routing_haiku', false), row('baseline', true)]);
+  assert.match(table, /\| routing_haiku \| 1\.1 \|.*\| routing agreement only, facts replayed; replayed routing and residual 2 live/);
+  assert.doesNotMatch(table.split('\n').find((line) => line.startsWith('| baseline | 1.1')), /routing agreement only/);
 });

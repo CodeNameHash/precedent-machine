@@ -8620,6 +8620,90 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       commit: 838 tests, 837 pass, the one failure the known
       Codex-client final-message test.
 
+      (189) 2026-10-19 09:20 to 10:30 UTC (implementer E), work package
+      E5 part 1: the second ladder's two defects and the full-agreement
+      confirmation harness, ready and not started (the manager's note
+      docs/codex-program/notes/ABLATION-LADDER-RUN-2-2026-10-19.md,
+      finding (211)). Nothing run here; the default profile's model and
+      effort unchanged, the tier decision being Ben's. (1) GROUP_FAMILY
+      on deterministic_routing (5.17 part 1) and routing_haiku (5.17
+      part 3): when the live routing differs from the stored run's, the
+      stored extraction the loose replay answers with names families
+      outside today's routed set, or its part's operative spans are not
+      today's part's, and the compiler threw. `replayMisfit`
+      (lib/product/cost-ablation.js) checks both before the replay
+      answers; an unfit part is extracted live when the rung has a
+      provider, the row says so ("extracted live because the stored
+      call did not fit: part 3: the stored call's groups name
+      CONSIDERATION outside today's routed families (...)"), and
+      without a provider it is REPLAY_MISS naming the part and the
+      group, never a compiler throw. Pinned: the same families and
+      spans replay; another family or another grouping falls back live
+      once and the fallback is on the row; offline it misses with the
+      part and the group named (tests/product-cost-ablation.test.js).
+      (2) The cost column followed the CLI's reported cache split, so
+      anchors_opus55_medium read "$0.00 at list $0.42" only because
+      anchors_opus55 had just sent the same words: every row now also
+      carries the two fixed-layout list prices at the extraction
+      model's published rates, every input token written at the
+      one-hour rate and every input token read (`fixedLayoutPrices`,
+      the columns "List, all written" and "List, all read"), the
+      stored row too, and each rung ends with a totals row over its
+      sections (`ablationTotals`: facts, matched / partial / unmatched
+      / new, tokens, seconds, the CLI's cost and both prices). A rung
+      that replays the extraction while its routing or residual ran
+      live is marked "routing agreement only, facts replayed" on every
+      row (`fact_evidence: false`), so nobody reads routing_sonnet's or
+      routing_haiku's fact columns as fact evidence. (3) The
+      full-agreement confirmation harness: `--sections all` (the
+      script, the route body and the library expand it to every
+      section the stored run has a closure for, in the run's order;
+      the launcher's pattern already admits the word), the parts of a
+      split section four at a time as the draft's default, the
+      comparison per section and the whole-agreement totals row per
+      rung in ablation.md, and `--estimate`, which prices the ladder in
+      subscription tokens from the stored run's own extraction calls
+      without a call (`estimateAblationTokens`: on the CLI a
+      routed-contracts rung's input is about the stored run's whole
+      input, fresh, read and written together, as run 2's anchors rows
+      showed, 68,287 / 249,787 / 381,943 against the stored 67,733 /
+      250,382 / 374,989; its output is the stored output times the
+      rung's measured ratio, run 2: anchors 0.91, anchors_medium 0.50,
+      anchors_opus55 0.93, anchors_opus55_medium 0.60, anchors_sonnet55
+      0.73; an all-families rung adds the 150,000-token block to every
+      call). The estimate for NCS generation 5 whole, by that method on
+      the ledger's totals (12.79m input and 3.80m output tokens over
+      157 extraction calls): anchors_opus55_medium about 12.8m input
+      and 2.3m output tokens, 26,000 seconds of output serial, about
+      55 minutes at eight loops; anchors_sonnet55 about 12.8m input and
+      2.8m output, about 65 minutes; the two together about 25.6m input
+      and 5.1m output tokens of the subscription's capacity and about
+      two hours of the experiments sandbox; the chosen tier's
+      fresh-sheet rungs (deterministic_routing replays the extraction
+      and costs nothing; direct_definitions and fact_budget about 12m
+      input and 2.3m output each) add about an hour each. The
+      manager's exact figure comes from the sandbox:
+      `cost-ablation.js --run 51577c57-41b1-4b75-bcdf-c84ef2558589
+      --sections all --variant anchors_opus55_medium,anchors_sonnet55
+      --estimate`, no call. To fire when Ben picks the tier and the
+      manager says so: the route with `{"sections":["all"],"variants":
+      [...]}` on the experiments sandbox, never the pool. Pinned:
+      'all' runs every section of the phase-1 run as a zero-call
+      baseline with the totals row; the estimate's arithmetic on the
+      stored calls, a replay rung at zero, and the script's --estimate
+      from a snapshot (tests/product-ablation-wake.test.js). Read from
+      run 2 for the record, the manager's figures standing: Opus 5.5
+      medium 73 / 1 / 1 of 75 at 60 per cent of the stored output
+      tokens and 57 per cent of the seconds, its one loss a fact Ben's
+      (167) cuts; Sonnet 5.5 high 73 / 2 / 0 at 73 and 54 per cent;
+      Opus 5 medium's second loss the page-footer fact A's (202) now
+      resolves. Part 2 of E5, the Apollo 13 levers with the largest
+      headroom (every byte sent three or more times, the agreement
+      written back twice, the Batch API for the API provider), is
+      finding (190). Tests: tests/product-cost-ablation.test.js (9),
+      tests/product-ablation-wake.test.js (7). npm run test:active: see
+      the push.
+
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
 - [x] Take a database backup and restore it to a separate environment.
