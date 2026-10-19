@@ -13,7 +13,7 @@ const test = require('node:test');
 
 const {
   ANTHROPIC_API_CACHE_TTL, ANTHROPIC_API_CALL_KIND_MODELS, ANTHROPIC_API_MODEL_CONFIG, ANTHROPIC_API_PRICES, ANTHROPIC_API_PROVIDER_ID, CLAUDE_CLI_CALL_KIND_MODELS,
-  CLAUDE_CLI_MODEL_CONFIG, anthropicApiCostMicrousd, configuredProductModelConfig, hostedModelConfigFor, isHostedProvider, resolveAnthropicApiCallModel,
+  ANTHROPIC_API_DEFAULT_MODEL_CONFIG, CLAUDE_CLI_MODEL_CONFIG, anthropicApiCostMicrousd, configuredProductModelConfig, hostedModelConfigFor, isHostedProvider, resolveAnthropicApiCallModel,
 } = require('../lib/product/product-model-config');
 const { createProductIntakeHandler } = require('../lib/product/intake-handler');
 const { createProductAnalysisHandler } = require('../lib/product/analysis-handler');
@@ -59,8 +59,15 @@ test('the API provider is a hosted provider at the Claude CLI tier, metered at t
   assert.equal(ANTHROPIC_API_MODEL_CONFIG.billing_basis, 'ANTHROPIC_API_METERED');
   assert.equal(isHostedProvider(ANTHROPIC_API_PROVIDER_ID), true);
   assert.equal(isHostedProvider('ANTHROPIC'), false, 'the in-request Sonnet provider stays where it is');
-  assert.equal(hostedModelConfigFor(ANTHROPIC_API_PROVIDER_ID), ANTHROPIC_API_MODEL_CONFIG);
-  assert.equal(configuredProductModelConfig({ PRODUCT_MODEL_PROVIDER: ANTHROPIC_API_PROVIDER_ID }), ANTHROPIC_API_MODEL_CONFIG);
+  // Work package E3: a new run takes the default config (Haiku routing and
+  // residual, Opus 5.5 extraction, the DEFAULT request profile); V9 by
+  // PRODUCT_REQUEST_PROFILE; a run created under V1 keeps it by identity.
+  assert.equal(hostedModelConfigFor(ANTHROPIC_API_PROVIDER_ID, null, {}), ANTHROPIC_API_DEFAULT_MODEL_CONFIG);
+  assert.equal(hostedModelConfigFor(ANTHROPIC_API_PROVIDER_ID, { model_config: ANTHROPIC_API_MODEL_CONFIG }, {}), ANTHROPIC_API_MODEL_CONFIG);
+  assert.equal(configuredProductModelConfig({ PRODUCT_MODEL_PROVIDER: ANTHROPIC_API_PROVIDER_ID }), ANTHROPIC_API_DEFAULT_MODEL_CONFIG);
+  assert.equal(configuredProductModelConfig({ PRODUCT_MODEL_PROVIDER: ANTHROPIC_API_PROVIDER_ID, PRODUCT_REQUEST_PROFILE: 'V9' }), ANTHROPIC_API_MODEL_CONFIG);
+  assert.deepEqual(resolveAnthropicApiCallModel(ANTHROPIC_API_DEFAULT_MODEL_CONFIG, 'EXTRACTION'), { model: 'claude-opus-5-5', effort: 'high' });
+  assert.deepEqual(resolveAnthropicApiCallModel(ANTHROPIC_API_DEFAULT_MODEL_CONFIG, 'RESIDUAL'), { model: 'claude-haiku-5-5', effort: 'low' });
   assert.deepEqual(resolveAnthropicApiCallModel(ANTHROPIC_API_MODEL_CONFIG, 'EXTRACTION'), { model: 'claude-opus-5', effort: 'high' });
   assert.throws(() => resolveAnthropicApiCallModel(ANTHROPIC_API_MODEL_CONFIG, 'UNKNOWN'), /CALL_KIND/);
   assert.throws(() => resolveAnthropicApiCallModel({ ...ANTHROPIC_API_MODEL_CONFIG, thinking: 'other' }, 'ROUTING'), /ANTHROPIC_API_MODEL_CONFIG_UNSUPPORTED/);
@@ -291,7 +298,7 @@ test('the intake takes an explicit hosted provider for one run and refuses anyth
   const chosen = recorder();
   await handler(() => CLAUDE_CLI_MODEL_CONFIG)({ method: 'POST', body: { ...body, provider: ANTHROPIC_API_PROVIDER_ID } }, chosen);
   assert.equal(chosen.statusCode, 202);
-  assert.equal(submitted[0].modelConfig, ANTHROPIC_API_MODEL_CONFIG);
+  assert.equal(submitted[0].modelConfig, hostedModelConfigFor(ANTHROPIC_API_PROVIDER_ID), 'the environment\'s API config (work package E3: the default)');
   assert.equal('provider' in submitted[0], false, 'the field is consumed here, not passed to the foundation');
   const defaulted = recorder();
   await handler(() => CLAUDE_CLI_MODEL_CONFIG)({ method: 'POST', body }, defaulted);

@@ -242,3 +242,20 @@ test('the NCS generation 5 baseline fixture holds the ledger note\'s gate metric
     return true;
   });
 });
+
+test('the default profile\'s projected baseline (work package E3) is a gate baseline until a run measures it, and reads as a halving of NCS generation 5', () => {
+  const projected = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures/product/run-cost-baseline.default-profile.projected.json'), 'utf8'));
+  const measured = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures/product/run-cost-baseline.ncs-generation-5.json'), 'utf8'));
+  assert.equal(projected.projected, true);
+  for (const metric of Object.keys(GATE_METRICS)) assert.ok(Number.isFinite(projected.metrics[metric]), `${metric} is in the projected baseline`);
+  assert.equal(Number((projected.metrics.cost_usd / projected.metrics.valid_facts).toFixed(4)), projected.metrics.cost_per_valid_fact_usd);
+  assert.ok(projected.metrics.cost_usd < measured.metrics.cost_usd / 1.9 && projected.metrics.cost_usd > measured.metrics.cost_usd / 2.2, 'about half the money');
+  assert.ok(projected.metrics.wall_minutes_per_section < measured.metrics.wall_minutes_per_section / 5, 'eight loops and the parts together');
+  // A run that comes in at the projection passes; NCS generation 5's own numbers fail every output and time metric against it.
+  assert.deepEqual(assertNoUnexplainedRise(projected.metrics, projected.metrics), { ok: true, explained_rises: [] });
+  assert.throws(() => assertNoUnexplainedRise(measured.metrics, projected.metrics), (error) => {
+    const metrics = error.failures.map((entry) => entry.metric);
+    for (const metric of ['cost_per_valid_fact_usd', 'output_tokens_per_valid_fact', 'call_minutes_per_section']) assert.ok(metrics.includes(metric), metric);
+    return true;
+  });
+});

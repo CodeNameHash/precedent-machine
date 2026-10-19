@@ -283,3 +283,22 @@ curl -sS -X POST "$DEPLOYMENT/api/product/ablation" -H "Authorization: Bearer $P
 ```
 
 The first answers 202 with the job id (`pm-ablation-<timestamp>`); the second returns the job's state, the log tail and `ablation.md` once written; the files are under `/vercel/sandbox/<job id>/` on the sandbox (`ablation.md`, `ablation.json`, `ablation-rows.json`, `ablation-recording.json`, `analysis/` for `compare-generations.js --v1-file analysis/stored.analysis.json --v2-file analysis/<variant>.analysis.json`). On the CLI the `lean*` rungs are listed as not run (the agreement block is an API cache breakpoint the CLI does not control); the CLI-expressible model rungs are `anchors_medium`, `anchors_opus55` and `anchors_opus55_medium`; the thinking share, the list-price cost and the API seconds are what the CLI reports per call. What the table has to show, variant by variant: the stored VALID facts matched on the bytes (half or more of each fact's own bytes covered by one variant fact), the partial and unmatched ones named with their summaries, the new facts, the held facts and why, the readouts present, the routing families the same; beside them the fresh, read, written and output tokens, the seconds and the dollars. A lever holds when the matched count is the stored count less the facts the audit already holds for another reason, with no new unexplained holds, and it goes into the LEAN run config (`PRODUCT_ANTHROPIC_API_PROFILE=LEAN` for the next intake); a lever that loses facts is reported with the facts it lost and stays out. The recording makes every later question about the same answers free.
+
+## 13. The default profile (work package E3, finding (184)) and what the next NCS generation would cost on it
+
+The stack that needs no proof is the default for every new run from this push: the V10 answer with span aliases and anchored quotes (levers 1 and 7), every family's contracts in two stable blocks (lever 8), routing and residual on Haiku 5.5 (lever 9), eight section loops with a split section's parts four at a time (lever 3), nothing on uncommitted attempts (lever 10), and Opus 5.5 for extraction on the API (lever 5; the reference's model table lists it Active with the same context and output limits; the CLI keeps Opus 5 for extraction until its rung has run). Medium effort (lever 4) and the cached agreement (lever 6) wait for the ablation.
+
+NCS generation 6 on that default, by this ledger's method, on the API:
+
+| Component | Tokens | $ |
+| --- | ---: | ---: |
+| Extraction output (3.69m less 1.11m of roles and evidence quotes and 0.35m of verbatim words) at $20 | 2.34m | 46.8 |
+| Extraction fresh input (5.77m less 0.35m of 64-hex ids) at $4 | 5.42m | 21.7 |
+| Cache writes, one stable block per call kind for the run, at $8 | 0.25m | 2.0 |
+| Cache reads at $0.20 | 5.5m | 1.1 |
+| Routing and residual, 236 calls on Haiku 5.5 | 1.4m in, 0.1m out | 0.5 |
+| Uncommitted attempts | | 0 |
+| Total | | about 72 |
+
+Against $145.68: about half the money, $0.07 a VALID fact. Time: 2.34m output tokens at 87 a second are 448 call-minutes; eight loops with the parts together, about 70 wall minutes for the 104 sections against 439, and the longest section (5.1, its parts together) about 12 minutes. On the subscription CLI the money is $0 and the time the same. The projected baseline file carries these figures for the gate until the first run under the default measures them.
+

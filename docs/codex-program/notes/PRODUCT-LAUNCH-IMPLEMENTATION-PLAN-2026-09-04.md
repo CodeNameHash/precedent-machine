@@ -8088,6 +8088,72 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       origin: 804 tests, 803 pass, the one failure the known
       Codex-client final-message test.
 
+      (184) 2026-10-19 03:05 to 05:10 UTC (implementer E), work package
+      E3 part 1, on Ben's brief (finding (177), verbatim: "I'd push e
+      again to say it should imagine itself like a nasa engineer in
+      Apollo 13, having to figure out how to get all required
+      performance on even less juice and even quicker. It can
+      experiment, tear up ideas etc. cone at completely fresh. And be
+      implanting its existing ideas now too") and the manager's message
+      of 03:05 UTC. The existing ideas implanted: the stack that needs
+      no proof is the default request profile for every new run on
+      both hosted providers, behind the model-config identity.
+      `REQUEST_PROFILES.DEFAULT` (lib/product/product-model-config.js):
+      the V10 answer with span aliases and anchored quotes, every
+      family's contracts in two stable blocks (one per call kind for
+      the run), the context inline. Two new configs carry it:
+      `PRODUCT_ANTHROPIC_API_CALL_KIND_MAP/V3` (routing and residual on
+      claude-haiku-5-5 at low effort, extraction on claude-opus-5-5 at
+      high: the claude-api reference's model table lists it Active with
+      the same 1M context and 128K output, and the pricing table at
+      $4 / $20) and `PRODUCT_CLAUDE_CLI_CALL_KIND_MAP/V2` (Haiku
+      routing and residual, Opus 5 extraction: the subscription CLI's
+      model list is the subscription's, not the reference's, so Opus
+      5.5 waits there for the ablation's anchors_opus55 rung on the
+      third sandbox; one constant changes it). Medium effort and the
+      cached agreement wait for the ablation. A new run takes the
+      default (`configuredProductModelConfig`, `hostedModelConfigFor`
+      without a run, the intake either way); a run created under V1 or
+      the lean config advances under it (`hostedModelConfigFor(provider,
+      run)` follows the stored config by identity among the known
+      configs per provider; the worker's assertConfiguredRunModelConfig
+      passes the run under its own config and refuses the fresh one;
+      `resolveClaudeCliCallModel` and `resolveAnthropicApiCallModel`
+      read the known config's own call-kind map); the paused and
+      finished runs keep theirs. `PRODUCT_REQUEST_PROFILE=V9` restores
+      the earlier configs for new runs; `PRODUCT_ANTHROPIC_API_PROFILE`
+      still wins for the API. The launcher runs eight section loops
+      unless PRODUCT_HOSTED_WORKERS says otherwise
+      (infra/codex-sandbox-worker/launch.sh; scripts/product-hosted-worker.js
+      untouched, implementer D's) and a split section's parts go out
+      four at a time (PART_CONCURRENCY_DEFAULT in agreement-draft.js;
+      at most 32 streams, 167,000 output tokens a minute against the
+      Start tier's 400,000). Nothing on uncommitted attempts is D's
+      attempt resume (7c998af) and the gate's
+      uncommitted_attempt_cost_usd. The gate: the projected baseline
+      tests/fixtures/product/run-cost-baseline.default-profile.projected.json
+      by the ledger's method, until the first run under the default
+      measures it (extraction-cost-ledger.js --run replaces it). NCS
+      generation 6 on the default, by the ledger's method (the note's
+      section 13): output 2.34m tokens at $20 ($46.8), fresh input
+      5.42m at $4 ($21.7), one stable block per call kind ($2.0),
+      reads ($1.1), Haiku routing and residual ($0.5): about $72
+      against $145.68, $0.07 a VALID fact; 448 call-minutes, about 70
+      wall minutes at eight loops with the parts together against 439;
+      on the CLI $0 and the same time. Proven: the configs and the
+      identity follow on both providers, the intake's choice, the
+      environment's V9 switch, Concho 6.3 under the default as one V10
+      request with every family's contracts in the second stable block
+      and the answer bound to the routed family, the fact VALID with
+      the anchored words resolved
+      (tests/product-default-request-profile.test.js, 3 tests);
+      tests/product-anthropic-api-provider.test.js,
+      tests/product-claude-cli-provider.test.js and
+      tests/product-lean-request-profile.test.js take the new default
+      and the identity follow. Part 2, the fresh sheet (every
+      assumption of the pipeline questioned, the deterministic
+      experiments behind flags), is finding (185).
+
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
 - [x] Take a database backup and restore it to a separate environment.

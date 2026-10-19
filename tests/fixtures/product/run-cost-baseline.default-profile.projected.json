@@ -1,0 +1,38 @@
+{
+  "schema_version": "PRODUCT_RUN_COST_BASELINE/V1",
+  "run_id": null,
+  "projected": true,
+  "label": "The default request profile (work package E3, plan finding (184)) projected for an NCS-size agreement on the Anthropic API by the ledger's method, until a run measures it; the NCS generation 5 figures beside each",
+  "source": "docs/codex-program/notes/EXTRACTION-COST-LEDGER-2026-10-18.md, section 11 (levers 1, 5, 7, 8, 9 and 10 stacked); replaced by extraction-cost-ledger.js --run on the first run under PRODUCT_ANTHROPIC_API_CALL_KIND_MAP/V3",
+  "method": {
+    "output_tokens": "3,800,737 less the roles and evidence_quotes (lever 1: 1.11m) and the anchored quotes (lever 7: 0.35m) = 2.34m, at claude-opus-5-5's $20 a million",
+    "fresh_input_tokens": "6.11m less the 0.35m of 64-hex ids the aliases replace in the section blocks, at $4 a million",
+    "cache_writes": "one stable block per call kind for the run (lever 8, contracts_scope all): about 0.25m tokens at $8 a million, in place of 1.76m",
+    "cache_reads": "the same words read at $0.20 a million: about 5.5m",
+    "routing_and_residual": "236 calls on claude-haiku-5-5 (lever 9): about $0.50",
+    "uncommitted_attempts": "zero (lever 10; the gate holds it)",
+    "wall_minutes": "2.34m output tokens at 87 a second are 448 call-minutes; eight loops and the parts together, about 70 wall minutes for 104 sections"
+  },
+  "metrics": {
+    "cost_usd": 73,
+    "facts": 1037,
+    "valid_facts": 1015,
+    "cost_per_valid_fact_usd": 0.0719,
+    "input_tokens_per_agreement_byte": 40.5,
+    "output_tokens_per_agreement_byte": 7.92,
+    "output_tokens_per_valid_fact": 2305,
+    "call_minutes_per_section": 4.4,
+    "wall_minutes_per_section": 0.67,
+    "calls_per_section": 3.78,
+    "sends_per_agreement_byte": 54.2,
+    "failed_call_cost_usd": 0,
+    "uncommitted_attempt_cost_usd": 0
+  },
+  "ncs_generation_5": {
+    "cost_usd": 145.68,
+    "cost_per_valid_fact_usd": 0.1435,
+    "output_tokens_per_agreement_byte": 12.86,
+    "call_minutes_per_section": 7.01,
+    "wall_minutes_per_section": 4.22
+  }
+}
