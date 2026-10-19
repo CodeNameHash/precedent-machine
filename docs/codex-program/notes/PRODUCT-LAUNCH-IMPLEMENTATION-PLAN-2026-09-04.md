@@ -5133,6 +5133,23 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       deals stay paused ((175)); no intake ((172)). A's (202) merged at
       d627ace1; npm run test:active on the merged tree in this finding's
       commit.
+      (212) 2026-10-19 10:15 UTC (the manager; Ben's decision): on the
+      tier question in (211), Ben: "Sonnet makes sense". So the
+      extraction model becomes claude-sonnet-5-5 at high effort on the
+      ANCHORS words (run 1's and run 2's anchors_sonnet55 rows: 73
+      matched, 2 partial, none lost of 75; 73% of the stored output
+      tokens, 54% of the seconds, about a third of the cost), subject
+      to the full-agreement confirmation E's (189) harness is built
+      for: every section of NCS generation 5 on anchors_sonnet55
+      against the stored generation, on the experiments sandbox, with
+      E's --estimate read first. The default profile changes only when
+      that run's totals row holds (the manager reads it and writes it
+      into a finding; a lost fact a lawyer keeps goes to Ben by name).
+      Work package E6 to E: the estimate, then the run, with the Sonnet
+      variants of derived_statement and merged_residual ((190)) in the
+      same job if the estimate fits the window, else after. The two
+      deals stay paused ((175)) and no intake ((172)) until the default
+      is changed and the pool workers carry it.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
