@@ -4789,6 +4789,25 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       22:12 UTC: 24 of 97 and 21 of 85, no failures.
       (172) 2026-10-18 22:30 UTC: implementer E's (180), implementer A's
       (173) 2026-10-18 22:55 UTC: implementer B's (107), implementer C's
+      (174) 2026-10-19 02:15 UTC: the 23:26 check-in reached the manager
+      at 02:10 (the session was idle). The active suite on the merged
+      head 49d0bc59: 780 of 781, the known failure only. At 02:11 both
+      subscription runs were PARTIAL with no worker: Olaplex/Apogee
+      686c3bf2 at 33 of 97 (3.20 part 2 of 3 and 3.22 FAILED, attempt 1
+      of 3) and f1e2493f at 30 of 85 (3.18 part 2 of 5 and 3.20 FAILED),
+      every failure "claude exited 1: API Error: This request would
+      exceed your account's rate limit" between 22:49 and 22:59 UTC,
+      and every implementer session (A to E) stopped at the same hour
+      with "You've hit your session limit, resets 2:10am (UTC)". One
+      cause: the subscription's five-hour window is shared by the two
+      extraction workers and the five implementer sessions, and the
+      implementers' Fable use spent it. Retried both runs at 02:15
+      (olaplex-apogee-a-retry-1, -b-retry-1; nothing new woken, Ben's
+      (170) stands) and every implementer re-triggered on its open
+      package. For Ben: while the implementers run on the subscription,
+      the two deals and the five sessions compete for one window; the
+      order of use is his to set (the runs first, the implementers
+      first, or the deals on the API once E's levers land).
       (129) and implementer D's (141) merged (head 49d0bc59; the active
       suite in the next finding). Read: (107) the Verve failure was a
       sectionizer rule parenting "Annex I" to ARTICLE I by numeral
