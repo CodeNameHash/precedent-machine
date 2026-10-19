@@ -8770,8 +8770,11 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       with the dispositions compiled as the residual pass, a family
       widened after the extraction UNRESOLVED, a split section keeping
       its residual call), tests/product-lean-request-profile.test.js
-      (the stats gain statements_derived). npm run test:active: see
-      the push.
+      (the stats gain statements_derived). npm run test:active: 841
+      tests, 839 pass: the known Codex final-message failure, and the
+      SEC repeated-region timing test, which failed with a second suite
+      running beside it and passes alone (13 of 13), as in finding
+      (186).
 
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
