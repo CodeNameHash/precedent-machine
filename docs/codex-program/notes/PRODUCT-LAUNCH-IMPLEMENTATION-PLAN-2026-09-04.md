@@ -5254,6 +5254,44 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       which says whether the 3.1 and 4.1 holds repeat and whether Opus
       5.5 medium writes the reference the same way. The two deals
       paused ((175)); no intake ((172)).
+      (217) 2026-10-19 15:54 UTC (the manager): the variance job of
+      (216) is DONE (pm-ablation-20261019T151819Z, 15:18 to 15:54 UTC,
+      the sandbox at 7c82fea4, three sections at once, E's (193) retry
+      on; the seven sections that lost facts or failed in the
+      confirmation: 3.1, 4.1, 3.2, 2.3, 4.10, 3.10, 5.17; 151 stored
+      facts). anchors_sonnet55 again: 126 matched, 13 partial, 12
+      unmatched, 8 held; 322,725 output tokens. anchors_opus55_medium:
+      142 matched, 3 partial, 6 unmatched, 1 held; 308,371 output
+      tokens, fewer than Sonnet's. Section by section, Sonnet against
+      Opus 5.5 medium: 3.1 14 / 2 / 8 (6 held, CROSS_REFERENCE must
+      resolve) against 20 / 1 / 3 (1 held); 4.1 17 / 1 / 0, no hold,
+      against 17 / 1 / 0 (so Sonnet's seven holds on 4.1 in the
+      confirmation did not repeat: whether it fills resolves_to varies
+      run to run); 3.2 17 / 8 / 2 (the eight partials the
+      capitalisation numbers in fewer words) against 25 / 0 / 2; 2.3
+      34 / 2 / 1 against 35 / 1 / 1; 5.17 40 / 0 / 1 (the retry
+      recovered the section that failed whole in the confirmation; the
+      one lost the registration-rights indemnity cap (167) cuts)
+      against 41 / 0 / 0; 3.10 and 4.10 whole on both. The facts the
+      model itself omits are the same five on both tiers and on all
+      three runs so far: the four REPRESENTATION_QUALIFICATION facts
+      (3.1 and 3.2, the Disclosure Letter and SEC Documents qualifiers)
+      and 2.3's Exchange Fund definition; the stored Opus 5 at high
+      effort wrote them, the cheaper tiers do not: a contract
+      instruction matter (A's work package 22 item 4), not a tier
+      matter. Sonnet's other losses are the resolves_to holds A's
+      resolver change recovers, and its partials are the same facts in
+      fewer words. Reading: with A's change in, Sonnet 5.5 and Opus
+      5.5 medium match the same facts on these sections; Opus 5.5
+      medium writes fuller statements (3 partials against 13) and
+      holds steadier run to run, at about twice Sonnet's price and
+      about half the stored run's. Ben's tier stands unless he weighs
+      the fuller words; to give him the whole-agreement number for the
+      alternative, pm-ablation-20261019T155504Z fired at 15:55 UTC:
+      every section on anchors_opus55_medium, four sections at once
+      ((193)'s loops, their first use), about an hour. E's second job
+      (the two Sonnet levers) goes after it. The two deals paused
+      ((175)); no intake ((172)); 244acaa held.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
@@ -7050,6 +7088,109 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       makes the length irrelevant to a footer. npm run test:active on
       the commit: 838 tests, 837 pass, the one failure the known
       Codex-client final-message test.
+      (203) 2026-10-19 15:40 to 16:30 UTC (implementer A), work package 22
+      (the manager's message of 15:36 UTC and (216); the Sonnet 5.5
+      confirmation on NCS generation 5, job pm-ablation-20261019T122404Z).
+      The form, in one line: Sonnet writes an intra-definition clause
+      number as a CROSS_REFERENCE ("clauses (1), (2), (3), (4) and (7)",
+      "this clause (10)", "the exception in this clause (9)") with
+      resolves_to null; Opus 5 wrote the very same words (3.1's and
+      4.1's stored CROSS_REFERENCE components, product_fact_components
+      of run 51577c57: "with respect to clauses (1), (2), (3), (4) and
+      (7)", "clauses (1), (2), (3), (4) and (7)", "the exception in this
+      clause (10)") and filled resolves_to itself with the section's own
+      node (3.1's node 23091289 for the Company definition, 4.1's node
+      23189d08 for Parent's; both definitions sit in those sections'
+      own text) and the clause's words, so the resolver never had to;
+      the code (`structureReferenceTarget`) took only "this Agreement",
+      "this Article N" and "this Section X.Y", and a clause has no node
+      of the structure to give (the manager's addendum of 15:41 UTC,
+      read after the fix was written, pulls the same 4.1 rows and asks
+      the same question; the answer below is the deterministic one it
+      names, the model's own resolves_to kept). (1) and (2), the fix in
+      lib/product/agreement-draft.js, `clauseReferenceTarget`: a
+      CROSS_REFERENCE whose words are a clause reference (clause(s),
+      paragraph(s), item(s) with "(n)" tokens and nothing but reference
+      words) resolves from the text after the tree is built: the
+      enumerators are looked for in the closure span that holds the
+      referring component (the full section first, else the definition
+      or context span it sits in), an occurrence inside the component's
+      own words is never the clause (the reference names the same
+      numbers), the occurrence nearest the component is the clause,
+      its words run to the next enumerator of the list ("(6) ..." ends
+      where "(7)" begins; digits, roman numerals and letters) or 400
+      characters, and resolves_to is that span's structure node with the
+      clauses' words joined by " | " (the page shows what the carve-back
+      reaches). A plain "Section 2.1(a)" (8.3's Opus form, "Section
+      2.1(a)" with resolves_to the 2.1 node) now resolves to its section
+      node as "this Section 2.1" did; a sub-clause suffix is allowed.
+      The model's own resolves_to still stands, so the stored Opus 5
+      answers compile as before: the replay of (200) and (202)
+      (scripts/product/replay-answer-forms.js, unique anchors, the alias
+      table) is unchanged at 1,066 of 1,066 the same facts, 1,044 VALID
+      and 22 held. A clause the text does not have ("clauses (1) and
+      (9)" where there is no (9)) stays unresolved and the fact held, as
+      a defect should. The component instruction (V7, inherited by V10)
+      gains one sentence: for a reference to a numbered clause of this
+      section or of a definition, quote the reference words and the
+      code resolves the clauses, so resolves_to may be left out. Not
+      read: the 5.10 (7c7a8854) and 8.3 (a7864ed9) Sonnet components,
+      which the held-proposals file does not carry (it has the 3.1, 4.1,
+      3.2, 5.16, 3.18 and 4.10 ones); 5.10's stored Opus facts have no
+      CROSS_REFERENCE at all, so Sonnet's is a new reference whose words
+      I cannot see: manager, please add those two proposals to the file
+      and I read them against the rule. (3) The four empty-quote holds
+      are the model's, not the normaliser's: the three LISTs (5.16
+      c4a47fcf, 3.18 f8ce9086 and f469dcaf) were written with every
+      LIST_ELEMENT resolved to bytes and no words at all on the LIST
+      (text "", no bytes; a LIST with anchors that failed would carry
+      "from … to" as its text, and this carries nothing, so the model
+      gave the container neither a quote nor anchors). Fixed by rule,
+      since a list is its elements: a LIST with no words of its own and
+      every LIST_ELEMENT resolved in order takes the canonical bytes
+      from the first element to the last as its words
+      (fact-components.js `buildComponentTree`, through the same offsets
+      resolution as work package 21, so the words lie in the cited span
+      or the fact is held as before) and the proposal carries a
+      LIST_WORDS_FROM_ELEMENTS note naming the path and the count; the
+      instruction says a LIST quotes the words from its first element
+      to its last. 4.10 c9e13474 is the model's words and stays held:
+      its STANDARD "would reasonably be expected" is not in 4.10, whose
+      words are "would not reasonably be expected to have a Parent
+      Material Adverse Effect"; a quote that drops the "not" must not be
+      relaxed into the text. (4) The four REPRESENTATION_QUALIFICATION
+      facts (3.1 7e52a514, d2d7451e; 3.2 01397aaa, 84bec2d1): the stored
+      Opus 5 statements are the Disclosure Letter and SEC Documents
+      qualifiers written once per section ("The Company's
+      representations and warranties to Parent and Merger Sub, including
+      those in Section 3.1 ..., are given except as set forth in the
+      disclosure letter ..."; the same pair on 3.2 without the section
+      named). Whether Sonnet carried them under another subtype on 3.2
+      I cannot say from here: 3.2's three new facts are not in the
+      held-proposals file; manager, please add them (or the 3.2 rows of
+      analysis/anchors_sonnet55.analysis.json) and I read them. The rule
+      as written (REPRESENTATIONS layer rule: "it is one
+      REPRESENTATION_QUALIFICATION fact per source of exception") names
+      the fact but not the section it belongs to, and Opus answered it
+      on every section (two facts on 3.1, the same two on 3.2), Sonnet
+      on none. Proposal, not a change: add to the layer rule "write the
+      two qualification facts on every section of the article whose
+      closure carries the introduction (origin INTRO), one per source
+      of exception, with the section's own representation facts; they
+      are not components only" if Ben wants them per section as Opus
+      wrote them, or "... on the article introduction's own node once"
+      if once per article; the legal content is the same either way and
+      the choice is the page's (one row per section or one per
+      article), so Ben's. Tests:
+      tests/product-fact-components-extraction.test.js (the clause form
+      on a definition with seven carve-outs: the carve-back's four
+      clauses resolved to the section with their words, "this clause
+      (6)" to clause (6) ending before (7), Opus's given resolves_to
+      kept, "(9)" absent held; "Section 2.1(a)" to the 2.1 node of a
+      built structure; the wordless LIST VALID with the four elements'
+      bytes and the note). npm run test:active on the commit: 850 tests,
+      849 pass, the one failure the known Codex-client final-message
+      test.
       (120) 2026-10-18 19:10 to 19:45 UTC (implementer C), Q5: the limb
       names harvested. `scripts/product/harvest-rep-limbs.js` (library
       `lib/product/rep-limb-harvest.js`, `tests/product-rep-limb-harvest.test.js`)
