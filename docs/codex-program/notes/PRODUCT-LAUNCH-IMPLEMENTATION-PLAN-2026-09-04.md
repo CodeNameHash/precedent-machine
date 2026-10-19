@@ -8524,7 +8524,9 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       record: under trimmed 3.19 and 5.2 lose nothing (7 of 7, 27 of
       27) and 5.17's other 40 facts match; under direct_definitions the
       same. Tests: tests/product-held-fact-issue-link.test.js (2), added
-      to test:active. npm run test:active: see the push.
+      to test:active. npm run test:active on a clean checkout of the
+      commit: 838 tests, 837 pass, the one failure the known
+      Codex-client final-message test.
 
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
