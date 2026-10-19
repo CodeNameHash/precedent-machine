@@ -6237,6 +6237,122 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       production-move files came in, no conflict); npm run test:active
       on the final tree: 778 of 779, the one failure the known
       Codex-client final-message test.
+      (200) 2026-10-18 22:30 UTC to 2026-10-19 02:35 UTC (implementer A),
+      work package 21: begun at the 22:29 check-in on (172)'s terms, then
+      reconciled with the manager's message of 22:30 UTC, which reached
+      this session at 02:13 (the worker restarted in between; the
+      finding number (200) is the manager's). Read first: implementer
+      E's ledger (lever 1, "components alone, short span aliases ... the
+      compiler derives the evidence from the OWN components, maps aliases
+      back, holds nothing for a role"; lever 7, anchored quotes, "the
+      validator resolves"; the floor's "pair of byte offsets per
+      component"), and the stored answers: 157 EXTRACTION calls, 4
+      failures, the answer the response's text block, 4.69 MB of JSON
+      for 1,066 proposals. Built in lib/product/agreement-draft.js and
+      lib/product/fact-components.js only (a first cut had put the alias
+      scheme and an alias field on the request's spans in
+      source-context.js; reverted on the message: the request, the
+      response contract and the prompt are E's). (b) The manager's alias
+      table: response.span_aliases, a small integer to a 64-hex id (an
+      object or a list of {alias, span_id}); expandSpanAliases replaces
+      every integer alias in components, evidence quotes, links and
+      cross-section links before any other rule runs; an integer alias
+      the table lacks holds its component SPAN_ALIAS_UNKNOWN, never
+      resolved through the section as an unknown id is. Also accepted,
+      needing no table, for E to choose: a deterministic alias
+      (spanAliases: F the full section, then C1.., O1.., D1.., X1.. for the
+      chapeau, operative, definition and cross-reference spans in closure
+      order) or a unique prefix of eight or more hex characters of the id.
+      (a) Offsets are absolute, on the canonical text, because the
+      request's spans carry absolute start_byte and end_byte, so a pair
+      names one place in the document with no arithmetic against the
+      span, and the same pair cited on two spans (a chapeau inside its
+      section) is one place; a pair outside the text or reversed holds
+      INVALID_OFFSETS, a pair outside the cited span OFFSETS_OUTSIDE_SPAN,
+      a quote given beside offsets that are not its bytes
+      OFFSETS_DISAGREE_WITH_QUOTE (a quote and agreeing offsets, or a
+      quote alone, are accepted as today). The bytes are the quote: the
+      stored component keeps its shape, text and all, the position picks
+      the occurrence, and every matching, relocation and footer rule runs
+      as for a quote. With them, from E's lever 7, anchors: quote_start
+      and quote_end, the shortest run of the cited span opening on the
+      one and closing on the other, exactly one such run
+      (ANCHORS_AMBIGUOUS with the count of runs unless an occurrence
+      picks one; ANCHORS_NOT_FOUND), so the closing words must not occur
+      earlier in the run; built because offsets are not a form a model
+      writes by itself. A proposal without evidence_quotes takes its
+      evidence from every component's words, own and inherited
+      (evidence_derived: true; own words still decide exactOwned); the
+      roles key left out is an empty set, and a required role missing
+      holds nothing once the tree compiles (the rule since Metsera
+      generation 7). The article, section and agreement references of
+      work package 19 (c) are resolved again on the built tree, since an
+      offset or anchor component has no quote before it resolves. (c)
+      Proven on the stored rows, scripts/product/replay-answer-forms.js
+      (inputs read from the preview branch's tables by SQL, listed in its
+      header; nothing submitted, woken or written to a branch): every
+      answered call (151) compiled as written, then rewritten to the
+      short form with an alias table (every id in the answer an integer,
+      the table beside it; no evidence_quotes; no roles) and compiled
+      again, every proposal compared on status, statement, headline,
+      components (kind, origin, text, bytes, value, children) and
+      readout. By offsets: 1,063 of 1,066 identical; the three others
+      are 4.7's facts, VALID both ways, which lose their Article IV
+      introduction components under the offsets rule: the model cited
+      those words on the Article III chapeau span, a quote is relocated
+      to the span that holds it (work package 18 (a)) but offsets
+      outside the cited span hold by the manager's rule, and work
+      package 20 (a) then drops the inherited component with its note.
+      By the shortest anchors that name the quote and nothing else
+      (three to eight words): 1,066 of 1,066 identical, 3,892 of 4,102
+      quoted components anchored, 210 (5 per cent) kept as quotes
+      because no anchors of eight words or fewer name them alone. By
+      anchors of a fixed count: three words leave 331 proposals
+      different and four words 196, almost all ANCHORS_AMBIGUOUS on
+      repeated openings ("the Parties have", "for each Share") or
+      closing words that recur inside the run ("to be taken"), which the
+      validator holds rather than guess; E's instruction for anchors
+      must ask for the first and last words that name the passage alone
+      in its span, or an occurrence. The 22 held facts are held the same
+      way with the same issues in every form. On the manager's "the same
+      1,015 VALID and 22 held": the run stored 1,037 proposals; the
+      replay compiles every answered call, superseded attempts included,
+      so it counts 1,066, and today's rules (work packages 13 to 20,
+      which ran after the generation) give 1,044 VALID and 22 held on
+      them by quotes; the equality that the proof can show, and shows,
+      is between today's compile by quotes and today's compile by
+      offsets or anchors; the stored statuses are the generation's, not
+      reproducible without the rules of its day. The answer's JSON: 4.69
+      MB as stored, 2.69 MB by offsets with the alias table (43 per cent
+      less), 2.77 MB by anchors (41 per cent less), roles and
+      evidence_quotes gone and the ids shortened in both. Two rules the
+      replay forced: evidence derived from the own components alone made
+      3.1's and 3.2's two qualification facts (the same heading words,
+      different inherited exceptions) one occurrence and held both as
+      duplicates, so the derived evidence takes every component's words,
+      as the model's evidence_quotes did; and the structure references
+      above. One consequence to know: a fact's occurrence id follows its
+      evidence spans, so the same words answered under V9 and V10 carry
+      different fact ids (as two V9 answers with different evidence
+      quotes do); the facts compared are the words, bytes, headline and
+      readout. Pinned: tests/product-fact-components-extraction.test.js
+      (the table alias, deterministic alias and prefix, offsets with and
+      without a quote, the three offset holds, anchors unique, ambiguous
+      and absent, derived evidence, roles left out) and the stored 6.4
+      call, tests/fixtures/product/ncs-generation-5-6-4-extraction-
+      call.json (its bytes rebased to a window from the Article VI
+      heading), the same three facts from the full answer and from both
+      short forms with an alias table, no 64-hex id outside the table, no
+      roles and no evidence_quotes left in it. Plan evidence: (172) and
+      the message are built as named; the stored-status equality in
+      (c) is not available as worded, for the reason above, and the
+      proof is stated as what it is. The guide's agreement-draft entry
+      carries the rules. One commit on the shared branch, "Work package
+      21: the validator accepts span aliases, byte offsets and anchored
+      quotes, evidence from the components and roles left out, proven on
+      NCS generation 5's stored answers", after git fetch and merge of
+      origin; npm run test:active on the final tree: 781 of 782, the one
+      failure the known Codex-client final-message test.
       (120) 2026-10-18 19:10 to 19:45 UTC (implementer C), Q5: the limb
       names harvested. `scripts/product/harvest-rep-limbs.js` (library
       `lib/product/rep-limb-harvest.js`, `tests/product-rep-limb-harvest.test.js`)
