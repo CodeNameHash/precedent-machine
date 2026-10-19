@@ -5202,6 +5202,58 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       Sonnet 5.5 at high effort. E's (192) (`fact_lines`, row 7 of the
       fresh sheet, nothing run) merged. The two deals paused ((175));
       no intake ((172)); 244acaa held.
+      (216) 2026-10-19 15:10 to 15:40 UTC (the manager): the Sonnet
+      confirmation is DONE (job pm-ablation-20261019T122404Z, 12:24 to
+      about 15:15 UTC, exit 0; read in
+      docs/codex-program/notes/SONNET-CONFIRMATION-NCS-2026-10-19.md).
+      Every section of NCS generation 5 on anchors_sonnet55
+      (claude-sonnet-5-5, high effort, the ANCHORS words): of the 971
+      stored facts in the 102 sections that answered, 931 matched, 20
+      partial (the same fact in fewer words), 20 unmatched; 935 VALID
+      and 18 held written, 86 new; 2,224,248 output tokens against the
+      stored 3,473,680 (64%), 15,033 serial seconds against 39,968
+      (38%), $62.11 with every input token a one-hour cache write and
+      $24.24 with every one a read, about $41 on the stored run's own
+      layout against its $133.64 as billed. Two sections failed on one
+      call each and are not in those columns (5.17, 41 stored facts,
+      CLAUDE_PRODUCT_JSON on part 3 of 5; 3.10, 3 stored,
+      MODEL_RESPONSE_SHAPE proposal.client_ref): attempt failures the
+      pipeline retries and the ablation at fa205b1f did not; E's (193)
+      retry is on the sandbox now. The twenty unmatched, read one by
+      one: ten are facts Sonnet wrote that the validator held on
+      INVALID_FACT_COMPONENTS "CROSS_REFERENCE must resolve" (4.1 seven
+      of its 18, 3.1 three): the MAE carve-outs, carve-backs and the
+      underlying-cause restoration, which the stored Opus 5 wrote
+      VALID. Sonnet's component is a CROSS_REFERENCE whose text is the
+      definition's own clause numbers, "clauses (1), (2), (3), (4) and
+      (7)" or "this clause (10)", with resolves_to null (the components
+      as written are in
+      docs/codex-program/notes/sonnet-confirmation/sonnet-held-proposals-ncs5.json);
+      the resolver has no target for an intra-definition clause
+      number. Work package 22 to implementer A: read Opus 5's form for
+      the same facts, teach the resolver the clause-number form where
+      it is a legitimate reference, or the contract the form the
+      resolver takes; also the four empty-quote holds (5.16, 3.18 twice,
+      4.10) and whether 3.2's three new facts carry the qualifiers.
+      About eight are the model's omissions: four
+      REPRESENTATION_QUALIFICATION facts (3.1 and 3.2, the Disclosure
+      Letter and SEC Documents qualifiers to the representations), 1.2
+      the Closing Date sentence, 2.1 the Delaware-law conversion, 2.3
+      the Exchange Fund and the ten-day VWAP cash in lieu of fractional
+      shares; the qualifiers and the fractional-share mechanics a
+      lawyer keeps, put to Ben by name as (212) promised. The rest of
+      the twenty are the other INVALID_FACT_COMPONENTS holds (one LIST
+      without elements on 3.2, one unparsable "an amount in cash" on
+      2.3, the empty quotes). Ben's tier holds: the whole-agreement
+      loss to the model is under one per cent, and the held facts are
+      a code fix. The default changes (E's 244acaa) after A's resolver
+      change and the variance job fired at 15:18 UTC
+      (pm-ablation-20261019T151819Z: 3.1, 4.1, 3.2, 2.3, 4.10, 3.10 and
+      5.17 on anchors_sonnet55 and anchors_opus55_medium, three
+      sections at once, the sandbox at 7c82fea4 with (193)'s retry),
+      which says whether the 3.1 and 4.1 holds repeat and whether Opus
+      5.5 medium writes the reference the same way. The two deals
+      paused ((175)); no intake ((172)).
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is

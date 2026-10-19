@@ -1,0 +1,2508 @@
+{
+ "note": "Sonnet 5.5 held proposals (INVALID_FACT_COMPONENTS) from job pm-ablation-20261019T122404Z, with their components as written; six VALID 4.1 proposals as a sample; the issues. Evidence for plan finding (216) and work package 22.",
+ "sections": {
+  "3.2": "21c7c3d3c7712a8d76b40d173cb4f40393553124b4344eedfea60ec74ea922c1",
+  "3.1": "230912891860832d48acf866a3eb3646fe9e09a77581a2e52dc46564ad65d967",
+  "4.1": "23189d086147686c887f1d112c7a2d531202ad1b4ba0eef091ae7bbdb71417a1",
+  "5.16": "603a9d89936245a148ed24125c74bb230975d590dec1aaa93fe5cf98d166ec38",
+  "3.18": "8a2c82715038535e88d7997598f747338ac2d14034d068ecb12a00793b9636c3",
+  "4.10": "8c033c0c6610c2194e9be1a549f612aef4fe93017b09c580b8b51a3fdb7c6fbc"
+ },
+ "held": [
+  {
+   "section": "3.2",
+   "proposal_id": "a1fff008f80d5650bb59d09c4dd696e7c6a2afa3123b4170b74383aa3d33e319",
+   "family_key": "CAPITALISATION",
+   "subtype_key": "PARTNERSHIP_OR_SUBSIDIARY_EQUITY",
+   "statement": "The Company represents and warrants to Parent and Merger Sub that all outstanding shares of capital stock and other voting securities or equity interests of each such Subsidiary are owned, directly or indirectly, by the Company, free and clear of all pledges, mortgages, claims, liens, charges, options, rights of first refusal, adverse claims, encumbrances and security interests of any kind or nature whatsoever (including any limitation on voting, sale, transfer or other disposition or exercise of any other attribute of ownership) (collectively, Liens), other than Permitted Liens.",
+   "components": [
+    {
+     "component_id": "3352755eeb9df500b6289170e0226f6a4ed3b9c65aacce181a016bbd9f5d5c91",
+     "kind": "OPERATION",
+     "label": "Company representation and warranty",
+     "text": "the Company represents and warrants",
+     "source_span_id": "0719e13bf92325eebbca3ee861f9a26de55d93cc8250bcab907bba90a686e2b9",
+     "start_byte": 55147,
+     "end_byte": 55182,
+     "origin": "CHAPEAU",
+     "origin_structure_node_id": "aa1c037a90304b937d59f8e6f2b50eb41a1e2a7890338178da8ec9dd35072e6e",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "8ef7880affa71f9eb249ec4776e6d73737fd510af69b654b67bbe58013582ace",
+     "kind": "OBJECT",
+     "label": "Subsidiary capital stock and equity interests",
+     "text": "All outstanding shares of capital stock and other voting securities or equity interests of each such Subsidiary",
+     "source_span_id": "6edb36214ed1eb6cb4dbc1f6f804dac36ce8ba191fe17b20af12dbbd102bc91f",
+     "start_byte": 62181,
+     "end_byte": 62292,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "6ca5e545aaf5b4dbf309e9439867d8b0105f0c7384e58b520169f8e1d8725e4f",
+     "kind": "OPERATION",
+     "label": "Are owned",
+     "text": "are owned,",
+     "source_span_id": "b93e1728da503d6e7e50e46b6a2047b8cf0d43a1139c2e5bb455e0bdcfcbc850",
+     "start_byte": 62293,
+     "end_byte": 62303,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "6dd21569267c2f0d5ad50ac0861e745356ffe5b4fe819842a4eea42d17f57486",
+     "kind": "QUALIFIER",
+     "label": "Directly or indirectly",
+     "text": "directly or indirectly",
+     "source_span_id": "d9d9f996dd8f6e9b5e5104d65118e5412cc4fbd259b42465698c054c6e33c35c",
+     "start_byte": 62304,
+     "end_byte": 62326,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "7768770f3314eca5a1dfb40c3ee0b4a7bc276bfce3fb27b51b06157c1b025d97",
+     "kind": "ACTOR",
+     "label": "The Company as owner",
+     "text": "by the Company",
+     "source_span_id": "669dc15560c6879457b085a5d1cef68c46389603aca630c160b9c95116fbffdd",
+     "start_byte": 62328,
+     "end_byte": 62342,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "f47a93afb1066fc468f269372f2f5893ffb6d4ed707050192de9ea6c3e159eb1",
+     "kind": "STANDARD",
+     "label": "Free and clear",
+     "text": "free and clear of",
+     "source_span_id": "c89e97972258760c5876844e7445c32f094fed7f0263812711915cf5c7f0f0cc",
+     "start_byte": 62344,
+     "end_byte": 62361,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "0d84de9006a2b6f7f6f8ba35b00910866a915c1f26c7aa7c9688ba6d80b2e785",
+     "kind": "LIST",
+     "label": "Encumbrances excluded",
+     "text": "all pledges, mortgages, claims, liens, charges, options, rights of first refusal, adverse claims, encumbrances and security interests of any kind or nature whatsoever",
+     "source_span_id": "b38b26a5f216737ffa209f9f0974a2984d1172d3ac1f98e1fc4022c50fc764fd",
+     "start_byte": 62362,
+     "end_byte": 62528,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "8799bfd848f7ed119e5054dd933305f10a6d5763cf0dcba9fe60b7e6a772342c",
+     "kind": "QUALIFIER",
+     "label": "Including limitations on voting, sale or transfer",
+     "text": "(including any limitation on voting, sale, transfer or",
+     "source_span_id": "f73850b5774582642c758eab24e768913e34fe2f003ebfd60482fa677dee44ec",
+     "start_byte": 62529,
+     "end_byte": 62583,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "ef501455dc590277c89a5c54ce88888be62857d20da53dd52c269339c30b97ce",
+     "kind": "EXCEPTION",
+     "label": "Permitted Liens excepted",
+     "text": "other than Permitted Liens",
+     "source_span_id": "9d4dd1242dc7423252e5a45b9ee6713b29b04082690bdd22b651517902cf99ed",
+     "start_byte": 62683,
+     "end_byte": 62709,
+     "origin": "OWN",
+     "gap_before": true,
+     "children": []
+    }
+   ]
+  },
+  {
+   "section": "3.1",
+   "proposal_id": "8aae52455704c6058544a1d5f49bb8a1ea46e781d2129eff52aeb72f9ab2a82e",
+   "family_key": "MAE_DEFINITION",
+   "subtype_key": "UNDERLYING_CAUSE_RESTORATION",
+   "statement": "The exception in clause (9) for changes in the market price or trading volume of the Company Common Stock shall not prevent or otherwise affect a determination that any event, change, circumstance, occurrence, effect or state of facts underlying such change has resulted in, or contributed to, a Material Adverse Effect",
+   "components": [
+    {
+     "component_id": "f02c342acb7ecfafcfd27656e4b4c55068cfa24ec42af59b507398a220c73367",
+     "kind": "QUALIFIER",
+     "label": "Clause (9) proviso",
+     "text": "provided, that the exception in this clause (9) shall not prevent or otherwise affect a determination that any event, change, circumstance, occurrence, effect or state of facts underlying such change has resulted in, or contributed to, a Material Adverse Effect",
+     "source_span_id": "1a8d898125c50e8a5a1b98a14ae1cb7048162a2320bad8e4cc587d9faa42b293",
+     "start_byte": 59309,
+     "end_byte": 59570,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": [
+      {
+       "component_id": "81bb1dddfd76628d637aed83a139c340422c91924fae34145d20135a36db608d",
+       "kind": "CROSS_REFERENCE",
+       "label": "Clause (9) exception",
+       "text": "the exception in this clause (9)",
+       "source_span_id": "1213488b2dfa285b3018c8698c07c9392635949439665a5995a7b8e489378889",
+       "start_byte": 59324,
+       "end_byte": 59356,
+       "origin": "OWN",
+       "gap_before": false,
+       "resolves_to": null,
+       "children": []
+      },
+      {
+       "component_id": "1d48bd0c5c0121c0e8ad5d2e5353c9ab1067153aae87c529eb0a95f182929ba9",
+       "kind": "OPERATION",
+       "label": "Does not prevent or affect determination",
+       "text": "shall not prevent or otherwise affect",
+       "source_span_id": "884ab425d9d760b856a1411304732e9cda2c806c041d9bbb437908d23cdd6948",
+       "start_byte": 59357,
+       "end_byte": 59394,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      },
+      {
+       "component_id": "c93a000f238c6ec86c04f596acc692ea5b51fc5ce2cdccf2167fc0e6c1eae9fb",
+       "kind": "OBJECT",
+       "label": "Determination of resulting Material Adverse Effect",
+       "text": "a determination that any event, change, circumstance, occurrence, effect or state of facts underlying such change has resulted in, or contributed to, a Material Adverse Effect",
+       "source_span_id": "9309c1b2747cf280d9da9f6c34b2a901f2b26d78b0cd98f7acba02e431a8e77c",
+       "start_byte": 59395,
+       "end_byte": 59570,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "section": "3.1",
+   "proposal_id": "ab96b844a68f88195d31f8926cfc9299e5d4c888e215ec50830f2d7ab07132f5",
+   "family_key": "MAE_DEFINITION",
+   "subtype_key": "DISPROPORTIONALITY_CARVEBACK",
+   "statement": "With respect to clauses (1), (2), (3), (4) and (7) of the exclusions from Material Adverse Effect, the exclusion applies only where the impact of such event, change, circumstance, occurrence, effect or state of facts is not disproportionately adverse to the Company and its Subsidiaries, taken as a whole, as compared to other participants in the industries in which the Company and its Subsidiaries operate",
+   "components": [
+    {
+     "component_id": "18acf9dc7c957ad9ef371b5d7eb66637b3614dfdcd1e4fe6bc4d6e4dfe906501",
+     "kind": "QUALIFIER",
+     "label": "Material Adverse Effect exclusion lead-in",
+     "text": "Material Adverse Effect shall not include any event, change, circumstance, occurrence, effect or state of facts to the extent resulting from",
+     "source_span_id": "7a031d809df5261cddd89cd09bc62ab22f75f2cca9f3aa25e5d8cdbae1250dd1",
+     "start_byte": 56845,
+     "end_byte": 56985,
+     "origin": "DEFINITION",
+     "origin_structure_node_id": "230912891860832d48acf866a3eb3646fe9e09a77581a2e52dc46564ad65d967",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "d59790f2657df9128d4bdf5cff1df41e62a0541b7b86b0d7c77847a1161ad827",
+     "kind": "CONDITION",
+     "label": "Proviso lead-in",
+     "text": "provided that, with respect to",
+     "source_span_id": "c78e11d09746493cb88b10efeb1eb92f324ee7695380a02f40b4c50fb6169c29",
+     "start_byte": 59626,
+     "end_byte": 59656,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "157189b182ddbc9f0245c64bc3c87b4da11fd7e8f337f870a8f83467f1077588",
+     "kind": "CROSS_REFERENCE",
+     "label": "Clauses (1), (2), (3), (4) and (7)",
+     "text": "clauses (1), (2), (3), (4) and (7)",
+     "source_span_id": "3cbb830a263f2def55b1ed9a378ef5dc70b32c73c259ebfa4721e3f01a329288",
+     "start_byte": 59657,
+     "end_byte": 59691,
+     "origin": "OWN",
+     "gap_before": false,
+     "resolves_to": null,
+     "children": []
+    },
+    {
+     "component_id": "7ef2b2437a6ac5290cff59690a216188806854ae07caf75b2dde36367e97e418",
+     "kind": "LITANY",
+     "label": "Event, change and similar matters",
+     "text": "such event, change, circumstance, occurrence, effect or state of facts",
+     "source_span_id": "842283020edda865eb73c01a04cbd2973d4829893a71b93818918e64c71efbe6",
+     "start_byte": 59707,
+     "end_byte": 59777,
+     "origin": "OWN",
+     "gap_before": true,
+     "members": [
+      "event",
+      "change",
+      "circumstance",
+      "occurrence",
+      "effect",
+      "state of facts"
+     ],
+     "children": []
+    },
+    {
+     "component_id": "3533da2b77b4fafbc2923ebbd736390f98ae855739018a078e4f6752f5d5600b",
+     "kind": "STANDARD",
+     "label": "Not disproportionately adverse standard",
+     "text": "is not disproportionately adverse",
+     "source_span_id": "1425d832584d2448e468aadf2e4855e62b174528207d1e5ddf78120cad6723b1",
+     "start_byte": 59778,
+     "end_byte": 59811,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "6d26257373e62ab32028dd5acca2b2e69f3ad8adfa1ea92fe44cee31c7563a75",
+     "kind": "OBJECT",
+     "label": "Company and Subsidiaries taken as a whole",
+     "text": "the Company and its Subsidiaries, taken as a whole",
+     "source_span_id": "b717b1d7467b6181b0b30e830acac37894b1c334ddc4188f97c863852f3d1ece",
+     "start_byte": 59815,
+     "end_byte": 59865,
+     "origin": "OWN",
+     "gap_before": true,
+     "children": []
+    },
+    {
+     "component_id": "17a523cc16a49158280fb8b56226e7582b6faf81f0a4b3128f1a254a65369bf9",
+     "kind": "QUALIFIER",
+     "label": "Industry participant comparator",
+     "text": "as compared to other participants in the industries in which the Company and its Subsidiaries operate",
+     "source_span_id": "aece1ac9e4e667a91a44b133174722d32154d6ae8b6eeca2f57ecb971553d8b9",
+     "start_byte": 59867,
+     "end_byte": 59968,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    }
+   ]
+  },
+  {
+   "section": "3.1",
+   "proposal_id": "c8b4283ab1b37c175d398a0130afe23df33c4c5cbfaca14a5e05759590454e76",
+   "family_key": "MAE_DEFINITION",
+   "subtype_key": "EXCLUSION",
+   "statement": "Material Adverse Effect shall not include any event, change, circumstance, occurrence, effect or state of facts to the extent resulting from any epidemic, pandemic, disease outbreak or other public health crisis, public health event, or the worsening of any of the foregoing, or any hurricane, tornado, flood, fire, volcano, earthquake, freeze, or other natural disaster, provided that, with respect to clauses (1), (2), (3), (4) and (7), the impact is not disproportionately adverse to the Company and its Subsidiaries, taken as a whole, as compared to other participants in the industries in which the Company and its Subsidiaries operate",
+   "components": [
+    {
+     "component_id": "c9006890827585813170a1cec5a73b6e70305569b22580ce52343339b8ec0b58",
+     "kind": "QUALIFIER",
+     "label": "Material Adverse Effect exclusion lead-in",
+     "text": "Material Adverse Effect shall not include any event, change, circumstance, occurrence, effect or state of facts to the extent resulting from",
+     "source_span_id": "7a031d809df5261cddd89cd09bc62ab22f75f2cca9f3aa25e5d8cdbae1250dd1",
+     "start_byte": 56845,
+     "end_byte": 56985,
+     "origin": "DEFINITION",
+     "origin_structure_node_id": "230912891860832d48acf866a3eb3646fe9e09a77581a2e52dc46564ad65d967",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "326b6d0ee4483f01dc5d7853000c6704009c4656a56750ea8b2d24e8e32e4b45",
+     "kind": "TERM",
+     "label": "Public health and natural disaster carve-out",
+     "text": "(7) any epidemic, pandemic, disease outbreak or other public health crisis, public health event, or the worsening of any of the foregoing, or any hurricane, tornado, flood, fire, volcano, earthquake, freeze, or other natural disaster",
+     "source_span_id": "032ba20eef055b115d5fafde07289d3d9bbc1975122649eb110dae1847277be7",
+     "start_byte": 58415,
+     "end_byte": 58648,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": [
+      {
+       "component_id": "3ec910520d6c5c342b98dd93504717c05e644cc6875404abe0ec8846eaea3668",
+       "kind": "OBJECT",
+       "label": "Epidemic or public health event",
+       "text": "any epidemic, pandemic, disease outbreak or other public health crisis, public health event",
+       "source_span_id": "7dd8a788a24e558241ee42177d8d30c0756712998285e0200d0be47a3d537382",
+       "start_byte": 58419,
+       "end_byte": 58510,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      },
+      {
+       "component_id": "9080459d9f14fe953cb6d40690398d0c8fe06567935eeb6cf6246e059b135b9b",
+       "kind": "OBJECT",
+       "label": "Worsening of foregoing",
+       "text": "the worsening of any of the foregoing",
+       "source_span_id": "3c2eb50ac2052e06b211e55fd26c82b1a963b7266774eea8d9ce960bd36a45a0",
+       "start_byte": 58515,
+       "end_byte": 58552,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      },
+      {
+       "component_id": "139dc55208ea27d3de0d1fea1f71877a3de8b2860f3f8044f771ffc42c766002",
+       "kind": "OBJECT",
+       "label": "Natural disasters",
+       "text": "any hurricane, tornado, flood, fire, volcano, earthquake, freeze, or other natural disaster",
+       "source_span_id": "815e0f4581734591829c7a05986c255b24e78da6b1c34fa7609abd35ac01baf3",
+       "start_byte": 58557,
+       "end_byte": 58648,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      }
+     ]
+    },
+    {
+     "component_id": "035637ea6fa8c378c09be011834c805ad1ba98c8600c796c98ebd67068ea5b45",
+     "kind": "CROSS_REFERENCE",
+     "label": "Clauses subject to disproportionality proviso",
+     "text": "clauses (1), (2), (3), (4) and (7)",
+     "source_span_id": "3cbb830a263f2def55b1ed9a378ef5dc70b32c73c259ebfa4721e3f01a329288",
+     "start_byte": 59657,
+     "end_byte": 59691,
+     "origin": "OWN",
+     "gap_before": true,
+     "resolves_to": null,
+     "children": []
+    },
+    {
+     "component_id": "cb303f67138dac7e6aa1e039a052123b87b9fff94ca6fcfe6a55743baf72a137",
+     "kind": "STANDARD",
+     "label": "Not disproportionately adverse standard",
+     "text": "is not disproportionately adverse",
+     "source_span_id": "1425d832584d2448e468aadf2e4855e62b174528207d1e5ddf78120cad6723b1",
+     "start_byte": 59778,
+     "end_byte": 59811,
+     "origin": "OWN",
+     "gap_before": true,
+     "children": []
+    }
+   ]
+  },
+  {
+   "section": "4.1",
+   "proposal_id": "06f4a06004c78e3e531b84901aa6248d2e892e3600d9db45bb57f6c37e5044e8",
+   "family_key": "MAE_DEFINITION",
+   "subtype_key": "UNDERLYING_CAUSE_RESTORATION",
+   "statement": "The exception in clause (10) for changes in the market price or trading volume of Parent Ordinary Shares shall not prevent or otherwise affect a determination that any event, change, circumstance, occurrence, effect or state of facts underlying such change has resulted in, or contributed to, a Parent Material Adverse Effect.",
+   "components": [
+    {
+     "component_id": "d758fdcdbecb81cf836e1d0ac21f505f19d084e9bacc405c4f2f63a804634910",
+     "kind": "OPERATION",
+     "label": "Share price exception does not bar underlying causes",
+     "text": "provided, that the exception in this clause (10) shall not prevent or otherwise affect a determination that any event, change, circumstance, occurrence, effect or state of facts underlying such change has resulted in, or contributed to, a Parent Material Adverse Effect",
+     "source_span_id": "6772bd9ea0d27b28abaf44ba247dceca10dfd9e683f026d6d82f9f2cd32d7754",
+     "start_byte": 141927,
+     "end_byte": 142196,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": [
+      {
+       "component_id": "b0caa7b277e278801e43e6efc86be178b32e17605cde29b79aa3a16183344708",
+       "kind": "CROSS_REFERENCE",
+       "label": "Share price clause",
+       "text": "this clause (10)",
+       "source_span_id": "c5f5eef7c20bd57a972be3ac4e11012fc28a2fd35eb3ad63d66ead7fd3b49970",
+       "start_byte": 141959,
+       "end_byte": 141975,
+       "origin": "OWN",
+       "gap_before": true,
+       "resolves_to": null,
+       "children": []
+      },
+      {
+       "component_id": "e47973ece343914943560ad8e6655d274bc80748a04148aa420082f95cb48d09",
+       "kind": "OPERATION",
+       "label": "Shall not prevent or affect determination",
+       "text": "shall not prevent or otherwise affect",
+       "source_span_id": "6c5632e8eababb6bbb7dfcdf1a336807a358103320ac929b3a9b0236b68094f9",
+       "start_byte": 141976,
+       "end_byte": 142013,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "section": "4.1",
+   "proposal_id": "205d624c9add75ae18119a43f3473d1f86205ef57cb9137ae062761729f276aa",
+   "family_key": "MAE_DEFINITION",
+   "subtype_key": "EXCLUSION",
+   "statement": "Parent Material Adverse Effect shall not include any event, change, circumstance, occurrence, effect or state of facts to the extent resulting from geopolitical conditions or changes that are the result of the outbreak, conduct or escalation of war (whether declared or undeclared) or acts of terrorism or sabotage (including cyber-attacks); but this exclusion applies only if the impact is not disproportionately adverse to Parent and its Subsidiaries, taken as a whole, as compared to other participants in the industries in which Parent and its Subsidiaries operate.",
+   "components": [
+    {
+     "component_id": "6b706a815c31ec38326ac49a36c3fe5b266e44fa693f230c298b0e89d09c1eea",
+     "kind": "TERM",
+     "label": "Parent Material Adverse Effect",
+     "text": "Parent Material Adverse Effect",
+     "source_span_id": "f53c590a9ca4d2d15212acedf07b16866e331545ab5c006ac6121e0523700980",
+     "start_byte": 139277,
+     "end_byte": 139307,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "e13dc6fff5968f1b227ed19a24859dedc5d4f83129c2e14e63c31848495a9dca",
+     "kind": "OPERATION",
+     "label": "Exclusion from definition",
+     "text": "shall not include",
+     "source_span_id": "8a823473104b42c48a709908c76e95fe9219e3956db4140fbd92ab58855e4d4f",
+     "start_byte": 139308,
+     "end_byte": 139325,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "ae548add74812c0d132447be32173c23410609cb91a75f8df796cca13f27314a",
+     "kind": "LITANY",
+     "label": "Event litany",
+     "text": "any event, change, circumstance, occurrence, effect or state of facts",
+     "source_span_id": "bbf650a065a4e49e31bf7eb4eba85d724096b2188aa7f46253ea23753f102f65",
+     "start_byte": 139326,
+     "end_byte": 139395,
+     "origin": "OWN",
+     "gap_before": false,
+     "members": [
+      "event",
+      "change",
+      "circumstance",
+      "occurrence",
+      "effect",
+      "state of facts"
+     ],
+     "children": []
+    },
+    {
+     "component_id": "fa9614bbabf6b692a3d593c237f95dfe72d601cd13132760b494adf282bf2a1b",
+     "kind": "QUALIFIER",
+     "label": "Resulting-from limit",
+     "text": "to the extent resulting from",
+     "source_span_id": "6c4630312defe2919388d18f63aa566a34e51e0ee326490ee285eaa1d5ac34b3",
+     "start_byte": 139396,
+     "end_byte": 139424,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "dcbed2c37f169aad984b415ef6fb4b5fad946cb632529abefe3b34e209d68400",
+     "kind": "TERM",
+     "label": "Geopolitical conditions, war and terrorism",
+     "text": "geopolitical conditions or changes that are the result of the outbreak, conduct or escalation of war (whether declared or undeclared) or acts of terrorism or sabotage (including cyber-attacks)",
+     "source_span_id": "b679e30b854134626cb978be44976254a8f9598b10e3b78cedd6d0e2075cd703",
+     "start_byte": 139732,
+     "end_byte": 139924,
+     "origin": "OWN",
+     "gap_before": true,
+     "children": []
+    },
+    {
+     "component_id": "67404b42ae610791edb059df5cc51cd0c2ba4bf3417982088c4f328580d69e9e",
+     "kind": "CROSS_REFERENCE",
+     "label": "Disproportionality clauses",
+     "text": "clauses (1), (2), (3), (4) and (7)",
+     "source_span_id": "c1d5f9a057075b1fe9f2e379404795ab14042ff5558d403a092674a999f931b2",
+     "start_byte": 142283,
+     "end_byte": 142317,
+     "origin": "OWN",
+     "gap_before": true,
+     "resolves_to": null,
+     "children": []
+    },
+    {
+     "component_id": "36513c5ac908b52da24a9a5842757b263a6dad655449b6b217639b4c46459233",
+     "kind": "STANDARD",
+     "label": "Not disproportionately adverse",
+     "text": "the impact of such event, change, circumstance, occurrence, effect or state of facts is not disproportionately adverse to the Parent and its Subsidiaries, taken as a whole, as compared to other participants in the industries in which the Parent and its Subsidiaries operate",
+     "source_span_id": "8a226c1785ff317d0d15151a9a507632654e54d3f383d718a1d18f6f75f47abe",
+     "start_byte": 142319,
+     "end_byte": 142592,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    }
+   ]
+  },
+  {
+   "section": "4.1",
+   "proposal_id": "6ab915938b897ffefb6e8e99be379623736f19cc231782af0cf8a890a1352029",
+   "family_key": "MAE_DEFINITION",
+   "subtype_key": "EXCLUSION",
+   "statement": "Parent Material Adverse Effect shall not include any event, change, circumstance, occurrence, effect or state of facts to the extent resulting from changes or proposed changes (after the date of this Agreement) in Laws of general applicability to companies in the areas and industries in which Parent or any of its Subsidiaries operate (including changes in the interpretations thereof by any applicable Governmental Entity); but this exclusion applies only if the impact is not disproportionately adverse to Parent and its Subsidiaries, taken as a whole, as compared to other participants in the industries in which Parent and its Subsidiaries operate.",
+   "components": [
+    {
+     "component_id": "e58eacbc772bee21a5d1be85883cad6f0c74f4cd4206d11c3e54b9ea49a68bba",
+     "kind": "TERM",
+     "label": "Parent Material Adverse Effect",
+     "text": "Parent Material Adverse Effect",
+     "source_span_id": "f53c590a9ca4d2d15212acedf07b16866e331545ab5c006ac6121e0523700980",
+     "start_byte": 139277,
+     "end_byte": 139307,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "817a54e25786bec884e54b32952f122ee47a92f6f1a9322f0632745bf5bfd9c1",
+     "kind": "OPERATION",
+     "label": "Exclusion from definition",
+     "text": "shall not include",
+     "source_span_id": "8a823473104b42c48a709908c76e95fe9219e3956db4140fbd92ab58855e4d4f",
+     "start_byte": 139308,
+     "end_byte": 139325,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "722a2155a629531c509b2b6806d0bdf554fa27cb77ae96c2660c9036ed4b91c2",
+     "kind": "LITANY",
+     "label": "Event litany",
+     "text": "any event, change, circumstance, occurrence, effect or state of facts",
+     "source_span_id": "bbf650a065a4e49e31bf7eb4eba85d724096b2188aa7f46253ea23753f102f65",
+     "start_byte": 139326,
+     "end_byte": 139395,
+     "origin": "OWN",
+     "gap_before": false,
+     "members": [
+      "event",
+      "change",
+      "circumstance",
+      "occurrence",
+      "effect",
+      "state of facts"
+     ],
+     "children": []
+    },
+    {
+     "component_id": "801c16ad1e9c20b70954d904518562b5e5d752b02f56f4fc2da74cc6e7150786",
+     "kind": "QUALIFIER",
+     "label": "Resulting-from limit",
+     "text": "to the extent resulting from",
+     "source_span_id": "6c4630312defe2919388d18f63aa566a34e51e0ee326490ee285eaa1d5ac34b3",
+     "start_byte": 139396,
+     "end_byte": 139424,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "23bc59446249ba9eb568290f6c6649af602db19bcd792e94654ef193cc614eba",
+     "kind": "TERM",
+     "label": "Changes in Laws",
+     "text": "changes or proposed changes (after the date of this Agreement) in Laws of general applicability to companies in the areas and industries in which Parent or any of its Subsidiaries operate (including changes in the interpretations thereof by any applicable Governmental Entity)",
+     "source_span_id": "ba7c05944f9612ce4dda157bb868e94d736e7497175c01ceae947ab41557c1bc",
+     "start_byte": 140013,
+     "end_byte": 140289,
+     "origin": "OWN",
+     "gap_before": true,
+     "children": [
+      {
+       "component_id": "0c9b41ebcb686f64e9aa0c7972fd3b9724e6e9561e6c752faf09638aee5aa346",
+       "kind": "QUALIFIER",
+       "label": "After signing date",
+       "text": "after the date of this Agreement",
+       "source_span_id": "30008ad224c3aae60c1e193bd67fb56679b5f98a48a9e6c4041628fe550eee98",
+       "start_byte": 140042,
+       "end_byte": 140074,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      }
+     ]
+    },
+    {
+     "component_id": "04bb02c79abf39063d6b71735f83cf9806db0c8c1c5ca3328400c0480eb10a5c",
+     "kind": "CROSS_REFERENCE",
+     "label": "Disproportionality clauses",
+     "text": "clauses (1), (2), (3), (4) and (7)",
+     "source_span_id": "c1d5f9a057075b1fe9f2e379404795ab14042ff5558d403a092674a999f931b2",
+     "start_byte": 142283,
+     "end_byte": 142317,
+     "origin": "OWN",
+     "gap_before": true,
+     "resolves_to": null,
+     "children": []
+    },
+    {
+     "component_id": "31bae2ff82806d7100f9c871e13026ba9df0c9f99bff09832c1ea1d747a36619",
+     "kind": "STANDARD",
+     "label": "Not disproportionately adverse",
+     "text": "the impact of such event, change, circumstance, occurrence, effect or state of facts is not disproportionately adverse to the Parent and its Subsidiaries, taken as a whole, as compared to other participants in the industries in which the Parent and its Subsidiaries operate",
+     "source_span_id": "8a226c1785ff317d0d15151a9a507632654e54d3f383d718a1d18f6f75f47abe",
+     "start_byte": 142319,
+     "end_byte": 142592,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    }
+   ]
+  },
+  {
+   "section": "4.1",
+   "proposal_id": "9da98fef48dc9c6d00308f199499649e670a84cf2219fa0718bd1772217ac9f7",
+   "family_key": "MAE_DEFINITION",
+   "subtype_key": "DISPROPORTIONALITY_CARVEBACK",
+   "statement": "With respect to clauses (1), (2), (3), (4) and (7) of the Parent Material Adverse Effect exclusions, the impact of the event, change, circumstance, occurrence, effect or state of facts must not be disproportionately adverse to Parent and its Subsidiaries, taken as a whole, as compared to other participants in the industries in which Parent and its Subsidiaries operate.",
+   "components": [
+    {
+     "component_id": "d5dc8c7e69be57cac0b3466f00b8756985e24d046c0fe840e6ecbd516956ba27",
+     "kind": "CONDITION",
+     "label": "Disproportionality proviso",
+     "text": "with respect to clauses (1), (2), (3), (4) and (7), the impact of such event, change, circumstance, occurrence, effect or state of facts is not disproportionately adverse to the Parent and its Subsidiaries, taken as a whole, as compared to other participants in the industries in which the Parent and its Subsidiaries operate",
+     "source_span_id": "bfe5116cf26951d0c81dc4be1360d2dedae2df517148167f5ba1177752be58b4",
+     "start_byte": 142267,
+     "end_byte": 142592,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": [
+      {
+       "component_id": "77c126555c1dea412cc03a7c0b87022e4c86da0da413588950cb28ec00ccdadb",
+       "kind": "CROSS_REFERENCE",
+       "label": "Clauses subject to carve-back",
+       "text": "clauses (1), (2), (3), (4) and (7)",
+       "source_span_id": "c1d5f9a057075b1fe9f2e379404795ab14042ff5558d403a092674a999f931b2",
+       "start_byte": 142283,
+       "end_byte": 142317,
+       "origin": "OWN",
+       "gap_before": false,
+       "resolves_to": null,
+       "children": []
+      },
+      {
+       "component_id": "3a711823f6a70ed869fe2781e95c61f5cef56e054d7253a8ac5bd00052ef7fa5",
+       "kind": "STANDARD",
+       "label": "Not disproportionately adverse",
+       "text": "not disproportionately adverse",
+       "source_span_id": "7e8b9ba71efa131fe53ab0e11c54340222d03ae98f87becc7f733d41954d39d4",
+       "start_byte": 142407,
+       "end_byte": 142437,
+       "origin": "OWN",
+       "gap_before": true,
+       "children": []
+      },
+      {
+       "component_id": "a5ca866bf285ebd358a86f45a80201fac05e1853af4ed94d412c20c5e4068589",
+       "kind": "QUALIFIER",
+       "label": "Comparison to industry participants",
+       "text": "as compared to other participants in the industries in which the Parent and its Subsidiaries operate",
+       "source_span_id": "5a9faa011841321e91d8b79f30567c8a94374c54ff975cc89a674a17192950c8",
+       "start_byte": 142492,
+       "end_byte": 142592,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "section": "4.1",
+   "proposal_id": "b42370977a0c416f0f7f39959e6a90aff29d4a9498dcbaa7260906c457cfa338",
+   "family_key": "MAE_DEFINITION",
+   "subtype_key": "EXCLUSION",
+   "statement": "Parent Material Adverse Effect shall not include any event, change, circumstance, occurrence, effect or state of facts to the extent resulting from changes (after the date of this Agreement) in GAAP or interpretations thereof; but this exclusion applies only if the impact is not disproportionately adverse to Parent and its Subsidiaries, taken as a whole, as compared to other participants in the industries in which Parent and its Subsidiaries operate.",
+   "components": [
+    {
+     "component_id": "4c3adfdb2218529992e7b59984a7f496374652e50c9f9ba4502a90d414763c9a",
+     "kind": "TERM",
+     "label": "Parent Material Adverse Effect",
+     "text": "Parent Material Adverse Effect",
+     "source_span_id": "f53c590a9ca4d2d15212acedf07b16866e331545ab5c006ac6121e0523700980",
+     "start_byte": 139277,
+     "end_byte": 139307,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "f75c83f99c2c7cd0bbfca1c38410cf34e73671a70e5e9e7eb2e372ad7e36fe69",
+     "kind": "OPERATION",
+     "label": "Exclusion from definition",
+     "text": "shall not include",
+     "source_span_id": "8a823473104b42c48a709908c76e95fe9219e3956db4140fbd92ab58855e4d4f",
+     "start_byte": 139308,
+     "end_byte": 139325,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "2b8070218e1f2db410d020c29f4cb542fe93d9c3206057fb31cb3ad040ac47f3",
+     "kind": "LITANY",
+     "label": "Event litany",
+     "text": "any event, change, circumstance, occurrence, effect or state of facts",
+     "source_span_id": "bbf650a065a4e49e31bf7eb4eba85d724096b2188aa7f46253ea23753f102f65",
+     "start_byte": 139326,
+     "end_byte": 139395,
+     "origin": "OWN",
+     "gap_before": false,
+     "members": [
+      "event",
+      "change",
+      "circumstance",
+      "occurrence",
+      "effect",
+      "state of facts"
+     ],
+     "children": []
+    },
+    {
+     "component_id": "091af7130ba6b2a7592c37f02dfb2f76b550bec1d7d0813ce92ca8aa7f49e710",
+     "kind": "QUALIFIER",
+     "label": "Resulting-from limit",
+     "text": "to the extent resulting from",
+     "source_span_id": "6c4630312defe2919388d18f63aa566a34e51e0ee326490ee285eaa1d5ac34b3",
+     "start_byte": 139396,
+     "end_byte": 139424,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "3facb89a38854f6d713ccb3dfefa8771e1d9eadfaff3c3119acc3c80a3876fc0",
+     "kind": "TERM",
+     "label": "Changes in GAAP",
+     "text": "changes (after the date of this Agreement) in GAAP or interpretations thereof",
+     "source_span_id": "6035a7c58a2e5187119fd78fea1236c5ee978ff6555a26bc7d7bfe707e96a1c6",
+     "start_byte": 139930,
+     "end_byte": 140007,
+     "origin": "OWN",
+     "gap_before": true,
+     "children": [
+      {
+       "component_id": "e2b1fe3dd6bdd808f25a0ba20178196e6875e3916559b02407021e756f7f17dd",
+       "kind": "QUALIFIER",
+       "label": "After signing date",
+       "text": "after the date of this Agreement",
+       "source_span_id": "8890c2dc024ed7c76ac807134592aece573e3f7b6cfe4f9d032c9e0aa4e173a0",
+       "start_byte": 139939,
+       "end_byte": 139971,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      }
+     ]
+    },
+    {
+     "component_id": "5eb02388bb1e23b354f8cae258fe589f4ee3b97dc7e03535a4016b6717d7edc1",
+     "kind": "CROSS_REFERENCE",
+     "label": "Disproportionality clauses",
+     "text": "clauses (1), (2), (3), (4) and (7)",
+     "source_span_id": "c1d5f9a057075b1fe9f2e379404795ab14042ff5558d403a092674a999f931b2",
+     "start_byte": 142283,
+     "end_byte": 142317,
+     "origin": "OWN",
+     "gap_before": true,
+     "resolves_to": null,
+     "children": []
+    },
+    {
+     "component_id": "31d8239f8bbdc456db1d99ec52141242153b81efff9b316c84d406464038f5e8",
+     "kind": "STANDARD",
+     "label": "Not disproportionately adverse",
+     "text": "the impact of such event, change, circumstance, occurrence, effect or state of facts is not disproportionately adverse to the Parent and its Subsidiaries, taken as a whole, as compared to other participants in the industries in which the Parent and its Subsidiaries operate",
+     "source_span_id": "8a226c1785ff317d0d15151a9a507632654e54d3f383d718a1d18f6f75f47abe",
+     "start_byte": 142319,
+     "end_byte": 142592,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    }
+   ]
+  },
+  {
+   "section": "4.1",
+   "proposal_id": "e51ef6c513340edaf9b697cc778ad7ebb86dd5f87279e440142ff4b159303fa6",
+   "family_key": "MAE_DEFINITION",
+   "subtype_key": "EXCLUSION",
+   "statement": "Parent Material Adverse Effect shall not include any event, change, circumstance, occurrence, effect or state of facts to the extent resulting from changes or conditions generally affecting the oilfield services industry, or the economy or the financial or securities markets, in the United States or Canada, including effects on such industry, economy or markets resulting from any regulatory and political conditions or developments in general; but this exclusion applies only if the impact is not disproportionately adverse to Parent and its Subsidiaries, taken as a whole, as compared to other participants in the industries in which Parent and its Subsidiaries operate.",
+   "components": [
+    {
+     "component_id": "402e20b0e689afbe22abd53891a5d815672b194f0bfa5c7b78ebf72576efe901",
+     "kind": "TERM",
+     "label": "Parent Material Adverse Effect",
+     "text": "Parent Material Adverse Effect",
+     "source_span_id": "f53c590a9ca4d2d15212acedf07b16866e331545ab5c006ac6121e0523700980",
+     "start_byte": 139277,
+     "end_byte": 139307,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "8fdf6005b8bf1704db3af25a86eaa2615be4cb1c86352c871e404ca27e27f6c9",
+     "kind": "OPERATION",
+     "label": "Exclusion from definition",
+     "text": "shall not include",
+     "source_span_id": "8a823473104b42c48a709908c76e95fe9219e3956db4140fbd92ab58855e4d4f",
+     "start_byte": 139308,
+     "end_byte": 139325,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "299f97ceb92947cd8a9fa7e6af2111b6f92fc16db20f90e0a3ae372057136fbf",
+     "kind": "LITANY",
+     "label": "Event litany",
+     "text": "any event, change, circumstance, occurrence, effect or state of facts",
+     "source_span_id": "bbf650a065a4e49e31bf7eb4eba85d724096b2188aa7f46253ea23753f102f65",
+     "start_byte": 139326,
+     "end_byte": 139395,
+     "origin": "OWN",
+     "gap_before": false,
+     "members": [
+      "event",
+      "change",
+      "circumstance",
+      "occurrence",
+      "effect",
+      "state of facts"
+     ],
+     "children": []
+    },
+    {
+     "component_id": "99194ed336530629a721604f1c592eda4680e3e7adc55413cff53d65cb7fe463",
+     "kind": "QUALIFIER",
+     "label": "Resulting-from limit",
+     "text": "to the extent resulting from",
+     "source_span_id": "6c4630312defe2919388d18f63aa566a34e51e0ee326490ee285eaa1d5ac34b3",
+     "start_byte": 139396,
+     "end_byte": 139424,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "17868bd44a34a21122ea1acc0cf5448199d724758e1115dbf8a9f2e7ae51a9ea",
+     "kind": "TERM",
+     "label": "Industry, economy and markets conditions",
+     "text": "changes or conditions generally affecting the oilfield services industry, or the economy or the financial or securities markets, in the United States or Canada, including effects on such industry, economy or markets resulting from any regulatory and political conditions or developments in general",
+     "source_span_id": "bbc126cf0f56fc65b61840c9234e0c56cb46dbeb3c6609e9372eb107cbe3e4c5",
+     "start_byte": 139429,
+     "end_byte": 139726,
+     "origin": "OWN",
+     "gap_before": true,
+     "children": [
+      {
+       "component_id": "c5599a4c942f8e56c72430d5730095f7a50a36634a8cd429620e387434dac9ad",
+       "kind": "QUALIFIER",
+       "label": "Geographic scope",
+       "text": "in the United States or Canada",
+       "source_span_id": "1e5082d01843ac0acffbdbc17e565ef48c9859a6d9c4bd2a4c5910b7b9ab6aec",
+       "start_byte": 139558,
+       "end_byte": 139588,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      },
+      {
+       "component_id": "1f9185fc8c4213d0cf789909ef2b7d7cdc24f1edf3eaa24d1de2ec53ef37b63c",
+       "kind": "TERM",
+       "label": "Inclusion of regulatory and political effects",
+       "text": "including effects on such industry, economy or markets resulting from any regulatory and political conditions or developments in general",
+       "source_span_id": "29171da0c94fb47bb36a330af4e33e9d2b16bbe2b8096ba1274ec762972a13e7",
+       "start_byte": 139590,
+       "end_byte": 139726,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      }
+     ]
+    },
+    {
+     "component_id": "b8788a648704ec6ee5f83671b83244014c1572544bccd40b2bda0860684891e4",
+     "kind": "CROSS_REFERENCE",
+     "label": "Disproportionality clauses",
+     "text": "clauses (1), (2), (3), (4) and (7)",
+     "source_span_id": "c1d5f9a057075b1fe9f2e379404795ab14042ff5558d403a092674a999f931b2",
+     "start_byte": 142283,
+     "end_byte": 142317,
+     "origin": "OWN",
+     "gap_before": true,
+     "resolves_to": null,
+     "children": []
+    },
+    {
+     "component_id": "35b94da6638d5f48bbb378944257db1429a0a6a2d289d57d9db7bf49d03a4b21",
+     "kind": "STANDARD",
+     "label": "Not disproportionately adverse",
+     "text": "the impact of such event, change, circumstance, occurrence, effect or state of facts is not disproportionately adverse to the Parent and its Subsidiaries, taken as a whole, as compared to other participants in the industries in which the Parent and its Subsidiaries operate",
+     "source_span_id": "8a226c1785ff317d0d15151a9a507632654e54d3f383d718a1d18f6f75f47abe",
+     "start_byte": 142319,
+     "end_byte": 142592,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    }
+   ]
+  },
+  {
+   "section": "4.1",
+   "proposal_id": "f79be0fdcb468ca4965f7f4f4afc85f919468dc3835b1b024813a9769b114b28",
+   "family_key": "MAE_DEFINITION",
+   "subtype_key": "EXCLUSION",
+   "statement": "Parent Material Adverse Effect shall not include any event, change, circumstance, occurrence, effect or state of facts to the extent resulting from any epidemic, pandemic, disease outbreak or other public health crisis, public health event, or the worsening of any of the foregoing, or any hurricane, tornado, flood, fire, volcano, earthquake, freeze, or other natural disaster; but this exclusion applies only if the impact is not disproportionately adverse to Parent and its Subsidiaries, taken as a whole, as compared to other participants in the industries in which Parent and its Subsidiaries operate.",
+   "components": [
+    {
+     "component_id": "8e512082a380b62b2c3dd79ed5c429db1ad4a8ac73bd0989cbb338f7c11c9288",
+     "kind": "TERM",
+     "label": "Parent Material Adverse Effect",
+     "text": "Parent Material Adverse Effect",
+     "source_span_id": "f53c590a9ca4d2d15212acedf07b16866e331545ab5c006ac6121e0523700980",
+     "start_byte": 139277,
+     "end_byte": 139307,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "dc7f0ef7426a376c01be8a75196ea1cae038b000edb6333a798e9081052f8c79",
+     "kind": "OPERATION",
+     "label": "Exclusion from definition",
+     "text": "shall not include",
+     "source_span_id": "8a823473104b42c48a709908c76e95fe9219e3956db4140fbd92ab58855e4d4f",
+     "start_byte": 139308,
+     "end_byte": 139325,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "05ccbdafd5a10c91e3ecdc54c2ca9189418d8f792829640e8ffb8145b44de7d3",
+     "kind": "LITANY",
+     "label": "Event litany",
+     "text": "any event, change, circumstance, occurrence, effect or state of facts",
+     "source_span_id": "bbf650a065a4e49e31bf7eb4eba85d724096b2188aa7f46253ea23753f102f65",
+     "start_byte": 139326,
+     "end_byte": 139395,
+     "origin": "OWN",
+     "gap_before": false,
+     "members": [
+      "event",
+      "change",
+      "circumstance",
+      "occurrence",
+      "effect",
+      "state of facts"
+     ],
+     "children": []
+    },
+    {
+     "component_id": "c0bd0c18196fef07dbdd2d2ec45f600dc1cb2b731f4241db03d761b2ca1fbf09",
+     "kind": "QUALIFIER",
+     "label": "Resulting-from limit",
+     "text": "to the extent resulting from",
+     "source_span_id": "6c4630312defe2919388d18f63aa566a34e51e0ee326490ee285eaa1d5ac34b3",
+     "start_byte": 139396,
+     "end_byte": 139424,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "b19ad6c5ad972819fb9cedfb9134edca5ff06f0d3e299c5d551ef3ada9b9cae4",
+     "kind": "TERM",
+     "label": "Public health events and natural disasters",
+     "text": "any epidemic, pandemic, disease outbreak or other public health crisis, public health event, or the worsening of any of the foregoing, or any hurricane, tornado, flood, fire, volcano, earthquake, freeze, or other natural disaster",
+     "source_span_id": "d26bb8894bf590c59c8b3d7aab7c7519c73171fcd1f6f9b148c006b5124a7a28",
+     "start_byte": 140970,
+     "end_byte": 141199,
+     "origin": "OWN",
+     "gap_before": true,
+     "children": []
+    },
+    {
+     "component_id": "b869fb3c6b9badd934c230a37d2936da0b7646238924a5133d2b3aaae4d0d725",
+     "kind": "CROSS_REFERENCE",
+     "label": "Disproportionality clauses",
+     "text": "clauses (1), (2), (3), (4) and (7)",
+     "source_span_id": "c1d5f9a057075b1fe9f2e379404795ab14042ff5558d403a092674a999f931b2",
+     "start_byte": 142283,
+     "end_byte": 142317,
+     "origin": "OWN",
+     "gap_before": true,
+     "resolves_to": null,
+     "children": []
+    },
+    {
+     "component_id": "8c454c3837ec696d83fdc5fe58233949e8dd01dfae5e8990921c57227d9b687f",
+     "kind": "STANDARD",
+     "label": "Not disproportionately adverse",
+     "text": "the impact of such event, change, circumstance, occurrence, effect or state of facts is not disproportionately adverse to the Parent and its Subsidiaries, taken as a whole, as compared to other participants in the industries in which the Parent and its Subsidiaries operate",
+     "source_span_id": "8a226c1785ff317d0d15151a9a507632654e54d3f383d718a1d18f6f75f47abe",
+     "start_byte": 142319,
+     "end_byte": 142592,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    }
+   ]
+  },
+  {
+   "section": "5.16",
+   "proposal_id": "c4a47fcf3ff868b9cdf5e6373f988ded11fdd4b4374606977c0acf6fba6f6ea4",
+   "family_key": "EMPLOYEE_MATTERS",
+   "subtype_key": "WELFARE_RELIEF",
+   "statement": "In the plan year in which the Effective Time occurs, Parent shall, or shall cause the Company or another Affiliate to, with respect to any welfare benefit plans of Parent or its Affiliates in which any Continuing Employee is eligible to participate on or after the Effective Time, cause any preexisting conditions or limitations, eligibility waiting periods, actively at work requirements, evidence of insurability requirements or required physical examinations under any corresponding group health plan of Parent or its Affiliates to be waived with respect to Continuing Employees and their eligible dependents to the same extent satisfied or waived under the corresponding Company Plan as of the Effective Time.",
+   "components": [
+    {
+     "component_id": "136e0529b9ed2070b1ffeb2a79e9df56ecc7ddd59a30e003acc78bcae9897391",
+     "kind": "TRIGGER",
+     "label": "Plan year of Effective Time",
+     "text": "In the plan year in which the Effective Time occurs",
+     "source_span_id": "4d17c8ad065097ded25a00559d602073f5233b0572fe7a89ea7fe547bbd4c0f4",
+     "start_byte": 222902,
+     "end_byte": 222953,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "e9dcfa4b3c74f91e8781de9143b6a5aa3d0e2277cf56309aa6665cdce5c86b2f",
+     "kind": "ACTOR",
+     "label": "Parent",
+     "text": "Parent",
+     "source_span_id": "2df1085539f610a5bc4cd32290fbc1cca25157b7d8962fc871c0de2b9e994549",
+     "start_byte": 222955,
+     "end_byte": 222961,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "96a38972da7bad322e7fd173bba780a97451e0c2019e9caa95986a31e4a8de7d",
+     "kind": "EFFORTS_STANDARD",
+     "label": "Parent or Company obligation",
+     "text": "shall, or shall cause the Company or another Affiliate to",
+     "source_span_id": "871fe2c43c917f78d76e33ae3990513eb12eb88dbef1eebe5eb5618e1db56f7b",
+     "start_byte": 222962,
+     "end_byte": 223019,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "c42418d14fcb43e5aa4de11f00324c73f2b6a04ed7ce39054cb3583ab004b101",
+     "kind": "QUALIFIER",
+     "label": "Welfare benefit plans scope",
+     "text": "with respect to any welfare benefit plans of Parent or its Affiliates in which any Continuing Employee is eligible to participate on or after the Effective Time",
+     "source_span_id": "6e838ff02d0af024d421dc67ead02d51afe07227d70e06437e69f91fc904190a",
+     "start_byte": 223021,
+     "end_byte": 223181,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "fb6a0c5c11827a091da1e83f3529b237f7484cd64bbb664aa608af26b1d1ee84",
+     "kind": "LIST",
+     "label": "Waived requirements",
+     "text": "",
+     "source_span_id": "e27e9d278eee4a611ac9b06f8970885558299c32eed7b8119ff1393cb6e36e9d",
+     "start_byte": null,
+     "end_byte": null,
+     "origin": "OWN",
+     "gap_before": true,
+     "children": [
+      {
+       "component_id": "09ac4260564c61be2631334a35618ab18a67d9b3177d265b8e5fa69056ac2b83",
+       "kind": "LIST_ELEMENT",
+       "label": "Preexisting conditions or limitations",
+       "text": "preexisting conditions or limitations",
+       "source_span_id": "5309bb9ca333b0f38cc1987ae01f20bfb5e50d09f3aea7f6a60cbc3c2465aefe",
+       "start_byte": 223197,
+       "end_byte": 223234,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      },
+      {
+       "component_id": "1e3e8b5f4f57c4475a262857cad0d82f39aad5656d919119e18f25a9d4cd3578",
+       "kind": "LIST_ELEMENT",
+       "label": "Eligibility waiting periods",
+       "text": "eligibility waiting periods",
+       "source_span_id": "e81f3d4ea15763d63e16e90ac496992803064866f55d1a72802e2c1d8726a817",
+       "start_byte": 223236,
+       "end_byte": 223263,
+       "origin": "OWN",
+       "gap_before": true,
+       "children": []
+      },
+      {
+       "component_id": "4dc76796a0dccb277c2143de2650e2d4338de2ce4deb5777662061c0e428eb81",
+       "kind": "LIST_ELEMENT",
+       "label": "Actively at work requirements",
+       "text": "actively at work requirements",
+       "source_span_id": "90088689c2e37f1425c4f38c682bfd025cdcace3e64042df3d4ed0679ee5bd4e",
+       "start_byte": 223265,
+       "end_byte": 223294,
+       "origin": "OWN",
+       "gap_before": true,
+       "children": []
+      },
+      {
+       "component_id": "35322438a45e9d279d5755eb1c0b0857fc97562d6878881a6f38bef693206b57",
+       "kind": "LIST_ELEMENT",
+       "label": "Evidence of insurability requirements",
+       "text": "evidence of insurability requirements",
+       "source_span_id": "00c8c5bdcf69d3e4f26a0c1b56447393bbbaa0ca6d8aef060bb898f22788098a",
+       "start_byte": 223296,
+       "end_byte": 223333,
+       "origin": "OWN",
+       "gap_before": true,
+       "children": []
+      },
+      {
+       "component_id": "c0601a554bbc1cfe4f2d061b3ccaadf47d0acc828df17a68a2069cffd376da5b",
+       "kind": "LIST_ELEMENT",
+       "label": "Required physical examinations",
+       "text": "required physical examinations",
+       "source_span_id": "e9983d684ceba8d99d15e52265836560608e43d715bd7abe0284fa72a9605ed4",
+       "start_byte": 223337,
+       "end_byte": 223367,
+       "origin": "OWN",
+       "gap_before": true,
+       "children": []
+      }
+     ]
+    },
+    {
+     "component_id": "6efca7f78fdbbbdf63e5d9163c916de0f746ea0cd558a7c204db1c06780943ec",
+     "kind": "QUALIFIER",
+     "label": "Corresponding group health plan",
+     "text": "under any corresponding group health plan of Parent or its Affiliates",
+     "source_span_id": "ba59748fa8b721b558a2caa81593419745a8a95f07695539644521d4329f9971",
+     "start_byte": 223368,
+     "end_byte": 223437,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "61895403aac99dc6d1f6b2fd89374cfa571561873ccfd7a19fc2a6a1090c9ff1",
+     "kind": "OPERATION",
+     "label": "Waiver",
+     "text": "to be waived",
+     "source_span_id": "627077fda27c73f36c6fc2ff4a156ee72045223e99e8732c41e10414306c681a",
+     "start_byte": 223438,
+     "end_byte": 223450,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "b9492e40e7a950a9853931f4a506ee8c243fab0eeec7d6bfee6d2f239bb4c0a3",
+     "kind": "OBJECT",
+     "label": "Continuing Employees and dependents",
+     "text": "Continuing Employees and their eligible dependents",
+     "source_span_id": "90280e206b5dc5966636b182ac0bfd3b851fdce84edd28f07aa9e46f1e2ceec9",
+     "start_byte": 223467,
+     "end_byte": 223517,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "412f1ecaa723eddbecc8c67ea38144c876550861facaa437de889776145496a5",
+     "kind": "STANDARD",
+     "label": "Same extent as Company Plan",
+     "text": "to the same extent satisfied or waived under the corresponding Company Plan as of the Effective Time",
+     "source_span_id": "69ea17073379d0059764b8beb2ca66492e8b7860ff626a1575f2a0a11476d038",
+     "start_byte": 223518,
+     "end_byte": 223618,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    }
+   ]
+  },
+  {
+   "section": "3.18",
+   "proposal_id": "f469dcaf830d5400ab79f1d72cb40493870dd35145866a70e749c161df8e7c36",
+   "family_key": "REPRESENTATIONS",
+   "subtype_key": "DOCUMENT_REPRESENTATION",
+   "statement": "The Company represents and warrants to Parent and Merger Sub that Section 3.18(b) of the Company Disclosure Letter sets forth a true and complete list of the Leased Real Property, the address for each parcel of the Leased Real Property, and a description of the applicable lease, sublease or other agreement therefor and any amendments, modifications, guarantees and supplements thereto (each, a Lease Agreement).",
+   "components": [
+    {
+     "component_id": "f811ee7348c3d24dcd04b7154b28635c82fd49a20c004395976a185d4bfb1651",
+     "kind": "QUALIFIER",
+     "label": "Company representation and warranty",
+     "text": "the Company represents and warrants",
+     "source_span_id": "d360d13a35f5d6a23855a9b1dacbfed70783025538f15cfe6635f6b988199b04",
+     "start_byte": 55147,
+     "end_byte": 55182,
+     "origin": "INTRO",
+     "origin_structure_node_id": "aa1c037a90304b937d59f8e6f2b50eb41a1e2a7890338178da8ec9dd35072e6e",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "5d4e24d69d1c3016214561e98469b7c64bf47e9beea074c2c2cacc38848a2445",
+     "kind": "ACTOR",
+     "label": "Company Disclosure Letter",
+     "text": "Company Disclosure Letter",
+     "source_span_id": "eeedbb73843b94385c3473124a9047b956b1c394838a55bde690b8321ffb3b61",
+     "start_byte": 115632,
+     "end_byte": 115657,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "d95f706d641b33512b3a492a96db5ac5b23b69b4e745cfa4ea8fded8bd585869",
+     "kind": "OPERATION",
+     "label": "Sets forth true and complete list",
+     "text": "sets forth a true and complete list",
+     "source_span_id": "4d93a68c6999b30559b486025aa58c356cf7890c3840b1d4198135ccf1292293",
+     "start_byte": 115658,
+     "end_byte": 115693,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "be1462f997becbde892e015f5951d63c097ac6bdc82ef06333e76e15760a6d77",
+     "kind": "LIST",
+     "label": "Matters listed",
+     "text": "",
+     "source_span_id": "2eda52efa9dd5baf8e8999494fefc3a0046ad6b87374a6ba277a0c2a8b745421",
+     "start_byte": null,
+     "end_byte": null,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": [
+      {
+       "component_id": "3dbbced453b1412fcd81ca3899a8b70156f4afe0684f6607039985f14a76f56c",
+       "kind": "LIST_ELEMENT",
+       "label": "Leased Real Property",
+       "text": "Leased Real Property",
+       "source_span_id": "3bc15ed8a5a10c18096f0531958813ede371bfc15fda8cba467628ebe0b207ac",
+       "start_byte": 115701,
+       "end_byte": 115721,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      },
+      {
+       "component_id": "6bbde5d3d2d090be0663064b24e0a3214f821c2808f427a0e3dd762f9648d054",
+       "kind": "LIST_ELEMENT",
+       "label": "Address of each parcel",
+       "text": "address for each parcel",
+       "source_span_id": "3663319b11a6c3a5357540e16f5f91413645b2440689ae4014d8fa8770854b0c",
+       "start_byte": 115727,
+       "end_byte": 115750,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      },
+      {
+       "component_id": "1b41ea9245c914187a7c2aad26d2be62b8e6ec230afa038b5ccc24af2421ed93",
+       "kind": "LIST_ELEMENT",
+       "label": "Description of lease and amendments",
+       "text": "a description of the applicable lease, sublease or other agreement therefor and any amendments, modifications, guarantees and supplements thereto",
+       "source_span_id": "9337b4e86a0b6dd4f14361d6adb2d62f80b791d2b3bef4cee487b20a0ed88dcb",
+       "start_byte": 115784,
+       "end_byte": 115929,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "section": "3.18",
+   "proposal_id": "f8ce90866af790aca214e0972bb732ee19f64cb9c5c048f7f870a531c832aa68",
+   "family_key": "REPRESENTATIONS",
+   "subtype_key": "NEGATIVE_REPRESENTATION",
+   "statement": "The Company represents and warrants to Parent and Merger Sub that, except as set forth in Section 3.18(a)(ii) of the Company Disclosure Letter, no party has a right of first offer, right of first refusal, purchase option or other right to acquire any of the Owned Real Property.",
+   "components": [
+    {
+     "component_id": "d728822f1be8104f51898617a511441bdfcec4f7a69691f4ccd3cd0e9293209d",
+     "kind": "QUALIFIER",
+     "label": "Company representation and warranty",
+     "text": "the Company represents and warrants",
+     "source_span_id": "d360d13a35f5d6a23855a9b1dacbfed70783025538f15cfe6635f6b988199b04",
+     "start_byte": 55147,
+     "end_byte": 55182,
+     "origin": "INTRO",
+     "origin_structure_node_id": "aa1c037a90304b937d59f8e6f2b50eb41a1e2a7890338178da8ec9dd35072e6e",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "4d5d472f49db51e37be057c359d04c8ffd095b2deff59f4c70ecd96f407811de",
+     "kind": "EXCEPTION",
+     "label": "Exception for Disclosure Letter Section 3.18(a)(ii)",
+     "text": "Except as set forth in Section 3.18(a)(ii) of the Company Disclosure Letter",
+     "source_span_id": "7ee0b3d2f3f19e13fdf52ea4346bd1b1ac7ebcdff82aa44a02d1b42bfc0a73b3",
+     "start_byte": 115269,
+     "end_byte": 115344,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "1d5ae743d4cf60f64aca407a7b20e12bf9d189cf60dc53b5a44258ee334be1ac",
+     "kind": "ACTOR",
+     "label": "Any party",
+     "text": "no party",
+     "source_span_id": "16b233a34d814cb1603157cd2950a659e286e021d79954e2a3a7ba395a9b593f",
+     "start_byte": 115470,
+     "end_byte": 115478,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "e2c2bff6743189c9cffc0b16989076f4f65c61034b0764058cb7542be0bbacec",
+     "kind": "OPERATION",
+     "label": "Has a right",
+     "text": "has a right",
+     "source_span_id": "a8fbabfbe9731b3fba39804efc64eca46232a5357591d2ca77feba1cf6640ff6",
+     "start_byte": 115479,
+     "end_byte": 115490,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "ed5b6c5126206c89745370092a0436c2a18c12374077eccf0daf88e3cf0f8d73",
+     "kind": "LIST",
+     "label": "Types of acquisition rights",
+     "text": "",
+     "source_span_id": "406807cd2f4c6b25cbdda9def0969b5c6178fde4375f28e12c0a62a7f96f0937",
+     "start_byte": null,
+     "end_byte": null,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": [
+      {
+       "component_id": "4da1eb4649c83734e4a97e3bdb63a9a163c2c9d412ba0d320878b096c1b795fb",
+       "kind": "LIST_ELEMENT",
+       "label": "Right of first offer",
+       "text": "right of first offer",
+       "source_span_id": "d8043008dd133803459dc9342d490add0152bf59845494dcb4679b4c68443a62",
+       "start_byte": 115485,
+       "end_byte": 115505,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      },
+      {
+       "component_id": "d76c7fb12120d93436a933f140b7b6761768bf4233ee9b4285d21fc38d6411b7",
+       "kind": "LIST_ELEMENT",
+       "label": "Right of first refusal",
+       "text": "right of first refusal",
+       "source_span_id": "20104ed885bf3beb751b6c13108fdc83cc58321a036ed9cb069c473eac938908",
+       "start_byte": 115507,
+       "end_byte": 115529,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      },
+      {
+       "component_id": "52a28b28fccbde9affddda668e580f1f6fd09d0e48cfc608ecc522c72905c96e",
+       "kind": "LIST_ELEMENT",
+       "label": "Purchase option",
+       "text": "purchase option",
+       "source_span_id": "18d7632194195cb317121bcad0fcab01f160570c7810762ed62836f21775f80a",
+       "start_byte": 115531,
+       "end_byte": 115546,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      },
+      {
+       "component_id": "b629b62f7f90ddcb8ee1e10feeb12bec479cd5ef063cbdd3557dbd628917d578",
+       "kind": "LIST_ELEMENT",
+       "label": "Other right to acquire",
+       "text": "other right to acquire",
+       "source_span_id": "915192eccafcf7d25b37c71a87c16189e510df25491246f416458234db12f0f5",
+       "start_byte": 115550,
+       "end_byte": 115572,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      }
+     ]
+    },
+    {
+     "component_id": "87ea96c0e99201536c014e8f2ab1e4b3d7786a588e997a0ea4878c0848a1ffa4",
+     "kind": "OBJECT",
+     "label": "Owned Real Property",
+     "text": "any of the Owned Real Property",
+     "source_span_id": "e767427073aeb1d942743775a10bd69338a32deea573ebd2fc6104e825da4fbc",
+     "start_byte": 115573,
+     "end_byte": 115603,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    }
+   ]
+  },
+  {
+   "section": "4.10",
+   "proposal_id": "c9e13474a429d55bde65ae70dc2e9b411f78ea451b824cebaa59aaccbff4d46b",
+   "family_key": "REPRESENTATIONS",
+   "subtype_key": "COMPLIANCE_REPRESENTATION",
+   "statement": "Parent and Merger Sub represent and warrant to the Company that, except as has not and would not reasonably be expected to have a Parent Material Adverse Effect, Parent and each of its Subsidiaries, as applicable, are and, since January 1, 2024 have been, in compliance with all applicable Laws, subject to the Article IV exceptions for Parent SEC Documents and the Parent Disclosure Letter.",
+   "components": [
+    {
+     "component_id": "00e0bceda0a2c3576cf28f989dd5943a4bebda981418d67261dc23c4322933f2",
+     "kind": "QUALIFIER",
+     "label": "Parent SEC document and disclosure letter exceptions",
+     "text": "Except as set forth in (a) any Parent SEC Document filed with or furnished to the SEC and available on EDGAR on or after January 1, 2026 and at least 24 hours prior to the date hereof ((i) without giving effect to any disclosure set forth in any Parent SEC Document or any amendment to any Parent SEC Document in each case filed on or after such time and (ii) other than any disclosures contained under the captions “Risk Factors” or “Forward-Looking Statements,” and any other disclosures that are primarily predictive, cautionary or forward-looking in nature) or (b) the disclosure letter delivered by Parent to the Company immediately prior to or simultaneously with the execution of this Agreement",
+     "source_span_id": "b80b75a96c35e731f529e6b6b95fcf5da6648769fd9bf76a4987a990331bb1e5",
+     "start_byte": 136960,
+     "end_byte": 137669,
+     "origin": "INTRO",
+     "origin_structure_node_id": "f2b452ccb3761a33050ac0c14c542caf277ac1bfcbf23a47ba6adaac88e4a0f0",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "86630e1a22987694e43d5e7d5562fb8c1c34e956f83357f5af6fb1de58a958c7",
+     "kind": "OPERATION",
+     "label": "Parent and Merger Sub representation and warranty",
+     "text": "Parent and Merger Sub represent and warrant to the Company as follows",
+     "source_span_id": "3045fe66f5f854fb15aac7b1da6a08389fe4551e796cd74a2053eae9fdee4ab6",
+     "start_byte": 137708,
+     "end_byte": 137777,
+     "origin": "INTRO",
+     "origin_structure_node_id": "f2b452ccb3761a33050ac0c14c542caf277ac1bfcbf23a47ba6adaac88e4a0f0",
+     "gap_before": true,
+     "children": []
+    },
+    {
+     "component_id": "8512a1439bafa176953c611f5e73a0785671f7459ce27a95aad692a715688239",
+     "kind": "EXCEPTION",
+     "label": "Parent Material Adverse Effect exception",
+     "text": "Except as has not and would not reasonably be expected to have a Parent Material Adverse Effect",
+     "source_span_id": "11a7d9786e15436b6a0813d92d3fda88b116235a1955ea28fa72eddcb77d36a8",
+     "start_byte": 159759,
+     "end_byte": 159854,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": [
+      {
+       "component_id": "d5ebbc1cd3a6b2253b2b1d11af366d4905c28ea94bdf993d459b40e9e6dcda68",
+       "kind": "STANDARD",
+       "label": "Reasonable expectation standard",
+       "text": "would reasonably be expected",
+       "source_span_id": "0879e71a383c2df4544d1fdce959d2bd1a63852b55076c86f56487fa36f10bf3",
+       "start_byte": null,
+       "end_byte": null,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      },
+      {
+       "component_id": "31082aee651e693c8261e2df7955ad1ca69de49cf27a3b365d9e33320ffc8da1",
+       "kind": "DEFINED_TERM",
+       "label": "Parent Material Adverse Effect definition",
+       "text": "Parent Material Adverse Effect",
+       "source_span_id": "cd4de52addb6a28d4304f5523b64591dde0aefc6f6e579d06d9a0147c68a1348",
+       "start_byte": 159824,
+       "end_byte": 159854,
+       "origin": "OWN",
+       "gap_before": false,
+       "resolves_to": {
+        "structure_node_id": "23189d086147686c887f1d112c7a2d531202ad1b4ba0eef091ae7bbdb71417a1",
+        "text": "any event, change, circumstance, occurrence, effect or state of facts that, individually or in the aggregate, is or would reasonably be expected to be materially adverse to the business, assets, liabilities, condition (financial or otherwise) or results of operations of Parent and its Subsidiaries, taken as a whole"
+       },
+       "children": []
+      }
+     ]
+    },
+    {
+     "component_id": "3152d409c6cc141cbe99cbc34d3d96ef25ca542115923db109638c1ed252fde2",
+     "kind": "ACTOR",
+     "label": "Parent and its Subsidiaries",
+     "text": "Parent and each of its Subsidiaries",
+     "source_span_id": "0b946b5b126d991d0e5d0c623ec352219dad96574d619c6b1612df997d4204d0",
+     "start_byte": 159856,
+     "end_byte": 159891,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "ab6b6e0ef5ff6068623181533d8696bb7429b459d8f87f2906e68c6f9d0ca7f2",
+     "kind": "QUALIFIER",
+     "label": "As applicable qualifier",
+     "text": "as applicable",
+     "source_span_id": "e471e371e92829455e804a90f4d3edc488c2f7abf06c448f5d172d9cc27def74",
+     "start_byte": 159893,
+     "end_byte": 159906,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "03909ac747b000ca37e01e99bbf6f99a9e21d8c36c3ac62f1557fc4bf37e7e13",
+     "kind": "OPERATION",
+     "label": "Present and past compliance",
+     "text": "are and, since January 1, 2024 have been",
+     "source_span_id": "a3692bc03a595489bc3bf865b71393d32ed82d6e1cb146fe336a31b83b24f463",
+     "start_byte": 159908,
+     "end_byte": 159948,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": [
+      {
+       "component_id": "6db6e755447f370b59b7ffae7cb6989b0fe71727d617c8590c09596d44ce1c1a",
+       "kind": "DATE",
+       "label": "Look-back start date",
+       "text": "since January 1, 2024",
+       "source_span_id": "83f128aec95e334c315b425db8ed127eb15cd699de7766434ca140fe78804338",
+       "start_byte": 159917,
+       "end_byte": 159938,
+       "origin": "OWN",
+       "gap_before": false,
+       "value": {
+        "canonical": "2024-01-01",
+        "unit": "ISO_DATE"
+       },
+       "children": []
+      }
+     ]
+    },
+    {
+     "component_id": "b787015eab3ab05e256c31a930c743b50ef090230ac1c9c0407edf81280c9ac2",
+     "kind": "OBJECT",
+     "label": "Compliance with all applicable Laws",
+     "text": "in compliance with all applicable Laws",
+     "source_span_id": "7a1799003646539e6835005429e0a8eaccef02a2bc0706a01c8e499557fab9b4",
+     "start_byte": 159950,
+     "end_byte": 159988,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    }
+   ]
+  }
+ ],
+ "valid_sample": [
+  {
+   "section": "4.1",
+   "proposal_id": "1639d4e65d9fc8bdc20caa4e86262782ca3612bbeea964e49af5010caa7caffe",
+   "family_key": "REPRESENTATIONS",
+   "subtype_key": "STATUS_REPRESENTATION",
+   "statement": "Subject to the Parent SEC Document and Parent Disclosure Letter exceptions in the Article IV introduction, Parent and Merger Sub represent and warrant to the Company that each of Parent and its Subsidiaries (including Merger Sub) is duly qualified or licensed to do business and is in good standing (with respect to jurisdictions that recognize such concept) in each jurisdiction in which the nature of its business or the ownership, leasing or operation of its properties or assets makes such qualification or licensing a requirement, except where the failure to be so qualified or licensed or in good standing, individually or in the aggregate, has not had and would not reasonably be expected to have a Parent Material Adverse Effect.",
+   "components": [
+    {
+     "component_id": "b928e022c416ff41ef3a650e58bb3f7f388ce41992b8241558c4855e00725e23",
+     "kind": "QUALIFIER",
+     "label": "SEC documents and disclosure letter exceptions",
+     "text": "Except as set forth in (a) any Parent SEC Document filed with or furnished to the SEC and available on EDGAR on or after January 1, 2026 and at least 24 hours prior to the date hereof ((i) without giving effect to any disclosure set forth in any Parent SEC Document or any amendment to any Parent SEC Document in each case filed on or after such time and (ii) other than any disclosures contained under the captions “Risk Factors” or “Forward-Looking Statements,” and any other disclosures that are primarily predictive, cautionary or forward-looking in nature) or (b) the disclosure letter delivered by Parent to the Company immediately prior to or simultaneously with the execution of this Agreement",
+     "source_span_id": "fc97acea81fb5197d7e60034242e3b0b0c78812b9b1a6beb5f458ff6e7e04e7a",
+     "start_byte": 136960,
+     "end_byte": 137669,
+     "origin": "INTRO",
+     "origin_structure_node_id": "f2b452ccb3761a33050ac0c14c542caf277ac1bfcbf23a47ba6adaac88e4a0f0",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "9f25f46a0c6c8f7b62b37ca6dcdc1191ca89b38ff12df874a4b27634a361dcc3",
+     "kind": "OPERATION",
+     "label": "Parent and Merger Sub warranty",
+     "text": "Parent and Merger Sub represent and warrant to the Company",
+     "source_span_id": "f016fd44662309ef90ce9a7e7aae41088c3b3ae1414336fe9c871e88280d7a9e",
+     "start_byte": 137708,
+     "end_byte": 137766,
+     "origin": "INTRO",
+     "origin_structure_node_id": "f2b452ccb3761a33050ac0c14c542caf277ac1bfcbf23a47ba6adaac88e4a0f0",
+     "gap_before": true,
+     "children": []
+    },
+    {
+     "component_id": "bff3251fe23fb043f4b7fc3d1e858db18e1c3cf432d3847dd5001a5b8e73d133",
+     "kind": "ACTOR",
+     "label": "Parent and its Subsidiaries",
+     "text": "Each of Parent and its Subsidiaries",
+     "source_span_id": "0b468ece5941d20b095bd169c74da9133c1a550edcbc077679e95e3d294346cf",
+     "start_byte": 137828,
+     "end_byte": 137863,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "acbf394ca3ae45633780b3703d6ddeb75f63096e9f720a42bcafacd01923748b",
+     "kind": "QUALIFIER",
+     "label": "Merger Sub included",
+     "text": "(including Merger Sub)",
+     "source_span_id": "115f2e1e43326058395d7188fe30656c25a06936f3b8f740707445a424f9872c",
+     "start_byte": 137864,
+     "end_byte": 137886,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "87fc259a992b1c842c78be8f42bf83e63695c3ae6757119a3a050cbc32afce48",
+     "kind": "OPERATION",
+     "label": "Duly qualified or licensed and in good standing",
+     "text": "is duly qualified or licensed to do business and is in good standing",
+     "source_span_id": "4b7843e1b624d2a3fc922ec88fba735f1663a20a8778a19b96e55950a4fb8505",
+     "start_byte": 138252,
+     "end_byte": 138320,
+     "origin": "OWN",
+     "gap_before": true,
+     "children": []
+    },
+    {
+     "component_id": "3701194f2a1e17310957f588336e910e9eb8805eac9f6dfe7b280600e9f2de39",
+     "kind": "QUALIFIER",
+     "label": "Good standing concept jurisdictions",
+     "text": "(with respect to jurisdictions that recognize such concept)",
+     "source_span_id": "da66f3b91f5f3caced4c56d120243c374fbe9947259c7eb4fbff2fde62061afc",
+     "start_byte": 138321,
+     "end_byte": 138380,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "07011a8c9d8106cca02b9893805be0c108724765405bd80c2be3f3e9b8f8bce9",
+     "kind": "CONDITION",
+     "label": "Jurisdictions where qualification is required",
+     "text": "in each jurisdiction in which the nature of its business or the ownership, leasing or operation of its properties or assets makes such qualification or licensing a requirement",
+     "source_span_id": "f167f7d3e7769c134d0eb8fa783138611a2e6521c398879a28e9f3f7290d93a5",
+     "start_byte": 138381,
+     "end_byte": 138556,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "934ec3c83b129cd38ddc6f520e1a5211baaeafe78bf2a92a12e3e027bf7dec65",
+     "kind": "EXCEPTION",
+     "label": "Parent Material Adverse Effect failure exception",
+     "text": "except in the case of clause (iii), and in the case of clause (i) and (ii) as they relate to Subsidiaries, where the failure to be so qualified or licensed or in good standing, individually or in the aggregate, has not had and would not reasonably be expected to have a Parent Material Adverse Effect",
+     "source_span_id": "b4b03032bcc2a05ca97477986e39be3105dde49e3ed22c7cd6c6edc9666b6cb8",
+     "start_byte": 138558,
+     "end_byte": 138858,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": [
+      {
+       "component_id": "088298bcda19cc1fc996784e20d232a80ca6591e26f05d4de1195e77a2dbecb2",
+       "kind": "STANDARD",
+       "label": "Aggregation standard",
+       "text": "individually or in the aggregate",
+       "source_span_id": "9376d045a0b14534c927acf8cb60f6a8ae79e2b468fd6ed8f3865f070bbb55bf",
+       "start_byte": 138735,
+       "end_byte": 138767,
+       "origin": "OWN",
+       "gap_before": true,
+       "children": []
+      },
+      {
+       "component_id": "8cd67825d56eb20fbf2bdfa55653b4e71bc810b356122fed943ca14df2b03b20",
+       "kind": "STANDARD",
+       "label": "Expectation standard",
+       "text": "would not reasonably be expected",
+       "source_span_id": "a9f75ae05adfcf9978e487a5d1c1a1179268735d568d57b0b9a91e23ec358e10",
+       "start_byte": 138785,
+       "end_byte": 138817,
+       "origin": "OWN",
+       "gap_before": true,
+       "children": []
+      },
+      {
+       "component_id": "02a355c0c3d918cecac3e3f935d1cf775919766505cca36d8b93c556251a03c6",
+       "kind": "DEFINED_TERM",
+       "label": "Parent Material Adverse Effect",
+       "text": "Parent Material Adverse Effect",
+       "source_span_id": "8f11213611c5f27ed11e9b43fddf2e7e60ee5db8c26bfafe2d5ca53d9df018c5",
+       "start_byte": 138828,
+       "end_byte": 138858,
+       "origin": "OWN",
+       "gap_before": false,
+       "resolves_to": {
+        "structure_node_id": "23189d086147686c887f1d112c7a2d531202ad1b4ba0eef091ae7bbdb71417a1",
+        "text": "any event, change, circumstance, occurrence, effect or state of facts that, individually or in the aggregate, is or would reasonably be expected to be materially adverse to the business, assets, liabilities, condition (financial or otherwise) or results of operations of Parent and its Subsidiaries, taken as a whole"
+       },
+       "children": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "section": "4.1",
+   "proposal_id": "37e25d54c6ab1a5daa94197875210dbf0520316d8ef3b27775769f31b6964f89",
+   "family_key": "MAE_DEFINITION",
+   "subtype_key": "EXCLUSION",
+   "statement": "Parent Material Adverse Effect shall not include any event, change, circumstance, occurrence, effect or state of facts to the extent resulting from any failure, in and of itself, to meet any internal or published projections, forecasts, estimates or predictions in respect of revenues, earnings or other financial or operating metrics for any period.",
+   "components": [
+    {
+     "component_id": "29441dc098f1ee7d701071d6a3b204f7f042d496a8860142a36f02b002b71d7c",
+     "kind": "TERM",
+     "label": "Parent Material Adverse Effect",
+     "text": "Parent Material Adverse Effect",
+     "source_span_id": "f53c590a9ca4d2d15212acedf07b16866e331545ab5c006ac6121e0523700980",
+     "start_byte": 139277,
+     "end_byte": 139307,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "62e1f001c5d63d97a94889a375847049f2dd09a7e659dae64cb8e4c859579477",
+     "kind": "OPERATION",
+     "label": "Exclusion from definition",
+     "text": "shall not include",
+     "source_span_id": "8a823473104b42c48a709908c76e95fe9219e3956db4140fbd92ab58855e4d4f",
+     "start_byte": 139308,
+     "end_byte": 139325,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "1e531e53ad4e2005703cc2628a147d7b96e0687e563f3c5d1983d2a67f2f8c70",
+     "kind": "LITANY",
+     "label": "Event litany",
+     "text": "any event, change, circumstance, occurrence, effect or state of facts",
+     "source_span_id": "bbf650a065a4e49e31bf7eb4eba85d724096b2188aa7f46253ea23753f102f65",
+     "start_byte": 139326,
+     "end_byte": 139395,
+     "origin": "OWN",
+     "gap_before": false,
+     "members": [
+      "event",
+      "change",
+      "circumstance",
+      "occurrence",
+      "effect",
+      "state of facts"
+     ],
+     "children": []
+    },
+    {
+     "component_id": "79b05d86d210c2b11677b1357539efe245c100339a00255b264b24497f940c27",
+     "kind": "QUALIFIER",
+     "label": "Resulting-from limit",
+     "text": "to the extent resulting from",
+     "source_span_id": "6c4630312defe2919388d18f63aa566a34e51e0ee326490ee285eaa1d5ac34b3",
+     "start_byte": 139396,
+     "end_byte": 139424,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "47834d53cabdb07313de09b531309c4b3808928258d4159ac6b093979403c39f",
+     "kind": "TERM",
+     "label": "Failure to meet projections",
+     "text": "any failure, in and of itself, to meet any internal or published projections, forecasts, estimates or predictions in respect of revenues, earnings or other financial or operating metrics for any period",
+     "source_span_id": "e204e519d9a7b1a85d8315d95635cf45da42ddef86b5764a72abcb8b5b6e674a",
+     "start_byte": 140433,
+     "end_byte": 140634,
+     "origin": "OWN",
+     "gap_before": true,
+     "children": []
+    }
+   ]
+  },
+  {
+   "section": "4.1",
+   "proposal_id": "42a825d217ad71c9bddc29344d369c4be8c8b57d63a1b00aee7acd0c258571c4",
+   "family_key": "REPRESENTATIONS",
+   "subtype_key": "STATUS_REPRESENTATION",
+   "statement": "Subject to the Parent SEC Document and Parent Disclosure Letter exceptions in the Article IV introduction, Parent and Merger Sub represent and warrant to the Company that each of Parent and its Subsidiaries (including Merger Sub) has all requisite corporate or similar power and authority to own, lease and operate its properties and assets and to carry on its business as now being conducted, except, in the case of clause (i) and (ii) as they relate to Subsidiaries, where the failure to be so qualified or licensed or in good standing, individually or in the aggregate, has not had and would not reasonably be expected to have a Parent Material Adverse Effect.",
+   "components": [
+    {
+     "component_id": "18e92e923921b34e8df6ca1989d5d3c3ca04fd46c2bdd87208719bc4a497973f",
+     "kind": "QUALIFIER",
+     "label": "SEC documents and disclosure letter exceptions",
+     "text": "Except as set forth in (a) any Parent SEC Document filed with or furnished to the SEC and available on EDGAR on or after January 1, 2026 and at least 24 hours prior to the date hereof ((i) without giving effect to any disclosure set forth in any Parent SEC Document or any amendment to any Parent SEC Document in each case filed on or after such time and (ii) other than any disclosures contained under the captions “Risk Factors” or “Forward-Looking Statements,” and any other disclosures that are primarily predictive, cautionary or forward-looking in nature) or (b) the disclosure letter delivered by Parent to the Company immediately prior to or simultaneously with the execution of this Agreement",
+     "source_span_id": "fc97acea81fb5197d7e60034242e3b0b0c78812b9b1a6beb5f458ff6e7e04e7a",
+     "start_byte": 136960,
+     "end_byte": 137669,
+     "origin": "INTRO",
+     "origin_structure_node_id": "f2b452ccb3761a33050ac0c14c542caf277ac1bfcbf23a47ba6adaac88e4a0f0",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "6f1b168ff3e724d4688e7f0535ae460c930b6bb41e712484c4b821e5a122a090",
+     "kind": "OPERATION",
+     "label": "Parent and Merger Sub warranty",
+     "text": "Parent and Merger Sub represent and warrant to the Company",
+     "source_span_id": "f016fd44662309ef90ce9a7e7aae41088c3b3ae1414336fe9c871e88280d7a9e",
+     "start_byte": 137708,
+     "end_byte": 137766,
+     "origin": "INTRO",
+     "origin_structure_node_id": "f2b452ccb3761a33050ac0c14c542caf277ac1bfcbf23a47ba6adaac88e4a0f0",
+     "gap_before": true,
+     "children": []
+    },
+    {
+     "component_id": "07a318faa4d51f09f2893d8eb69202418c058619a174759563650051b47fb0c5",
+     "kind": "ACTOR",
+     "label": "Parent and its Subsidiaries",
+     "text": "Each of Parent and its Subsidiaries",
+     "source_span_id": "0b468ece5941d20b095bd169c74da9133c1a550edcbc077679e95e3d294346cf",
+     "start_byte": 137828,
+     "end_byte": 137863,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "1f3b6690d8c554128a73091a461ede6e5b66070e8ba4943865e18b1b8db4f411",
+     "kind": "QUALIFIER",
+     "label": "Merger Sub included",
+     "text": "(including Merger Sub)",
+     "source_span_id": "115f2e1e43326058395d7188fe30656c25a06936f3b8f740707445a424f9872c",
+     "start_byte": 137864,
+     "end_byte": 137886,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "b81ff6c7b22a077d1c6f57ac33a44dc490e002b27a55901a6b3b166ad075c618",
+     "kind": "OPERATION",
+     "label": "Has requisite power and authority",
+     "text": "has all requisite corporate or similar power and authority",
+     "source_span_id": "f6bc80a546c44d22a07e67b5c0bd59274ba300e5db6d16165685c10178866d97",
+     "start_byte": 138079,
+     "end_byte": 138137,
+     "origin": "OWN",
+     "gap_before": true,
+     "children": []
+    },
+    {
+     "component_id": "3cd0405b4a1c01fff71c17bef7f3a466eaee75b220709d59ba0a35a0c9772c39",
+     "kind": "OBJECT",
+     "label": "Own, lease, operate assets and carry on business",
+     "text": "to own, lease and operate its properties and assets and to carry on its business as now being conducted",
+     "source_span_id": "fc8aa65d8b833bf2cdeb7ec61c1de52943761e4bad15c958eaf0e44329ead685",
+     "start_byte": 138138,
+     "end_byte": 138241,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "cb6a78950ff60bc1961d37ffb5b77d29bcabca6f5757694a8dad9c3b55a68695",
+     "kind": "EXCEPTION",
+     "label": "Parent Material Adverse Effect failure exception",
+     "text": "except in the case of clause (iii), and in the case of clause (i) and (ii) as they relate to Subsidiaries, where the failure to be so qualified or licensed or in good standing, individually or in the aggregate, has not had and would not reasonably be expected to have a Parent Material Adverse Effect",
+     "source_span_id": "b4b03032bcc2a05ca97477986e39be3105dde49e3ed22c7cd6c6edc9666b6cb8",
+     "start_byte": 138558,
+     "end_byte": 138858,
+     "origin": "OWN",
+     "gap_before": true,
+     "children": [
+      {
+       "component_id": "5dde0a9879f16df395a646b158bba1098f2b1986e014e85d482e7d522711822b",
+       "kind": "STANDARD",
+       "label": "Aggregation standard",
+       "text": "individually or in the aggregate",
+       "source_span_id": "9376d045a0b14534c927acf8cb60f6a8ae79e2b468fd6ed8f3865f070bbb55bf",
+       "start_byte": 138735,
+       "end_byte": 138767,
+       "origin": "OWN",
+       "gap_before": true,
+       "children": []
+      },
+      {
+       "component_id": "723324ec048f4dfb28df9e07936a850127d2ef0a46366cd44c864d04a586c4d3",
+       "kind": "STANDARD",
+       "label": "Expectation standard",
+       "text": "would not reasonably be expected",
+       "source_span_id": "a9f75ae05adfcf9978e487a5d1c1a1179268735d568d57b0b9a91e23ec358e10",
+       "start_byte": 138785,
+       "end_byte": 138817,
+       "origin": "OWN",
+       "gap_before": true,
+       "children": []
+      },
+      {
+       "component_id": "d6e0ce1a96a216ee91705a1adc4817cf4b227b9feefa5c13995d920cc73cc456",
+       "kind": "DEFINED_TERM",
+       "label": "Parent Material Adverse Effect",
+       "text": "Parent Material Adverse Effect",
+       "source_span_id": "8f11213611c5f27ed11e9b43fddf2e7e60ee5db8c26bfafe2d5ca53d9df018c5",
+       "start_byte": 138828,
+       "end_byte": 138858,
+       "origin": "OWN",
+       "gap_before": false,
+       "resolves_to": {
+        "structure_node_id": "23189d086147686c887f1d112c7a2d531202ad1b4ba0eef091ae7bbdb71417a1",
+        "text": "any event, change, circumstance, occurrence, effect or state of facts that, individually or in the aggregate, is or would reasonably be expected to be materially adverse to the business, assets, liabilities, condition (financial or otherwise) or results of operations of Parent and its Subsidiaries, taken as a whole"
+       },
+       "children": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "section": "4.1",
+   "proposal_id": "47cfeb064acd7be2b5898aa61d51d942ed78896998336548eba3ced9d9585706",
+   "family_key": "REPRESENTATIONS",
+   "subtype_key": "STATUS_REPRESENTATION",
+   "statement": "Subject to the Parent SEC Document and Parent Disclosure Letter exceptions in the Article IV introduction, Parent and Merger Sub represent and warrant to the Company that each of Parent and its Subsidiaries (including Merger Sub) is an entity duly organized, validly existing and in good standing (with respect to jurisdictions that recognize such concept) under the Laws of the jurisdiction of its organization, except, in the case of clause (i) and (ii) as they relate to Subsidiaries, where the failure to be so qualified or licensed or in good standing, individually or in the aggregate, has not had and would not reasonably be expected to have a Parent Material Adverse Effect.",
+   "components": [
+    {
+     "component_id": "d04672f6d34c6a5dde8a3ef629079d9a0194aeebab90e52a2438cb162c6ef4dc",
+     "kind": "QUALIFIER",
+     "label": "SEC documents and disclosure letter exceptions",
+     "text": "Except as set forth in (a) any Parent SEC Document filed with or furnished to the SEC and available on EDGAR on or after January 1, 2026 and at least 24 hours prior to the date hereof ((i) without giving effect to any disclosure set forth in any Parent SEC Document or any amendment to any Parent SEC Document in each case filed on or after such time and (ii) other than any disclosures contained under the captions “Risk Factors” or “Forward-Looking Statements,” and any other disclosures that are primarily predictive, cautionary or forward-looking in nature) or (b) the disclosure letter delivered by Parent to the Company immediately prior to or simultaneously with the execution of this Agreement",
+     "source_span_id": "fc97acea81fb5197d7e60034242e3b0b0c78812b9b1a6beb5f458ff6e7e04e7a",
+     "start_byte": 136960,
+     "end_byte": 137669,
+     "origin": "INTRO",
+     "origin_structure_node_id": "f2b452ccb3761a33050ac0c14c542caf277ac1bfcbf23a47ba6adaac88e4a0f0",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "6510db9e38e66a2575ded41ba351c12c45a6f92523097287ca3043e6b2463ec3",
+     "kind": "OPERATION",
+     "label": "Parent and Merger Sub warranty",
+     "text": "Parent and Merger Sub represent and warrant to the Company",
+     "source_span_id": "f016fd44662309ef90ce9a7e7aae41088c3b3ae1414336fe9c871e88280d7a9e",
+     "start_byte": 137708,
+     "end_byte": 137766,
+     "origin": "INTRO",
+     "origin_structure_node_id": "f2b452ccb3761a33050ac0c14c542caf277ac1bfcbf23a47ba6adaac88e4a0f0",
+     "gap_before": true,
+     "children": []
+    },
+    {
+     "component_id": "84ea0c82fceaa58add509b8351958c2c3349f2718fb8132a7647296a195c747a",
+     "kind": "ACTOR",
+     "label": "Parent and its Subsidiaries",
+     "text": "Each of Parent and its Subsidiaries",
+     "source_span_id": "0b468ece5941d20b095bd169c74da9133c1a550edcbc077679e95e3d294346cf",
+     "start_byte": 137828,
+     "end_byte": 137863,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "8b48201c70960573da5fb7949986413f428fe12376e47e7ecf839eb3ca00c7d8",
+     "kind": "QUALIFIER",
+     "label": "Merger Sub included",
+     "text": "(including Merger Sub)",
+     "source_span_id": "115f2e1e43326058395d7188fe30656c25a06936f3b8f740707445a424f9872c",
+     "start_byte": 137864,
+     "end_byte": 137886,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "183faa1adcccae415e2f94aa9fe5be264d2ba54447b1616f27c8f14e07e73e89",
+     "kind": "OPERATION",
+     "label": "Duly organized, validly existing, good standing",
+     "text": "is an entity duly organized, validly existing and in good standing",
+     "source_span_id": "1b6b227df27b1107076e7564fb3c8f5f8531670dac772d6e4179f89dd34e3936",
+     "start_byte": 137891,
+     "end_byte": 137957,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "d777f6980344716d2f558f0ba0b5d018521d464cc96e2e80ffe0528cb9c7b8dd",
+     "kind": "QUALIFIER",
+     "label": "Good standing concept jurisdictions",
+     "text": "(with respect to jurisdictions that recognize such concept)",
+     "source_span_id": "4376191dd56e179465527935640ca4841fa53e62d0db2bd01767da2641137946",
+     "start_byte": 137958,
+     "end_byte": 138017,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "8ba89d2256ad5bc8d1695566b0897a9ab36d1119ca2e25675c6613920cbd2682",
+     "kind": "QUALIFIER",
+     "label": "Jurisdiction of organization",
+     "text": "under the Laws of the jurisdiction of its organization",
+     "source_span_id": "ed6f3cf018d713c8398b9f53f471120270791481f34d3afbe8b1b1fd978c2518",
+     "start_byte": 138018,
+     "end_byte": 138072,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "e8c57f25a94b2ec492173776d661d83426efc203b08f7dde75f5742f66c29166",
+     "kind": "EXCEPTION",
+     "label": "Parent Material Adverse Effect failure exception",
+     "text": "except in the case of clause (iii), and in the case of clause (i) and (ii) as they relate to Subsidiaries, where the failure to be so qualified or licensed or in good standing, individually or in the aggregate, has not had and would not reasonably be expected to have a Parent Material Adverse Effect",
+     "source_span_id": "b4b03032bcc2a05ca97477986e39be3105dde49e3ed22c7cd6c6edc9666b6cb8",
+     "start_byte": 138558,
+     "end_byte": 138858,
+     "origin": "OWN",
+     "gap_before": true,
+     "children": [
+      {
+       "component_id": "8971ebcae093e31c1261eb8b6a484f55345b60f1295ae2b3c25e36ec79b965a9",
+       "kind": "STANDARD",
+       "label": "Aggregation standard",
+       "text": "individually or in the aggregate",
+       "source_span_id": "9376d045a0b14534c927acf8cb60f6a8ae79e2b468fd6ed8f3865f070bbb55bf",
+       "start_byte": 138735,
+       "end_byte": 138767,
+       "origin": "OWN",
+       "gap_before": true,
+       "children": []
+      },
+      {
+       "component_id": "373e9fede0abaab41619d8e67770b1e498a5ceb1940e7da6b1ce06951e574657",
+       "kind": "STANDARD",
+       "label": "Expectation standard",
+       "text": "would not reasonably be expected",
+       "source_span_id": "a9f75ae05adfcf9978e487a5d1c1a1179268735d568d57b0b9a91e23ec358e10",
+       "start_byte": 138785,
+       "end_byte": 138817,
+       "origin": "OWN",
+       "gap_before": true,
+       "children": []
+      },
+      {
+       "component_id": "9e77be902617bf355e32586106ad23e40e9d9edd2fb4f32a700a91ed555b8fb9",
+       "kind": "DEFINED_TERM",
+       "label": "Parent Material Adverse Effect",
+       "text": "Parent Material Adverse Effect",
+       "source_span_id": "8f11213611c5f27ed11e9b43fddf2e7e60ee5db8c26bfafe2d5ca53d9df018c5",
+       "start_byte": 138828,
+       "end_byte": 138858,
+       "origin": "OWN",
+       "gap_before": false,
+       "resolves_to": {
+        "structure_node_id": "23189d086147686c887f1d112c7a2d531202ad1b4ba0eef091ae7bbdb71417a1",
+        "text": "any event, change, circumstance, occurrence, effect or state of facts that, individually or in the aggregate, is or would reasonably be expected to be materially adverse to the business, assets, liabilities, condition (financial or otherwise) or results of operations of Parent and its Subsidiaries, taken as a whole"
+       },
+       "children": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "section": "4.1",
+   "proposal_id": "5065cd1cb9fc117d319ecee6f45fdd9d29bb9226c7fe1d4bcf3c3b24af7f5052",
+   "family_key": "MAE_DEFINITION",
+   "subtype_key": "EXCLUSION",
+   "statement": "Parent Material Adverse Effect shall not include any event, change, circumstance, occurrence, effect or state of facts to the extent resulting from any change in the market price or trading volume of Parent Ordinary Shares.",
+   "components": [
+    {
+     "component_id": "26250e0705b0806bef8aa2e5fbd3f3ecdc7730c3ac1cc7072981668dbaaa8500",
+     "kind": "TERM",
+     "label": "Parent Material Adverse Effect",
+     "text": "Parent Material Adverse Effect",
+     "source_span_id": "f53c590a9ca4d2d15212acedf07b16866e331545ab5c006ac6121e0523700980",
+     "start_byte": 139277,
+     "end_byte": 139307,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "e15c83183ca060a84103688d052068163127c2914a6f0f51f82dcf334255d1ec",
+     "kind": "OPERATION",
+     "label": "Exclusion from definition",
+     "text": "shall not include",
+     "source_span_id": "8a823473104b42c48a709908c76e95fe9219e3956db4140fbd92ab58855e4d4f",
+     "start_byte": 139308,
+     "end_byte": 139325,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "88b2df2467d452ec85be899d03ba03cda9b84624600269a69434dd48cf1ec9fc",
+     "kind": "LITANY",
+     "label": "Event litany",
+     "text": "any event, change, circumstance, occurrence, effect or state of facts",
+     "source_span_id": "bbf650a065a4e49e31bf7eb4eba85d724096b2188aa7f46253ea23753f102f65",
+     "start_byte": 139326,
+     "end_byte": 139395,
+     "origin": "OWN",
+     "gap_before": false,
+     "members": [
+      "event",
+      "change",
+      "circumstance",
+      "occurrence",
+      "effect",
+      "state of facts"
+     ],
+     "children": []
+    },
+    {
+     "component_id": "ca3b27068326265ae75dff487d66d6e5edce73fb0ae9b681b0bbcb04d2163c2d",
+     "kind": "QUALIFIER",
+     "label": "Resulting-from limit",
+     "text": "to the extent resulting from",
+     "source_span_id": "6c4630312defe2919388d18f63aa566a34e51e0ee326490ee285eaa1d5ac34b3",
+     "start_byte": 139396,
+     "end_byte": 139424,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "43a82ad76608830deb2fadccad1a66be56d1d241297deb1e923cba560f639f34",
+     "kind": "TERM",
+     "label": "Change in share price or trading volume",
+     "text": "any change in the market price or trading volume of Parent Ordinary Shares",
+     "source_span_id": "4155aa22b3d6a16cda735b29b0b886b08d6779032f7a5c4f0de84cdfe36fa48f",
+     "start_byte": 141850,
+     "end_byte": 141924,
+     "origin": "OWN",
+     "gap_before": true,
+     "children": []
+    }
+   ]
+  },
+  {
+   "section": "4.1",
+   "proposal_id": "6253f169c9d042c9bfbabf9be10b3b5e64ef72bdcd7e252df2a2fceeb66e90d5",
+   "family_key": "MAE_DEFINITION",
+   "subtype_key": "EXCLUSION",
+   "statement": "Parent Material Adverse Effect shall not include any event, change, circumstance, occurrence, effect or state of facts to the extent resulting from seasonal fluctuations in revenue or earnings.",
+   "components": [
+    {
+     "component_id": "b6227bd6a171100fe8e339e0c8fe4fa9c474946a9bf7ab716f2d89f9c7f29f85",
+     "kind": "TERM",
+     "label": "Parent Material Adverse Effect",
+     "text": "Parent Material Adverse Effect",
+     "source_span_id": "f53c590a9ca4d2d15212acedf07b16866e331545ab5c006ac6121e0523700980",
+     "start_byte": 139277,
+     "end_byte": 139307,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "5d2c80f93acbe2f38a1af3cdaaf85327c8a3aab28eb4e70b0f826e9f2ce68caf",
+     "kind": "OPERATION",
+     "label": "Exclusion from definition",
+     "text": "shall not include",
+     "source_span_id": "8a823473104b42c48a709908c76e95fe9219e3956db4140fbd92ab58855e4d4f",
+     "start_byte": 139308,
+     "end_byte": 139325,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "207e50450454779114c1e2e76c702e53612538599d12c56d646e11648c11f87e",
+     "kind": "LITANY",
+     "label": "Event litany",
+     "text": "any event, change, circumstance, occurrence, effect or state of facts",
+     "source_span_id": "bbf650a065a4e49e31bf7eb4eba85d724096b2188aa7f46253ea23753f102f65",
+     "start_byte": 139326,
+     "end_byte": 139395,
+     "origin": "OWN",
+     "gap_before": false,
+     "members": [
+      "event",
+      "change",
+      "circumstance",
+      "occurrence",
+      "effect",
+      "state of facts"
+     ],
+     "children": []
+    },
+    {
+     "component_id": "4e16a2af4c49441a05137a9cbad161018aeef53ee461722b524119acc172ad65",
+     "kind": "QUALIFIER",
+     "label": "Resulting-from limit",
+     "text": "to the extent resulting from",
+     "source_span_id": "6c4630312defe2919388d18f63aa566a34e51e0ee326490ee285eaa1d5ac34b3",
+     "start_byte": 139396,
+     "end_byte": 139424,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "b6137b26b0b00d9133b8424d0ad0023a4d53b9c8bb54657a8b4b643b820d78f9",
+     "kind": "TERM",
+     "label": "Seasonal fluctuations",
+     "text": "seasonal fluctuations in revenue or earnings",
+     "source_span_id": "f23825d0279f78e6cb8779db142e1ed3c7783dc09e5f3b21195801355814741f",
+     "start_byte": 142206,
+     "end_byte": 142250,
+     "origin": "OWN",
+     "gap_before": true,
+     "children": []
+    }
+   ]
+  }
+ ],
+ "issues": [
+  {
+   "schema_version": "PRODUCT_ISSUE/V1",
+   "kind": "VALIDATION",
+   "code": "INVALID_FACT_COMPONENTS",
+   "message": "{\"client_ref\":\"part1:p16\",\"problems\":[\"6: LIST without LIST_ELEMENT children\"]}",
+   "family_key": "CAPITALISATION",
+   "subtype_key": "PARTNERSHIP_OR_SUBSIDIARY_EQUITY",
+   "structure_node_id": "21c7c3d3c7712a8d76b40d173cb4f40393553124b4344eedfea60ec74ea922c1",
+   "proposal_id": "a1fff008f80d5650bb59d09c4dd696e7c6a2afa3123b4170b74383aa3d33e319",
+   "source_closure_id": "be3578bffa91dacc9da2e032d3ab5329eecd13aececdad613bf5105f85dda403",
+   "source_span_ids": [
+    "34519d0039e1ff06edf81e20fda1144be4b34d1669d4af4824417a3c9ff77a0c"
+   ],
+   "state": "OPEN",
+   "issue_id": "5cd29f20179c09be4b62ee27794bd5593389c50e32b14add4cfc8af21a4aebce"
+  },
+  {
+   "schema_version": "PRODUCT_ISSUE/V1",
+   "kind": "VALIDATION",
+   "code": "INVALID_FACT_COMPONENTS",
+   "message": "{\"client_ref\":\"part2:p1\",\"problems\":[\"2: CROSS_REFERENCE must resolve\"]}",
+   "family_key": "MAE_DEFINITION",
+   "subtype_key": "EXCLUSION",
+   "structure_node_id": "230912891860832d48acf866a3eb3646fe9e09a77581a2e52dc46564ad65d967",
+   "proposal_id": "c8b4283ab1b37c175d398a0130afe23df33c4c5cbfaca14a5e05759590454e76",
+   "source_closure_id": "71a1db75fb367c8126d3ae63fee9df2564fe2dbeeb3ad6a11708577d387273cc",
+   "source_span_ids": [
+    "1b8f40ad541043608a60b7c501831457d68624575fd6c4beff0fdefd76096a78"
+   ],
+   "state": "OPEN",
+   "issue_id": "05405c1305b95ddeeb31fc457719ffc0f04d7a1b61670768b0e026a663517b61"
+  },
+  {
+   "schema_version": "PRODUCT_ISSUE/V1",
+   "kind": "VALIDATION",
+   "code": "INVALID_FACT_COMPONENTS",
+   "message": "{\"client_ref\":\"part2:p6\",\"problems\":[\"2: CROSS_REFERENCE must resolve\"]}",
+   "family_key": "MAE_DEFINITION",
+   "subtype_key": "DISPROPORTIONALITY_CARVEBACK",
+   "structure_node_id": "230912891860832d48acf866a3eb3646fe9e09a77581a2e52dc46564ad65d967",
+   "proposal_id": "ab96b844a68f88195d31f8926cfc9299e5d4c888e215ec50830f2d7ab07132f5",
+   "source_closure_id": "71a1db75fb367c8126d3ae63fee9df2564fe2dbeeb3ad6a11708577d387273cc",
+   "source_span_ids": [
+    "1b8f40ad541043608a60b7c501831457d68624575fd6c4beff0fdefd76096a78"
+   ],
+   "state": "OPEN",
+   "issue_id": "669151741dc1a71eb6321753bb6c702f3c859460021dc77f7690acd276c9ce97"
+  },
+  {
+   "schema_version": "PRODUCT_ISSUE/V1",
+   "kind": "VALIDATION",
+   "code": "INVALID_FACT_COMPONENTS",
+   "message": "{\"client_ref\":\"part2:p4\",\"problems\":[\"0.0: CROSS_REFERENCE must resolve\"]}",
+   "family_key": "MAE_DEFINITION",
+   "subtype_key": "UNDERLYING_CAUSE_RESTORATION",
+   "structure_node_id": "230912891860832d48acf866a3eb3646fe9e09a77581a2e52dc46564ad65d967",
+   "proposal_id": "8aae52455704c6058544a1d5f49bb8a1ea46e781d2129eff52aeb72f9ab2a82e",
+   "source_closure_id": "71a1db75fb367c8126d3ae63fee9df2564fe2dbeeb3ad6a11708577d387273cc",
+   "source_span_ids": [
+    "1b8f40ad541043608a60b7c501831457d68624575fd6c4beff0fdefd76096a78"
+   ],
+   "state": "OPEN",
+   "issue_id": "d0196888cf279eabe365e96a9915d9568e6e36ed1cd92958559cd1e11c8e4f1e"
+  },
+  {
+   "schema_version": "PRODUCT_ISSUE/V1",
+   "kind": "VALIDATION",
+   "code": "INVALID_FACT_COMPONENTS",
+   "message": "{\"client_ref\":\"p6\",\"problems\":[\"5: CROSS_REFERENCE must resolve\"]}",
+   "family_key": "MAE_DEFINITION",
+   "subtype_key": "EXCLUSION",
+   "structure_node_id": "23189d086147686c887f1d112c7a2d531202ad1b4ba0eef091ae7bbdb71417a1",
+   "proposal_id": "205d624c9add75ae18119a43f3473d1f86205ef57cb9137ae062761729f276aa",
+   "source_closure_id": "a58c4cf368c1e698e1f1fa5ae373cb31c13fdbe18299e854eb3d588f285adf70",
+   "source_span_ids": [
+    "70a7705504a46b69f87f3c2c01f799907d37ab834c8da110c6934b3dc02ec0c9"
+   ],
+   "state": "OPEN",
+   "issue_id": "171052fefa0f487a586eb91ba6d4e9e1a92a827731faf6f53d597ac443556501"
+  },
+  {
+   "schema_version": "PRODUCT_ISSUE/V1",
+   "kind": "VALIDATION",
+   "code": "INVALID_FACT_COMPONENTS",
+   "message": "{\"client_ref\":\"p7\",\"problems\":[\"5: CROSS_REFERENCE must resolve\"]}",
+   "family_key": "MAE_DEFINITION",
+   "subtype_key": "EXCLUSION",
+   "structure_node_id": "23189d086147686c887f1d112c7a2d531202ad1b4ba0eef091ae7bbdb71417a1",
+   "proposal_id": "b42370977a0c416f0f7f39959e6a90aff29d4a9498dcbaa7260906c457cfa338",
+   "source_closure_id": "a58c4cf368c1e698e1f1fa5ae373cb31c13fdbe18299e854eb3d588f285adf70",
+   "source_span_ids": [
+    "70a7705504a46b69f87f3c2c01f799907d37ab834c8da110c6934b3dc02ec0c9"
+   ],
+   "state": "OPEN",
+   "issue_id": "30ecb4e389946db155dcc1c2cdb0cfd56789604dea6a2ba1d245235457171e43"
+  },
+  {
+   "schema_version": "PRODUCT_ISSUE/V1",
+   "kind": "VALIDATION",
+   "code": "INVALID_FACT_COMPONENTS",
+   "message": "{\"client_ref\":\"p16\",\"problems\":[\"0.0: CROSS_REFERENCE must resolve\"]}",
+   "family_key": "MAE_DEFINITION",
+   "subtype_key": "DISPROPORTIONALITY_CARVEBACK",
+   "structure_node_id": "23189d086147686c887f1d112c7a2d531202ad1b4ba0eef091ae7bbdb71417a1",
+   "proposal_id": "9da98fef48dc9c6d00308f199499649e670a84cf2219fa0718bd1772217ac9f7",
+   "source_closure_id": "a58c4cf368c1e698e1f1fa5ae373cb31c13fdbe18299e854eb3d588f285adf70",
+   "source_span_ids": [
+    "70a7705504a46b69f87f3c2c01f799907d37ab834c8da110c6934b3dc02ec0c9"
+   ],
+   "state": "OPEN",
+   "issue_id": "71e56340f0eca46ca3df7c3264bdd1f47fd2ed0abbb2be647ac13110dfbdc21f"
+  },
+  {
+   "schema_version": "PRODUCT_ISSUE/V1",
+   "kind": "VALIDATION",
+   "code": "INVALID_FACT_COMPONENTS",
+   "message": "{\"client_ref\":\"p5\",\"problems\":[\"5: CROSS_REFERENCE must resolve\"]}",
+   "family_key": "MAE_DEFINITION",
+   "subtype_key": "EXCLUSION",
+   "structure_node_id": "23189d086147686c887f1d112c7a2d531202ad1b4ba0eef091ae7bbdb71417a1",
+   "proposal_id": "e51ef6c513340edaf9b697cc778ad7ebb86dd5f87279e440142ff4b159303fa6",
+   "source_closure_id": "a58c4cf368c1e698e1f1fa5ae373cb31c13fdbe18299e854eb3d588f285adf70",
+   "source_span_ids": [
+    "70a7705504a46b69f87f3c2c01f799907d37ab834c8da110c6934b3dc02ec0c9"
+   ],
+   "state": "OPEN",
+   "issue_id": "73c5102203baf1f01486ff507b15ced0230a672ab3ece23408cc02f934f84df1"
+  },
+  {
+   "schema_version": "PRODUCT_ISSUE/V1",
+   "kind": "VALIDATION",
+   "code": "INVALID_FACT_COMPONENTS",
+   "message": "{\"client_ref\":\"p18\",\"problems\":[\"0.0: CROSS_REFERENCE must resolve\"]}",
+   "family_key": "MAE_DEFINITION",
+   "subtype_key": "UNDERLYING_CAUSE_RESTORATION",
+   "structure_node_id": "23189d086147686c887f1d112c7a2d531202ad1b4ba0eef091ae7bbdb71417a1",
+   "proposal_id": "06f4a06004c78e3e531b84901aa6248d2e892e3600d9db45bb57f6c37e5044e8",
+   "source_closure_id": "a58c4cf368c1e698e1f1fa5ae373cb31c13fdbe18299e854eb3d588f285adf70",
+   "source_span_ids": [
+    "70a7705504a46b69f87f3c2c01f799907d37ab834c8da110c6934b3dc02ec0c9"
+   ],
+   "state": "OPEN",
+   "issue_id": "8a1a2a43f03d6727f743f4de697734677c7b870793a23abdca5203eaf70ea943"
+  },
+  {
+   "schema_version": "PRODUCT_ISSUE/V1",
+   "kind": "VALIDATION",
+   "code": "INVALID_FACT_COMPONENTS",
+   "message": "{\"client_ref\":\"p8\",\"problems\":[\"5: CROSS_REFERENCE must resolve\"]}",
+   "family_key": "MAE_DEFINITION",
+   "subtype_key": "EXCLUSION",
+   "structure_node_id": "23189d086147686c887f1d112c7a2d531202ad1b4ba0eef091ae7bbdb71417a1",
+   "proposal_id": "6ab915938b897ffefb6e8e99be379623736f19cc231782af0cf8a890a1352029",
+   "source_closure_id": "a58c4cf368c1e698e1f1fa5ae373cb31c13fdbe18299e854eb3d588f285adf70",
+   "source_span_ids": [
+    "70a7705504a46b69f87f3c2c01f799907d37ab834c8da110c6934b3dc02ec0c9"
+   ],
+   "state": "OPEN",
+   "issue_id": "944a993e8994fd4dadbd829201fcf0205af2f9355b1a63869521aa995f90a03f"
+  },
+  {
+   "schema_version": "PRODUCT_ISSUE/V1",
+   "kind": "VALIDATION",
+   "code": "INVALID_FACT_COMPONENTS",
+   "message": "{\"client_ref\":\"p11\",\"problems\":[\"5: CROSS_REFERENCE must resolve\"]}",
+   "family_key": "MAE_DEFINITION",
+   "subtype_key": "EXCLUSION",
+   "structure_node_id": "23189d086147686c887f1d112c7a2d531202ad1b4ba0eef091ae7bbdb71417a1",
+   "proposal_id": "f79be0fdcb468ca4965f7f4f4afc85f919468dc3835b1b024813a9769b114b28",
+   "source_closure_id": "a58c4cf368c1e698e1f1fa5ae373cb31c13fdbe18299e854eb3d588f285adf70",
+   "source_span_ids": [
+    "70a7705504a46b69f87f3c2c01f799907d37ab834c8da110c6934b3dc02ec0c9"
+   ],
+   "state": "OPEN",
+   "issue_id": "e3c6ae48a5bdf74a53462f758c09d9ca107f1c57da65d1c758a0a501573953a3"
+  },
+  {
+   "schema_version": "PRODUCT_ISSUE/V1",
+   "kind": "VALIDATION",
+   "code": "INVALID_FACT_COMPONENTS",
+   "message": "{\"client_ref\":\"part2:p_d_waiver\",\"problems\":[\"4: quote not found in source (EMPTY)\",\"4: text missing\",\"4: byte range missing\"]}",
+   "family_key": "EMPLOYEE_MATTERS",
+   "subtype_key": "WELFARE_RELIEF",
+   "structure_node_id": "603a9d89936245a148ed24125c74bb230975d590dec1aaa93fe5cf98d166ec38",
+   "proposal_id": "c4a47fcf3ff868b9cdf5e6373f988ded11fdd4b4374606977c0acf6fba6f6ea4",
+   "source_closure_id": "591d2cd99555138f1e52ada492bd238f9def273d7b8e4ccf3120435753adea3d",
+   "source_span_ids": [
+    "b09819b75c459025557eca4a1d5c1d470959a12e5160068afc91170255db191e"
+   ],
+   "state": "OPEN",
+   "issue_id": "6b35a2730a46d51942fc987909f4c7c34dee5812c79b3d8329a23602dfa2ec35"
+  },
+  {
+   "schema_version": "PRODUCT_ISSUE/V1",
+   "kind": "VALIDATION",
+   "code": "INVALID_FACT_COMPONENTS",
+   "message": "{\"client_ref\":\"p4\",\"problems\":[\"4: quote not found in source (EMPTY)\",\"4: text missing\",\"4: byte range missing\"]}",
+   "family_key": "REPRESENTATIONS",
+   "subtype_key": "NEGATIVE_REPRESENTATION",
+   "structure_node_id": "8a2c82715038535e88d7997598f747338ac2d14034d068ecb12a00793b9636c3",
+   "proposal_id": "f8ce90866af790aca214e0972bb732ee19f64cb9c5c048f7f870a531c832aa68",
+   "source_closure_id": "7357c73b180a69987bbf1f7f6fc10410be5f468206d9aa4450d1ccfa500ed846",
+   "source_span_ids": [
+    "ce7a8f68313b79496c18ec2a7f7e1c3831cc6f6a83cf28e8474b0c4e3dd6a386"
+   ],
+   "state": "OPEN",
+   "issue_id": "8d88736592e5f561523bf8b13177215897b2fee3f009e4c73164731654e53132"
+  },
+  {
+   "schema_version": "PRODUCT_ISSUE/V1",
+   "kind": "VALIDATION",
+   "code": "INVALID_FACT_COMPONENTS",
+   "message": "{\"client_ref\":\"p5\",\"problems\":[\"3: quote not found in source (EMPTY)\",\"3: text missing\",\"3: byte range missing\"]}",
+   "family_key": "REPRESENTATIONS",
+   "subtype_key": "DOCUMENT_REPRESENTATION",
+   "structure_node_id": "8a2c82715038535e88d7997598f747338ac2d14034d068ecb12a00793b9636c3",
+   "proposal_id": "f469dcaf830d5400ab79f1d72cb40493870dd35145866a70e749c161df8e7c36",
+   "source_closure_id": "7357c73b180a69987bbf1f7f6fc10410be5f468206d9aa4450d1ccfa500ed846",
+   "source_span_ids": [
+    "ce7a8f68313b79496c18ec2a7f7e1c3831cc6f6a83cf28e8474b0c4e3dd6a386"
+   ],
+   "state": "OPEN",
+   "issue_id": "932b1135ad0966e17b8705e9c0c11251de272837f47cc5eb04e9e2f46cbd65ec"
+  },
+  {
+   "schema_version": "PRODUCT_ISSUE/V1",
+   "kind": "VALIDATION",
+   "code": "INVALID_FACT_COMPONENTS",
+   "message": "{\"client_ref\":\"p1\",\"problems\":[\"2.0: quote not found in source (NOT_EXACT_CONTIGUOUS_SOURCE_TEXT)\",\"2.0: byte range missing\"]}",
+   "family_key": "REPRESENTATIONS",
+   "subtype_key": "COMPLIANCE_REPRESENTATION",
+   "structure_node_id": "8c033c0c6610c2194e9be1a549f612aef4fe93017b09c580b8b51a3fdb7c6fbc",
+   "proposal_id": "c9e13474a429d55bde65ae70dc2e9b411f78ea451b824cebaa59aaccbff4d46b",
+   "source_closure_id": "f7a02f402a63ff771f57e429284cf34e89733e95e0293e2d30658a5ace56b301",
+   "source_span_ids": [
+    "5238953e80dde083519ac5f731130fcd24285d38a1d864889da1e756c49ec341"
+   ],
+   "state": "OPEN",
+   "issue_id": "3817e2dae7319ebd6d0c3f96d3bd003dd410e0473c869cfcf81591b68a273a2e"
+  }
+ ]
+}
