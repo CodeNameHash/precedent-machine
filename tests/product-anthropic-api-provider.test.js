@@ -13,7 +13,7 @@ const test = require('node:test');
 
 const {
   ANTHROPIC_API_CACHE_TTL, ANTHROPIC_API_CALL_KIND_MODELS, ANTHROPIC_API_MODEL_CONFIG, ANTHROPIC_API_PRICES, ANTHROPIC_API_PROVIDER_ID, CLAUDE_CLI_CALL_KIND_MODELS,
-  ANTHROPIC_API_DEFAULT_MODEL_CONFIG, CLAUDE_CLI_MODEL_CONFIG, anthropicApiCostMicrousd, configuredProductModelConfig, hostedModelConfigFor, isHostedProvider, resolveAnthropicApiCallModel,
+  ANTHROPIC_API_DEFAULT_MODEL_CONFIG, ANTHROPIC_API_SONNET_MODEL_CONFIG, CLAUDE_CLI_MODEL_CONFIG, anthropicApiCostMicrousd, configuredProductModelConfig, hostedModelConfigFor, isHostedProvider, resolveAnthropicApiCallModel,
 } = require('../lib/product/product-model-config');
 const { createProductIntakeHandler } = require('../lib/product/intake-handler');
 const { createProductAnalysisHandler } = require('../lib/product/analysis-handler');
@@ -62,9 +62,10 @@ test('the API provider is a hosted provider at the Claude CLI tier, metered at t
   // Work package E3: a new run takes the default config (Haiku routing and
   // residual, Opus 5.5 extraction, the DEFAULT request profile); V9 by
   // PRODUCT_REQUEST_PROFILE; a run created under V1 keeps it by identity.
-  assert.equal(hostedModelConfigFor(ANTHROPIC_API_PROVIDER_ID, null, {}), ANTHROPIC_API_DEFAULT_MODEL_CONFIG);
+  assert.equal(hostedModelConfigFor(ANTHROPIC_API_PROVIDER_ID, null, {}), ANTHROPIC_API_SONNET_MODEL_CONFIG, 'E6 (findings (191), (212)): Sonnet 5.5 for extraction');
+  assert.equal(hostedModelConfigFor(ANTHROPIC_API_PROVIDER_ID, { model_config: ANTHROPIC_API_DEFAULT_MODEL_CONFIG }, {}), ANTHROPIC_API_DEFAULT_MODEL_CONFIG, 'a run under V3 keeps V3');
   assert.equal(hostedModelConfigFor(ANTHROPIC_API_PROVIDER_ID, { model_config: ANTHROPIC_API_MODEL_CONFIG }, {}), ANTHROPIC_API_MODEL_CONFIG);
-  assert.equal(configuredProductModelConfig({ PRODUCT_MODEL_PROVIDER: ANTHROPIC_API_PROVIDER_ID }), ANTHROPIC_API_DEFAULT_MODEL_CONFIG);
+  assert.equal(configuredProductModelConfig({ PRODUCT_MODEL_PROVIDER: ANTHROPIC_API_PROVIDER_ID }), ANTHROPIC_API_SONNET_MODEL_CONFIG);
   assert.equal(configuredProductModelConfig({ PRODUCT_MODEL_PROVIDER: ANTHROPIC_API_PROVIDER_ID, PRODUCT_REQUEST_PROFILE: 'V9' }), ANTHROPIC_API_MODEL_CONFIG);
   assert.deepEqual(resolveAnthropicApiCallModel(ANTHROPIC_API_DEFAULT_MODEL_CONFIG, 'EXTRACTION'), { model: 'claude-opus-5-5', effort: 'high' });
   assert.deepEqual(resolveAnthropicApiCallModel(ANTHROPIC_API_DEFAULT_MODEL_CONFIG, 'RESIDUAL'), { model: 'claude-haiku-5-5', effort: 'low' });

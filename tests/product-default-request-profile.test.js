@@ -9,7 +9,7 @@ const { LEAN_PROMPT_VERSION, buildAgreementSectionDraft, extractionPartConcurren
 const { cacheableContent } = require('../lib/product/anthropic-api-model');
 const { createProductIntakeHandler } = require('../lib/product/intake-handler');
 const {
-  ANTHROPIC_API_DEFAULT_MODEL_CONFIG, ANTHROPIC_API_LEAN_MODEL_CONFIG, ANTHROPIC_API_MODEL_CONFIG, ANTHROPIC_API_PROVIDER_ID, CLAUDE_CLI_DEFAULT_MODEL_CONFIG, CLAUDE_CLI_MODEL_CONFIG, CLAUDE_CLI_PROVIDER_ID, REQUEST_PROFILES,
+  ANTHROPIC_API_DEFAULT_MODEL_CONFIG, ANTHROPIC_API_LEAN_MODEL_CONFIG, ANTHROPIC_API_SONNET_MODEL_CONFIG, CLAUDE_CLI_SONNET_MODEL_CONFIG, anthropicApiConfigForEnvironment, anthropicApiModelConfigFor, ANTHROPIC_API_MODEL_CONFIG, ANTHROPIC_API_PROVIDER_ID, CLAUDE_CLI_DEFAULT_MODEL_CONFIG, CLAUDE_CLI_MODEL_CONFIG, CLAUDE_CLI_PROVIDER_ID, REQUEST_PROFILES,
   assertConfiguredRunModelConfig, claudeCliConfigForEnvironment, claudeCliModelConfigFor, configuredProductModelConfig, hostedModelConfigFor, requestProfileFor, requestProfileNameForEnvironment, resolveClaudeCliCallModel,
 } = require('../lib/product/product-model-config');
 const { substantiveSections } = require('../lib/product/source-context');
@@ -29,7 +29,20 @@ test('the default profile and configs: new runs take them on both providers, ear
   assert.equal(requestProfileNameForEnvironment({ PRODUCT_REQUEST_PROFILE: 'V9', PRODUCT_ANTHROPIC_API_PROFILE: 'LEAN' }, ANTHROPIC_API_PROVIDER_ID), 'LEAN');
   assert.equal(requestProfileNameForEnvironment({ PRODUCT_REQUEST_PROFILE: 'V9', PRODUCT_ANTHROPIC_API_PROFILE: 'LEAN' }, CLAUDE_CLI_PROVIDER_ID), 'V9', 'the API switch does not reach the CLI');
   // The CLI.
-  assert.equal(claudeCliConfigForEnvironment({}), CLAUDE_CLI_DEFAULT_MODEL_CONFIG);
+  // Work package E6 (findings (191), (212)), Ben: "Sonnet makes sense": the default carries Sonnet 5.5 for extraction; OPUS names the Opus configs; V9 the first.
+  assert.equal(claudeCliConfigForEnvironment({}), CLAUDE_CLI_SONNET_MODEL_CONFIG);
+  assert.equal(claudeCliConfigForEnvironment({ PRODUCT_REQUEST_PROFILE: 'OPUS' }), CLAUDE_CLI_DEFAULT_MODEL_CONFIG);
+  assert.equal(CLAUDE_CLI_SONNET_MODEL_CONFIG.model_id, 'PRODUCT_CLAUDE_CLI_CALL_KIND_MAP/V3');
+  assert.deepEqual(resolveClaudeCliCallModel(CLAUDE_CLI_SONNET_MODEL_CONFIG, 'EXTRACTION'), { model: 'claude-sonnet-5-5', effort: 'high' });
+  assert.deepEqual(resolveClaudeCliCallModel(CLAUDE_CLI_SONNET_MODEL_CONFIG, 'ROUTING'), { model: 'claude-haiku-5-5', effort: 'low' });
+  assert.equal(requestProfileFor(CLAUDE_CLI_SONNET_MODEL_CONFIG).name, 'DEFAULT_CLI');
+  assert.equal(claudeCliModelConfigFor({ ...CLAUDE_CLI_DEFAULT_MODEL_CONFIG, max_output_tokens: 1 }), CLAUDE_CLI_DEFAULT_MODEL_CONFIG, 'a run under V2 advances under V2');
+  assert.equal(ANTHROPIC_API_SONNET_MODEL_CONFIG.model_id, 'PRODUCT_ANTHROPIC_API_CALL_KIND_MAP/V4');
+  assert.deepEqual(ANTHROPIC_API_SONNET_MODEL_CONFIG.call_kind_models.EXTRACTION, { model: 'claude-sonnet-5-5', effort: 'high' });
+  assert.equal(requestProfileFor(ANTHROPIC_API_SONNET_MODEL_CONFIG).name, 'DEFAULT');
+  assert.equal(anthropicApiConfigForEnvironment({}), ANTHROPIC_API_SONNET_MODEL_CONFIG);
+  assert.equal(anthropicApiConfigForEnvironment({ PRODUCT_ANTHROPIC_API_PROFILE: 'OPUS' }), ANTHROPIC_API_DEFAULT_MODEL_CONFIG);
+  assert.equal(anthropicApiModelConfigFor({ ...ANTHROPIC_API_DEFAULT_MODEL_CONFIG, max_output_tokens: 1 }), ANTHROPIC_API_DEFAULT_MODEL_CONFIG, 'a run under V3 advances under V3');
   assert.equal(claudeCliConfigForEnvironment({ PRODUCT_REQUEST_PROFILE: 'V9' }), CLAUDE_CLI_MODEL_CONFIG);
   assert.throws(() => claudeCliConfigForEnvironment({ PRODUCT_REQUEST_PROFILE: 'LEAN' }), /PRODUCT_REQUEST_PROFILE_UNSUPPORTED: LEAN on ANTHROPIC_CLAUDE_CLI_SUBSCRIPTION/, 'the cached agreement is the API\'s alone');
   assert.equal(CLAUDE_CLI_DEFAULT_MODEL_CONFIG.model_id, 'PRODUCT_CLAUDE_CLI_CALL_KIND_MAP/V2');
@@ -49,7 +62,7 @@ test('the default profile and configs: new runs take them on both providers, ear
   assert.equal(requestProfileFor(ANTHROPIC_API_DEFAULT_MODEL_CONFIG).name, 'DEFAULT');
   assert.equal(requestProfileFor(ANTHROPIC_API_LEAN_MODEL_CONFIG).name, 'LEAN');
   // A run's stored config decides, on both providers: the paused and finished runs keep theirs.
-  for (const [providerId, stored, fresh] of [[CLAUDE_CLI_PROVIDER_ID, CLAUDE_CLI_MODEL_CONFIG, CLAUDE_CLI_DEFAULT_MODEL_CONFIG], [ANTHROPIC_API_PROVIDER_ID, ANTHROPIC_API_MODEL_CONFIG, ANTHROPIC_API_DEFAULT_MODEL_CONFIG], [ANTHROPIC_API_PROVIDER_ID, ANTHROPIC_API_LEAN_MODEL_CONFIG, ANTHROPIC_API_DEFAULT_MODEL_CONFIG]]) {
+  for (const [providerId, stored, fresh] of [[CLAUDE_CLI_PROVIDER_ID, CLAUDE_CLI_MODEL_CONFIG, CLAUDE_CLI_SONNET_MODEL_CONFIG], [CLAUDE_CLI_PROVIDER_ID, CLAUDE_CLI_DEFAULT_MODEL_CONFIG, CLAUDE_CLI_SONNET_MODEL_CONFIG], [ANTHROPIC_API_PROVIDER_ID, ANTHROPIC_API_MODEL_CONFIG, ANTHROPIC_API_SONNET_MODEL_CONFIG], [ANTHROPIC_API_PROVIDER_ID, ANTHROPIC_API_DEFAULT_MODEL_CONFIG, ANTHROPIC_API_SONNET_MODEL_CONFIG], [ANTHROPIC_API_PROVIDER_ID, ANTHROPIC_API_LEAN_MODEL_CONFIG, ANTHROPIC_API_SONNET_MODEL_CONFIG]]) {
     const run = { run_id: 'r', model_config: { ...stored, max_output_tokens: 64000 } };
     assert.equal(hostedModelConfigFor(providerId, run, {}), stored);
     assert.doesNotThrow(() => assertConfiguredRunModelConfig(run, hostedModelConfigFor(providerId, run, {})), 'the worker accepts the run under its own config');
@@ -73,7 +86,7 @@ test('an intake on either hosted provider creates the run under the default conf
   const recorder = () => ({ statusCode: null, body: null, status(code) { this.statusCode = code; return this; }, json(body) { this.body = body; return this; } });
   const body = { url: 'https://www.sec.gov/Archives/edgar/data/1/0001/x.htm', idempotencyKey: 'k-1', explicitGeneration: 9 };
   await handler({})({ method: 'POST', body }, recorder());
-  assert.equal(submitted[0].modelConfig, CLAUDE_CLI_DEFAULT_MODEL_CONFIG);
+  assert.equal(submitted[0].modelConfig, CLAUDE_CLI_SONNET_MODEL_CONFIG, 'E6: the default carries Sonnet 5.5 for extraction');
   await handler({ PRODUCT_REQUEST_PROFILE: 'V9' })({ method: 'POST', body }, recorder());
   assert.equal(submitted[1].modelConfig, CLAUDE_CLI_MODEL_CONFIG);
   // A provider named in the body takes the environment's config for that provider (hostedModelConfigFor without a run).
