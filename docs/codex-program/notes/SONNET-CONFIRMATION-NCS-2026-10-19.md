@@ -42,3 +42,18 @@ Ben's tier holds. The whole agreement on Sonnet 5.5 at high effort loses to the 
 | anchors_sonnet55 | all 102 sections | 935 (18) | 931 / 20 / 20 of 971 | 86 | 284 | 0 | 9,966,340 | 2,224,248 | 15034 | $0.00 at list $62.11 | $62.11 | $24.24 | the rung's totals over its sections; 2 failed |
 
 The full table (104 stored rows, 104 Sonnet rows) is `ablation.md` in the job directory on the sandbox.
+
+## Addendum, 17:20 UTC: the variance job and the partial Opus 5.5 medium run
+
+The seven lossy sections re-run on both tiers (job `pm-ablation-20261019T151819Z`, finding (217)), 151 stored facts: Sonnet 5.5 high 126 / 13 / 12 (8 held), 322,725 output tokens; Opus 5.5 medium 142 / 3 / 6 (1 held), 308,371. The five facts the model omits are the same on both (the four representation qualifiers, the Exchange Fund); Sonnet's other losses are the cross-reference holds A's (203) now resolves; its partials are the same facts in fewer words.
+
+The Opus 5.5 medium whole-agreement job (`pm-ablation-20261019T155504Z`, four sections at once) met the subscription's five-hour limit after 35 of 104 sections (finding (219)): 422 / 2 / 22 of 446 on those, and on 5.1 it wrote 2,079 and 4,429 output tokens on parts 1 and 3 against 22,739 and 92,153 on parts 2 and 4, losing part 1's 17 facts whole where Sonnet 5.5 high wrote 63 of 66. Not completed; Ben's tier stands and is the default from a38df6be (finding (218)).
+
+| Section | Sonnet 5.5 high (confirmation) | Sonnet 5.5 high (re-run) | Opus 5.5 medium (re-run) | Opus 5.5 medium (partial whole run) |
+| --- | ---: | ---: | ---: | ---: |
+| 3.1 (24) | 18 / 2 / 4 | 14 / 2 / 8 | 20 / 1 / 3 | 22 / 0 / 2 |
+| 4.1 (18) | 10 / 1 / 7 | 17 / 1 / 0 | 17 / 1 / 0 | not reached |
+| 3.2 (27) | 25 / 0 / 2 | 17 / 8 / 2 | 25 / 0 / 2 | 25 / 0 / 2 |
+| 2.3 (37) | 35 / 0 / 2 | 34 / 2 / 1 | 35 / 1 / 1 | not reached |
+| 5.1 (66) | 63 / 3 / 0 | | | 48 / 1 / 17 |
+| 5.17 (41) | failed | 40 / 0 / 1 | 41 / 0 / 0 | 40 / 0 / 1 |
