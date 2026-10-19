@@ -199,3 +199,101 @@ test('a component on a listed span resolves to the span when its words cannot, a
   assert.deepEqual([...listedClosureSpanIds(closureForModel, { cachedAgreement: false, trimmed: true, nodesById })], ['x2'], 'the section names Section 8.3, not 9.9');
   assert.deepEqual([...listedClosureSpanIds(closureForModel, { cachedAgreement: true, nodesById })].sort(), ['d1', 'd2', 'x1', 'x2']);
 });
+
+// Plan finding (190): the two levers behind the lean profile that spend the
+// fewest new model behaviours for the most tokens. The statement the model
+// wrote is the OWN components' words said again; the residual question is
+// a second pass over the same paragraphs the extraction already reads.
+
+function mergedAnswer(request, { statement = true } = {}) {
+  const answer = leanAnswer(request);
+  if (!statement) for (const proposal of answer.proposals) delete proposal.statement;
+  if (Array.isArray(request.residual_paragraphs)) {
+    answer.paragraph_dispositions = request.residual_paragraphs.map((paragraph) => ({
+      source_span_id: paragraph.source_span_id, disposition: 'KNOWN_FAMILY', family_keys: ['NO_SHOP'], rationale: 'Covered by the no-shop covenant.',
+    }));
+  }
+  return answer;
+}
+
+async function runConcho63Merged(profile, { statement = true, widen = null, longSectionSplit = null } = {}) {
+  const sourceDocument = await conchoSource();
+  const agreementStructure = buildAgreementStructure(sourceDocument);
+  const node = substantiveSections(agreementStructure).find((item) => item.reference === '6.3');
+  const synthetic = createSyntheticConchoModel();
+  const seen = [];
+  const model = { async complete(input) {
+    seen.push(input);
+    if (input.call_kind !== 'EXTRACTION') return synthetic.complete(input);
+    const response = mergedAnswer(input.request, { statement });
+    if (widen && Array.isArray(response.paragraph_dispositions) && response.paragraph_dispositions.length > 0) {
+      response.paragraph_dispositions[response.paragraph_dispositions.length - 1] = { ...response.paragraph_dispositions[response.paragraph_dispositions.length - 1], family_keys: [widen] };
+    }
+    return { provider_id: 'SYNTHETIC', model_id: 'FRESH/V1', raw_request: input.request, raw_response: response, response, input_tokens: 10, output_tokens: 5, cost_microusd: 0, duration_ms: 1 };
+  } };
+  const result = await buildAgreementSectionDraft({ sourceDocument, agreementStructure, legalSchema: schemaV2, model, node, requestProfile: profile, longSectionSplit });
+  return { result, seen };
+}
+
+test('statement_mode derived: the model writes no statement and the code derives it from the OWN components in source order', async () => {
+  const { result, seen } = await runConcho63Merged({ ...REQUEST_PROFILES.DEFAULT, statement_mode: 'derived' }, { statement: false });
+  const extraction = seen.find((input) => input.call_kind === 'EXTRACTION');
+  assert.equal(extraction.request.response_contract.proposals[0].statement, undefined, 'the contract asks for no statement');
+  assert.match(extraction.request.scope_instruction, /Do not return statement/);
+  assert.equal(result.proposals.length, 1);
+  const proposal = result.proposals[0];
+  assert.equal(proposal.validation_status, 'VALID', JSON.stringify(result.issues.map((issue) => [issue.code, issue.message]).slice(0, 6)));
+  // The stored component carries the words as text; the answer's quote was the same words.
+  const own = (proposal.components || []).filter((component) => component.origin === 'OWN' || component.origin === undefined);
+  assert.ok(own.length > 0);
+  assert.equal(proposal.statement, own.map((component) => component.text).join(' '));
+  assert.equal(proposal.statement, extraction.request.source_closure.operative[0].exact_text.split(/(?<=\.)\s+/)[0]);
+  const note = result.issues.find((issue) => issue.code === 'LEAN_RESPONSE_NORMALISED');
+  assert.equal(JSON.parse(note.message).statements_derived, 1);
+  // A statement the model does write is kept.
+  const written = await runConcho63Merged({ ...REQUEST_PROFILES.DEFAULT, statement_mode: 'derived' }, { statement: true });
+  assert.equal(JSON.parse(written.result.issues.find((issue) => issue.code === 'LEAN_RESPONSE_NORMALISED').message).statements_derived, 0);
+  // The derivation on a gap and on inherited words.
+  const derived = normaliseLeanResponse({ proposals: [{ client_ref: 'p', family_key: 'NO_SHOP', components: [
+    { ref: 'a', kind: 'ACTOR', quote: 'the Company', origin: 'OWN', gap_before: false, source_span_id: 's', occurrence: 0 },
+    { ref: 'b', kind: 'OPERATION', quote: 'shall not solicit', origin: 'OWN', gap_before: true, source_span_id: 's', occurrence: 0 },
+    { ref: 'c', kind: 'DEFINED_TERM', quote: 'any proposal', origin: 'DEFINITION', gap_before: false, source_span_id: 'd', occurrence: 0 },
+  ] }] }, { sourceDocument: { canonical_text: '' }, spansById: new Map(), derivedStatement: true });
+  assert.equal(derived.response.proposals[0].statement, 'the Company ... shall not solicit');
+  assert.equal(derived.response.proposals[0].statement_derived, true);
+});
+
+test('residual_mode in_extraction: an unsplit section asks the residual inside its extraction call; the dispositions compile as a residual pass; a family named after the extraction is UNRESOLVED', async () => {
+  const profile = { ...REQUEST_PROFILES.DEFAULT, residual_mode: 'in_extraction' };
+  const { result, seen } = await runConcho63Merged(profile);
+  assert.deepEqual(seen.map((input) => input.call_kind), ['ROUTING', 'EXTRACTION'], 'no RESIDUAL call');
+  const extraction = seen.find((input) => input.call_kind === 'EXTRACTION');
+  assert.ok(Array.isArray(extraction.request.residual_paragraphs) && extraction.request.residual_paragraphs.length > 0);
+  assert.match(extraction.request.residual_instruction, /paragraph_dispositions/);
+  assert.ok(Array.isArray(extraction.request.response_contract.paragraph_dispositions));
+  assert.deepEqual(result.model_calls.map((call) => call.call_kind), ['ROUTING', 'EXTRACTION']);
+  assert.equal(result.residual_pass.dispositions.length, extraction.request.residual_paragraphs.length);
+  assert.ok(result.residual_pass.dispositions.every((item) => item.disposition === 'KNOWN_FAMILY'));
+  assert.equal(result.residual_pass.model_call_id, result.model_calls[1].model_call_id, 'the extraction call is the residual\'s call');
+  const note = result.issues.find((issue) => issue.code === 'RESIDUAL_IN_EXTRACTION');
+  assert.ok(note);
+  assert.deepEqual(JSON.parse(note.message).widened_after_extraction, []);
+  assert.equal(result.proposals[0].validation_status, 'VALID');
+  assert.deepEqual(result.routing.families, ['NO_SHOP']);
+  // The residual names a family the extraction was not asked for: the
+  // routing widens after the fact and the family is UNRESOLVED, not NOT_FOUND.
+  const widened = await runConcho63Merged(profile, { widen: 'TERMINATION' });
+  assert.deepEqual(widened.result.routing.families, ['NO_SHOP', 'TERMINATION']);
+  assert.deepEqual(JSON.parse(widened.result.issues.find((issue) => issue.code === 'RESIDUAL_IN_EXTRACTION').message).widened_after_extraction, ['TERMINATION']);
+  assert.ok(widened.result.issues.some((issue) => issue.code === 'RESIDUAL_FAMILY_NOT_EXTRACTED' && issue.family_key === 'TERMINATION'));
+  const family = widened.result.coverage.filter((item) => item.subject_kind === 'SECTION_FAMILY' && item.family_key === 'TERMINATION');
+  assert.deepEqual(family.map((item) => item.state), ['UNRESOLVED']);
+  assert.ok(widened.result.coverage.some((item) => item.subject_kind === 'FACT_TYPE' && item.family_key === 'TERMINATION' && item.state === 'UNRESOLVED'));
+  assert.equal(widened.result.proposals[0].validation_status, 'VALID');
+  // A section that splits keeps its own residual call: its parts each see some paragraphs.
+  const split = await runConcho63Merged(profile, { longSectionSplit: { min_section_bytes: 1000, min_children: 3, group_bytes: 6000 } });
+  assert.deepEqual(split.seen.slice(0, 2).map((input) => input.call_kind), ['ROUTING', 'RESIDUAL']);
+  assert.ok(split.seen.filter((input) => input.call_kind === 'EXTRACTION').length > 1, 'the section split');
+  assert.ok(split.seen.filter((input) => input.call_kind === 'EXTRACTION').every((input) => input.request.residual_paragraphs === undefined));
+  assert.ok(!split.result.issues.some((issue) => issue.code === 'RESIDUAL_IN_EXTRACTION'));
+});

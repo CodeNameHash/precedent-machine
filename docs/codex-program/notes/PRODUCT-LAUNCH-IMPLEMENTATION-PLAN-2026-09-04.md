@@ -8705,6 +8705,74 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       tests, 838 pass, the one known failure (Codex client final-message
       file).
 
+      (190) 2026-10-19 09:35 to 10:40 UTC (implementer E), work package
+      E5 part 2, the Apollo 13 levers with the largest headroom
+      (finding (181): every byte sent three or more times, the
+      agreement written back twice, the Batch API for the API
+      provider), two built behind the lean profile's flags and the
+      third designed; nothing run, the default profile's model and
+      effort unchanged. (1) The agreement written back twice:
+      `statement_mode: 'derived'` drops statement from the extraction
+      contract and tells the model so; `normaliseLeanResponse` writes
+      it from the OWN components' words in source order with an
+      ellipsis at a gap (`statement_derived: true` on the proposal,
+      `statements_derived` in the LEAN_RESPONSE_NORMALISED note), and a
+      statement the model writes anyway is kept. Rung
+      `derived_statement` (routing and residual replayed); the ledger's
+      figure for the statement is 9 per cent of the answer, 0.2m output
+      tokens and about $4 of the default's projected $72 on NCS, and
+      the estimate's output factor is 0.91. (2) The section's words
+      sent a third time: `residual_mode: 'in_extraction'` folds the
+      residual question into the extraction call of a section that
+      will go out as one call (`residual_paragraphs` by span id,
+      `residual_instruction`, `paragraph_dispositions` in the
+      contract); `compileResidualPass` reads the dispositions with the
+      extraction call as the residual's call (a missing or short answer
+      leaves the unanswered paragraphs UNRESOLVED_UNUSUAL_PROVISION as a
+      silent residual always has), the routing widens after the
+      extraction, and a family the residual names that the extraction
+      was not asked for is UNRESOLVED on the section with a
+      RESIDUAL_FAMILY_NOT_EXTRACTED coverage issue, never NOT_FOUND;
+      the RESIDUAL_IN_EXTRACTION note carries the paragraphs, the
+      number answered and the families widened after. A split section
+      (its parts each see some paragraphs), an out-of-scope exhibit, an
+      incomplete closure and a section routed to no family ask the
+      residual on its own as before; the extraction is compiled against
+      the families it was asked for. Rung `merged_residual` (routing
+      replayed): the 118 residual calls' 0.31m input and 90k output
+      tokens and two calls' latency off every unsplit section's
+      critical path, against about 40 output tokens a paragraph on the
+      extraction answer (estimate output factor 1.03 on the extraction
+      calls; the residual calls' own tokens are the saving the
+      estimate, which prices extraction calls, does not show). The
+      measure for both is the ablation's byte match; the row for the
+      merged residual also says how often a family arrives after the
+      extraction. (3) The Batch API, designed in the ledger note's
+      section 15 from the reference: three waves per run (routing,
+      residual, extraction), each one batch of up to 100,000 requests
+      or 256 MB, `custom_id` the invocation id the ledger already
+      computes so a result maps to its work row without a new table,
+      the batch id as the work rows' lease so a restarted worker
+      resumes at `retrieve`, `canceled` and `expired` results re-queued
+      to the next batch of their kind, the run's stop a `cancel`; 50
+      per cent of list on every token, cache hits inside a batch
+      best-effort so the price is taken without them; most batches
+      within an hour, every one within 24. The default's $72 to $36;
+      the time floor becomes the batch queue rather than the longest
+      section's output. The change is the worker's
+      (scripts/product-hosted-worker.js, implementer D's), and goes to
+      D through this finding; the pipeline's requests need nothing
+      new. Section 14 rows 2 and 6 are now built, row 9 points at
+      section 15; the guide's fresh-sheet entry names the flags. Tests:
+      tests/product-fresh-sheet-experiments.test.js (9: the derived
+      statement from the OWN components on Concho 6.3, a gap and an
+      inherited word in the derivation, the merged residual's two calls
+      with the dispositions compiled as the residual pass, a family
+      widened after the extraction UNRESOLVED, a split section keeping
+      its residual call), tests/product-lean-request-profile.test.js
+      (the stats gain statements_derived). npm run test:active: see
+      the push.
+
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
 - [x] Take a database backup and restore it to a separate environment.
