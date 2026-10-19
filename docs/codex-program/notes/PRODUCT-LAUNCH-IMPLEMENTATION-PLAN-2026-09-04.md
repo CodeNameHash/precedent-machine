@@ -7221,6 +7221,56 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       the merger family carries neither). npm run test:active on the
       second commit: 851 tests, 850 pass, the one failure the known
       Codex-client final-message test.
+      (204) 2026-10-19 16:15 to 16:40 UTC (implementer A), the two
+      references of work package 22 the held-proposals file now carries
+      (the manager's ce7f226 and message of 16:23 UTC) and 3.2's new
+      facts. 8.3 a7864ed9: Sonnet cut "For purposes of this Agreement"
+      as a CROSS_REFERENCE (Opus 5 had cut "Section 2.1(a)" instead);
+      5.10 7c7a8854: "set forth in Article VI". The second is a plain
+      Article reference with the words that introduce it; the first is
+      a framing phrase around a reference to the agreement as a whole.
+      Both were read by the resolver as no reference at all. The
+      manager's question on the framing phrase, which of "not a
+      CROSS_REFERENCE" (the instruction) or "held as now": neither
+      alone. The fact is the Permitted Liens definition and a framing
+      phrase is no reason to hold it, and an instruction the cheaper
+      tier follows one run and not the next (the variance of (217))
+      cannot be the only guard; so the code resolves "this Agreement"
+      inside such a phrase to the agreement's root node, as work
+      package 19 (c) resolves the bare "this Agreement", and the
+      instruction tells the model the phrase is not a CROSS_REFERENCE
+      ("a framing phrase that names no provision ('For purposes of this
+      Agreement', 'hereof', 'as used herein') is not a CROSS_REFERENCE,
+      leave it in the words of the component it opens"), both pinned. A
+      framing phrase that names nothing at all ("as used herein" is
+      already SELF_REFERENCE, needing no node) stays as before. The introducing words ("set
+      forth in", "pursuant to", "for purposes of", "under", "in
+      accordance with" and the like; `REFERENCE_LEAD`) are now stripped
+      before the article, section and agreement forms are read, and
+      "Article VI" resolves without "this" as "Section 2.1(a)" does; a
+      section or article the agreement lacks stays unresolved. 3.2's
+      three new Sonnet facts are CAPITALISATION facts (no preferred stock
+      outstanding at the Company Measurement Time; reserved shares
+      validly issued when issued; the equity award inventory), none a
+      qualifier: Sonnet did not carry the Disclosure Letter and SEC
+      Documents qualifiers under another subtype, so the per-family
+      instruction above is the answer, and whether the two facts belong
+      on every section or once on the article introduction stays Ben's
+      question. Pinned in tests/product-fact-components-extraction.test.js
+      ("set forth in Article II" to the article node, "pursuant to
+      Section 2.1(a)" to the section, "For purposes of this Agreement"
+      to the root, "Section 9.9" absent unresolved; the instruction
+      sentence in the request). The stored-answer replay is unchanged
+      (1,066 of 1,066; 1,044 VALID, 22 held). One test change outside
+      the package: tests/product-fresh-sheet-experiments.test.js pinned
+      the order of `result.model_calls`, which the section result sorts
+      by model_call_id, a content hash of the request, so the new
+      instruction sentence reordered a routing or residual call behind
+      the extraction call; the three assertions now read the calls by
+      kind (the `seen` order, the real call order, was pinned already
+      and is unchanged). npm run test:active on the commit: 851 tests,
+      850 pass, the one failure the known Codex-client final-message
+      test.
       (120) 2026-10-18 19:10 to 19:45 UTC (implementer C), Q5: the limb
       names harvested. `scripts/product/harvest-rep-limbs.js` (library
       `lib/product/rep-limb-harvest.js`, `tests/product-rep-limb-harvest.test.js`)
