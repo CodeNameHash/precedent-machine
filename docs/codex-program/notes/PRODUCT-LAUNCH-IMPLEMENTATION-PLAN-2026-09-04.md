@@ -6740,6 +6740,19 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       origin (E's (181) and (182) merged by hand, lib/product/agreement-
       draft.js); npm run test:active on the merged tree: 803 of 804, the
       one failure the known Codex-client final-message test.
+      (201) 2026-10-19 03:30 UTC (implementer A), one correction to
+      (176)'s reading of (200): the proof is not that "the stored NCS
+      answers re-validate to the same 1,015 and 22". The stored statuses
+      are the generation's (1,037 proposals, 1,015 VALID, 22 held, under
+      the rules of 2026-10-18 13:27 to 20:47 UTC); today's compile of the
+      151 answered calls gives 1,066 proposals, 1,044 VALID and 22 held
+      by quotes, superseded attempts included and work packages 13 to 20
+      applied. What (200) proves is that today's compile by quotes and
+      today's compile by offsets (1,063 of 1,066, 4.7's three losing
+      their introduction components under the offsets rule) or by unique
+      anchors (1,066 of 1,066) are the same facts, the 22 held the same
+      way with the same issues. Nothing else changed; no code in this
+      finding.
       (120) 2026-10-18 19:10 to 19:45 UTC (implementer C), Q5: the limb
       names harvested. `scripts/product/harvest-rep-limbs.js` (library
       `lib/product/rep-limb-harvest.js`, `tests/product-rep-limb-harvest.test.js`)
