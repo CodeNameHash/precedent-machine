@@ -13,7 +13,7 @@ Phases 0 to 3 define the contracts, durable intake path, three-family draft anal
 - `lib/canonical-v2/sec-edgar-intake-capture.js`: reusable SEC retrieval controls and raw capture.
 - `lib/canonical-v2/sec-html-canonical-text.js`: reusable canonical text and source map.
 - `lib/agreement-revision-classifier.js`: original, amendment and restatement classification.
-- `lib/product/sec-intake.js`: the active SEC adapter. It accepts one exact SEC exhibit URL, refuses redirects and changed final URLs, caps the response, stores the raw response and canonical conversion, and routes uncertain document identity to one review.
+- `lib/product/sec-intake.js`: the active SEC adapter. It accepts one exact SEC exhibit URL, refuses redirects and changed final URLs, caps the response, stores the raw response and canonical conversion, and routes uncertain document identity to one review. The identity rules (work package C6): the agreement date from the cover's "Dated as of" line (trailing punctuation and a missing "as of" allowed) and the preamble sentence around the agreement's own definition, the two required to agree; the parties from the preamble's role parentheticals, including the compound closing form (the "Company" and, together with ..., the "Parties"), names with "/", accents, "&" and comma-separated suffixes or seats, nested legal-description parentheticals, "by and among:" with a colon; then the cover caption under "among" or "by and among". Pinned with the exhibits' words in `tests/product-party-identity.test.js`.
 - `pages/api/product/intake.js`: the authenticated server entry point for a new intake submission.
 
 ## Durable runs and drafts
