@@ -4819,6 +4819,29 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       B5 and C6 so that A, D and E alone draw on the window.
       (176) 2026-10-19 02:55 UTC: implementer E's (181) and (182),
       implementer A's (200), implementer B's (108) and implementer C's
+      (177) 2026-10-19 03:05 UTC, Ben, verbatim: "I'd push e again to
+      say it should imagine itself like a nasa engineer in Apollo 13,
+      having to figure out how to get all required performance on even
+      less juice and even quicker. It can experiment, tear up ideas
+      etc. cone at completely fresh. And be implanting its existing
+      ideas now too". Applied to implementer E: (1) the stack that
+      needs no proof (the answer format with span aliases, anchored
+      quotes, the contracts in one or two stable blocks, eight section
+      loops with a split section's parts together, routing and
+      residual on Haiku 5.5, nothing on uncommitted attempts, and Opus
+      5.5 for extraction if the reference confirms it on both
+      providers) becomes the default request profile for every new
+      run now, behind the model-config identity, the paused and
+      finished runs keeping theirs; medium effort and the cached
+      agreement wait for the ablation; (2) then a fresh sheet: every
+      assumption of the pipeline questioned (one call per section with
+      its whole closure; three model passes; a frontier model for every
+      call; the agreement's words written back; one answer per section;
+      the worker loop; 64-hex identities on the wire), each with an
+      experiment the ablation job can run and the expected saving by
+      the ledger's method, the deterministic ones built behind flags
+      now. The required performance is the facts as read now, judged by
+      compare-generations on the agreement's bytes. Findings from (184).
       (130) merged (head 42f536d2; the active suite in the next
       finding). Read: E's levers ranked with measured dollars on NCS
       generation 5 (the answer format with span aliases -$28 and -107
