@@ -9327,8 +9327,9 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       tests/product-anthropic-api-provider.test.js,
       tests/product-lean-request-profile.test.js (the default's
       expectations moved to the Sonnet configs, the Opus ones kept by
-      identity and by the name OPUS). npm run test:active: see the
-      push.
+      identity and by the name OPUS), tests/product-claude-cli-provider.test.js
+      (the same). npm run test:active: 851 tests, 850 pass, the one
+      known failure.
 
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
