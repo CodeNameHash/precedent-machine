@@ -9198,6 +9198,60 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       tests/product-cost-ablation.test.js (9). npm run test:active: 849
       tests, 848 pass, the one known failure.
 
+      (194) 2026-10-19 15:50 to 16:40 UTC (implementer E), on the
+      manager's two asks after the confirmation ((216); 244acaa held;
+      the variance job pm-ablation-20261019T151819Z running, untouched).
+      (1) What Sonnet wrote on 5.17 part 3 and 3.10 is not in the job's
+      ablation-recording.json: the recorder remembers answered calls
+      only (createRecorder.remember runs after a provider accepts the
+      answer), and a rejected call's text travelled on the failure
+      record that invokeModel hands onModelCall, which the ablation's
+      row did not keep. From this push the row keeps it:
+      `failed_calls` on every section (lib/product/cost-ablation.js
+      `failedCallSummary`): the call kind and part, the failure code
+      and message, the output tokens, the text's length, its text
+      blocks and stop reason, whether it begins with JSON or with
+      prose, the first 4,000 characters, and what (192)'s lines reader
+      makes of it (`lines_reader`: lines, kept, malformed, trailer,
+      broken last line, truncated, proposals), so the question "would
+      the lines reader have read it" is answered on the row at failure
+      time; the table's note says "the model wrote: EXTRACTION part 3
+      of 5 CLAUDE_PRODUCT_JSON: 18,402 characters, begins with prose,
+      lines reader keeps 0 of 1 lines" or "begins with JSON, lines
+      reader keeps 11 of 12 lines (11 proposals, last line broken, no
+      trailer)", and ablation.json carries the whole summary. For the
+      DONE job the two texts are gone; the variance job started at
+      7c82fea4, before this change, so its retries' first attempts are
+      not kept either; the next job's are. Read-only access to the
+      sandbox is still not this session's (the (191) reasons stand),
+      so the recording and the job files are the manager's to read;
+      with this change the reading is a jq over ablation.json's
+      `failed_calls`. (2) The second job (derived_statement_sonnet55
+      and merged_residual_sonnet55, sections all, loops 4) against the
+      five-hour window, from the confirmation's own measurements rather
+      than (189)'s assumptions: anchors_sonnet55 wrote 2,224,248 output
+      tokens in 15,033 serial seconds (148 a second, not the 87 the
+      ledger assumed) and took about 171 wall minutes at one loop (the
+      parts of split sections being the only parallelism; wall 0.68 of
+      serial). The derived statement writes 0.91 of that output
+      (section 14 row 6), the merged residual 1.03 (the dispositions on
+      the extraction answer, no residual call): about 2.02m and 2.29m
+      output tokens, 13,700 and 15,500 serial seconds. At loops 4: by
+      serial over four, about 57 and 65 minutes; by the job's pace over
+      four, about 39 and 44 minutes; the (189) method at 87 tokens a
+      second gives 121 and 137 minutes, the ceiling. So the job is
+      about an hour and a half to two hours by the measured figures and
+      at most about four and a quarter by the ceiling, within the
+      five-hour window once the variance job (seven sections, two
+      rungs, loops 3) is DONE; the subscription's output rate at four
+      sections at once is the one figure no run has measured, and the
+      job log's LIVE_CALL durations will. Tests:
+      tests/product-ablation-wake.test.js (the retry test now asserts
+      the failed call's text, shape and lines-reader reading on the
+      row and in the table, and a cut JSON Lines answer the one-object
+      reader rejected that the lines reader keeps one of two lines of).
+      npm run test:active: 849 tests, 848 pass, the one known failure.
+
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
 - [x] Take a database backup and restore it to a separate environment.
