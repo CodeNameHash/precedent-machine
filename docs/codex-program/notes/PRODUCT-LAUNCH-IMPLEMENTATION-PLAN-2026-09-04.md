@@ -5178,6 +5178,30 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       neither the internal bearer nor the sandbox credentials, by
       design; the manager fires and reports. The two deals paused
       ((175)); no intake ((172)).
+      (215) 2026-10-19 12:20 to 12:30 UTC (the manager): the
+      confirmation job of (214) failed at launch twice before it ran.
+      First, pm-ablation-20261019T112716Z, "sections not in the run:
+      all" in five seconds: the experiments sandbox runs its own
+      checkout (/vercel/sandbox/pm-product, the job log's commit),
+      which stood at de9c01e1 from before E's (189), so the word 'all'
+      was unknown there; the deployment's head is not the sandbox's.
+      Updated with scripts/product/update-sandbox-worker.js --name
+      pm-codex-preview-worker-3 to abfd3c1e. Second,
+      pm-ablation-20261019T122058Z, "product_fact_components: " (an
+      empty message) in 27 seconds: scripts/product/cost-ablation.js
+      asks for the components of every proposal of the wanted sections
+      in one `in` filter, and NCS generation 5 whole has a thousand-odd
+      proposal ids, more than the database's request length takes;
+      three sections never reached it. Fixed in lib/product/run-rows.js:
+      a list filter longer than 150 values goes in chunks and the
+      pages are joined in the table's order (`IN_FILTER_CHUNK`; pinned
+      in tests/product-run-rows.test.js: 307 ids in three queries, the
+      rows whole and ordered). Pushed at fa205b1f, the sandbox updated
+      to it, and the job fired a third time: pm-ablation-20261019T122404Z,
+      RUNNING at 12:26 UTC, its first section 8.7 matched 2 of 2 on
+      Sonnet 5.5 at high effort. E's (192) (`fact_lines`, row 7 of the
+      fresh sheet, nothing run) merged. The two deals paused ((175));
+      no intake ((172)); 244acaa held.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
