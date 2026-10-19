@@ -9479,7 +9479,8 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       carrying `uncited_operative_bytes` and
       `residual_paragraphs_uncited` per part from the next job, so the
       thresholds come from the sandbox's figures. No code in this
-      push; the suite is the merged tree's.
+      push. npm run test:active: 851 tests, 850 pass, the one known
+      failure.
 
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
