@@ -8701,8 +8701,9 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       headroom (every byte sent three or more times, the agreement
       written back twice, the Batch API for the API provider), is
       finding (190). Tests: tests/product-cost-ablation.test.js (9),
-      tests/product-ablation-wake.test.js (7). npm run test:active: see
-      the push.
+      tests/product-ablation-wake.test.js (7). npm run test:active: 839
+      tests, 838 pass, the one known failure (Codex client final-message
+      file).
 
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
