@@ -5,7 +5,7 @@ const test = require('node:test');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
-const { loadRunRows, readRunSnapshot, resolveRunRows, runLabel, sectionReferencesByNode, writeRunSnapshot } = require('../lib/product/run-rows');
+const { IN_FILTER_CHUNK, loadRunRows, loadTableRows, readRunSnapshot, resolveRunRows, runLabel, sectionReferencesByNode, writeRunSnapshot } = require('../lib/product/run-rows');
 
 const RUN = '72d94dd2-cb59-49cf-8f46-c89d161b7769';
 
@@ -80,4 +80,20 @@ test('resolveRunRows takes snapshots as they are and reads run ids through the c
   assert.equal(runLabel(runs[0]), `d921605dex21.htm generation 8 (${RUN.slice(0, 8)})`);
   await assert.rejects(resolveRunRows({ tables: ['product_analysis_runs'], client }), /at least one --run/);
   await assert.rejects(resolveRunRows({ runIds: [other], tables: ['product_analysis_runs'], createClient: () => { throw new Error('SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required'); } }), /SUPABASE_URL/);
+});
+
+// Plan finding (215): a list filter longer than IN_FILTER_CHUNK is sent in
+// chunks (the whole-agreement ablation's proposal ids) and the rows come
+// back whole, in the table's order, with no chunk's ids in another's query.
+test('a long list filter is sent in chunks and the rows are joined in table order', async () => {
+  const count = IN_FILTER_CHUNK * 2 + 7;
+  const ids = Array.from({ length: count }, (_, index) => `p${String(count - index).padStart(4, '0')}`);
+  const components = ids.map((proposal_id) => ({ run_id: RUN, proposal_id, component_id: 'c1' }));
+  const client = fakeClient({ product_fact_components: components });
+  const rows = await loadTableRows(client, 'product_fact_components', RUN, { filter: { proposal_id: ids } });
+  assert.equal(rows.length, count);
+  assert.deepEqual(rows.map((row) => row.proposal_id), [...ids].sort());
+  const queries = client.calls.filter((call) => call.table === 'product_fact_components');
+  assert.equal(queries.length, 3);
+  for (const query of queries) assert.ok(query.filters.find((f) => f.kind === 'in').value.length <= IN_FILTER_CHUNK);
 });
