@@ -9,7 +9,7 @@ const assert = require('node:assert/strict');
 const test = require('node:test');
 
 const {
-  CLAUDE_CLI_CALL_KIND_MODELS, CLAUDE_CLI_DEFAULT_MODEL_CONFIG, CLAUDE_CLI_MODEL_CONFIG, CLAUDE_CLI_PROVIDER_ID, CODEX_MODEL_CONFIG, CODEX_PROVIDER_ID,
+  CLAUDE_CLI_CALL_KIND_MODELS, CLAUDE_CLI_DEFAULT_MODEL_CONFIG, CLAUDE_CLI_MODEL_CONFIG, CLAUDE_CLI_PROVIDER_ID, CLAUDE_CLI_SONNET_MODEL_CONFIG, CODEX_MODEL_CONFIG, CODEX_PROVIDER_ID,
   configuredProductModelConfig, hostedModelConfigFor, isHostedProvider, resolveClaudeCliCallModel,
 } = require('../lib/product/product-model-config');
 const { createClaudeCliProductModel, createHostedProductModel, SYSTEM_PROMPT, unfenced } = require('../lib/product/claude-cli-model');
@@ -37,12 +37,15 @@ test('the Claude CLI provider is a hosted provider with a frozen call-kind map',
   });
   // Work package E3: a new run takes the default config (Haiku routing and
   // residual, the DEFAULT request profile); V9 by PRODUCT_REQUEST_PROFILE.
-  assert.equal(configuredProductModelConfig({ PRODUCT_MODEL_PROVIDER: CLAUDE_CLI_PROVIDER_ID }), CLAUDE_CLI_DEFAULT_MODEL_CONFIG);
+  // Work package E6 (plan findings (195), (212); Ben: "Sonnet makes sense"): the default is the Sonnet config; OPUS names E3's.
+  assert.equal(configuredProductModelConfig({ PRODUCT_MODEL_PROVIDER: CLAUDE_CLI_PROVIDER_ID }), CLAUDE_CLI_SONNET_MODEL_CONFIG);
+  assert.equal(configuredProductModelConfig({ PRODUCT_MODEL_PROVIDER: CLAUDE_CLI_PROVIDER_ID, PRODUCT_REQUEST_PROFILE: 'OPUS' }), CLAUDE_CLI_DEFAULT_MODEL_CONFIG);
   assert.equal(configuredProductModelConfig({ PRODUCT_MODEL_PROVIDER: CLAUDE_CLI_PROVIDER_ID, PRODUCT_REQUEST_PROFILE: 'V9' }), CLAUDE_CLI_MODEL_CONFIG);
   assert.equal(isHostedProvider(CLAUDE_CLI_PROVIDER_ID), true);
   assert.equal(isHostedProvider(CODEX_PROVIDER_ID), true);
   assert.equal(isHostedProvider('ANTHROPIC'), false);
-  assert.equal(hostedModelConfigFor(CLAUDE_CLI_PROVIDER_ID, null, {}), CLAUDE_CLI_DEFAULT_MODEL_CONFIG);
+  assert.equal(hostedModelConfigFor(CLAUDE_CLI_PROVIDER_ID, null, {}), CLAUDE_CLI_SONNET_MODEL_CONFIG);
+  assert.equal(hostedModelConfigFor(CLAUDE_CLI_PROVIDER_ID, { model_config: CLAUDE_CLI_DEFAULT_MODEL_CONFIG }, {}), CLAUDE_CLI_DEFAULT_MODEL_CONFIG, 'a run under V2 keeps V2');
   assert.equal(hostedModelConfigFor(CLAUDE_CLI_PROVIDER_ID, { model_config: CLAUDE_CLI_MODEL_CONFIG }, {}), CLAUDE_CLI_MODEL_CONFIG, 'a run created under V1 keeps it');
   assert.deepEqual(resolveClaudeCliCallModel(CLAUDE_CLI_DEFAULT_MODEL_CONFIG, 'ROUTING'), { model: 'claude-haiku-5-5', effort: 'low' });
   assert.deepEqual(resolveClaudeCliCallModel(CLAUDE_CLI_DEFAULT_MODEL_CONFIG, 'EXTRACTION'), { model: 'claude-opus-5', effort: 'high' });
