@@ -5083,6 +5083,56 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       generation 5 once READY, and the 102 V1 facts without a
       counterpart read one by one into a ranked list of V2 extraction
       defects with the rule or prompt line for each (finding (105)).
+      (211) 2026-10-19 09:10 to 09:30 UTC (the manager): the second
+      ablation ladder is DONE (job pm-ablation-20261019T071955Z, the
+      experiments sandbox at d94f55a7 with E's (188), NCS generation 5's
+      3.19, 5.2 and 5.17, nine rungs, 07:19 to 08:54 UTC, exit 0; read
+      and priced in docs/codex-program/notes/ABLATION-LADDER-RUN-2-2026-10-19.md).
+      Run 1's three defects ((210)) are fixed: every anchors rung ran
+      live on its own model and effort, the columns are per section,
+      and `baseline` reads the stored run back with no call (7 / 27 /
+      41 matched), so the replay harness is a zero-call control. The
+      live rungs, the same words (the ANCHORS profile) on four model
+      and effort pairs, against the stored 75 facts, with cost priced
+      on one cache layout for every row (every input token a one-hour
+      cache write; the read-layout figure in the note): Opus 5 high
+      (`anchors`, and `all_contracts`, which on the CLI is the same
+      configuration) 74 matched, 1 partial, 238,915 output tokens,
+      3,219 serial seconds, $12.97; Opus 5 medium 70 matched, 3
+      partial, 2 unmatched, 129,975 output, 1,664 s, $10.25; Opus 5.5
+      high 74 matched, 1 unmatched, 244,520 output, 2,711 s, $10.49;
+      Opus 5.5 medium 73 matched, 1 partial, 1 unmatched, 156,771
+      output, 1,716 s, $8.74; Sonnet 5.5 high (run 1's row, same
+      words) 73 matched, 2 partial, 191,519 output, 1,609 s, $4.72;
+      the stored run 261,884 output, 3,006 s, $13.48 on that layout
+      and $9.49 as billed. The one fact Opus 5.5 does not write, at
+      either effort, is 5.17's "Specified Stockholder's indemnity
+      liability capped at net proceeds from its Registrable Securities
+      sale", a registration-rights sub-item Ben's (167) takes out of
+      the product; its anchors resolved, so the model omitted it. Opus
+      5 medium's second loss is the Registration Statement fact whose
+      first words cross the page footer "57" (`anchors_unresolved: 2`;
+      A's (202) fixed that after this job started). The routing rungs
+      replayed the stored extraction and so measure routing agreement
+      only (Sonnet 5.5 and Haiku 5.5 at low effort route 3.19 and 5.17
+      narrower than the stored run); not fact evidence. Two defects
+      for E (work package E5): `deterministic_routing` and
+      `routing_haiku` fail 5.17 with GROUP_FAMILY (part1:g1, part3:g1)
+      when the routing differs from the stored run's part grouping,
+      instead of a live call or a REPLAY_MISS; and the job table's cost
+      column follows the CLI's reported cache split, so one rung's
+      figure depends on what the rung before it sent (price every rung
+      on the two fixed layouts). Put to Ben, the tier decision with the
+      numbers above: Opus 5.5 at medium effort (half the stored run's
+      cost and seconds, one cut fact missing, one partial), Sonnet 5.5
+      at high effort (a third of the cost, two partials, no loss), or
+      Opus 5.5 at high effort (one partial fewer than medium for 56%
+      more output); and the manager's recommendation that the default
+      changes only after one full agreement runs on the chosen tier
+      against its stored generation (97 sections, not three). The two
+      deals stay paused ((175)); no intake ((172)). A's (202) merged at
+      d627ace1; npm run test:active on the merged tree in this finding's
+      commit.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
