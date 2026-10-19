@@ -9282,6 +9282,54 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       reader rejected that the lines reader keeps one of two lines of).
       npm run test:active: 849 tests, 848 pass, the one known failure.
 
+      (195) 2026-10-19 16:25 to 17:00 UTC (implementer E), the default
+      changed on the manager's go (16:24 UTC, after A's (203) merged
+      and the variance job read in (217)): the prepared commit 244acaa
+      of (191) merged into the branch at bdf6688 (a merge commit, no
+      history rewritten; the one conflict the guide's fresh-sheet line,
+      resolved keeping both sides). Ben's decision (212), "Sonnet makes
+      sense", verbatim in the code comment
+      (lib/product/product-model-config.js). The default configs for
+      new runs are now ANTHROPIC_API_SONNET_MODEL_CONFIG
+      (PRODUCT_ANTHROPIC_API_CALL_KIND_MAP/V4) and
+      CLAUDE_CLI_SONNET_MODEL_CONFIG (PRODUCT_CLAUDE_CLI_CALL_KIND_MAP/
+      V3): claude-sonnet-5-5 at high effort for EXTRACTION, Haiku 5.5
+      at low effort for ROUTING and RESIDUAL, the DEFAULT profile on
+      the API and DEFAULT_CLI (routed contracts) on the CLI; the Opus
+      configs V3 and V2 stay known by identity, so a run created under
+      them advances under them, and PRODUCT_REQUEST_PROFILE=OPUS (or
+      PRODUCT_ANTHROPIC_API_PROFILE=OPUS) names them for a new run; V9
+      as before. Projected for NCS generation 5 under the new default,
+      from the confirmation's own measurements ((216): every section
+      on these words and this model): 2,224,248 extraction output
+      tokens against the stored 3,473,680, 15,033 serial seconds
+      against 39,968; at the pool worker's eight loops with the parts
+      together, about 35 to 45 wall minutes against the stored run's
+      439 (the output's 31 minutes serial over eight, the routing and
+      residual calls on Haiku beside it, and the longest section's own
+      output the floor); on the API about $41 on the stored run's own
+      cache layout, between $24 (every input token a read) and $62
+      (every one a one-hour write), against $133.64 as billed; by the
+      ledger's projection method ((191), section 13 with Sonnet's
+      prices) about $30 and 40 minutes; on the subscription CLI $0 and
+      the same minutes. Facts, from (216) and (217): 931 of 971
+      matched outright on the whole agreement, the holds the
+      cross-reference form A's (203) now resolves, the five omissions
+      the same on Opus 5.5 medium and a contract-instruction matter
+      (A's work package 22 item 4). Not done here: the pool sandboxes
+      are not touched (the paused deals' workers stay down until the
+      manager updates the pool to this commit and runs the suite,
+      (175)); the second job (derived_statement_sonnet55,
+      merged_residual_sonnet55, sections all, loops 4) is the manager's
+      to fire after the Opus 5.5 medium whole-agreement job
+      pm-ablation-20261019T155504Z is DONE. Tests:
+      tests/product-default-request-profile.test.js,
+      tests/product-anthropic-api-provider.test.js,
+      tests/product-lean-request-profile.test.js (the default's
+      expectations moved to the Sonnet configs, the Opus ones kept by
+      identity and by the name OPUS). npm run test:active: see the
+      push.
+
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
 - [x] Take a database backup and restore it to a separate environment.
