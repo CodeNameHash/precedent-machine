@@ -5331,11 +5331,21 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       covenants), and the only row in this run that would weigh
       against the tier reading of (217). The table is kept in the
       manager's scratchpad; the sandbox's job directory holds the
-      rows. Order after the window resets: E's second job on the
-      chosen tier first (derived_statement_sonnet55,
-      merged_residual_sonnet55, every section, four at once), then the
-      Opus 5.5 medium remainder only if Ben wants the fuller-words
-      comparison completed. The two deals paused ((175)); no intake
+      rows. 5.1 read at 17:20 UTC: four live calls, none at the
+      limit; parts 1 and 3 came back with 2,079 and 4,429 output
+      tokens against 22,739 and 92,153 for parts 2 and 4, and the 17
+      lost are part 1's facts whole (the ordinary-course and
+      reasonable-best-efforts affirmative covenants, the consent
+      standards, the Disclosure Letter, Agreement and Law exceptions):
+      Opus 5.5 at medium effort under-wrote two parts of the longest
+      section where Sonnet 5.5 at high effort wrote 63 of 66. That
+      weighs for Ben's tier, not against it. The window reset at 17:10
+      UTC; the sandbox updated to eadfaaa6 and E's second job fired at
+      17:16 UTC: pm-ablation-20261019T171620Z (derived_statement_sonnet55,
+      merged_residual_sonnet55, every section, four at once, (193)'s
+      retry on: the rows carry "attempts"); the Opus 5.5 medium
+      remainder only if Ben wants the fuller-words comparison
+      completed. The two deals paused ((175)); no intake
       ((172)); the pool sandboxes still on the old default until Ben
       says resume.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
