@@ -8457,6 +8457,75 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       on a clean checkout of the commit: 836 tests, 835 pass, the one
       failure the known Codex-client final-message test.
 
+      (188) 2026-10-19 07:45 to 08:40 UTC (implementer E), the two 5.17
+      comparison pairs (docs/codex-program/notes/ablation-run-1/
+      compare-stored-vs-trimmed.md and
+      compare-stored-vs-direct_definitions.md) read, with the stored
+      run's rows for the two facts (product_fact_components, read-only
+      SQL; nothing run). Two different facts are lost, not one: trimmed
+      loses the GENERAL_NOTIFICATION fact "The Registration Statement
+      (or any prospectus or prospectus supplement forming a part of such
+      Registration Statement), as initially filed, shall include the
+      Registrable Securities of the Specified Stockholders ... subject
+      to receipt of information reasonably requested by Parent
+      necessary to complete such prospectus supplement" (V2 held
+      "Registration Statement as initially filed includes the
+      Specified Stockholders' Registrable Securities" over its bytes;
+      under direct_definitions the same fact matches at 77 per cent);
+      direct_definitions loses "The aggregate amount which any such
+      Specified Stockholder shall be required to pay pursuant to
+      Section 5 ... the net proceeds actually received ... giving rise
+      to such Claim" (V2 held "Specified Stockholder's liability capped
+      at net proceeds received from sales under the registration
+      statement" over its bytes). The stored run's components of both
+      facts are OWN words on 5.17's own paragraph spans (the aggregate
+      amount fact: EXCEPTION "provided, however", OBJECT, OPERATION
+      "shall in no case be greater than", THRESHOLD; the Registration
+      Statement fact: ACTOR, two OPERATIONs, CONDITION, and one
+      DEFINED_TERM component on the "Specified Stockholders" definition
+      at byte 290,582, a definition the section's own words name, so
+      sent whole under both rungs). So (187)'s listed-span rule is not
+      what brings either fact back: it touches a component that cites
+      a span the request listed, and these cite none; pinned
+      (tests/product-held-fact-issue-link.test.js, the rule leaves an
+      own-span component as written and the fact stays held). The
+      reason each was held is what the reports hide, and that is the
+      second defect: "V2 held a fact over these bytes:" with nothing
+      after the colon, because a hold raised while the proposal is
+      compiled (a component whose words the span does not hold, a
+      missing readout, a representation exception) names the proposal
+      by client_ref in its message, before the proposal has an id, and
+      the comparison reads a held fact's reason by proposal_id
+      (generation-comparison.js issuesByProposal), so every held fact
+      read "no issue code". Fixed at the source: compileExtraction
+      fills the proposal id into such an issue once the proposal has
+      one (`issueClientRef`: the message is the ref, or JSON with
+      client_ref). Pinned with the lost fact's own words through the
+      pipeline on a fixture agreement: the fact compiles VALID as
+      written; with one component's words read wrong ("requested by
+      the Company" for "requested by Parent") it is held, the hold
+      carries the proposal id, and the comparison report names the
+      code where it said "no issue code". The mechanism the rows point
+      to for the real losses, to be confirmed by the codes the second
+      run's reports will now show: trimmed's 5.17 row has two
+      unresolved anchors (the model's first and last words not found
+      in the span: a page footer in the words, or anchors chosen from
+      the parenthetical), which is the Registration Statement fact's
+      long ACTOR component "The Registration Statement (or any
+      prospectus or prospectus supplement forming a part of such
+      Registration Statement), as initially filed"; direct_definitions'
+      row has none unresolved and one held, a hold of another kind (a
+      duplicate occurrence over the same bytes as the new "liability
+      capped" fact, or a component problem the validator names). If
+      the codes say unresolved anchors, the fix is in the anchors'
+      resolution (longer anchors, or the offsets A's work package 21
+      accepts), not in the context; neither rung changes what the
+      model reads for these two facts. Also from the reports, for the
+      record: under trimmed 3.19 and 5.2 lose nothing (7 of 7, 27 of
+      27) and 5.17's other 40 facts match; under direct_definitions the
+      same. Tests: tests/product-held-fact-issue-link.test.js (2), added
+      to test:active. npm run test:active: see the push.
+
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
 - [x] Take a database backup and restore it to a separate environment.
