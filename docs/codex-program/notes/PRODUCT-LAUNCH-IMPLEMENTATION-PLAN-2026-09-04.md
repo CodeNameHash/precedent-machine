@@ -8914,7 +8914,7 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       flag with a cut first answer, the continuation over the spans
       after the cited one, two VALID facts and the note, and the
       section unchanged without the flag), registered in test:active.
-      npm run test:active: see the push.
+      npm run test:active: 846 tests, 845 pass, the one known failure.
 
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
