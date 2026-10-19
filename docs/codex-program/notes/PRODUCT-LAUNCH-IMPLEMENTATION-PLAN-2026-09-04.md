@@ -4803,6 +4803,20 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       extraction workers and the five implementer sessions, and the
       implementers' Fable use spent it. Retried both runs at 02:15
       (olaplex-apogee-a-retry-1, -b-retry-1; nothing new woken, Ben's
+      (175) 2026-10-19 02:25 UTC, Ben: "What do you think? Do we hope we
+      can just get it all done in this window?"; the manager's answer:
+      no; the open work is two or three five-hour windows even with
+      nothing else running (the two deals about five hours of worker
+      time; E's levers more than one window; A, B, C and D one to two
+      hours each), and the implementers are the path to cheap intake;
+      recommended the implementers first and the two deals paused, the
+      completed sections kept, resumed in a quiet window. Ben: "Ok".
+      Applied: the workers on pm-codex-preview-worker and
+      pm-codex-preview-worker-2 stopped and both sandboxes released from
+      the pool; runs 686c3bf2 and f1e2493f stay PARTIAL with their
+      completed sections (33 and 30) until the manager retries them in
+      a window the implementers are not using; B and C go idle after
+      B5 and C6 so that A, D and E alone draw on the window.
       (170) stands) and every implementer re-triggered on its open
       package. For Ben: while the implementers run on the subscription,
       the two deals and the five sessions compete for one window; the
