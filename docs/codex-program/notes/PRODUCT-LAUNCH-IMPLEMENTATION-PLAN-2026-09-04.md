@@ -5346,6 +5346,33 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       in the request or response contract or the adapters (E's). npm run
       test:active: 788 tests, 787 pass, the one failure the known Codex-client final-message test. The database step, every file alone on local Postgres 16 with the 43 migrations: 20 files, 44 tests of 44 pass (the new proof 99 s). One commit
       for code, migration, tests, the guide lines and this finding.
+      (142a) 2026-10-19 03:15 UTC (implementer D), on the manager's
+      message of 02:15 UTC (received 03:10, after (142) was pushed as
+      7c998af and the merge 2318916; the merged tree ran npm run
+      test:active at 819 tests, 818 pass, the one known failure, and the
+      runner-driven database tests clean). The two subscription runs read
+      by SQL at 03:12 UTC: both RUNNING again (the manager's retries of
+      02:25), each with two sections claimed by the live worker
+      product-hosted:17:1 and :2 (leases to 02:43) and every other section
+      PENDING. What the rows say of the stop: each run has one history
+      entry, at 23:01 UTC, "claude exited 1: API Error: This request would
+      exceed your account's rate limit" on part 2 of a split section
+      (686c3bf2: 3.20, part 2 of 3, 8,630 bytes; f1e2493f: 3.18, part 2 of
+      5, 13,221 bytes), the part named in the message only, no attempt
+      token and no part field (the deployed worker predates D3's
+      failureRecord), and nothing at all from the sandbox sessions' end
+      before 02:11: the lease recovery of that worker wrote `error` alone
+      and the retry's claim cleared it, the 5.8 pattern again. Under D3 as
+      deployed from now on: the rate-limit failure would carry the token
+      and the part, so the retry's attempt would reuse routing, residual
+      and part 1 and ask the provider for part 2 onward; the session's end
+      would be written by the next worker's start (WORKER_RESTART, the
+      parts done) or by the recovery (SECTION_LEASE_EXPIRED with the
+      token), and the attempt resumed either way. The sandboxes carry
+      D3's worker only once the manager updates them (update-sandbox-
+      worker.js, skipped while a worker holds the lock) and applies
+      migration 20261019003000 to the preview branch first, as with
+      (140)'s.
 
       (84) 2026-10-18 18:05 to 18:20 UTC (implementer), work package 15
       on finding (83)'s terms ("the documented maximum output cap on the
