@@ -4817,6 +4817,43 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       completed sections (33 and 30) until the manager retries them in
       a window the implementers are not using; B and C go idle after
       B5 and C6 so that A, D and E alone draw on the window.
+      (176) 2026-10-19 02:55 UTC: implementer E's (181) and (182),
+      implementer A's (200), implementer B's (108) and implementer C's
+      (130) merged (head 42f536d2; the active suite in the next
+      finding). Read: E's levers ranked with measured dollars on NCS
+      generation 5 (the answer format with span aliases -$28 and -107
+      minutes; eight section loops -280 minutes; medium effort -$17 if
+      the facts hold; Opus 5.5 -$29; the cached agreement -$6; anchored
+      quotes -$9; two stable blocks -$7; routing and residual on Haiku
+      -$5; the uncommitted attempts -$14 already fixed), stacked to
+      about $66 (2.2x) with nothing the ablation must prove, about $42
+      (3.5x) with medium effort and the cached agreement if the facts
+      hold, about $21 (7x) with the Batch API runner still to build;
+      10x needs every step; the next 10x is a smaller model writing the
+      facts, unmeasured. Built: the replay harness (a run finalised
+      from its stored responses, zero calls; the Concho proof in the
+      tests, the NCS generation 5 proof for the manager where the
+      branch keys are), the lean request profile behind the model-config
+      identity, the three-section ablation harness with its ladder
+      (3.19, 5.2, 5.17; eleven variants), the gate. A's (200): the
+      validator reads absolute byte offsets, E's lean aliases and
+      eight-hex prefixes, and the stored NCS answers re-validate to the
+      same 1,015 and 22. C's (130): the four identity rules pinned on
+      fourteen agreements. B's (108): the pre-intake structure check
+      as a script over the 34 deals. The ablation's live ladder is
+      not run yet: its snapshot needs the branch keys and its calls the
+      provider credentials, neither in this session, and at API rates
+      the eleven-variant ladder on three sections is tens of dollars of
+      Ben's remaining credit. Decision: the ladder runs on the
+      subscription provider on a third sandbox, pm-codex-preview-worker-3,
+      through the deployment's own wake path so no credential is read
+      here (work package E2 to implementer E: an ablation job on the
+      sandbox wake, internal-token protected, writing its outputs to
+      the sandbox log and nothing to the product tables), in the next
+      window the implementers are not using, before the two paused
+      deals resume. The two paused runs read RUNNING with two stale
+      leases each until the leases lapse; no worker is alive on either
+      sandbox.
       (170) stands) and every implementer re-triggered on its open
       package. For Ben: while the implementers run on the subscription,
       the two deals and the five sessions compete for one window; the
