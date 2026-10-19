@@ -9109,7 +9109,7 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       the failed call's text, shape and lines-reader reading on the
       row and in the table, and a cut JSON Lines answer the one-object
       reader rejected that the lines reader keeps one of two lines of).
-      npm run test:active: see the push.
+      npm run test:active: 849 tests, 848 pass, the one known failure.
 
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
