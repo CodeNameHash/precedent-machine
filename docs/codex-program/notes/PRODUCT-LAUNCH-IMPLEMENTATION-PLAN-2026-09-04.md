@@ -5137,6 +5137,123 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       768 tests, 767 pass, the one failure the known Codex-client final-message test. One commit for the harness, the tests, the workflow,
       the guide line and this finding.
 
+      (142) 2026-10-18 22:58 to 2026-10-19 01:05 UTC (implementer D), work
+      package D3 on the manager's message of 22:55 UTC: an attempt resumes
+      after a worker stop. No run woken or touched; the two sandboxes not
+      updated; NCS generation 5 read by SQL on the preview branch only.
+      Evidence first. 5.8's work row has attempts 2 and an empty
+      error_history: the restart's lease expiry was written as `error`
+      alone by product_phase1_recover_expired_sections and the next claim
+      cleared it, so nothing on the row says two parts were done ($2.69
+      of calls, 18:07 to 18:19 UTC) before the worker died. A second gap
+      found on the way: work package 15's part reached `failRun` but not
+      `failSection` (phase-1-store wrote the message alone, phase-2-store
+      the message alone), so no section's history ever named the part a
+      failure fell on and the re-split by part of findings (84) and (88)
+      never fired on the hosted path; 5.1's four-part attempt 4 came from
+      (84)'s halving of the group bytes. Both fixed here. Built: (1)
+      lib/product/attempt-resume.js. A call's identity is its kind, prompt
+      version and canonical logical request, read alike from the request
+      object, the CLI string and the API's two text blocks (`logicalRequest`,
+      `callIdentity`); the part identities of migration 20260914125500 and
+      the content-block reader of 20261018143000 stay the invocation
+      identities, so a reused call is admitted under the new attempt's
+      "<token>:part-<n>" from the part its own request carries. A later
+      attempt may reuse a call of an earlier attempt when the history
+      records that attempt, with its token, as interrupted
+      (WORKER_STOPPED, WORKER_RESTART, SECTION_LEASE_EXPIRED: every call it
+      completed) or as failed on an extraction part (routing, residual and
+      the parts before it); any other failure (a JSON answer, a residual
+      consistency refusal) frees nothing, since the calls themselves may
+      be the cause; a re-split section's parts are other calls and reuse
+      nothing. The runner hands every attempt a `resumingModel` over the
+      provider's: a reusable call is answered from the store (zero tokens,
+      zero cost, the original's provider, model, request and raw
+      response); a stop asked for ends the attempt before the next call,
+      never inside one. (2) Migration 20261019003000: the column
+      product_model_calls.resumed_from_model_call_id, which the admission
+      requires to name a call of the same section and kind and to spend
+      nothing; `attempt_token` on every failure record of error_history;
+      the lease recovery's record of the expired attempt (code
+      SECTION_LEASE_EXPIRED, the token, the lease's expiry);
+      product_phase2_release_section, which hands a claim back without a
+      failure: PENDING, the attempt refunded, worker, token and lease
+      cleared, the reason with the parts done on the history. (3) The
+      runner: a WORKER_STOP_REQUESTED out of an attempt releases it
+      (reason WORKER_STOPPED, the calls, kinds and parts done, parts
+      total) and leaves the loop; `prepareResumption` reads the claim's
+      history and the section's stored calls (`loadSectionModelCalls`)
+      and logs ATTEMPT_RESUMABLE and CALLS_REUSED. (4) The hosted worker:
+      SIGTERM, SIGINT and SIGHUP request a stop (the loops end after the
+      call in flight, the attempt is released, exit 143 with
+      PRODUCT_HOSTED_WORKER_STOPPED); its worker ids name the sandbox the
+      wake passes as PRODUCT_SANDBOX_NAME ("product-hosted:<sandbox>:
+      <pid>:<loop>"); at start it hands back the claims of its own
+      sandbox's dead processes (`releaseDeadClaims`: a RUNNING row whose
+      worker id names this sandbox, or none, and a pid that is not alive;
+      reason WORKER_RESTART with the parts the dead attempt's stored
+      calls show) instead of waiting the lease out; so the wake after a
+      restart resumes the section with no operator retry. A session end
+      that kills the process outright leaves nothing at death; the next
+      worker's start, or the lease recovery, writes the record. How a
+      resumed attempt's call records read: the committed attempt's set is
+      its own calls plus one record per reused call under its own
+      invocation identities, each naming the original in
+      resumed_from_model_call_id, with the original's request and raw
+      response and zero tokens and cost; the originals keep their rows
+      and their cost; the section row's cost is the section's whole spend
+      across attempts, the reused records adding nothing; the Review read
+      lists a section's calls across its attempts as before, the
+      proposals of the reused parts citing the new records. For E's
+      ledger: spend from the cost columns is right as it stands; usage
+      read from a record's raw response should skip records with
+      resumed_from_model_call_id, or it counts the original's tokens
+      twice; SQL 7's "kept" set already counts the reused records as the
+      committed attempt's. Proof on the database harness
+      (tests/product-attempt-resume-db.test.js, local Postgres 16, every
+      migration): the Concho run with the synthetic model stopped once
+      part 1 of the first section the runner splits had completed: the
+      row PENDING, attempts 0, history [{attempt 1, the token, WORKER_
+      STOPPED, parts_completed [1], parts_total N, kinds routing, residual,
+      extraction, calls 3}], the three call rows under that token; the
+      plain resume: the provider asked for parts 2 to N only, the three
+      reused calls recorded under the new token with zero cost naming
+      the originals, the row's cost the first attempt's spend plus the new
+      parts, the run READY, every proposal citing a committed record; the
+      dead-claim release of a claim whose worker is "product-hosted:
+      pm-codex-preview-worker:999999:2" (another sandbox's live claim left
+      alone), the lease recovery's record with the token, a part failure's
+      record with the token and the part (routing, residual and part 1
+      then eligible), the release's stale-token and empty-reason refusals,
+      the admission's refusals of a resumed call naming no original or
+      spending. tests/product-attempt-resume.test.js (fakes): the identity
+      across the three shapes and under a re-split, the reuse rule per
+      history code, the resuming model, the stop between calls, the
+      dead-claim release, the runner's release, the worker's signal, ids
+      and start. What the rule would have spared on NCS generation 5, from
+      product_model_calls by invocation identity (the committed attempt's
+      token per call kind and part) and the part each request carries:
+      5.8, the restart with the same split of four, the committed attempt's
+      repeat of routing ($0.022), residual ($0.036), part 1 ($0.675) and
+      part 2 ($1.862): $2.596 and 749 seconds; 5.1, whose attempts 2 and 3
+      followed cap failures on part 2 (recorded without the part then, with
+      it now), their repeats of routing, residual and part 1: $1.174 and
+      349 seconds, $1.110 and 308 seconds; attempt 4 re-split the section
+      into four parts and would reuse nothing. In all $4.88 and 23.4
+      call-minutes, 35 per cent of the $13.84 and 34 per cent of the 69
+      call-minutes the ledger counts on attempts that never committed;
+      the rest is the cap on 5.1's part 2 ($5.73, E's lever), 3.4's answer
+      that was not one object ($1.19, a whole-call failure, nothing
+      reusable by rule), the 1.2, 2.1 and 2.2 pairs ($0.64, a residual
+      consistency refusal and the store defect of (77), both since fixed),
+      and the interrupted attempts' own first calls. Not changed: the
+      lease recovery still counts the lost attempt (a worker handing its
+      claim back refunds it); the launcher and the sandbox wake's command
+      are unchanged but for the sandbox name in the environment; nothing
+      in the request or response contract or the adapters (E's). npm run
+      test:active: 788 tests, 787 pass, the one failure the known Codex-client final-message test. The database step, every file alone on local Postgres 16 with the 43 migrations: 20 files, 44 tests of 44 pass (the new proof 99 s). One commit
+      for code, migration, tests, the guide lines and this finding.
+
       (84) 2026-10-18 18:05 to 18:20 UTC (implementer), work package 15
       on finding (83)'s terms ("the documented maximum output cap on the
       API and an attempt-aware re-split"), begun before the manager's

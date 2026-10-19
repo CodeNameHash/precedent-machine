@@ -158,6 +158,7 @@ test('the sandbox wake carries the provider and, for Claude, the subscription to
     SUPABASE_URL: 'https://ecrtoofsyxozazkvsvcl.supabase.co',
     SUPABASE_SERVICE_ROLE_KEY: 'service-role-secret-value',
     PRODUCT_MODEL_PROVIDER: CLAUDE_CLI_PROVIDER_ID,
+    PRODUCT_SANDBOX_NAME: 'pm-codex-preview-worker',
     CLAUDE_CODE_OAUTH_TOKEN: 'oauth-'.repeat(8),
   });
   assert.doesNotMatch(JSON.stringify(result), /oauth-/);
