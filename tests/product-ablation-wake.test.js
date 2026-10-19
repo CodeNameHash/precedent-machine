@@ -493,6 +493,25 @@ test('a section whose live call fails on CLAUDE_PRODUCT_JSON is tried once more 
   assert.ok(logs.some((event) => event.event === 'SECTION_RETRY' && event.after === 'CLAUDE_PRODUCT_JSON' && event.section_reference === '3.1'));
   assert.ok(logs.some((event) => event.event === 'SECTION_ABLATED' && event.attempts === 2 && event.retried_after === 'CLAUDE_PRODUCT_JSON'));
   assert.match(renderAblationTable([retried]), /\| format \| 3\.1 \| 1 \(0\) \|[^\n]*second attempt after CLAUDE_PRODUCT_JSON/);
+  // Plan finding (194): what the model wrote on the failed call stays on the row, with the lines reader's reading of it.
+  assert.equal(row.failed_calls.length, 1);
+  const wrote = row.failed_calls[0];
+  assert.equal(wrote.code, 'CLAUDE_PRODUCT_JSON');
+  assert.equal(wrote.call_kind, 'EXTRACTION');
+  assert.equal(wrote.text_head, '"prose around the object { not json"', 'the CLI fake returns the text JSON-quoted; the call\'s text as received');
+  assert.equal(wrote.shape, 'begins with prose');
+  assert.deepEqual(wrote.lines_reader, { lines: 1, kept: 0, malformed: 1, trailer: false, broken_last_line: false, truncated: false, proposals: 0 });
+  assert.match(renderAblationTable([retried]), /the model wrote: EXTRACTION CLAUDE_PRODUCT_JSON: 36 characters, begins with prose, lines reader keeps 0 of 1 lines \(0 proposals, no trailer\)/);
+  // A cut JSON Lines answer the one-object reader rejects: the lines reader would have kept its whole lines.
+  const cutLines = ['{"line":"proposal","client_ref":"p1","group_ref":"g1","family_key":"TERMINATION","subtype_key":"X","fact_type":"TERMINATION_RIGHT","components":[]}', '{"line":"proposal","client_ref":"p2","group_ref":"g2","family_key":"TERMINATION","subtype_key":"X","fact_type":"TERMINATION_RIGHT","compo'].join('\n');
+  const cutFactory = ({ callKindModels }) => createClaudeCliProductModel({ callKindModels, clientFactory() { return { messages: { create: async (request) => { const sent = JSON.parse(request.messages[0].content); if (sent.call_kind === 'EXTRACTION') { const response = cliCompleted('x'); response.content[0].text = cutLines; response.claude_completion.text_blocks = 2; return response; } const { call_kind: kind, prompt_version: promptVersion, ...rest } = sent; return cliCompleted(answerFor(kind, { ...rest, prompt_version: promptVersion })); } } }; } });
+  const cut = await runSectionAblation({ run: rows, sections: ['3.1'], variantName: 'format', providerId: CLAUDE_CLI_PROVIDER_ID, liveModelFactory: cutFactory, recorder: createRecorder() });
+  assert.equal(cut.sections[0].attempts, 2);
+  assert.equal(cut.sections[0].failed_calls.length, 2, 'both attempts\' failed calls');
+  assert.equal(cut.sections[0].failed_calls[0].code, 'CLAUDE_OUTPUT_TRUNCATED');
+  assert.equal(cut.sections[0].failed_calls[0].shape, 'begins with JSON');
+  assert.deepEqual(cut.sections[0].failed_calls[0].lines_reader, { lines: 2, kept: 1, malformed: 0, trailer: false, broken_last_line: true, truncated: true, proposals: 1 });
+  assert.match(renderAblationTable([cut]), /failed twice \(second attempt after CLAUDE_OUTPUT_TRUNCATED\)[^\n]*lines reader keeps 1 of 2 lines \(1 proposals, last line broken, no trailer\)/);
   const twice = await runSectionAblation({ run: rows, sections: ['3.1'], variantName: 'format', providerId: CLAUDE_CLI_PROVIDER_ID, liveModelFactory: factoryWith(['bad', 'bad', 'bad']), recorder: createRecorder() });
   assert.equal(twice.sections[0].attempts, 2);
   assert.equal(twice.sections[0].retried_after, 'CLAUDE_PRODUCT_JSON');
