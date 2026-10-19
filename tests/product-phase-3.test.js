@@ -671,7 +671,7 @@ test('Sandbox wake rejects a finished failure even when its initial status is nu
   }), /STARTUP_FAILED/);
 });
 
-test('hosted worker accepts only the fixed actor and one or two workers', () => {
+test('hosted worker accepts only the fixed actor and one to eight workers', () => {
   assert.deepEqual(parseHostedArguments([
     '--run-id', '46c45080-6935-49e5-96ae-b6cb0609a924', '--actor', 'ben', '--workers', '1',
   ]), { runId: '46c45080-6935-49e5-96ae-b6cb0609a924', actor: 'ben', workers: 1 });
@@ -681,7 +681,9 @@ test('hosted worker accepts only the fixed actor and one or two workers', () => 
   assert.deepEqual(parseHostedArguments([
     '--run-id', '46c45080-6935-49e5-96ae-b6cb0609a924', '--actor', 'ben', '--workers', '2',
   ]), { runId: '46c45080-6935-49e5-96ae-b6cb0609a924', actor: 'ben', workers: 2 });
-  for (const workers of ['0', '3']) assert.throws(() => parseHostedArguments([
+  // Work package E1: up to eight section loops on one sandbox.
+  assert.equal(parseHostedArguments(['--run-id', '46c45080-6935-49e5-96ae-b6cb0609a924', '--actor', 'ben', '--workers', '8']).workers, 8);
+  for (const workers of ['0', '9']) assert.throws(() => parseHostedArguments([
     '--run-id', '46c45080-6935-49e5-96ae-b6cb0609a924', '--actor', 'ben', '--workers', workers,
   ]), /workers/);
 });
