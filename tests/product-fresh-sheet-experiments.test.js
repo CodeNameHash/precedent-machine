@@ -84,7 +84,8 @@ test('routing_mode deterministic_first routes Concho 6.3 (No Solicitation) from 
   assert.equal(result.routing.model_call_id, null);
   assert.deepEqual(result.routing.families, ['NO_SHOP']);
   assert.equal(result.routing.disposition, 'FAMILY_ASSIGNED');
-  assert.deepEqual(result.model_calls.map((call) => call.call_kind), ['RESIDUAL', 'EXTRACTION']);
+  // model_calls is sorted by model_call_id, a content hash: the kinds, not their order, are pinned.
+  assert.deepEqual(result.model_calls.map((call) => call.call_kind).sort(), ['EXTRACTION', 'RESIDUAL']);
   const note = result.issues.find((issue) => issue.code === 'ROUTING_DETERMINISTIC');
   assert.ok(note, 'the section says the words routed it');
   assert.deepEqual(JSON.parse(note.message).families, ['NO_SHOP']);
@@ -271,10 +272,10 @@ test('residual_mode in_extraction: an unsplit section asks the residual inside i
   assert.ok(Array.isArray(extraction.request.residual_paragraphs) && extraction.request.residual_paragraphs.length > 0);
   assert.match(extraction.request.residual_instruction, /paragraph_dispositions/);
   assert.ok(Array.isArray(extraction.request.response_contract.paragraph_dispositions));
-  assert.deepEqual(result.model_calls.map((call) => call.call_kind), ['ROUTING', 'EXTRACTION']);
+  assert.deepEqual(result.model_calls.map((call) => call.call_kind).sort(), ['EXTRACTION', 'ROUTING']);
   assert.equal(result.residual_pass.dispositions.length, extraction.request.residual_paragraphs.length);
   assert.ok(result.residual_pass.dispositions.every((item) => item.disposition === 'KNOWN_FAMILY'));
-  assert.equal(result.residual_pass.model_call_id, result.model_calls[1].model_call_id, 'the extraction call is the residual\'s call');
+  assert.equal(result.residual_pass.model_call_id, result.model_calls.find((call) => call.call_kind === 'EXTRACTION').model_call_id, 'the extraction call is the residual\'s call');
   const note = result.issues.find((issue) => issue.code === 'RESIDUAL_IN_EXTRACTION');
   assert.ok(note);
   assert.deepEqual(JSON.parse(note.message).widened_after_extraction, []);

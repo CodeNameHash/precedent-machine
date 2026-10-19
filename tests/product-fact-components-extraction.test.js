@@ -1063,6 +1063,8 @@ test('the extraction request names the representation qualification facts and th
   };
   const both = await requestFor(representationNode, ['REPRESENTATIONS', 'CONSIDERATION']);
   assert.match(both.component_instruction, /return one REPRESENTATION_QUALIFICATION proposal per source of exception as a fact of this section, its components the introduction's words with origin INTRO/);
+  // Finding (204): a framing phrase is not a reference; the agreement as a whole resolves to the agreement.
+  assert.match(both.component_instruction, /a framing phrase that names no provision \("For purposes of this Agreement", "hereof", "as used herein"\) is not a CROSS_REFERENCE/);
   assert.match(both.component_instruction, /The sentence that constitutes the exchange fund \(the deposit of the consideration with the Exchange Agent, "\(the “Exchange Fund”\)"\) is an EXCHANGE_MECHANICS fact of its own/);
   // The merger article's section, routed to the merger family alone,
   // carries neither sentence.
@@ -1172,6 +1174,15 @@ test('a cross-reference by clause number resolves to the clauses of the definiti
   const sectionReference = deposit.components[1].children[0];
   assert.equal(sectionReference.resolves_to?.structure_node_id, conversion.node_id, issueLines(deposited));
   assert.equal(deposited.issues.some((issue) => /CROSS_REFERENCE must resolve/.test(issue.message)), false, issueLines(deposited));
+  // 5.10 and 8.3 of the same confirmation: the reference cut with the words
+  // that introduce it resolves the same way; "this Agreement" to the root.
+  const article = agreementStructure.nodes.find((candidate) => candidate.kind === 'ARTICLE');
+  const context = { sourceDocument: doc, closure: exchangeClosure, agreementStructure };
+  const { resolveSpanReference: _unused, ...draft } = require('../lib/product/agreement-draft');
+  assert.equal(draft.structureReferenceTarget('set forth in Article II', context)?.structure_node_id, article.node_id);
+  assert.equal(draft.structureReferenceTarget('pursuant to Section 2.1(a)', context)?.structure_node_id, conversion.node_id);
+  assert.equal(draft.structureReferenceTarget('For purposes of this Agreement', context)?.structure_node_id, agreementStructure.root_node_id);
+  assert.equal(draft.structureReferenceTarget('Section 9.9', context), null, 'a section the agreement lacks stays unresolved');
 
   // A LIST with no words of its own and every element resolved takes the
   // elements' words; the note says so.
