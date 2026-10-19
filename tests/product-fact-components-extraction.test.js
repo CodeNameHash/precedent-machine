@@ -1033,6 +1033,44 @@ test('a cross-reference to "this Article VI" resolves to the article node and th
   assert.equal(unresolved.proposals[0].validation_status, 'INVALID');
 });
 
+// Work package 22, item 4 (the manager's second addendum, finding (217)):
+// the cheaper tiers omit the representation qualifiers and the Exchange
+// Fund sentence on every run; the request names those facts per routed
+// family.
+test('the extraction request names the representation qualification facts and the Exchange Fund fact for the routed families only', async () => {
+  const { sourceDoc, agreementStructure } = representationsSource();
+  const representationNode = substantiveSections(agreementStructure).find((candidate) => candidate.reference === '3.01');
+  const mergerNode = substantiveSections(agreementStructure).find((candidate) => candidate.reference === '1.01');
+  const requestFor = async (node, families) => {
+    let request = null;
+    await buildAgreementSectionDraft({
+      sourceDocument: sourceDoc, agreementStructure, node, legalSchema: legalSchemaV2, tableShapes,
+      model: {
+        async complete({ call_kind, request: seen }) {
+          let modelResponse;
+          if (call_kind === 'ROUTING') modelResponse = { families, disposition: 'FAMILY_ASSIGNED', rationale: 'routed', deterministic_disagreements: [] };
+          else if (call_kind === 'RESIDUAL') modelResponse = { paragraphs: seen.paragraphs.map((p) => ({ source_span_id: p.source_span_id, disposition: 'KNOWN_FAMILY', family_keys: families, rationale: 'routed' })) };
+          else {
+            request = seen;
+            modelResponse = { proposals: [], groups: [], links: [], coverage: Object.fromEntries(families.map((key) => [key, 'NOT_FOUND'])), fact_type_coverage: Object.fromEntries(seen.family_contracts.map((contract) => [contract.family_key, Object.fromEntries(contract.required_fact_types.map((type) => [type, 'NOT_FOUND']))])) };
+          }
+          return { provider_id: 'TEST', model_id: 'TEST', response: modelResponse, raw_request: seen, raw_response: modelResponse, input_tokens: 1, output_tokens: 1, cost_microusd: 0, duration_ms: 1 };
+        },
+      },
+    });
+    assert.ok(request);
+    return request;
+  };
+  const both = await requestFor(representationNode, ['REPRESENTATIONS', 'CONSIDERATION']);
+  assert.match(both.component_instruction, /return one REPRESENTATION_QUALIFICATION proposal per source of exception as a fact of this section, its components the introduction's words with origin INTRO/);
+  assert.match(both.component_instruction, /The sentence that constitutes the exchange fund \(the deposit of the consideration with the Exchange Agent, "\(the “Exchange Fund”\)"\) is an EXCHANGE_MECHANICS fact of its own/);
+  // The merger article's section, routed to the merger family alone,
+  // carries neither sentence.
+  const merger = await requestFor(mergerNode, ['MERGER_STRUCTURE_CLOSING']);
+  assert.doesNotMatch(merger.component_instruction, /REPRESENTATION_QUALIFICATION proposal per source of exception/);
+  assert.doesNotMatch(merger.component_instruction, /EXCHANGE_MECHANICS fact of its own/);
+});
+
 // Work package 22 (the manager's (216); the Sonnet 5.5 confirmation on NCS
 // generation 5): ten MAE carve-out, carve-back and underlying-cause facts
 // on 3.1 and 4.1 were held "CROSS_REFERENCE must resolve" because the

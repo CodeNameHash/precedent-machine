@@ -7191,6 +7191,36 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       bytes and the note). npm run test:active on the commit: 850 tests,
       849 pass, the one failure the known Codex-client final-message
       test.
+      Second addendum (the manager's message of 16:05 UTC and (217): the
+      variance job shows Sonnet's resolves_to omission varies run to
+      run, 4.1 whole one run and 3.1 six holds the next, and Opus 5.5
+      medium one hold, so the deterministic resolution above is the fix
+      across tiers; and the four qualification facts and 2.3's Exchange
+      Fund sentence are omitted on every cheaper-tier run, a contract
+      instruction matter): the extraction request now names those facts
+      per routed family (`FAMILY_FACT_REMINDERS`, appended to the
+      component instruction after the layer rules, V7 and V10 alike).
+      REPRESENTATIONS: where the article introduction qualifies the
+      representations, return one REPRESENTATION_QUALIFICATION proposal
+      per source of exception as a fact of this section, its components
+      the introduction's words with origin INTRO (the source, its
+      window, its exclusions as a LIST), besides inheriting the qualifier
+      into each representation's tree; an extraction that inherits the
+      introduction and returns no qualification fact is incomplete.
+      CONSIDERATION: the sentence that constitutes the exchange fund (the
+      deposit with the Exchange Agent, "(the “Exchange Fund”)") is an
+      EXCHANGE_MECHANICS fact of its own, as each later rule on the
+      fund's use, investment, return and termination is (the stored Opus
+      5 wrote 2.3's six fund facts under EXCHANGE_MECHANICS). The layer
+      rule is unchanged; the instruction says per section, as Opus 5
+      answered the rule; whether Ben wants the two qualification facts
+      once per article instead is the question above. Pinned:
+      tests/product-fact-components-extraction.test.js (the request for
+      a representations section routed to REPRESENTATIONS and
+      CONSIDERATION carries both sentences; the merger section routed to
+      the merger family carries neither). npm run test:active on the
+      second commit: 851 tests, 850 pass, the one failure the known
+      Codex-client final-message test.
       (120) 2026-10-18 19:10 to 19:45 UTC (implementer C), Q5: the limb
       names harvested. `scripts/product/harvest-rep-limbs.js` (library
       `lib/product/rep-limb-harvest.js`, `tests/product-rep-limb-harvest.test.js`)
