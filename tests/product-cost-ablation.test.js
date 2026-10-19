@@ -7,7 +7,7 @@ const test = require('node:test');
 const { buildAgreementStructure } = require('../lib/product/agreement-structure');
 const { LEAN_PROMPT_VERSION, buildAgreementSectionDraft } = require('../lib/product/agreement-draft');
 const { ANTHROPIC_API_REQUEST_PROFILES } = require('../lib/product/product-model-config');
-const { ABLATION_VARIANTS, analysisFromResults, compareFacts, createRecorder, createVariantModel, renderAblationTable, thinkingOf } = require('../lib/product/cost-ablation');
+const { ABLATION_VARIANTS, analysisFromResults, compareFacts, createRecorder, createVariantModel, recordingKey, renderAblationTable, runSectionAblation, thinkingOf } = require('../lib/product/cost-ablation');
 const { indexStoredCalls } = require('../lib/product/run-replay');
 const { substantiveSections } = require('../lib/product/source-context');
 const { conchoSource, createSyntheticConchoModel } = require('./product-phase-2.test.js');
@@ -222,4 +222,49 @@ test('the ablation table renders a stored row per section and a row per variant'
   const table = renderAblationTable(ablations);
   assert.match(table, /\| stored run \| 5\.2 \| 27 \(0\) \|/);
   assert.match(table, /\| format \| 5\.2 \| 26 \(1\) \| 24 \/ 2 \/ 1 of 27 \| 1 \| 1,000 \| 2,000 \| 0 \| 500 \| 60 \| \$0\.15 \| 3 live/);
+});
+
+// Plan finding (187), the first ladder's defects (1) and (2): the recording
+// key carries the model, the effort and the profile; a recording made under
+// another model or effort is a miss; the per-section figures of a rung are
+// that rung's own, never a running sum over the ladder.
+test('two rungs that share a recorder and differ only in model or effort never reuse each other\'s answers, and an older recording without the model is a miss', async () => {
+  const index = indexStoredCalls([], { referenceByNode: new Map() });
+  const recorder = createRecorder();
+  const seen = [];
+  const liveModel = { async complete(input) { seen.push(input); return { provider_id: 'P', model_id: `${seen.length <= 1 ? 'claude-sonnet-5-5' : 'claude-opus-5-5'};effort=high`, raw_request: input.request, raw_response: { content: [{ type: 'text', text: `{"proposals":[],"groups":[],"links":[],"n":${seen.length}}` }], usage: { output_tokens: 10 * seen.length, output_tokens_details: { thinking_tokens: 4 * seen.length } }, model_usage: { m: { costUSD: 0.01 * seen.length } } }, response: { proposals: [], groups: [], links: [], n: seen.length }, input_tokens: 5, output_tokens: 10 * seen.length, cost_microusd: 0, duration_ms: 3 }; } };
+  const extraction = { call_kind: 'EXTRACTION', prompt_version: 'X/V10', request: { instruction: 'extract', source_closure: { section_reference: '1.1' } } };
+  const profile = { name: 'ANCHORS', response_format: 'V10', quote_mode: 'anchors', context_mode: 'inline', stable_blocks: 2 };
+  const sonnet = createVariantModel({ variant: { ...ABLATION_VARIANTS.anchors_sonnet55, name: 'anchors_sonnet55' }, replayIndex: index, nodeByReference: new Map(), liveModel, recorder, selectionFor: () => ({ model: 'claude-sonnet-5-5', effort: 'high' }), profile });
+  const first = await sonnet.complete(extraction);
+  assert.equal(first.response.n, 1);
+  const opus = createVariantModel({ variant: { ...ABLATION_VARIANTS.anchors_opus55, name: 'anchors_opus55' }, replayIndex: index, nodeByReference: new Map(), liveModel, recorder, selectionFor: () => ({ model: 'claude-opus-5-5', effort: 'high' }), profile });
+  const second = await opus.complete(extraction);
+  assert.equal(second.response.n, 2, 'the same request under another model is a live call, not the recording');
+  assert.equal(seen.length, 2);
+  // The same model and effort again: the recording answers.
+  const sonnetAgain = createVariantModel({ variant: { ...ABLATION_VARIANTS.anchors_sonnet55, name: 'anchors_sonnet55' }, replayIndex: index, nodeByReference: new Map(), liveModel, recorder, selectionFor: () => ({ model: 'claude-sonnet-5-5', effort: 'high' }), profile });
+  assert.equal((await sonnetAgain.complete(extraction)).response.n, 1);
+  assert.equal(seen.length, 2);
+  // Medium effort on the same model: a miss, live.
+  const medium = createVariantModel({ variant: { ...ABLATION_VARIANTS.anchors_medium, name: 'anchors_medium' }, replayIndex: index, nodeByReference: new Map(), liveModel, recorder, selectionFor: () => ({ model: 'claude-sonnet-5-5', effort: 'medium' }), profile });
+  await medium.complete(extraction);
+  assert.equal(seen.length, 3);
+  // Another profile with the same words: a miss too.
+  const other = createVariantModel({ variant: { ...ABLATION_VARIANTS.anchors_sonnet55, name: 'x' }, replayIndex: index, nodeByReference: new Map(), liveModel, recorder, selectionFor: () => ({ model: 'claude-sonnet-5-5', effort: 'high' }), profile: { ...profile, name: 'OTHER' } });
+  await other.complete(extraction);
+  assert.equal(seen.length, 4);
+  const entries = recorder.entries();
+  assert.equal(entries.length, 4);
+  assert.ok(entries.every((entry) => typeof entry.recording_key === 'string' && entry.model && entry.effort && entry.profile));
+  assert.notEqual(recordingKey(extraction, { model: 'a', effort: 'high', profile: 'p' }), recordingKey(extraction, { model: 'b', effort: 'high', profile: 'p' }));
+  // An older recording, keyed by the call alone, answers nothing; and an entry whose own model id disagrees with the key is refused.
+  const old = createRecorder([{ call_key: 'legacy', model_id: 'claude-sonnet-5-5;effort=high', raw_response: {} }]);
+  assert.equal(old.entries().length, 0);
+  const forged = createRecorder([{ ...entries[0], model_id: 'claude-haiku-5-5;effort=low' }]);
+  assert.equal(forged.lookup(extraction, { model: 'claude-sonnet-5-5', effort: 'high', profile: entries[0].profile }), null);
+  // Per-rung figures: each model's answered list holds its own entries only.
+  assert.deepEqual(sonnet.answered.map((entry) => entry.output_tokens), [10]);
+  assert.deepEqual(opus.answered.map((entry) => entry.output_tokens), [20]);
+  assert.deepEqual(thinkingOf(opus.answered), { list_cost_microusd: 20000, visible_output_tokens: 12, thinking_tokens: 8, thinking_share: 0.4, thinking_source: 'reported' });
 });

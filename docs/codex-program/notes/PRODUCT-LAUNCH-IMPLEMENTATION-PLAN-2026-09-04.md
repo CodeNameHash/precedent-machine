@@ -8385,6 +8385,77 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       834 pass, the one failure the known Codex-client final-message
       test.
 
+      (187) 2026-10-19 06:45 to 07:40 UTC (implementer E), work package
+      E4: the first ladder's defects (the manager's note
+      docs/codex-program/notes/ABLATION-LADDER-RUN-1-2026-10-19.md,
+      finding (210)), fixed before the second run; nothing run here.
+      (1) The recording key carried the request alone, so anchors,
+      anchors_medium, anchors_opus55 and anchors_opus55_medium all
+      replayed anchors_sonnet55's answers and all_contracts replayed
+      direct_definitions and default. The key is now the call key with
+      the model, the effort and the profile identity
+      (`recordingKey`, lib/product/cost-ablation.js; the entry carries
+      model, effort and profile), a hit is checked against the entry's
+      own model id, an entry of an older recording (call_key alone) is
+      never loaded, and the selection a rung runs each call kind on is
+      the variant's own else the provider's default map (the CLI's V1,
+      the API config's). Pinned: two rungs sharing a recorder that
+      differ in model, in effort or in profile never reuse each other's
+      answers; the same model and effort again reads the recording; a
+      legacy entry answers nothing; an entry whose model id disagrees
+      with the key is refused (tests/product-cost-ablation.test.js).
+      (2) The cost and thinking columns summed the whole recording
+      across the ladder ("thinking 468,406 of 116,466 output", "at
+      list $63.03"): a rung's per-section figures now come from the
+      entries that answered that rung's own calls (`model.answered`,
+      live or from the recording), never the recorder's store; pinned
+      with two rungs in the same test (each rung's answered list holds
+      its own entries, the list cost and thinking share per rung).
+      (3) The one fact trimmed and direct_definitions each lose on
+      5.17: this session cannot read the job's analysis files
+      (/vercel/sandbox/pm-ablation-20261019T040851Z/analysis/
+      trimmed.analysis.json and direct_definitions.analysis.json
+      against stored.analysis.json; the manager is asked for those two
+      pairs through compare-generations for finding (188)), so the
+      mechanism is read from the rows: trimmed's 5.17 row has two
+      unresolved anchors and two held facts, direct_definitions' one
+      held, and both list spans the model never saw whole (a
+      cross-reference one hop away, a transitive definition). A
+      component that cites a listed span with anchors or a quote the
+      span does not hold cannot resolve, and the fact is held. The rule
+      that brings it back, built: `normaliseLeanResponse` takes the
+      listed span ids (`listedClosureSpanIds`, the same rules as the
+      request) and resolves such a component to the whole listed span
+      (its words are the span's), counted as listed_spans_resolved in
+      the section's LEAN_RESPONSE_NORMALISED note; a quote the span
+      does hold stays as written, an OWN span is untouched. Whether
+      that is the fact in question, the second run's rows say (the
+      count will be non-zero on 5.17 and the match 41 of 41 if so).
+      (4) The CLI's stable-block accounting on 5.17: default wrote
+      1,133,208 tokens over five calls, the routed-contracts rows
+      381,943 (anchors_sonnet55), 381,688 (offsets) and 381,138
+      (format); the difference, 751,265 over five calls, is 150,253
+      tokens a call for the all-families block, against the 143,000
+      measured on Concho with the real table shapes (finding (186)).
+      DEFAULT_CLI (the routed contracts, anchors, inline) sends the
+      routed-contracts rows' blocks, so its 5.17 figure by the ledger's
+      method is about 382,000 written, 76,400 a call, a third of
+      default's on the CLI; on the API the same five calls under the
+      all-families default are 150,000 read at $0.20 ($0.15) plus one
+      write a run, about 53,000 fresh a call at $4 ($1.06) and the
+      113,610 output at $20 ($2.27), about $3.50 for 5.17 against the
+      stored $4.85. Also read from the table, for the record: Haiku's
+      routing differed from the stored Opus routing on 3.19
+      (MATERIAL_CONTRACTS added, MAE_DEFINITION dropped) and 5.17
+      (CONSIDERATION dropped) and the facts still matched 7 of 7 and
+      41 of 41, because the compiler's widening and the extraction's
+      coverage carry the families the words name; the second run's
+      routing_haiku row measures that on its own. Tests:
+      tests/product-cost-ablation.test.js (6),
+      tests/product-fresh-sheet-experiments.test.js (7),
+      tests/product-lean-request-profile.test.js. npm run test:active:
+      see the push.
+
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
 - [x] Take a database backup and restore it to a separate environment.

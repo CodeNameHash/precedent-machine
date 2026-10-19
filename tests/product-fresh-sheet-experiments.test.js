@@ -6,7 +6,7 @@ const assert = require('node:assert/strict');
 const test = require('node:test');
 const { buildAgreementStructure } = require('../lib/product/agreement-structure');
 const {
-  FACT_BUDGET_BYTES_PER_FACT, buildAgreementSectionDraft, definedTermOf, deterministicRoutingDecision, directDefinitionSpanIds, factBudgetFor,
+  FACT_BUDGET_BYTES_PER_FACT, buildAgreementSectionDraft, definedTermOf, deterministicRoutingDecision, directDefinitionSpanIds, factBudgetFor, listedClosureSpanIds, normaliseLeanResponse,
 } = require('../lib/product/agreement-draft');
 const { ABLATION_VARIANTS, variantAvailability } = require('../lib/product/cost-ablation');
 const { CLAUDE_CLI_PROVIDER_ID, REQUEST_PROFILES } = require('../lib/product/product-model-config');
@@ -158,4 +158,44 @@ test('the fresh-sheet rungs are on the ladder and the CLI can run the determinis
   assert.equal(profileForProvider(ABLATION_VARIANTS.default.profile, CLAUDE_CLI_PROVIDER_ID).contracts_scope, 'routed');
   assert.equal(profileForProvider(ABLATION_VARIANTS.default.profile, 'ANTHROPIC_API').contracts_scope, 'all');
   assert.match(variantAvailability(ABLATION_VARIANTS.default, CLAUDE_CLI_PROVIDER_ID).notes.join(' '), /routed families' contracts are sent/);
+});
+
+// Plan finding (187): a component that cites a span the request listed
+// without its text (a transitive definition under direct_definitions, a
+// cross-reference under trimmed) and whose anchors or quote the span does
+// not hold resolves to the whole span, never to a hold; the count is in
+// the section's note.
+test('a component on a listed span resolves to the span when its words cannot, and the listed set follows the same rules as the request', () => {
+  const text = 'Section 5.17. The Company shall comply with Section 8.3 absent a Material Adverse Effect. "Material Adverse Effect" means any event that is materially adverse to the Company.';
+  const at = (needle) => Buffer.byteLength(text.slice(0, text.indexOf(needle)), 'utf8');
+  const own = { span_id: 's1', structure_node_id: 'n1', kind: 'OPERATIVE', start_byte: 0, end_byte: at('"Material'), exact_text: text.slice(0, text.indexOf('"Material')) };
+  const def = { span_id: 'd1', structure_node_id: 'n2', kind: 'DEFINITION', start_byte: at('"Material'), end_byte: Buffer.byteLength(text, 'utf8'), exact_text: text.slice(text.indexOf('"Material')) };
+  const spansById = new Map([[own.span_id, own], [def.span_id, def]]);
+  const sourceDocument = { canonical_text: text };
+  const answer = { proposals: [{ client_ref: 'p', components: [
+    { ref: 'a', kind: 'OPERATION', quote: 'shall comply with', source_span_id: 's1', occurrence: 0, origin: 'OWN', children: [] },
+    { ref: 'b', kind: 'DEFINED_TERM', quote_from: 'means any event', quote_to: 'adverse to everyone', source_span_id: 'd1', occurrence: 0, origin: 'DEFINITION', children: [] },
+    { ref: 'c', kind: 'QUALIFIER', quote: 'words the span does not hold', source_span_id: 'd1', occurrence: 0, origin: 'DEFINITION', children: [] },
+    { ref: 'd', kind: 'QUALIFIER', quote: 'materially adverse', source_span_id: 'd1', occurrence: 0, origin: 'DEFINITION', children: [] },
+  ] }], groups: [], links: [] };
+  const { response, stats } = normaliseLeanResponse(answer, { anchors: true, sourceDocument, spansById, listedSpanIds: new Set(['d1']) });
+  const [a, b, c, d] = response.proposals[0].components;
+  assert.equal(a.quote, 'shall comply with', 'an own-span component is untouched');
+  assert.equal(b.quote, def.exact_text, 'anchors the listed span does not hold: the whole span');
+  assert.equal(b.quote_resolved_from, 'listed_span');
+  assert.equal(c.quote, def.exact_text, 'a quote the listed span does not hold: the whole span');
+  assert.equal(d.quote, 'materially adverse', 'a quote the listed span holds stays');
+  assert.equal(stats.listed_spans_resolved, 2);
+  assert.equal(stats.anchors_unresolved, 0);
+  // Without the listed set the same answer loses component b (unresolved anchors) and c is left for the validator to hold.
+  const plain = normaliseLeanResponse(answer, { anchors: true, sourceDocument, spansById });
+  assert.equal(plain.response.proposals[0].components[1].quote, undefined);
+  assert.equal(plain.stats.anchors_unresolved, 1);
+  // The listed set follows the request's rules.
+  const closureForModel = { operative: [own], chapeau: [], full_section: own, definitions: [def, { span_id: 'd2', structure_node_id: 'n3', kind: 'DEFINITION', start_byte: 0, end_byte: 1, exact_text: '"Person" means anyone' }], cross_references: [{ span_id: 'x1', structure_node_id: 'n83', kind: 'CROSS_REFERENCE', start_byte: 0, end_byte: 1, exact_text: 'Section 8.3 text' }, { span_id: 'x2', structure_node_id: 'n99', kind: 'CROSS_REFERENCE', start_byte: 0, end_byte: 1, exact_text: 'Section 9.9 text' }] };
+  const nodesById = new Map([['n83', { reference: '8.3' }], ['n99', { reference: '9.9' }]]);
+  assert.deepEqual([...listedClosureSpanIds(closureForModel, { cachedAgreement: false, nodesById })], []);
+  assert.deepEqual([...listedClosureSpanIds(closureForModel, { cachedAgreement: false, directDefinitions: true, nodesById })], ['d2'], 'the section names Material Adverse Effect, not Person');
+  assert.deepEqual([...listedClosureSpanIds(closureForModel, { cachedAgreement: false, trimmed: true, nodesById })], ['x2'], 'the section names Section 8.3, not 9.9');
+  assert.deepEqual([...listedClosureSpanIds(closureForModel, { cachedAgreement: true, nodesById })].sort(), ['d1', 'd2', 'x1', 'x2']);
 });

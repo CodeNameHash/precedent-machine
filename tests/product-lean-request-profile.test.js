@@ -165,7 +165,7 @@ test('a lean answer is read back into the compiler\'s shape: ids restored, ancho
     { quote: 'Takeover Proposal', source_span_id: 'a'.repeat(64), occurrence: 0 },
   ], 'the OWN components with words are the evidence; the DEFINITION component is not');
   assert.deepEqual(proposal.roles, {});
-  assert.deepEqual(stats, { aliases_mapped: 6, anchors_resolved: 1, anchors_unresolved: 1, offsets_resolved: 0, offsets_unresolved: 0, evidence_derived: 1, roles_defaulted: 1 });
+  assert.deepEqual(stats, { aliases_mapped: 6, anchors_resolved: 1, anchors_unresolved: 1, offsets_resolved: 0, offsets_unresolved: 0, listed_spans_resolved: 0, evidence_derived: 1, roles_defaulted: 1 });
   assert.equal(answer.proposals[0].components[1].quote, undefined, 'the answer as the model wrote it is not changed');
 });
 
