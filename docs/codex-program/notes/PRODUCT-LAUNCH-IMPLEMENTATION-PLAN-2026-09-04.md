@@ -4853,6 +4853,42 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       its own dead claims); a second gap found and fixed on the way
       (work package 15's part failure never reached the section's
       history on the hosted path, so the re-split by part of (84) and
+      (179) 2026-10-19 04:10 UTC: implementer E's (183), (184) and (185)
+      merged (head 29e22ce5; the active suite in the next finding).
+      Read: (183) the ablation job through the deployment's wake path
+      (POST /api/product/ablation, the internal bearer alone, the
+      experiments sandbox pm-codex-preview-worker-3 outside the run
+      pool, the launcher dumping the snapshot on the sandbox and
+      writing under /vercel/sandbox/pm-ablation-<timestamp>/, nothing
+      to the product tables; the CLI path measuring what the CLI
+      reports and listing the rungs it cannot express rather than
+      faking them). (184) the stack that needs no proof is the default
+      request profile for every new run on both providers (span
+      aliases, anchored quotes, two stable blocks, eight section loops
+      with a split section's parts four at a time, Haiku 5.5 routing
+      and residual, Opus 5.5 extraction on the API where the reference
+      lists it at $4 and $20; Opus 5 on the CLI until the ablation's
+      rung confirms 5.5 there), behind the model-config identity, the
+      paused and finished runs keeping theirs; NCS generation 6 on it
+      projected by the ledger's method at about $72 and 70 wall minutes
+      against $145.68 and 439. (185) the fresh sheet: eleven
+      assumptions, five built behind flags (deterministic routing where
+      the headings and anchoring terms decide, routing calls 118 to
+      about 40; direct definitions, 16.36 MB to about 7 MB; the fact
+      budget; Sonnet 5.5 writing the facts as a rung; the default rung)
+      and the rest designed with their cost (the residual skip, the
+      statement from the components, NDJSON facts, the Batch API's
+      waves, section batching). Stacked by E: the built rungs that
+      hold take $72 to about $55, the model tier and the Batch API to
+      about $12, Ben's 10x, the facts judged by compare-generations at
+      every step. One structural limit stated: product_section_routings
+      needs its model_call_id before a hosted run can take
+      deterministic routing (a migration, implementer D's). Accepted.
+      Next: pm-codex-preview-worker-3 created for the CLI provider and
+      the ladder started on NCS generation 5's 3.19, 5.2 and 5.17 in
+      E's order (default, deterministic_routing, direct_definitions,
+      fact_budget, anchors_sonnet55, offsets, trimmed) once the
+      deployment carries (183).
       (88) never fired there). Migration 20261019003000 applied to the
       preview branch at 03:33 UTC; the pool sandboxes are updated to
       head after this push, while no worker holds their lock. (201)
