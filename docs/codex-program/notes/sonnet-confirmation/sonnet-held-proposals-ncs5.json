@@ -1,5 +1,5 @@
 {
- "note": "Sonnet 5.5 held proposals (INVALID_FACT_COMPONENTS) from job pm-ablation-20261019T122404Z, with their components as written; six VALID 4.1 proposals as a sample; the issues. Evidence for plan finding (216) and work package 22.",
+ "note": "Sonnet 5.5 held proposals (INVALID_FACT_COMPONENTS) from job pm-ablation-20261019T122404Z, with their components as written; six VALID 4.1 proposals as a sample; the issues. Evidence for plan finding (216) and work package 22. The 5.10 and 8.3 held proposals added at A s request (finding (203)). 3.2 new facts added (new_facts_3_2).",
  "sections": {
   "3.2": "21c7c3d3c7712a8d76b40d173cb4f40393553124b4344eedfea60ec74ea922c1",
   "3.1": "230912891860832d48acf866a3eb3646fe9e09a77581a2e52dc46564ad65d967",
@@ -1596,6 +1596,350 @@
      "children": []
     }
    ]
+  },
+  {
+   "section": "8.3",
+   "proposal_id": "a7864ed9cbacf9c68b85acd888d77d3d2859f7e716f551657fd30a1546f22a38",
+   "family_key": "KEY_DEFINED_TERMS",
+   "subtype_key": "OTHER_DEFINED_TERM",
+   "statement": "For purposes of this Agreement, “Permitted Liens” means (i) Liens for Taxes (A) not yet delinquent or (B) that are being contested in good faith by appropriate proceedings and for which adequate reserves have been established in accordance with GAAP, (ii) mechanics’, workmen’s, repairmen’s, warehousemen’s and carriers’ Liens arising in the ordinary course of business of the Company or such Subsidiaries consistent with past practice, (iii) Liens arising in the ordinary course of business by operation of law with respect to any liability that is not yet due and payable or that is being contested in good faith by appropriate proceedings and for which adequate reserves have been established in accordance with GAAP, (iv) in the case of the Owned Real Property, any such matters properly filed of public record against the applicable real property that do not, individually or in the aggregate, materially impair the Company’s or any of its Subsidiaries’, as applicable, continued ownership, use and operation, as currently conducted, of the property to which they relate, (v) zoning, planning and other similar limitations and restrictions imposed by Governmental Entities to regulate any real property that are not violated by the use and operation of such real property, (vi) the rights of licensors and licensees under software licenses executed in the ordinary course of business, (vii) Liens contained in the organizational documents of the Company or any of its Subsidiaries, (viii) Liens affecting a landlord’s interest in property leased to the Company or any of its Subsidiaries so long as such liens do not breach and would not reasonably be expected to breach a customary covenant of quiet enjoyment (due to the existence of a non-disturbance agreement or other arrangement in which the tenant’s interest is recognized and protected), (ix) rights-of-way, surface leases, crossing rights or similar matters of record granted in the ordinary course of business that do not impair the Company’s or any of its Subsidiaries, as applicable, activities currently conducted thereon, (x) Liens disclosed on Section 8.3(dd)(x) of the Company Disclosure Letter and (xi) Liens arising under the Credit Agreement.",
+   "components": [
+    {
+     "component_id": "4d008cb65f0890ac1924f0fbde4c2ed4ad1dc49b64389fcaee4d70e3e20f9ceb",
+     "kind": "TERM",
+     "label": "Permitted Liens defined term",
+     "text": "“Permitted Liens”",
+     "source_span_id": "b78435c143b61dbcd4207fbd810d01794174668a80e06bf020e9aecbc045a446",
+     "start_byte": 283883,
+     "end_byte": 283904,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "c5a988a6e3d80358031c933cb715150660e97175fc47c18178f288c5f78917fa",
+     "kind": "OPERATION",
+     "label": "Definition operation",
+     "text": "means",
+     "source_span_id": "1ffef846c4e28cd661bf0b9b47e6c6cf6418fd701e376a5b3d86a5a5aed70014",
+     "start_byte": 283905,
+     "end_byte": 283910,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "8d157c81bba405b13807ccc444af1974808bc6011ddd8bbc73d0adfacfbcd0dd",
+     "kind": "LIST",
+     "label": "Permitted Lien categories",
+     "text": "(i) Liens for Taxes (A) not yet delinquent or (B) that are being contested in good faith by appropriate proceedings and for which adequate reserves have been established in accordance with GAAP, (ii) mechanics’, workmen’s, repairmen’s, warehousemen’s and carriers’ Liens arising in the ordinary course of business of the Company or such Subsidiaries consistent with past practice, (iii) Liens arising in the ordinary course of business by operation of law with respect to any liability that is not yet due and payable or that is being contested in good faith by appropriate proceedings and for which adequate reserves have been established in accordance with GAAP, (iv) in the case of the\n73\nOwned Real Property, any such matters properly filed of public record against the applicable real property that do not, individually or in the aggregate, materially impair the Company’s or any of its Subsidiaries’, as applicable, continued ownership, use and operation, as currently conducted, of the property to which they relate, (v) zoning, planning and other similar limitations and restrictions imposed by Governmental Entities to regulate any real property that are not violated by the use and operation of such real property, (vi) the rights of licensors and licensees under software licenses executed in the ordinary course of business, (vii) Liens contained in the organizational documents of the Company or any of its Subsidiaries, (viii) Liens affecting a landlord’s interest in property leased to the Company or any of its Subsidiaries so long as such liens do not breach and would not reasonably be expected to breach a customary covenant of quiet enjoyment (due to the existence of a non-disturbance agreement or other arrangement in which the tenant’s interest is recognized and protected), (ix) rights-of-way, surface leases, crossing rights or similar matters of record granted in the ordinary course of business that do not impair the Company’s or any of its Subsidiaries, as applicable, activities currently conducted thereon, (x) Liens disclosed on Section 8.3(dd)(x) of the Company Disclosure Letter and (xi) Liens arising under the Credit Agreement",
+     "source_span_id": "75d724b55e489952955f51b4b72944ed0a458d601db5993c9a3adc31d9e86646",
+     "start_byte": 283911,
+     "end_byte": 286093,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": [
+      {
+       "component_id": "dd2f68f4ee0328f70422d631a948586b1a0118902f63858512943d41b2b09e98",
+       "kind": "LIST_ELEMENT",
+       "label": "Liens for Taxes not delinquent or contested",
+       "text": "Liens for Taxes (A) not yet delinquent or (B) that are being contested in good faith by appropriate proceedings and for which adequate reserves have been established in accordance with GAAP",
+       "source_span_id": "268c40b2385f75740950c7bab1995f50b8c3874aad327b1fb0c2c5324af80ed8",
+       "start_byte": 283915,
+       "end_byte": 284104,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      },
+      {
+       "component_id": "6794f78941fa5b28589a5550831fdf01c62d43fd46736077e988773f4c0b27d2",
+       "kind": "LIST_ELEMENT",
+       "label": "Mechanics and similar Liens in ordinary course",
+       "text": "mechanics’, workmen’s, repairmen’s, warehousemen’s and carriers’ Liens arising in the ordinary course of business of the Company or such Subsidiaries consistent with past practice",
+       "source_span_id": "fcd6932d6019227e52ab3d571d14c431e6ff6226ffd851bb5d74c89efff68c0f",
+       "start_byte": 284111,
+       "end_byte": 284300,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      },
+      {
+       "component_id": "8587363f68beac792493f3fb5e4d58d119e3a1cc3c981729d043792d161709a6",
+       "kind": "LIST_ELEMENT",
+       "label": "Ordinary course Liens by operation of law",
+       "text": "Liens arising in the ordinary course of business by operation of law with respect to any liability that is not yet due and payable or that is being contested in good faith by appropriate proceedings and for which adequate reserves have been established in accordance with GAAP",
+       "source_span_id": "258f554202efbe89dbfcdcfa39585a94228ea4a6db069cf6524235b3bef5d330",
+       "start_byte": 284308,
+       "end_byte": 284584,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      },
+      {
+       "component_id": "08e48655e048d5adb935c8c1ba209b2e8db4471789d7c96c1253449a86496af3",
+       "kind": "LIST_ELEMENT",
+       "label": "Public record matters on Owned Real Property",
+       "text": "any such matters properly filed of public record against the applicable real property that do not, individually or in the aggregate, materially impair the Company’s or any of its Subsidiaries’, as applicable, continued ownership, use and operation, as currently conducted, of the property to which they relate",
+       "source_span_id": "7942edcd2af70a92ba948b0fec136e47e421e71241cf3d8d8a46bdac7284c8a8",
+       "start_byte": 284634,
+       "end_byte": 284947,
+       "origin": "OWN",
+       "gap_before": true,
+       "children": [
+        {
+         "component_id": "f9c275e5139e9f7c09e165bb39809db1a9352ca16c1e8a9fcb910e5ee6ba8d51",
+         "kind": "QUALIFIER",
+         "label": "Owned Real Property only",
+         "text": "Owned Real Property",
+         "source_span_id": "450cf261af30f1459e6f6f10b1d1e4dc2a300b29fe30f2d89e1746480e4bb193",
+         "start_byte": 284613,
+         "end_byte": 284632,
+         "origin": "OWN",
+         "gap_before": false,
+         "children": []
+        }
+       ]
+      },
+      {
+       "component_id": "270c4ed13316c6562366bfc1bc39a724b6275ee90ad6cd2cdd09918b7a586acd",
+       "kind": "LIST_ELEMENT",
+       "label": "Zoning and governmental restrictions not violated",
+       "text": "zoning, planning and other similar limitations and restrictions imposed by Governmental Entities to regulate any real property that are not violated by the use and operation of such real property",
+       "source_span_id": "2e193020ce2e25c9c81b644cb7a24a03877f5b5a4e3e36f480d20a01321f9d26",
+       "start_byte": 284953,
+       "end_byte": 285148,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      },
+      {
+       "component_id": "0e6c726c08682daa6e91a409691947a0a5b7aff9e2b5cde52cdd115dd96d2e89",
+       "kind": "LIST_ELEMENT",
+       "label": "Software licence rights of licensors and licensees",
+       "text": "the rights of licensors and licensees under software licenses executed in the ordinary course of business",
+       "source_span_id": "728cc7d55c2eb13310198e532f072cd675cdd488f32bec6fc2ecb2a1eafbc2f8",
+       "start_byte": 285155,
+       "end_byte": 285260,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      },
+      {
+       "component_id": "0ccefa55d10616155c23d013a480178f45d58b77c3a498c2ed3e02737ffa6714",
+       "kind": "LIST_ELEMENT",
+       "label": "Liens in organizational documents",
+       "text": "Liens contained in the organizational documents of the Company or any of its Subsidiaries",
+       "source_span_id": "3da71e5dbf893561c1d4e6fccb8c9c992c6e5c710f6cb57cdc97a33deba32579",
+       "start_byte": 285268,
+       "end_byte": 285357,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      },
+      {
+       "component_id": "105829df1591336cd34792245c55eb90d873126e55e7904e73bd780dbb80655d",
+       "kind": "LIST_ELEMENT",
+       "label": "Liens affecting landlord interest",
+       "text": "Liens affecting a landlord’s interest in property leased to the Company or any of its Subsidiaries so long as such liens do not breach and would not reasonably be expected to breach a customary covenant of quiet enjoyment (due to the existence of a non-disturbance agreement or other arrangement in which the tenant’s interest is recognized and protected",
+       "source_span_id": "db29cef45a1bba3d5e434881969a2850ed35fdc4fbe38ee183c99bc23ae707ce",
+       "start_byte": 285366,
+       "end_byte": 285724,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": [
+        {
+         "component_id": "98746cac5616fe4970fac5cdc2c82a542a742687c790461bdac495c8d2b81a60",
+         "kind": "CONDITION",
+         "label": "No breach of quiet enjoyment covenant",
+         "text": "so long as such liens do not breach and would not reasonably be expected to breach a customary covenant of quiet enjoyment",
+         "source_span_id": "ffd5c6c092ed000b6a2bf5dd0884a07d726fc29ab8404945dbc6e10640ebeec0",
+         "start_byte": 285467,
+         "end_byte": 285589,
+         "origin": "OWN",
+         "gap_before": false,
+         "children": []
+        }
+       ]
+      },
+      {
+       "component_id": "ee6d055a154f7e6bb8eec49514b487be712b4dc059fcbaa6c93b422aa8160000",
+       "kind": "LIST_ELEMENT",
+       "label": "Rights-of-way and similar matters of record",
+       "text": "rights-of-way, surface leases, crossing rights or similar matters of record granted in the ordinary course of business that do not impair the Company’s or any of its Subsidiaries, as applicable, activities currently conducted thereon",
+       "source_span_id": "d34cb68af4e9ab27b7d1b476a2bedceca762aec10cdaeae6be8b449d04870e7d",
+       "start_byte": 285732,
+       "end_byte": 285967,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      },
+      {
+       "component_id": "4afc9e4af9bcd72a6d6924ec7e9cefbd006ed1548823f8ca0ed39a304340fedf",
+       "kind": "LIST_ELEMENT",
+       "label": "Liens on Disclosure Letter",
+       "text": "Liens disclosed on Section 8.3(dd)(x) of the Company Disclosure Letter",
+       "source_span_id": "7838da5bb813492f03b856378765252e12ca4c39737ee03eb1674fe84dfdbc06",
+       "start_byte": 285973,
+       "end_byte": 286043,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      },
+      {
+       "component_id": "4096b390648207c13cd11330fe741cbea187476a284783fdf75ddf0d7efc58b2",
+       "kind": "LIST_ELEMENT",
+       "label": "Credit Agreement Liens",
+       "text": "Liens arising under the Credit Agreement",
+       "source_span_id": "dd669a956c40fb0868ced8f7470f38faf55cfe621b79df4d24e100252df0c0c7",
+       "start_byte": 286053,
+       "end_byte": 286093,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      }
+     ]
+    },
+    {
+     "component_id": "55fc3ea9eb0d37fcb19ccc8dd0b94bc2aedb0ee9bf1eaea8fdb188fa81db8049",
+     "kind": "CROSS_REFERENCE",
+     "label": "Section governing definitions",
+     "text": "For purposes of this Agreement",
+     "source_span_id": "ef48a7b118d5173f6cb34c9dd3d20c92c6b64ca8a2005ff830fa1813b9d34f5d",
+     "start_byte": 275782,
+     "end_byte": 275812,
+     "origin": "CHAPEAU",
+     "origin_structure_node_id": "1dc2e8bd9e8920213c1fad9e008761332efb8659aae7643d5161421889691fd5",
+     "gap_before": false,
+     "resolves_to": null,
+     "children": []
+    }
+   ]
+  },
+  {
+   "section": "5.10",
+   "proposal_id": "7c7a8854ab076bed7f23865ad631ba6432f4a484d42642dcb1be50b86809f647",
+   "family_key": "GENERAL_COVENANTS",
+   "subtype_key": "GENERAL_NOTIFICATION",
+   "statement": "The Company and Parent shall promptly notify each other of any change, condition or event that results or would reasonably be expected to result in any failure of such Party to satisfy any condition set forth in Article VI.",
+   "components": [
+    {
+     "component_id": "235e180516533f239e8f3da5524d98559ef17fbf3ce2d000e25fe603f4978f93",
+     "kind": "ACTOR",
+     "label": "Notifying parties",
+     "text": "The Company and Parent",
+     "source_span_id": "ce12db8664076b154db1bbe8953a5a849c07d8e190feb9638874cd74a9f1045b",
+     "start_byte": 208653,
+     "end_byte": 208675,
+     "origin": "CHAPEAU",
+     "origin_structure_node_id": "d197493c1c28b2dcfc401c67aa3ec14deba3fdf3741d8d3635200fa34a20a187",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "fa131ebe8677cf731cc9a7608a7d04be1dffe56fd94f3b2c81bc610b572ba0a3",
+     "kind": "EFFORTS_STANDARD",
+     "label": "Promptness obligation",
+     "text": "shall promptly",
+     "source_span_id": "c01dd73fcf8f7abcf689a7699c4abbdd2fa39681e88fb22b09020478e6611586",
+     "start_byte": 208676,
+     "end_byte": 208690,
+     "origin": "CHAPEAU",
+     "origin_structure_node_id": "d197493c1c28b2dcfc401c67aa3ec14deba3fdf3741d8d3635200fa34a20a187",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "04b3b7d28066aca3db17cba2fb66ec1b594a32478e4d2a92e662fb16dc8b3a62",
+     "kind": "OPERATION",
+     "label": "Mutual notification",
+     "text": "notify each other of",
+     "source_span_id": "99a21a290b0ab1bf565258e0b7d16ce82a25e644cea3401888c89570adbc163c",
+     "start_byte": 208691,
+     "end_byte": 208711,
+     "origin": "CHAPEAU",
+     "origin_structure_node_id": "d197493c1c28b2dcfc401c67aa3ec14deba3fdf3741d8d3635200fa34a20a187",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "41a49e8b9506f38ef9a619bdaf4cd557d9d148457370881028749f083fdd97e6",
+     "kind": "LITANY",
+     "label": "Change, condition or event",
+     "text": "any change, condition or event",
+     "source_span_id": "d6144e965802841c6f74681de294fc511ad6c5ab6d13df17a67a71ca7f4dff5e",
+     "start_byte": 209285,
+     "end_byte": 209315,
+     "origin": "OWN",
+     "gap_before": true,
+     "members": [
+      "change",
+      "condition",
+      "event"
+     ],
+     "children": []
+    },
+    {
+     "component_id": "f21fccab60905f42549c861775ecf35751175f85439adc88762b7189992abe92",
+     "kind": "STANDARD",
+     "label": "Results or reasonably expected",
+     "text": "results or would reasonably be expected",
+     "source_span_id": "fea8aeebc2d17d5e820945ec3956949d03678b7f8d1eed8bc6a131c52979cdc9",
+     "start_byte": 209321,
+     "end_byte": 209360,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "7e8079fde3df318104b5c302ade02f410c6d72bedd335260629cc7fcb831c657",
+     "kind": "QUALIFIER",
+     "label": "Resulting failure",
+     "text": "to result in any failure",
+     "source_span_id": "59327d72106aeff39548cca350ff78e66553c73703b7d9a4590f267c8edf2f8d",
+     "start_byte": 209361,
+     "end_byte": 209385,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "b9eaf51b7254192722a290dc6c007a2fb9ca6510ee671ba7aee875cf46f215f7",
+     "kind": "QUALIFIER",
+     "label": "Failure of such Party",
+     "text": "of such Party",
+     "source_span_id": "f3dd2393db09a114d00e67e9c17c6c9261c8f7172a27d16ac97264573e6c42c2",
+     "start_byte": 209386,
+     "end_byte": 209399,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "0212faa22de15a058b4151f3a219fe3ed26387831af3b5664b74c8c806b54e51",
+     "kind": "CONDITION",
+     "label": "Condition to be satisfied",
+     "text": "to satisfy any condition",
+     "source_span_id": "0792d7fea800620729047bc387321b06f2d8cbd857645e1433839377910da84c",
+     "start_byte": 209400,
+     "end_byte": 209424,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "ad5b36f1ea029b25d19c5b1bdd24e630391423038bd70fb16ef413e28872ef3f",
+     "kind": "CROSS_REFERENCE",
+     "label": "Article VI conditions",
+     "text": "set forth in Article VI",
+     "source_span_id": "8ee4e42d6fee534643ddee2717e3f6160e9e5b37de98843bc223d87b78f87366",
+     "start_byte": 209425,
+     "end_byte": 209448,
+     "origin": "OWN",
+     "gap_before": false,
+     "resolves_to": null,
+     "children": []
+    }
+   ]
   }
  ],
  "valid_sample": [
@@ -2503,6 +2847,281 @@
    ],
    "state": "OPEN",
    "issue_id": "3817e2dae7319ebd6d0c3f96d3bd003dd410e0473c869cfcf81591b68a273a2e"
+  }
+ ],
+ "new_facts_3_2": [
+  {
+   "section": "3.2",
+   "new_fact": true,
+   "proposal_id": "0b2dd370d765b4b4c18a0feb640d74c101424439edd75fd20b08f756bf0a3e16",
+   "family_key": "CAPITALISATION",
+   "subtype_key": "ISSUED_AND_OUTSTANDING",
+   "statement": "The Company represents and warrants to Parent and Merger Sub that, as of 5:00 p.m. Central Time on May 29, 2026 (the Company Measurement Time), no shares of Company Preferred Stock were issued and outstanding.",
+   "components": [
+    {
+     "component_id": "ba8e86e78fdcd4d4fad1225a22ee73689acccecab0cc98a41f22505f415d56cb",
+     "kind": "OPERATION",
+     "label": "Company representation and warranty",
+     "text": "the Company represents and warrants",
+     "source_span_id": "0719e13bf92325eebbca3ee861f9a26de55d93cc8250bcab907bba90a686e2b9",
+     "start_byte": 55147,
+     "end_byte": 55182,
+     "origin": "CHAPEAU",
+     "origin_structure_node_id": "aa1c037a90304b937d59f8e6f2b50eb41a1e2a7890338178da8ec9dd35072e6e",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "b80eab204a6ceafe2e43348b352e153e8418a5d25a4fd1226a2b41b953bdb294",
+     "kind": "TRIGGER",
+     "label": "Measurement time",
+     "text": "As of 5:00 p.m. Central Time on May 29, 2026",
+     "source_span_id": "1f7d459599e640627e276c68d1d5ae0e030390d23a56bc474c762072e8a95e65",
+     "start_byte": 60582,
+     "end_byte": 60626,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": [
+      {
+       "component_id": "838d96da22a8dfb411b5c9448d83734c02c4bde1d77f27c6acd2b26622f90f95",
+       "kind": "DATE",
+       "label": "Measurement date",
+       "text": "May 29, 2026",
+       "source_span_id": "50f937d0cf481279fb81548c6cc8226aaa4c541156d3f33476e71b9f13545ea2",
+       "start_byte": 60614,
+       "end_byte": 60626,
+       "origin": "OWN",
+       "gap_before": false,
+       "value": {
+        "canonical": "2026-05-29",
+        "unit": "ISO_DATE"
+       },
+       "children": []
+      }
+     ]
+    },
+    {
+     "component_id": "5bd80629d4269745876ab10ea6ecbc7e7cd99385ece5c5dfe5c9038005b4f7c5",
+     "kind": "AMOUNT",
+     "label": "No shares",
+     "text": "no shares",
+     "source_span_id": "a5144f7266cad6723cb3fb397c9d5d2a578fdc87f9ca07eec723e0e5001967f4",
+     "start_byte": 60810,
+     "end_byte": 60819,
+     "origin": "OWN",
+     "gap_before": true,
+     "value": {
+      "canonical": 0,
+      "unit": "COUNT"
+     },
+     "children": []
+    },
+    {
+     "component_id": "4372b05f702ca96a3082ac7bad7a1ad52ce4aa19918f012877432316200e8935",
+     "kind": "OBJECT",
+     "label": "Company Preferred Stock",
+     "text": "Company Preferred Stock",
+     "source_span_id": "6f3150727e1f86cc54cf8691a428518c08ac7ecbde8e8fc2f5c04e987c8da005",
+     "start_byte": 60823,
+     "end_byte": 60846,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "e9beb89579345669424945f7148ae577f1a77f2152476ae195ed0c0be258a34b",
+     "kind": "OPERATION",
+     "label": "Were issued and outstanding",
+     "text": "were issued and outstanding",
+     "source_span_id": "37f39b250ea1ff290a2aada671800a22d607b608e1f5138b3d1e963177072cdd",
+     "start_byte": 60847,
+     "end_byte": 60874,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    }
+   ]
+  },
+  {
+   "section": "3.2",
+   "new_fact": true,
+   "proposal_id": "2f6a0d0481fdd35d03ff5f58f66fdb6cb56f84120b496f6e51aef6a1b07a2bbf",
+   "family_key": "CAPITALISATION",
+   "subtype_key": "VALID_ISSUANCE_STATUS",
+   "statement": "The Company represents and warrants to Parent and Merger Sub that all shares reserved for issuance will be, when issued, duly authorized, validly issued, fully paid and nonassessable and not subject to or issued in violation of any purchase option, call option, right of first refusal, preemptive right, subscription right or any similar right under any provision of the DGCL, the Company Charter, the Company Bylaws or any Contract to which the Company is a party or is otherwise bound.",
+   "components": [
+    {
+     "component_id": "1a03c5763a75eff3d6ed7edbf5b795c3e12deef816d591d4c4021816739a5d71",
+     "kind": "OPERATION",
+     "label": "Company representation and warranty",
+     "text": "the Company represents and warrants",
+     "source_span_id": "0719e13bf92325eebbca3ee861f9a26de55d93cc8250bcab907bba90a686e2b9",
+     "start_byte": 55147,
+     "end_byte": 55182,
+     "origin": "CHAPEAU",
+     "origin_structure_node_id": "aa1c037a90304b937d59f8e6f2b50eb41a1e2a7890338178da8ec9dd35072e6e",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "1eddd44b5b278761869376096214e85165ca14ba93840fbd1d38bdff1ad5d78f",
+     "kind": "ACTOR",
+     "label": "Shares reserved for issuance",
+     "text": "all shares reserved for issuance",
+     "source_span_id": "e27f2f57549144deaf45dbf02bc6ea31984cff95fcfb9047e94bca66ff278dc0",
+     "start_byte": 61430,
+     "end_byte": 61462,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "5bdf5d5af3b3d40b8812df80bd97d18d0a9366b2d84400556f63b97e31cbc4c0",
+     "kind": "OPERATION",
+     "label": "Will be, when issued",
+     "text": "will be, when issued",
+     "source_span_id": "88bffce5d3028fd6c883917d1f46841d43211b0ace900394af7dd053ea01cf53",
+     "start_byte": 61463,
+     "end_byte": 61483,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "1930e4df13615914f2e01b99f6dac7d1a5a7657c60ea9739852489547b695ba3",
+     "kind": "LITANY",
+     "label": "Valid issuance status",
+     "text": "duly authorized, validly issued, fully paid and nonassessable",
+     "source_span_id": "da044fcbede3fdc6a83d15d2a4348e0387463fc60544d1cc93f51011ad490e77",
+     "start_byte": 61485,
+     "end_byte": 61546,
+     "origin": "OWN",
+     "gap_before": false,
+     "members": [
+      "duly authorized",
+      "validly issued",
+      "fully paid",
+      "nonassessable"
+     ],
+     "children": []
+    },
+    {
+     "component_id": "3045e7f5a031d05b0ebe9bdc704ac802d0e0f1fdead4d4a710047ba0078ec682",
+     "kind": "QUALIFIER",
+     "label": "Not subject to or issued in violation of purchase options and similar rights",
+     "text": "not subject to or issued in violation of any purchase option, call option, right of first refusal, preemptive right, subscription right or any similar right under any provision of the DGCL, the Company Charter, the Company Bylaws or any Contract to which the Company is a party or is otherwise bound",
+     "source_span_id": "bf820e38f31403b7585fea2b6801b9eb1b055f4703664906a82754819545de51",
+     "start_byte": 61551,
+     "end_byte": 61850,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    }
+   ]
+  },
+  {
+   "section": "3.2",
+   "new_fact": true,
+   "proposal_id": "7c450496f1b10885fd4abf68485b12054be96d4af9a2f91c50bcbdb8d480e6d9",
+   "family_key": "CAPITALISATION",
+   "subtype_key": "EQUITY_AWARD_INVENTORY",
+   "statement": "The Company represents and warrants to Parent and Merger Sub that, as of 5:00 p.m. Central Time on May 29, 2026 (the Company Measurement Time), of the 351,118 Shares reserved for issuance pursuant to the Company Stock Plans, 81,492 Shares were subject to outstanding Company DSUs.",
+   "components": [
+    {
+     "component_id": "f3514b5f72a3a459793021f76f68adbc0da3e94289d9a2e4cf41b527243b8632",
+     "kind": "OPERATION",
+     "label": "Company representation and warranty",
+     "text": "the Company represents and warrants",
+     "source_span_id": "0719e13bf92325eebbca3ee861f9a26de55d93cc8250bcab907bba90a686e2b9",
+     "start_byte": 55147,
+     "end_byte": 55182,
+     "origin": "CHAPEAU",
+     "origin_structure_node_id": "aa1c037a90304b937d59f8e6f2b50eb41a1e2a7890338178da8ec9dd35072e6e",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "e51cea2a648d853bdcb89c5f67886c86bebd25b28c1639c0fd8d54116f09b7a7",
+     "kind": "TRIGGER",
+     "label": "Measurement time",
+     "text": "As of 5:00 p.m. Central Time on May 29, 2026",
+     "source_span_id": "1f7d459599e640627e276c68d1d5ae0e030390d23a56bc474c762072e8a95e65",
+     "start_byte": 60582,
+     "end_byte": 60626,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": [
+      {
+       "component_id": "1a17198861acb170b8b35656ad3aad4ba93788780a888420fa49b0a90d82ce7a",
+       "kind": "DATE",
+       "label": "Measurement date",
+       "text": "May 29, 2026",
+       "source_span_id": "50f937d0cf481279fb81548c6cc8226aaa4c541156d3f33476e71b9f13545ea2",
+       "start_byte": 60614,
+       "end_byte": 60626,
+       "origin": "OWN",
+       "gap_before": false,
+       "value": {
+        "canonical": "2026-05-29",
+        "unit": "ISO_DATE"
+       },
+       "children": []
+      }
+     ]
+    },
+    {
+     "component_id": "7a8c2719dce67256fe2ffd207648c96bb1090fda0e825422eed3002182820757",
+     "kind": "QUALIFIER",
+     "label": "Portion of plan reserve",
+     "text": "of which",
+     "source_span_id": "3d15cbeb4049bc9edb0c8b66a4ca4d0ede55566485496eea1c519b2320f3a099",
+     "start_byte": 60963,
+     "end_byte": 60971,
+     "origin": "OWN",
+     "gap_before": true,
+     "children": []
+    },
+    {
+     "component_id": "b51a2bb24cae53befc7f3f0716b8272b278c7b869e6499bb0fc701ef96a865cb",
+     "kind": "AMOUNT",
+     "label": "DSU share count",
+     "text": "81,492 Shares",
+     "source_span_id": "860311002d457787e6c74c9a2dcb1c349aa8cc08912fbc3c2e01993d15fc8bc0",
+     "start_byte": 60976,
+     "end_byte": 60989,
+     "origin": "OWN",
+     "gap_before": false,
+     "value": {
+      "canonical": 81492,
+      "unit": "COUNT"
+     },
+     "children": []
+    },
+    {
+     "component_id": "6138acbb2cc896e44489e49b477ac930b69a261ac2f96b6354e2888b315504cd",
+     "kind": "OPERATION",
+     "label": "Subject to outstanding awards",
+     "text": "were subject to outstanding",
+     "source_span_id": "b0bdbf5566ee1b10ad7150b7cb4fbe0102350f3d9bfb8f5d0e39d95c44b16070",
+     "start_byte": 60990,
+     "end_byte": 61017,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "71dcc611eeaec8708d6dd7d9d4b2f14c6d3dba1c78cbc824245be956f39c0656",
+     "kind": "OBJECT",
+     "label": "Company DSUs",
+     "text": "Company DSUs",
+     "source_span_id": "9397320b8aa420a4279336972aa34740ea09a0de6972ff74c0ac6c6871b1ccea",
+     "start_byte": 61018,
+     "end_byte": 61030,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    }
+   ]
   }
  ]
 }
