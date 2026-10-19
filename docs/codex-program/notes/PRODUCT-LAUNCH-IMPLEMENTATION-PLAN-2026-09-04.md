@@ -8453,8 +8453,9 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       routing_haiku row measures that on its own. Tests:
       tests/product-cost-ablation.test.js (6),
       tests/product-fresh-sheet-experiments.test.js (7),
-      tests/product-lean-request-profile.test.js. npm run test:active:
-      see the push.
+      tests/product-lean-request-profile.test.js. npm run test:active
+      on a clean checkout of the commit: 836 tests, 835 pass, the one
+      failure the known Codex-client final-message test.
 
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
