@@ -8870,6 +8870,52 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       (10). npm run test:active: 842 tests, 841 pass, the one known
       failure.
 
+      (192) 2026-10-19 11:35 to 12:40 UTC (implementer E), on the
+      manager's leave while the confirmation job runs (job
+      pm-ablation-20261019T112716Z, fired by the manager at 11:27 UTC;
+      244acaa held, not pushed): the fresh sheet's row 7, `fact_lines`,
+      built; nothing run, no live call. The measured failure behind it:
+      NCS generation 5's 5.1 ran past the 64,000-token output cap three
+      attempts running ($9.29, 47 call-minutes, finding (180)), each
+      attempt's whole answer lost and the section re-split. Under
+      `answer_mode: 'lines'` (a lean-profile flag, rung `fact_lines`)
+      the model writes one JSON object per line: the proposals in
+      source order, then the groups and links, then one coverage
+      trailer carrying every other field (paragraph_dispositions among
+      them). `lib/product/fact-lines.js` reads the lines (a line
+      without its marker is read by its fields), drops a broken last
+      line, derives a group the cut left unwritten from its proposal,
+      and counts what it read in `answer_lines`. Both providers read
+      lines when the request says so: the API's `max_tokens` stop and
+      the CLI's second text block mark the answer truncated instead of
+      failing the call, and a lines system prompt replaces the
+      one-object prompt for that call. The draft then keeps the facts
+      the whole lines carry and sends the operative spans after the
+      last span those facts cite as one continuation call (the same
+      request with those spans alone, `extraction_part.mode:
+      'continuation'`, `continues_after_span_id`, and an instruction
+      naming the cut), merging the two answers as a split section's
+      parts merge; a `FACT_LINES_TRUNCATED` coverage issue names the
+      lines kept, whether the trailer arrived, the span the cut fell in
+      (a fact of its words after the cut is the one the review may
+      miss) and the continuation's own count; a cut with no span after
+      the last cited one, or a second cut on the continuation, is noted
+      and left; a split section's parts do the same each. Without the
+      flag nothing changes. What it buys: a cap costs one continuation
+      call rather than an attempt and a re-split, on both providers;
+      nothing on tokens. What the ladder must show before it is the
+      default: that the model keeps whole lines and source order under
+      the lines prompt (the reader's counts say so on every call) and
+      that the byte match holds; the rung replays routing and residual
+      and extracts live. Tests: tests/product-fact-lines.test.js (4:
+      the reader whole, cut and noisy; the API provider's max_tokens
+      answer returned with its lines and the object mode still
+      failing; the CLI's two text blocks as a cut; Concho 6.3 under the
+      flag with a cut first answer, the continuation over the spans
+      after the cited one, two VALID facts and the note, and the
+      section unchanged without the flag), registered in test:active.
+      npm run test:active: see the push.
+
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
 - [x] Take a database backup and restore it to a separate environment.
