@@ -4889,6 +4889,32 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       E's order (default, deterministic_routing, direct_definitions,
       fact_budget, anchors_sonnet55, offsets, trimmed) once the
       deployment carries (183).
+      (210) 2026-10-19 06:40 UTC (the manager's numbers from (210);
+      (180) to (199) are E's, (200) on A's): the first ablation ladder
+      is DONE (job pm-ablation-20261019T040851Z, the experiments sandbox
+      on the subscription, NCS generation 5's 3.19, 5.2 and 5.17,
+      seventeen variants, 04:08 to before 06:34 UTC, exit 0; the table
+      and the manager's reading in docs/codex-program/notes/
+      ABLATION-LADDER-RUN-1-2026-10-19.md). Read, not just counted:
+      Opus 5.5 holds the facts (7 of 7, 26 of 27 with one partial, 41
+      of 41) and the subscription has it (the default rung ran it);
+      Sonnet 5.5 holds them too (6 of 7 with one partial, 26 of 27
+      with one partial, 41 of 41) at about 2.3x the stored run's speed
+      and two thirds of its output tokens; the answer format holds
+      (the best row, 7, 27, 41 with no partial); offsets lose facts
+      (5 of 7 and 23 of 27) and are out; the trimmed context and the
+      direct definitions each lose one fact on 5.17 and need one more
+      look. Three defects in the ladder itself, to E as work package
+      E4 before the second run: the recording key carries neither the
+      model nor the effort, so the anchors rungs for medium effort and
+      Opus 5.5 replayed the Sonnet answer and were never run (medium
+      effort is still unmeasured); the cost and thinking columns
+      accumulate across the ladder; the replay rungs missed on byte
+      identity, fixed by (186), deployed at 1e468325 after the job
+      started. The second run measures baseline, deterministic
+      routing, the two routing-model rungs and the four anchors rungs.
+      The experiments sandbox is being updated to head for it. The
+      two deals stay paused.
       (88) never fired there). Migration 20261019003000 applied to the
       preview branch at 03:33 UTC; the pool sandboxes are updated to
       head after this push, while no worker holds their lock. (201)
