@@ -5315,6 +5315,29 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       Sonnet. The Opus 5.5 medium whole-agreement job
       (pm-ablation-20261019T155504Z) runs on for the record; E's second
       job follows it. No intake ((172)).
+      (219) 2026-10-19 17:00 UTC (the manager): the Opus 5.5 medium
+      whole-agreement job (pm-ablation-20261019T155504Z, four sections
+      at once, the first use of (193)'s loops) ended partial: 35 of 104
+      sections answered, 69 failed on the subscription's five-hour
+      limit ("You've hit your session limit", the window the
+      implementer sessions and the sandbox share, resetting about
+      17:10 UTC). The 35 that answered: 422 matched, 2 partial, 22
+      unmatched of 446 stored, 449 VALID and none held, 50 new,
+      985,474 output tokens; 3.1 22 of 24 and 3.2 25 of 27 (the same
+      five omitted facts as (217)), 5.17 40 of 41, and 5.1 48 matched,
+      1 partial, 17 unmatched of 66, which the Sonnet confirmation
+      held at 63 / 3 / 0: not read yet (whether a part of 5.1 met the
+      limit mid-section or Opus 5.5 medium dropped the interim
+      covenants), and the only row in this run that would weigh
+      against the tier reading of (217). The table is kept in the
+      manager's scratchpad; the sandbox's job directory holds the
+      rows. Order after the window resets: E's second job on the
+      chosen tier first (derived_statement_sonnet55,
+      merged_residual_sonnet55, every section, four at once), then the
+      Opus 5.5 medium remainder only if Ben wants the fuller-words
+      comparison completed. The two deals paused ((175)); no intake
+      ((172)); the pool sandboxes still on the old default until Ben
+      says resume.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
