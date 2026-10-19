@@ -72,7 +72,9 @@ test('hosted worker accepts only bounded pool sizes and defaults to two', () => 
   assert.equal(parseArguments(['--run-id', id, '--actor', 'ben']).workers, 2);
   assert.equal(parseArguments(['--run-id', id, '--actor', 'ben', '--workers', '1']).workers, 1);
   assert.equal(parseArguments(['--run-id', id, '--actor', 'ben', '--workers', '2']).workers, 2);
-  assert.throws(() => parseArguments(['--run-id', id, '--actor', 'ben', '--workers', '3']), /workers must be 1 or 2/);
+  assert.equal(parseArguments(['--run-id', id, '--actor', 'ben', '--workers', '8']).workers, 8, 'work package E1: up to eight loops');
+  assert.throws(() => parseArguments(['--run-id', id, '--actor', 'ben', '--workers', '9']), /workers must be 1 to 8/);
+  assert.throws(() => parseArguments(['--run-id', id, '--actor', 'ben', '--workers', '0']), /workers must be 1 to 8/);
 });
 
 test('ready hosted run exits before creating workers', async () => {
@@ -100,7 +102,7 @@ test('failed hosted run requires explicit retry', async () => {
 
 test('database, model, actor, worker count and identity checks run before claims', async () => {
   for (const invalid of [{ ...options, actor: 'other' }, { ...options, runId: 'bad' },
-    { ...options, workers: 0 }, { ...options, workers: 3 }]) {
+    { ...options, workers: 0 }, { ...options, workers: 9 }]) {
     await assert.rejects(runHostedWorker(invalid, output, {}), /invalid hosted worker options/);
   }
   const unsafe = dependencies(() => assert.fail('unexpected claim'));
