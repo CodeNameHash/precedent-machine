@@ -5292,6 +5292,29 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       ((193)'s loops, their first use), about an hour. E's second job
       (the two Sonnet levers) goes after it. The two deals paused
       ((175)); no intake ((172)); 244acaa held.
+      (218) 2026-10-19 16:50 UTC (the manager): the default extraction
+      model is Sonnet 5.5 at high effort, Ben's (212), merged at
+      a38df6be from E's E6 commit (finding (195)): a fourth API config
+      (PRODUCT_ANTHROPIC_API_CALL_KIND_MAP/V4) and a third CLI config
+      (PRODUCT_CLAUDE_CLI_CALL_KIND_MAP/V3), claude-sonnet-5-5 high for
+      EXTRACTION, Haiku 5.5 low for ROUTING and RESIDUAL, the DEFAULT
+      and DEFAULT_CLI profiles, Ben's words verbatim in the code
+      comment; the Opus 5.5 configs stay reachable by the name OPUS
+      and a run created under V3 or V2 advances under it. The gate
+      (212) set was met: the whole-agreement confirmation read ((216)),
+      A's resolver change for the clause-number cross-references
+      merged ((203), f47dedb0), the variance job read ((217)), and A's
+      request instruction naming the qualification facts and the
+      Exchange Fund fact merged (a8656b3c; the facts return per
+      section as Opus wrote them, the placement still Ben's question).
+      npm run test:active on the merged tree in this finding's commit.
+      Not yet done: the pool sandboxes (pm-codex-preview-worker, -2)
+      still run 23c6ef56 and carry the old default; they are updated
+      with scripts/product/update-sandbox-worker.js when Ben says the
+      two paused deals resume ((175)), so a resumed attempt runs on
+      Sonnet. The Opus 5.5 medium whole-agreement job
+      (pm-ablation-20261019T155504Z) runs on for the record; E's second
+      job follows it. No intake ((172)).
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
