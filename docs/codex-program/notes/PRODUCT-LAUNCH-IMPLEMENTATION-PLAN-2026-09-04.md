@@ -9002,8 +9002,8 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       and the rows in order, the estimate at 4 loops and at 1, the
       wake's fifth argument only above one, the route's loops and its
       400, the launcher's argument, the script's "min at 2 loops"),
-      tests/product-cost-ablation.test.js (9). npm run test:active: see
-      the push.
+      tests/product-cost-ablation.test.js (9). npm run test:active: 849
+      tests, 848 pass, the one known failure.
 
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
