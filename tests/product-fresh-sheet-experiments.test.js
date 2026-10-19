@@ -297,3 +297,21 @@ test('residual_mode in_extraction: an unsplit section asks the residual inside i
   assert.ok(split.seen.filter((input) => input.call_kind === 'EXTRACTION').every((input) => input.request.residual_paragraphs === undefined));
   assert.ok(!split.result.issues.some((issue) => issue.code === 'RESIDUAL_IN_EXTRACTION'));
 });
+
+// Work package E6 (plan finding (191)): the two levers on the tier Ben
+// chose ("Sonnet makes sense"), so the confirmation job measures them on
+// the model the default is to carry.
+test('the Sonnet 5.5 variants of derived_statement and merged_residual carry the same profile flags with claude-sonnet-5-5 at high effort writing the facts', () => {
+  const { ESTIMATE_FACTORS } = require('../lib/product/cost-ablation');
+  for (const [name, base, flag] of [['derived_statement_sonnet55', 'derived_statement', 'statement_mode'], ['merged_residual_sonnet55', 'merged_residual', 'residual_mode']]) {
+    const variant = ABLATION_VARIANTS[name];
+    assert.deepEqual(variant.profile, ABLATION_VARIANTS[base].profile, `${name} sends ${base}'s words`);
+    assert.equal(variant.profile[flag], ABLATION_VARIANTS[base].profile[flag]);
+    assert.deepEqual(variant.models, { EXTRACTION: { model: 'claude-sonnet-5-5', effort: 'high' } });
+    assert.deepEqual(variant.replay, ABLATION_VARIANTS[base].replay);
+    assert.ok(ESTIMATE_FACTORS[name].output < ESTIMATE_FACTORS[base].output, 'the estimate carries Sonnet\'s measured output ratio');
+    assert.deepEqual(variantAvailability(variant, CLAUDE_CLI_PROVIDER_ID), variantAvailability(ABLATION_VARIANTS[base], CLAUDE_CLI_PROVIDER_ID));
+  }
+  assert.equal(Math.round(ESTIMATE_FACTORS.derived_statement_sonnet55.output * 100), Math.round(0.73 * ESTIMATE_FACTORS.derived_statement.output * 100));
+  assert.equal(Math.round(ESTIMATE_FACTORS.merged_residual_sonnet55.output * 100), Math.round(0.73 * ESTIMATE_FACTORS.merged_residual.output * 100));
+});

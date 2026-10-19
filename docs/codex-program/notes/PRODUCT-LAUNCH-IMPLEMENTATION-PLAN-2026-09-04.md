@@ -8793,6 +8793,68 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       running beside it and passes alone (13 of 13), as in finding
       (186).
 
+      (191) 2026-10-19 10:30 to 11:20 UTC (implementer E), work package
+      E6 on Ben's tier decision ((212), "Sonnet makes sense"). (1) The
+      two (190) levers now have Sonnet rungs, `derived_statement_sonnet55`
+      and `merged_residual_sonnet55` (lib/product/cost-ablation.js):
+      the same profile flags as their bases with claude-sonnet-5-5 at
+      high effort writing the facts, the estimate's output factor
+      Sonnet's measured 0.73 (runs 1 and 2) times the lever's (0.66 and
+      0.75). (2) The estimate, by (189)'s method on the ledger's totals
+      for NCS generation 5 (12.79m input and 3.80m output tokens over
+      157 committed extraction calls; 87 output tokens a second, eight
+      loops): anchors_sonnet55 about 12.8m input and 2.77m output
+      tokens, 31,900 seconds of output serial, about 66 minutes;
+      derived_statement_sonnet55 about 12.8m and 2.51m, about 60
+      minutes; merged_residual_sonnet55 about 12.8m and 2.85m, about 68
+      minutes; the three together about 38.4m input and 8.1m output
+      tokens and about 3.2 hours of the experiments sandbox. Read
+      against the five-hour window the implementers share:
+      anchors_sonnet55 alone fits with margin; all three leave about an
+      hour and three quarters, which is not margin, so this finding
+      recommends the confirmation job first (`{"run_id":
+      "51577c57-41b1-4b75-bcdf-c84ef2558589","sections":["all"],
+      "variants":["anchors_sonnet55"]}` on the ablation route, the
+      experiments sandbox by default) and the two Sonnet levers as a
+      second job after it is DONE (`"variants":
+      ["derived_statement_sonnet55","merged_residual_sonnet55"]`); the
+      manager decides. Not done here, and why: this Claude Code
+      environment cannot reach the deployment's database (its
+      SUPABASE_SERVICE_ROLE_KEY answers "Legacy API keys are disabled";
+      the Supabase connector on Ben's account sees no project holding
+      product_model_calls) and holds neither the internal bearer, the
+      Vercel sandbox credentials nor the CLI's OAuth token, so
+      `cost-ablation.js --estimate` could not read the stored run and
+      the route could not be called from here; the figures above are
+      the (189) method on the recorded totals, and the sandbox's own
+      estimate (the command in (189)) is the exact one. The job id is
+      the manager's to report once fired; no run was submitted or
+      woken, no live model call made. (3) The default change, prepared
+      and not pushed, as the manager asked: on implementer E's local
+      branch codex/e6-sonnet-default (its commit hash goes to the
+      manager with this push's report), a fourth API config
+      (PRODUCT_ANTHROPIC_API_CALL_KIND_MAP/V4) and a third CLI config
+      (PRODUCT_CLAUDE_CLI_CALL_KIND_MAP/V3) carrying claude-sonnet-5-5
+      at high effort for EXTRACTION, Haiku 5.5 routing and residual as
+      now, the DEFAULT and DEFAULT_CLI profiles, Ben's words verbatim in
+      the code comment; V3 and V2 stay in the known lists so a run
+      created under them advances under them (the config's identity is
+      its content less the output cap). Projected for NCS generation 5
+      under it, by the ledger's method (section 13 with Sonnet's
+      prices, $2 / $10, cache write $4, read $0.20, and its measured
+      0.73 of the output tokens): extraction output 1.71m tokens
+      $17.1, fresh input 5.42m $10.8, cache writes $0.6, reads $1.1,
+      routing and residual on Haiku $0.5: about $30 against the
+      stored run's $145.68 and the Opus 5.5 default's projected $71;
+      time 1.71m output tokens at 87 a second, 328 call-minutes, about
+      40 wall minutes at eight loops against 439 (Sonnet's measured 54
+      per cent of the seconds says the same); on the subscription CLI
+      $0 and the same minutes. It becomes the default only when the
+      manager reads the whole-agreement totals row and writes the
+      decision into a finding; a lost fact a lawyer keeps goes to Ben
+      by name. Tests: tests/product-fresh-sheet-experiments.test.js
+      (10). npm run test:active: see the push.
+
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
 - [x] Take a database backup and restore it to a separate environment.
