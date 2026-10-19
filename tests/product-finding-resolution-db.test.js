@@ -2,28 +2,11 @@
 
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
-const fs = require('node:fs');
-const path = require('node:path');
 const test = require('node:test');
 
 process.env.PRODUCT_PHASE2_DB_HELPER_ONLY = '1';
 const database = require('./product-phase-2-db.test');
 delete process.env.PRODUCT_PHASE2_DB_HELPER_ONLY;
-
-const ROOT = path.resolve(__dirname, '..');
-const migrationFiles = [
-  'supabase/migrations/20260905070000_product_phase_3_review.sql',
-  'supabase/migrations/20260905203000_product_finalization_retry.sql',
-  'supabase/migrations/20260905205000_product_release_timing_guard.sql',
-  'supabase/migrations/20260905212000_product_review_citation_repair.sql',
-  'supabase/migrations/20260905214000_product_cumulative_review_timing.sql',
-];
-const findingMigration = fs.readFileSync(path.join(
-  ROOT, 'supabase/migrations/20260905215000_product_finding_resolution_validation.sql',
-), 'utf8');
-const groupRepairMigration = fs.readFileSync(path.join(
-  ROOT, 'supabase/migrations/20260905220000_product_review_proposition_group_repair.sql',
-), 'utf8');
 
 let sequence = 0;
 
@@ -149,12 +132,7 @@ async function rejectsValidation(label, runId, state) {
   await client.query(`RELEASE SAVEPOINT ${label}`);
 }
 
-test.before(async () => {
-  await database.setupDatabase();
-  for (const file of migrationFiles) await execute(fs.readFileSync(path.join(ROOT, file), 'utf8'));
-  if (process.env.PRODUCT_FINDING_RESOLUTION_SKIP_MIGRATION !== '1') await execute(findingMigration);
-  await execute(groupRepairMigration);
-});
+test.before(database.setupDatabase);
 test.after(database.teardownDatabase);
 
 test('database accepts exact published-fact and reasoned-omission resolutions', async () => {

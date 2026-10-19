@@ -58,9 +58,9 @@ function buildClosure(row) {
 const words = (text) => text.split(/\s+/).filter(Boolean);
 const ALIAS_FORM = argValue('--aliases', 'table');
 function rewrite(response, closure, baseline, mode) {
-  const letters = spanAliases(closure).bySpan;
+  const letters = spanAliases(closure.spans).toAlias;
   // The manager's form: a per-call table of small integers to span ids,
-  // supplied with the response; or E's deterministic letters.
+  // supplied with the response; or E's lean aliases s1..sn.
   const table = new Map();
   const alias = (id) => {
     if (ALIAS_FORM === 'letters') return letters.get(id) || id;

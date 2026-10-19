@@ -20,10 +20,7 @@
 // one transaction that is rolled back) or TEST_PGLITE_MODULE.
 
 const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const path = require('node:path');
 const test = require('node:test');
-const { Client } = require('pg');
 
 const { runAgreementDraftAnalysis } = require('../lib/product/analysis-runner');
 const { buildAgreementStructure } = require('../lib/product/agreement-structure');
@@ -43,129 +40,15 @@ process.env.PRODUCT_PHASE2_HELPER_ONLY = '1';
 const { CONCHO_URL, conchoSource, createSyntheticConchoModel, schema } = require('./product-phase-2.test');
 delete process.env.PRODUCT_PHASE2_HELPER_ONLY;
 
-const databaseUrl = process.env.TEST_DATABASE_URL;
-const pgliteModule = process.env.TEST_PGLITE_MODULE;
-if (!databaseUrl && !pgliteModule) throw new Error('TEST_DATABASE_URL or TEST_PGLITE_MODULE is required for the Phase 6 database test');
-const ROOT = path.resolve(__dirname, '..');
-const MIGRATIONS_DIR = path.join(ROOT, 'supabase/migrations');
-const migrations = fs.readdirSync(MIGRATIONS_DIR).filter((file) => file.endsWith('.sql')).sort()
-  .map((file) => fs.readFileSync(path.join(MIGRATIONS_DIR, file), 'utf8'));
+// The harness: every migration in order, one rolled-back transaction, the
+// Supabase-shaped facade (tests/helpers/product-database.js; finding (141)).
+const database = require('./helpers/product-database');
+const { databaseFacade } = database;
 const actor = 'phase6-db-lawyer';
 let client;
 
-const rpcArguments = {
-  product_phase1_persist_source: ['p_source'],
-  product_phase1_create_run: ['p_source_document_id', 'p_retrieval_url', 'p_idempotency_key', 'p_schema_version', 'p_prompt_bundle_version', 'p_model_config', 'p_explicit_generation', 'p_max_attempts'],
-  product_phase1_attach_structure: ['p_run_id', 'p_structure_id', 'p_structure', 'p_identity_review'],
-  product_phase1_fail_run: ['p_run_id', 'p_stage', 'p_error'],
-  product_phase1_resolve_identity: ['p_run_id', 'p_resolution'],
-  product_phase1_claim_section: ['p_run_id', 'p_worker_id', 'p_lease_seconds'],
-  product_phase1_recover_expired_sections: ['p_run_id'],
-  product_phase1_renew_section_lease: ['p_run_id', 'p_node_id', 'p_worker_id', 'p_attempt_token', 'p_lease_seconds'],
-  product_phase1_complete_section: ['p_run_id', 'p_node_id', 'p_worker_id', 'p_attempt_token', 'p_cost_microusd', 'p_input_tokens', 'p_output_tokens'],
-  product_phase1_fail_section: ['p_run_id', 'p_node_id', 'p_worker_id', 'p_attempt_token', 'p_error'],
-  product_phase2_commit_section: ['p_run_id', 'p_node_id', 'p_worker_id', 'p_attempt_token', 'p_result'],
-  product_phase2_record_model_call: ['p_run_id', 'p_node_id', 'p_worker_id', 'p_attempt_token', 'p_call'],
-  product_phase2_fail_section: ['p_run_id', 'p_node_id', 'p_worker_id', 'p_attempt_token', 'p_error', 'p_model_calls'],
-  product_phase2_finalize_draft: ['p_run_id', 'p_draft'],
-  product_phase2_finalize_saved_run: ['p_run_id', 'p_finalization'],
-  product_phase2_get_analysis: ['p_run_id'],
-  product_phase3_register_run_access: ['p_run_id', 'p_actor'],
-  product_phase3_retry_run: ['p_run_id', 'p_actor', 'p_idempotency_key'],
-  product_phase3_initialise_review: ['p_run_id', 'p_state', 'p_actor'],
-  product_phase3_save_review: ['p_run_id', 'p_expected_version', 'p_state', 'p_actor', 'p_event_type', 'p_action_id', 'p_idempotency_key', 'p_command'],
-  product_phase3_restore_review: ['p_run_id', 'p_expected_version', 'p_restore_version', 'p_actor', 'p_action_id', 'p_idempotency_key'],
-  product_phase3_get_review: ['p_run_id', 'p_actor'],
-  product_phase3_list_reference_sources: ['p_actor'],
-};
-
-function databaseFacade() {
-  return {
-    async rpc(name, parameters) {
-      try {
-        const names = rpcArguments[name];
-        if (!names) throw new Error(`unsupported RPC ${name}`);
-        const values = names.map((key) => parameters[key]);
-        const markers = values.map((_, index) => `$${index + 1}`).join(',');
-        const result = await client.query(`SELECT public.${name}(${markers}) AS data`, values);
-        return { data: result.rows[0].data, error: null };
-      } catch (error) {
-        return { data: null, error };
-      }
-    },
-    from(table) {
-      if (!/^product_[a-z_]+$/.test(table)) throw new Error('invalid table');
-      let columns = '*';
-      const filters = [];
-      const orders = [];
-      let range = null;
-      const execute = async (single = false) => {
-        try {
-          const where = filters.length ? ` WHERE ${filters.map((item, index) => `${item.column} = $${index + 1}`).join(' AND ')}` : '';
-          const order = orders.length ? ` ORDER BY ${orders.map((item) => `${item.column} ${item.ascending ? 'ASC' : 'DESC'}`).join(', ')}` : '';
-          const bounded = range ? ` LIMIT ${range.to - range.from + 1} OFFSET ${range.from}` : '';
-          const result = await client.query(`SELECT ${columns} FROM public.${table}${where}${order}${bounded}`, filters.map((item) => item.value));
-          return { data: single ? (result.rows[0] || null) : result.rows, error: null };
-        } catch (error) {
-          return { data: null, error };
-        }
-      };
-      const builder = {
-        select(value) { columns = value; return builder; },
-        eq(column, value) {
-          if (!/^[a-z_]+$/.test(column)) throw new Error('invalid column');
-          filters.push({ column, value }); return builder;
-        },
-        order(column, options = {}) {
-          if (!/^[a-z_]+$/.test(column)) throw new Error('invalid column');
-          orders.push({ column, ascending: options.ascending !== false }); return builder;
-        },
-        range(from, to) { range = { from, to }; return builder; },
-        maybeSingle() { return execute(true); },
-        then(resolve, reject) { return execute(false).then(resolve, reject); },
-      };
-      return builder;
-    },
-  };
-}
-
-test.before(async () => {
-  if (databaseUrl) {
-    client = new Client({ connectionString: databaseUrl });
-    await client.connect();
-  } else {
-    const { PGlite } = require(pgliteModule);
-    client = new PGlite();
-    await client.waitReady;
-  }
-  const executeScript = (sql) => (pgliteModule ? client.exec(sql) : client.query(sql));
-  await client.query('BEGIN');
-  await executeScript(`DO $$ BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'anon') THEN CREATE ROLE anon NOLOGIN; END IF;
-    IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'authenticated') THEN CREATE ROLE authenticated NOLOGIN; END IF;
-    IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'service_role') THEN CREATE ROLE service_role NOLOGIN; END IF;
-  END $$;`);
-  if (pgliteModule) {
-    await executeScript(`CREATE SCHEMA IF NOT EXISTS extensions;
-      CREATE FUNCTION extensions.digest(data bytea, algorithm text) RETURNS bytea LANGUAGE sql IMMUTABLE
-      AS $$ SELECT CASE WHEN lower(algorithm) = 'sha256' THEN pg_catalog.sha256(data)
-        ELSE decode(md5(data) || md5(data), 'hex') END $$;
-      CREATE FUNCTION extensions.gen_random_uuid() RETURNS uuid LANGUAGE sql VOLATILE
-      AS $$ SELECT pg_catalog.gen_random_uuid() $$;`);
-  }
-  for (const migration of migrations) {
-    await executeScript(pgliteModule ? migration.replace('CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA extensions;', '') : migration);
-  }
-});
-
-test.after(async () => {
-  if (!client) return;
-  await client.query('ROLLBACK');
-  const absent = await client.query("SELECT to_regclass('public.product_agreement_releases') AS relation");
-  assert.equal(absent.rows[0].relation, null);
-  if (typeof client.end === 'function') await client.end();
-  else await client.close();
-});
+test.before(async () => { client = await database.setupDatabase(); });
+test.after(database.teardownDatabase);
 
 // Every item decided as a lawyer would decide the synthetic draft: a held
 // (not VALID) proposal rejected, a relationship the review state refuses

@@ -4788,6 +4788,65 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       manager to resolve with Ben. Olaplex and Apogee generation 2 at
       22:12 UTC: 24 of 97 and 21 of 85, no failures.
       (172) 2026-10-18 22:30 UTC: implementer E's (180), implementer A's
+      (173) 2026-10-18 22:55 UTC: implementer B's (107), implementer C's
+      (174) 2026-10-19 02:15 UTC: the 23:26 check-in reached the manager
+      at 02:10 (the session was idle). The active suite on the merged
+      head 49d0bc59: 780 of 781, the known failure only. At 02:11 both
+      subscription runs were PARTIAL with no worker: Olaplex/Apogee
+      686c3bf2 at 33 of 97 (3.20 part 2 of 3 and 3.22 FAILED, attempt 1
+      of 3) and f1e2493f at 30 of 85 (3.18 part 2 of 5 and 3.20 FAILED),
+      every failure "claude exited 1: API Error: This request would
+      exceed your account's rate limit" between 22:49 and 22:59 UTC,
+      and every implementer session (A to E) stopped at the same hour
+      with "You've hit your session limit, resets 2:10am (UTC)". One
+      cause: the subscription's five-hour window is shared by the two
+      extraction workers and the five implementer sessions, and the
+      implementers' Fable use spent it. Retried both runs at 02:15
+      (olaplex-apogee-a-retry-1, -b-retry-1; nothing new woken, Ben's
+      (175) 2026-10-19 02:25 UTC, Ben: "What do you think? Do we hope we
+      can just get it all done in this window?"; the manager's answer:
+      no; the open work is two or three five-hour windows even with
+      nothing else running (the two deals about five hours of worker
+      time; E's levers more than one window; A, B, C and D one to two
+      hours each), and the implementers are the path to cheap intake;
+      recommended the implementers first and the two deals paused, the
+      completed sections kept, resumed in a quiet window. Ben: "Ok".
+      Applied: the workers on pm-codex-preview-worker and
+      pm-codex-preview-worker-2 stopped and both sandboxes released from
+      the pool; runs 686c3bf2 and f1e2493f stay PARTIAL with their
+      completed sections (33 and 30) until the manager retries them in
+      a window the implementers are not using; B and C go idle after
+      B5 and C6 so that A, D and E alone draw on the window.
+      (170) stands) and every implementer re-triggered on its open
+      package. For Ben: while the implementers run on the subscription,
+      the two deals and the five sessions compete for one window; the
+      order of use is his to set (the runs first, the implementers
+      first, or the deals on the API once E's levers land).
+      (129) and implementer D's (141) merged (head 49d0bc59; the active
+      suite in the next finding). Read: (107) the Verve failure was a
+      sectionizer rule parenting "Annex I" to ARTICLE I by numeral
+      alone; seven of the 42 biopharma exhibits failed on it (every
+      two-step tender offer with a trailing conditions annex) and two
+      more carried an annex's limbs as the last section's; 42 of 42
+      build now, pinned on Verve's own bytes. (129) the three intakes
+      held at the identity gate are parser misses on sound documents
+      (a cover date with a trailing comma; a compound parenthetical; a
+      name class without "/"; "among:" with a colon), not doubts about
+      the document. (141) every CI database test on the full migration
+      list through one harness, 40 of 40 on Postgres 16, the workflow
+      on pushes to both branches; no migration defect. Work packages
+      sent: C6 (the four parser rules, pinned on the three exhibits,
+      swept over the 34), D3 (parts committed as they complete, an
+      attempt resumed after a worker restart, no silent loss; E's
+      ledger put $13.84 and 69 call-minutes of NCS generation 5 on
+      attempts that never committed), B5 (the pre-intake structure
+      check as a script, run over the 34). Olaplex and Apogee
+      generation 2 at 22:49 UTC by SQL: 31 of 97 and 28 of 85, no
+      failures (the preview share cookie expired at 22:49; the share
+      link no longer admits the API, so the status is read by SQL
+      until a new share link or bypass is in hand). Implementer A was
+      at its five-hour limit at 22:49 (resets at 22:50) with work
+      package 21 in progress.
       (98), (99) and (99a) merged (head 5f1785ca). The ledger read by
       the manager, not just its totals: the per-call costs reconcile
       to the published rates to the cent; output is 63 per cent of
@@ -4999,6 +5058,117 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       after the other: the first takes pm-codex-preview-worker, the
       second pm-codex-preview-worker-2, and each monitor's { keepalive:
       true } extends that run's sandbox.
+      (141) 2026-10-18 21:14 to 22:20 UTC (implementer D), work package D2
+      on the manager's message of 21:10 UTC: every database test of the
+      CI "Database migration and rollback" step on the full migration
+      list, the push trigger, and the results before and after. No run
+      touched. Environment: this container has Postgres 16 installed
+      (/usr/lib/postgresql/16, cluster "main" on 127.0.0.1:5432, started
+      with pg_ctlcluster; TEST_DATABASE_URL=postgres://postgres:...@
+      127.0.0.1:5432/postgres), so the step ran here against a server,
+      one file at a time in the CI order, each file alone, before and
+      after the change; not the embedded Postgres of finding (104), the
+      same inactive database in the same transaction-and-rollback form.
+      Built: tests/helpers/product-database.js is the one harness
+      (setupDatabase applies every file of supabase/migrations in name
+      order, 42 today, in one transaction; teardownDatabase rolls back
+      and asserts the first, a Phase 2 and a Phase 3 table are gone;
+      databaseFacade is the Supabase-shaped client; a test that proves
+      one migration's own effect names it in `hooks` with `before` and
+      `after` callbacks on that file, so a measurement or a savepoint
+      sits exactly where the test's prefix used to end, and a ROLLBACK
+      TO that savepoint undoes the migration and every later one, which
+      keeps the absence assertions true on the full list). Every file of
+      the step now sets up through it: product-phase-2-db re-exports it
+      for the fourteen tests that require it; phase-1, phase-6 and
+      failed-model-call-durability use it directly. Removed with that:
+      phase-1's three-file prefix (its third file, 20260905200000,
+      calls product_private.product_phase2_commit_section, so on a fresh
+      database the test failed in setup, "function does not exist",
+      before anything else); phase-2's list of eleven and its second
+      application of 20260905201000; phase-3's seven manual applies;
+      the prerequisite lists of nine tests; the per-test
+      PRODUCT_*_SKIP_MIGRATION switches, set nowhere in the repository
+      or the workflow. The in-test re-application review-timing makes
+      (restore the pre-V3 save function, then re-apply the reference
+      samples V3 migration) stays, through the harness's applyMigration.
+      Harness defects the full list exposed, fixed in the harness or the
+      test, never in a migration: (a) node-postgres sends a JavaScript
+      array as a Postgres array literal, which a jsonb parameter refuses
+      ("invalid input syntax for type json"); the three facades and
+      identity-lookup's insertJsonRows passed arrays straight (a section
+      failure's model calls, 816 proposal rows), written against PGlite
+      where that passes; the one facade now sends an object, and any
+      array that is not all strings (an empty one included), as JSON
+      text, and leaves a text[] (the sandbox pool) alone; (b) count(*)
+      and sum() read back as text from node-postgres, numbers on PGlite:
+      monotonic-failure reads them as numbers. Rules a later migration
+      changed, the expectation updated on the migration's own words: (c)
+      20260907005021_product_article_intro_coverage removes the "-INTRO"
+      exclusion from the work set and raises "product article-
+      introduction exclusion remains" if it is still there (its own
+      check; the file carries no comment line, which is worth one): the
+      phase-1 fixture's work set is three nodes (1.01, Exhibit-A::1.01,
+      the article introduction), the exhibit container still excluded;
+      the test completes the third section before the run is READY and
+      counts three COMPLETE rows; its mid-test re-application of
+      20260905190000, written to prove that migration prunes rows it
+      had inserted by hand, is gone (an out-of-order re-application on
+      the full list would have re-installed the exclusion); (d)
+      20260905221000_product_analysis_running_progress puts `running`
+      in every progress object: failed-model-call's final progress reads
+      running 0, and the test of that migration itself writes its
+      fixture and reads its baseline in a hook just before the file
+      (the baseline has no `running`, the read after it has). (e) The
+      span-closure test's proof is measured the same way: the indexes
+      and the database surface just before and just after
+      20260905223000 (the reverse index is the only thing added, the
+      surface unchanged), then in the test body the read is identical
+      with the index dropped under a savepoint and again once it is
+      back. (f) identity-lookup, termination-effect, cross-section and
+      the sandbox pool test place their savepoint and pre-state in the
+      hook before their file; identity-lookup's rollback proof runs at
+      teardown instead of before the test. Current code the old prefix
+      never reached (phase-3 failed at the first recorded model call,
+      failed-model-call at the first section failure), the fixture made
+      true to the current extractor, no migration rule involved: (g)
+      phase-3's acceptAll is phase-6's (a held proposal rejected, a
+      relationship the review state refuses rejected: REVIEW_INVALID_
+      PROPOSAL, REVIEW_RELATIONSHIP_SOURCE on the synthetic draft), its
+      release evaluation carries the REVIEWED_OMISSION resolutions of
+      the UNRESOLVED coverage as phase-6's does (RELEASE_EVALUATION_
+      REQUIRED otherwise), the proposal it groups and the proposal it
+      edits are VALID ones (REVIEW_INVALID_PROPOSAL_SOURCE otherwise),
+      and its first test asserts the evaluation passed with the bars in
+      the message; (h) failed-model-call's counts are read from the
+      first attempt (a long section is extracted in parts since Q6, so
+      one attempt is seven calls on this section, not three): the
+      section's totals equal the attempt's recorded calls, the replay
+      keeps them, the second attempt doubles the rows and each first
+      extraction has one twin with the same request and response under
+      another call id, the retried section carries three attempts'
+      calls. CI: `on.push.branches` now lists main, codex/product-
+      implementation-plan-20260904 and claude/festive-albattani-70cwn5;
+      nothing else in the workflow changed, and the database step runs
+      the same eighteen files. Results, each file alone in the CI order
+      (tests, pass, fail): before, on the tip before this work:
+      phase-1 1/0/1 ("product_private.product_phase2_commit_section
+      does not exist" in setup); phase-2 2/0/2 and phase-3 3/0/3
+      ("invalid product model invocation identity", finding (104));
+      failed-model-call-durability 1/0/1 (transaction aborted after the
+      json error); provider-response-durability 2/0/2 (the same);
+      monotonic-failure 5/0/5 ("invalid input syntax for type json");
+      analysis-running-progress 1/1/0; review-timing-integration 1/1/0;
+      finding-resolution 2/2/0; relationship-review 6/5/1 (one json
+      error); span-closure-lookup 1/1/0; cross-section-relationship
+      2/2/0; legal-schema-revision-persistence 2/0/2 ("relation
+      product_fact_components does not exist": its prefix stopped before
+      the V2 migration the store now reads); fact-occurrence-collision
+      3/3/0; termination-effect 2/2/0; review-validation-identity-lookup
+      2/0/2 (json error); sandbox-pool 4/4/0; phase-6 1/1/0 (156 s).
+      After: all eighteen files pass, 40 tests of 40: phase-1 1/1/0; phase-2 2/2/0 (147 s); phase-3 3/3/0 (280 s); failed-model-call-durability 1/1/0 (134 s); provider-response-durability 2/2/0; monotonic-failure 5/5/0; analysis-running-progress 1/1/0; review-timing-integration 1/1/0; finding-resolution 2/2/0; relationship-review 6/6/0; span-closure-lookup 1/1/0; cross-section-relationship 2/2/0; legal-schema-revision-persistence 2/2/0; fact-occurrence-collision 3/3/0; termination-effect 2/2/0; review-validation-identity-lookup 2/2/0; sandbox-pool 4/4/0; phase-6 1/1/0 (152 s); about 15 minutes in all, the four runner-driven files most of it. The nineteenth file the merge of origin added to the step, tests/product-move-to-production.test.js (implementer B), applies the full list through lib/product/production-move.js by design and passes here too, 1/1/0. On the merged tree npm run test:active: 780 tests, 779 pass, the one failure the known Codex-client final-message test. Defects in a migration: none found; the one gap is 20260907005021's missing comment line, noted under (c). npm run test:active after the change:
+      768 tests, 767 pass, the one failure the known Codex-client final-message test. One commit for the harness, the tests, the workflow,
+      the guide line and this finding.
 
       (84) 2026-10-18 18:05 to 18:20 UTC (implementer), work package 15
       on finding (83)'s terms ("the documented maximum output cap on the
@@ -6249,20 +6419,26 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       component"), and the stored answers: 157 EXTRACTION calls, 4
       failures, the answer the response's text block, 4.69 MB of JSON
       for 1,066 proposals. Built in lib/product/agreement-draft.js and
-      lib/product/fact-components.js only (a first cut had put the alias
+      lib/product/fact-components.js only (a first cut had put an alias
       scheme and an alias field on the request's spans in
       source-context.js; reverted on the message: the request, the
-      response contract and the prompt are E's). (b) The manager's alias
+      response contract and the prompt are E's). E's (181) and (182)
+      landed on the branch during this package's push, with the lean
+      request profile in the same file; merged by hand (the
+      compileExtraction signature carries both rolesOptional and the
+      alias expansion), E's tests passing. (b) The manager's alias
       table: response.span_aliases, a small integer to a 64-hex id (an
       object or a list of {alias, span_id}); expandSpanAliases replaces
       every integer alias in components, evidence quotes, links and
       cross-section links before any other rule runs; an integer alias
       the table lacks holds its component SPAN_ALIAS_UNKNOWN, never
-      resolved through the section as an unknown id is. Also accepted,
-      needing no table, for E to choose: a deterministic alias
-      (spanAliases: F the full section, then C1.., O1.., D1.., X1.. for the
-      chapeau, operative, definition and cross-reference spans in closure
-      order) or a unique prefix of eight or more hex characters of the id.
+      resolved through the section as an unknown id is. Also read
+      directly, so the validator stands whichever request profile made
+      the answer: implementer E's lean aliases s1..sn (E's (182), merged
+      while this package was being pushed: E's normaliseLeanResponse maps
+      them before the compiler, and resolveSpanReference reads them too;
+      a first cut's own scheme, F and C1.., was dropped for E's) and a
+      unique prefix of eight or more hex characters of the id.
       (a) Offsets are absolute, on the canonical text, because the
       request's spans carry absolute start_byte and end_byte, so a pair
       names one place in the document with no arithmetic against the
@@ -6271,7 +6447,13 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       INVALID_OFFSETS, a pair outside the cited span OFFSETS_OUTSIDE_SPAN,
       a quote given beside offsets that are not its bytes
       OFFSETS_DISAGREE_WITH_QUOTE (a quote and agreeing offsets, or a
-      quote alone, are accepted as today). The bytes are the quote: the
+      quote alone, are accepted as today). E's quote_offsets of (182),
+      the zero-based character offsets within the cited span's
+      exact_text, are read as the absolute pair they name, so the one
+      rule serves both forms (OFFSETS_SPAN_UNKNOWN when the span is not
+      the closure's, since there is no text to count in); E's anchor
+      names quote_from and quote_to are read as quote_start and
+      quote_end. The bytes are the quote: the
       stored component keeps its shape, text and all, the position picks
       the occurrence, and every matching, relocation and footer rule runs
       as for a quote. With them, from E's lever 7, anchors: quote_start
@@ -6351,8 +6533,9 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       21: the validator accepts span aliases, byte offsets and anchored
       quotes, evidence from the components and roles left out, proven on
       NCS generation 5's stored answers", after git fetch and merge of
-      origin; npm run test:active on the final tree: 781 of 782, the one
-      failure the known Codex-client final-message test.
+      origin (E's (181) and (182) merged by hand, lib/product/agreement-
+      draft.js); npm run test:active on the merged tree: 803 of 804, the
+      one failure the known Codex-client final-message test.
       (120) 2026-10-18 19:10 to 19:45 UTC (implementer C), Q5: the limb
       names harvested. `scripts/product/harvest-rep-limbs.js` (library
       `lib/product/rep-limb-harvest.js`, `tests/product-rep-limb-harvest.test.js`)
@@ -6880,6 +7063,77 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       headline figures (equity, or EV where marked), not read from the
       agreements; the agreements' consideration is what the intake
       will extract. No run, worker or sandbox touched.
+      (107) 2026-10-18 22:15 to 23:59 UTC (implementer B), work package
+      B4 on the manager's message of 22:15 UTC: the Lilly / Verve
+      structure failure ((170): the intake failed twice at structure
+      build with STRUCTURE_PARENT_SPAN), reproduced locally through
+      the intake's own path (the exhibit's 600,983 bytes served to
+      createSecIntakeAdapter's fetch, then buildAgreementStructure; no
+      database, no model), fixed for every agreement, pinned. The
+      clause: "Annex I / CONDITIONS TO THE OFFER", the tender offer's
+      conditions annex after the signature pages (canonical bytes
+      292,387 to 297,901 of 369,081). lib/parser-v2/structural.js
+      gives that annex section articleNumber "I" (the annex's own
+      numeral, from "Annex I"), and the sectionizer
+      (lib/canonical-v2/native-producer/deterministic-sectionizer.js)
+      parented every section by that numeral alone, so the annex
+      became a child of the main agreement's ARTICLE I (bytes 9,504 to
+      26,625), 265 kB before it, and the structure builder refused the
+      child outside its parent's span. The rule missed it because it
+      never asked whether the article's span held the section; a
+      letter-numbered annex ("Annex A") never collided, "Annex I" did
+      whenever the agreement has an ARTICLE I. Two rules, both for
+      every agreement: (a) an article is a section's parent only when
+      its span holds the section; an annex is never an article's
+      child; a numbered section whose numeral's article does not hold
+      it goes to the article whose span does, else to the root; (b)
+      the last main-agreement article ends at the first retained
+      exhibit scope or the first annex after the article's start,
+      whichever comes first (before, only an EXHIBIT scope bounded it,
+      so ARTICLE IX's span covered the annex, and in two agreements
+      the last section's limb walk claimed the annex's own limbs:
+      Merck KGaA / SpringWorks' 9.13 carried the definitions annex's
+      MAE limbs as 9.13(i) to (xi), Novartis / Tourmaline's 8.13(k)
+      carried Annex I's conditions as 8.13(k)(a) to (h) beside the
+      annex's own Annex-I(a) and (b); those duplicates are gone, 413
+      to 402 and 362 to 350 nodes, every other node unchanged). Pinned
+      in tests/product-phase-1.test.js ("a trailing annex after the
+      signature pages bounds the last article and is never its child")
+      on the exhibit's own bytes: tests/fixtures/product/verve-annex-i-
+      boundary.v1.json holds the canonical text from the last
+      signature page through Annex I's conditions (a) and (b) (2,448
+      bytes at canonical offset 291,629, the annex heading at 292,387,
+      the whole text's sha256 90242bd6 recorded), appended to a
+      synthetic nine-article main agreement; the test asserts the
+      annex hangs from the agreement, starts on its heading and runs
+      to the end, ARTICLE IX ends where the annex begins, the last
+      section never reaches into it, the conditions are the annex's
+      limbs and not the last section's, and every node lies inside
+      its parent. The sweep the manager asked for, the same path on
+      every URL of docs/codex-program/notes/BIOPHARMA-DEALS-OVER-1BN-
+      2026-10-18.md (42 fetched: the 34 agreements, the four it lists
+      below the line and four press releases): before the fix 35 of 42
+      built and 7 failed with STRUCTURE_PARENT_SPAN, all two-step
+      tender offers with a trailing conditions annex (Verve, GSK /
+      Nuvalent, Sanofi / Blueprint, Genmab / Merus, Merck / Terns,
+      Neurocrine / Soleno, Merck KGaA / Bio-Techne); after it 42 of
+      42 build (Verve 336 nodes); of the 35 that built before, 33 are
+      unchanged and the two above lose only their duplicates.
+      The repository already carried the defect's trace: the
+      sectionizer's own corpus test (tests/canonical-v2-native-
+      sectionizer.test.js, not in test:active) failed on the head with
+      "topbuild: ARTICLE VII [381113,412860) overlaps its next sibling
+      Annex-C [406279,412860)" in two tests; both pass now; its one
+      remaining failure (the LONE_CANDIDATE tripwire) fails on the head
+      before this change and is not this work's. No intake submitted,
+      no run or sandbox touched; Verve's two failed runs stay as they
+      are for the manager (finding (170): Ben, "I don't think we
+      intake until E is done and we have reduced cost"). Ben's rule
+      kept ("everything to be driven by coding and not just a layer on
+      top so all edits need to be repeatable across corpus"): the fix
+      is in the one sectionizer every intake runs, not a Verve
+      special case. npm run test:active: 774 of 775, the one failure
+      the known Codex-client final-message test.
       (128) 2026-10-18 21:55 to 22:45 UTC (implementer C), work package
       C4, the tender-offer and stock-deal readiness of the schema:
       docs/codex-program/notes/TENDER-OFFER-AND-STOCK-DEAL-SCHEMA-GAPS-2026-10-18.md.
@@ -6936,6 +7190,184 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       schema, LEGAL-RULES, any subtype or fact type. npm run
       test:active: 774 of 775, the one failure the known Codex-client
       final-message test. No run, worker or sandbox touched.
+      (129) 2026-10-18 22:15 to 23:05 UTC (implementer C), work package
+      C5, the three intakes of 21:44 UTC held at
+      DOCUMENT_IDENTITY_REVIEW. Read by SQL on the preview branch
+      (product_document_identity_reviews joined to product_analysis_runs
+      and product_source_documents), nothing resolved, no run woken. The
+      gate: lib/product/sec-intake.js extractDocumentIdentity scores the
+      exhibit on nine rules (CIK, accession, exhibit type confirmed,
+      exhibit type conflict, filename conflict, parties, agreement date,
+      revision, completeness); one failure makes identity_status
+      NEEDS_REVIEW, lib/product/phase-1-foundation.js attaches the
+      structure with the reasons, product_phase1_attach_structure writes
+      the review row and leaves the run QUEUED at
+      DOCUMENT_IDENTITY_REVIEW, and the hosted worker refuses such a run
+      (PRODUCT_HOSTED_IDENTITY_REVIEW_REQUIRED). The rows, all OPEN,
+      resolution null: cd1d3e91 (Vertex / Crinetics, review 27850060)
+      reasons ["AGREEMENT_DATE_UNCONFIRMED"]; 436276fe (Lilly /
+      Centessa, review 6afe2802) ["PARTIES_UNCONFIRMED"]; 94cd879e (Novo
+      Nordisk / Akero, review a40bb6cd) ["PARTIES_UNCONFIRMED"]. Each
+      flag reproduced locally by running the committed extractor over
+      the exhibit through the canonical-text conversion, and each is a
+      parser miss on a sound document, not a doubt about which document
+      it is: all three are the complete, original, execution-version
+      EX-2.1 (revision "original", looks_like_complete_document true, no
+      amendment language). Crinetics: parties found (Vertex PARENT,
+      Clark Merger Sub MERGER_SUB, Crinetics COMPANY), exhibit
+      confirmed; the cover line reads "DATED AS OF JULY 6, 2026," with a
+      trailing comma and isoAgreementDate anchors its pattern on the
+      year at the end of the line, so the line fails and the preamble's
+      "dated as of July 6, 2026 (this "Agreement" ...)" is mid-line,
+      which the rule never reads; the date is in the document twice and
+      consistent. Centessa: date 2026-03-31 confirmed; the preamble
+      names Eli Lilly and Company ("Parent"), LDH XV Corporation
+      ("Purchaser") and Centessa Pharmaceuticals plc "(the "Company"
+      and, together with Parent and Purchaser, the "Parties")"; the
+      embedded-role pattern requires the closing parenthesis straight
+      after "Company", so the compound parenthetical loses the Company,
+      and without a Company partyIdentity falls back to the cover
+      caption, which it reads only from a line beginning "by and among"
+      while this cover says "among"; parties []. Akero: date 2025-10-09
+      confirmed; the preamble reads "by and among: Novo Nordisk A/S, a
+      Danish aktieselsab ("Parent"); NN Invest Sub, Inc, ... ("Merger
+      Sub"); and Akero Therapeutics, Inc., ... (the "Company")"; the
+      name character class has no "/" so "Novo Nordisk A/S" never
+      matches, the buyer is missing, the caption fallback fails on
+      "among:" and parties is []. Avadel (91fe48a1) passed because its
+      cover carries "dated as of October 22, 2025" alone on a line and
+      its preamble's two parties, Alkermes plc ("Parent") and Avadel
+      Pharmaceuticals plc ("Company"), fit the pattern. What the
+      function accepts: product_phase1_resolve_identity(p_run_id,
+      p_resolution) (current body in
+      supabase/migrations/20260905190000_product_substantive_section_work.sql,
+      service_role only) requires the run at DOCUMENT_IDENTITY_REVIEW
+      (else 55000, replayed silently when the same resolution was
+      already stored), requires p_resolution non-null and not {}
+      (22023), and checks nothing else about its shape: it stores the
+      JSON verbatim as resolution, marks the review RESOLVED, inserts
+      product_section_work for every leaf SECTION node and moves the run
+      to QUEUED at SECTION_ANALYSIS. What submits it: POST
+      /api/product/analysis/<run_id>/identity
+      (pages/api/product/analysis/[id]/identity.js,
+      lib/product/identity-handler.js), reached from the "Confirm this
+      agreement" button on the intake panel of pages/review/index.js
+      (components/product/ProductIntakePanel.jsx, which lists the
+      parties, filing, date and the reasons); the handler ignores the
+      request body and sends the one fixed resolution {"confirmed":
+      true, "confirmed_by": <actor>}, the actor being the session
+      subject from the browser or AUTH_USERNAME (default "ben") for the
+      internal bearer token; no script, worker or other route resolves a
+      review. So the exact resolution for each of the three, were Ben to
+      say yes, is the same call: POST
+      /api/product/analysis/cd1d3e91-2e20-45de-9657-a42c689eff68/identity,
+      .../436276fe-d733-4d03-bd2e-59c84fb55766/identity and
+      .../94cd879e-08e0-4b68-8115-8424b1fa096d/identity with an empty
+      JSON body, each stored as {"confirmed": true, "confirmed_by":
+      "ben"} (or by SQL as select
+      product_phase1_resolve_identity('<run_id>', '{"confirmed": true,
+      "confirmed_by": "ben"}')). Is any of it a lawyer's decision: no.
+      The gate asks only whether this is the agreement intended, and for
+      all three it is; the confirmation is mechanical. Two things for
+      Ben to know before the word is given: (a) confirming does not
+      repair the record, the source document keeps parties [] for
+      Centessa and Akero and agreement_date null for Crinetics, which
+      the review and preview pages then show as unknown (the display
+      repair in lib/product/review-handler.js only recovers suffix-only
+      names, not empty lists); (b) resolving moves each run to QUEUED at
+      SECTION_ANALYSIS, which costs nothing until a worker is woken
+      (Ben: "I don't think we intake until E is done and we have reduced
+      cost"). The repeatable fix (Ben: "everything to be driven by
+      coding and not just a layer on top so all edits need to be
+      repeatable across corpus"), proposed and not built in this
+      package: in sec-intake.js let the date rule drop trailing
+      punctuation on the cover line, let the embedded-role rule accept a
+      compound parenthetical (the "Company" and, together with ..., the
+      "Parties"), add "/" to the entity-name character class (A/S), and
+      let the caption fallback read a cover line beginning "among" or
+      "among:"; each pinned with these three preambles as fixtures. The
+      fix helps the next deals on the >$1bn list (note of (127)); for
+      these three the stored source document is found by URL on
+      re-submission and never re-scored, so their records stay as
+      extracted unless the source row is re-intaken. Documentation only;
+      no code, schema or rule changed. npm run test:active:
+      774 of 775, the one failure the known Codex-client final-message
+      test. No run, worker or sandbox touched.
+      (108) 2026-10-18 23:00 to 2026-10-19 00:40 UTC (implementer B), work
+      package B5 on the manager's message of 22:55 UTC: the local path of
+      (107) made the product's own pre-intake check.
+      scripts/product/structure-check.js <url> [--json] [--schema
+      <version>] [--provider <hosted provider>] [--generation N]
+      [--attempts N] over lib/product/structure-check.js: exactly the
+      intake's steps with no database and no model call, the SEC
+      adapter's own fetch (its User-Agent, timeout and byte limit), the
+      canonical text, the document identity (extractDocumentIdentity
+      inside the adapter; lib/product/sec-intake.js untouched, C6 is
+      C's) and buildAgreementStructure; it prints the node count by
+      kind, every article's byte span with its child count, every annex,
+      exhibit or schedule the sectionizer keeps at the root, any node
+      outside its parent's span, the identity status with its reasons,
+      the parties and date, and the submission fingerprint. The
+      fingerprint is product_phase1_create_run's own (the migration of
+      2026-09-05: sha256 of source_document_id, schema_version,
+      prompt_bundle_version, model_config::text, explicit_generation and
+      max_attempts joined by chr(31)), with Postgres's jsonb text
+      rendering reproduced in code (keys by length then bytes, ", " and
+      ": " separators; jsonbText checked against Postgres 17 on the
+      embedded database) and proved on two fingerprints the preview
+      branch stores: Metsera generation 8 (run 72d94dd2) and NCS
+      generation 5 (run 51577c57, its stored config with
+      max_output_tokens 64000) reproduce byte for byte from their rows'
+      inputs. The schema, prompt bundle and model config are the
+      environment's (PRODUCT_LEGAL_SCHEMA_VERSION, PRODUCT_MODEL_PROVIDER)
+      or the flags, so the fingerprint printed is the one the deployment
+      would compute only when the flags name its settings; the report
+      says which were used. One caution the run showed: SEC serves the
+      same exhibit with small byte variations between fetches (Verve:
+      600,983 bytes on 2026-10-18's fetch, 600,995 on this one; canonical
+      text identical, sha256 90242bd6), so the source document id and
+      the fingerprint can differ from an earlier intake's while the
+      canonical text, the structure and the identity do not. Pinned in
+      tests/product-structure-check.test.js (in test:active): the jsonb
+      rendering on values read back from Postgres, the two preview
+      fingerprints, the Verve annex fixture of (107) served through a
+      fake fetch as an HTML exhibit (identity CONFIRMED with the three
+      parties and the date, 13 nodes, Annex I at the root with two limbs,
+      the last article ending at the annex, no node outside its parent,
+      the fingerprint equal to the function's), a 404 reported as the
+      intake stage and a whitespace exhibit as the structure stage,
+      neither thrown. The sweep the manager asked for, the 34 agreements
+      of docs/codex-program/notes/BIOPHARMA-DEALS-OVER-1BN-2026-10-18.md
+      plus Metsera's Amendment No. 1 (35 URLs, LEGAL_SCHEMA/V2, the
+      subscription config, about 119 s of fetches, nothing submitted),
+      appended to that note as a table: 35 of 35 build; 28 identities
+      CONFIRMED, seven NEEDS_REVIEW (PARTIES_UNCONFIRMED on Avidity,
+      Centessa, Akero, Supernus and the amendment; AGREEMENT_DATE_
+      UNCONFIRMED on Crinetics, Day One, Supernus and the amendment;
+      REVISION_UNCONFIRMED and DOCUMENT_INCOMPLETE on the amendment
+      alone, right for an amendment); eleven carry Annex I at the root.
+      What the check found that an error never would: eight agreements
+      build to almost nothing. Akero 2 nodes, Amicus 2, KalVista 14,
+      Cidara 22, Dynavax 35, RAPT 80, Apellis 100, Catalyst 273 with no
+      SECTION at all. Every one heads its sections with a bare decimal on
+      its own line ("3.17 Employee Matters; Benefit Plans." and the text
+      on the next line; about 160 such lines each, contents table and
+      body) without the word "Section", which the sectionizer's heading
+      rules do not take, and Akero, Amicus and KalVista name their
+      articles "Section 1. MERGER TRANSACTION" and get no ARTICLE. An
+      intake of any of them would pay for the model over a handful of
+      huge nodes: the same cost as a full structure and almost none of
+      the result. Proposed, not done (B5 was "small and complete"): a
+      sectionizer rule, for every agreement, accepting a line of the
+      form "<n>.<m> <Title>" as a section heading when its number
+      follows the previous accepted section's in sequence and the
+      article (or "Section <n>." heading) it belongs to precedes it,
+      pinned on Akero's and Cidara's bytes the way (107) is; the
+      manager's call whose work package it is (A's defect track or B).
+      Until it lands these eight are not ready to intake, and the check
+      says so before a run is paid for. No intake submitted, no run,
+      worker or sandbox touched. npm run test:active: 784 of 785, the
+      one failure the known Codex-client final-message test.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
@@ -7044,6 +7476,217 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       explanation names the metric.
       tests/product-extraction-cost-ledger.test.js (7 of 7), added to
       test:active.
+
+      (181) 2026-10-18 23:10 UTC to 2026-10-19 00:40 UTC (implementer
+      E), work package E1 items 2 to 5: the levers ranked, the replay
+      harness, the lean request profile behind the model-config
+      identity, the three-section ablation harness, the gate. No run
+      submitted, woken or retried; no live call (the ablation's live
+      ladder is the manager's to run); nothing written to the preview
+      branch; no key read. The levers, each with its mechanism and its
+      measured dollars and minutes on NCS generation 5 (the note's
+      section 11): 1 the answer's format, components alone with short
+      span aliases (-$28, -107 wall minutes, reading unchanged); 2 the
+      Batch API (half of whatever remains; a batch runner against the
+      section-lease store is the next build, not this one); 3
+      concurrency, eight section loops and the parts of a split
+      section together (-280 minutes to the rate limit, $0); 4 medium
+      effort on extraction (-$17, -63 minutes, if the facts hold); 5
+      claude-opus-5-5 (-$29 on the stored mix); 6 the agreement cached
+      once instead of 14.4 MB of definitions and cross-references sent
+      fresh (-$6 at Opus 5 rates, -$9 at Opus 5.5: 115,000 cached
+      tokens a call cost nearly as much as the 37,000 fresh ones they
+      replace; a trimmed closure, one hop and 1,500 bytes a reference,
+      would be -$13 and is proposed, not built); 7 anchored quotes
+      (-$9, -34 minutes); 8 two stable blocks (-$7); 9 routing and
+      residual on Haiku 5.5 (-$5); 10 nothing on attempts that do not
+      commit (-$14, already fixed, the gate holds it). Stacked:
+      nothing changed in the reading or the model, about $92 and 70
+      minutes at eight loops (1.6x); the same tier with the format,
+      anchors and Opus 5.5, about $66 (2.2x); with medium effort and
+      the cached agreement, if the ablation shows the same facts,
+      about $42 (3.5x); with the Batch API, about $21 (7x); 10x needs
+      every step and the batch runner. 100x is not available while a
+      frontier model writes the facts: the floor is $15 to $23; the
+      next 10x after that is a smaller model writing the facts (Sonnet
+      5.5 at $10, Haiku 5.5 at $0.50 a million output tokens) and
+      would lose whatever those models lose on a merger agreement's
+      qualifications, carve-outs and cross-references, unmeasured on
+      this corpus; the ablation harness runs the same ladder on them
+      when Ben wants that number. Built, in code for every agreement:
+      (a) `scripts/product/replay-run.js` (`lib/product/run-replay.js`):
+      a run finalised again from its stored responses with no model
+      call, every stored request rebuilt into the pipeline's request
+      and keyed as a recording is (`callKey` now hashes call kind,
+      prompt version and request alone), the committed attempt's split
+      reproduced from the work row's error_history, the draft
+      assembled and validated, the proposals compared with the stored
+      ones by id and status (`--match loose` answers a changed request
+      with the stored call of the same section, kind and part and
+      lists the drift; `--sections` a subset; `--dump-snapshot` the
+      rows and context for a rerun without the database). Proven here
+      on the Concho synthetic run: the same draft by content id, zero
+      calls, $0 (tests/product-run-replay.test.js); the NCS generation
+      5 proof (1,015 VALID and 22 held) is one command for the manager
+      where the branch keys are, below. The number of runs: the NCS
+      generation 5 audit says of its 22 holds that "none needs a
+      re-run to be judged", and every rule merged while it ran (work
+      packages 13, 14, 18 and 19, eleven rules) is a compiler or page
+      rule: each is judged by the replay on the stored answers. Of the
+      thirteen generations, the ones run for a prompt, split or schema
+      change needed the model for the sections whose request changed
+      and no other; a validator or page change never did. (b) The
+      lean request profile (`lib/product/product-model-config.js`
+      `ANTHROPIC_API_REQUEST_PROFILES`, `ANTHROPIC_API_LEAN_MODEL_CONFIG`,
+      `PRODUCT_ANTHROPIC_API_CALL_KIND_MAP/V2`, chosen for a new run by
+      `PRODUCT_ANTHROPIC_API_PROFILE=LEAN`; a run created under it
+      advances under it, `hostedModelConfigFor(providerId, run)` and
+      `anthropicApiModelConfigFor` follow the run's own config by
+      identity, the worker, the run route and the runner pass it
+      through): in `buildAgreementSectionDraft({ requestProfile })`
+      the extraction request goes out as `PRODUCT_ALL_FAMILY_EXTRACTOR/V10`
+      with every closure span a short alias, the components alone (no
+      roles, no evidence_quotes), a long component's words as its
+      first and last four words resolved by the validator
+      (`resolveAnchoredQuote`), and under the cached-agreement context
+      the definitions and cross-references listed by section, span
+      and first words while the provider sends the agreement's text
+      once under its own 1-hour breakpoint (`cacheableContent`: the
+      agreement block, one or two stable blocks, the section block;
+      the stored request keeps a marker with the source document's id,
+      bytes and hash; the recorded adapter's key ignores the text);
+      `normaliseLeanResponse` reads the answer back into the compiler's
+      shape and the section carries one LEAN_RESPONSE_NORMALISED note;
+      `compileExtraction({ rolesOptional })` holds nothing for a role
+      and records the role coverage FOUND, reason ROLE_IN_COMPONENTS;
+      `validateAgreementDraft` skips the role check for a V10 call.
+      Proven end to end on Concho 6.3 through the synthetic routing
+      and a lean answer written the way the model would: the fact
+      VALID with real span ids and the anchored words resolved
+      (tests/product-cost-ablation.test.js). (c) The ablation
+      harness, `scripts/product/cost-ablation.js`
+      (`lib/product/cost-ablation.js`): one stored run's sections
+      extracted again under a variant of the profile and the model
+      (the ladder baseline, format, anchors, lean, lean_medium,
+      lean_opus55, lean_opus55_medium, routing_sonnet, routing_haiku),
+      routing and residual answered from the stored calls, only the
+      extraction live (every answer recorded for replay), the stored
+      VALID facts matched to the variant's on the bytes by
+      generation-comparison's rule, tokens, seconds and dollars beside
+      them, the stored row repriced at Opus 5.5; the baseline row is
+      free. The three sections: 3.19 (seven facts, $1.31 as stored),
+      5.2 (27, $3.43), 5.17 (41, $4.98); the six extraction variants
+      about $45 together, the two routing variants under $1 (the
+      note's section 12 has the commands). (d) Concurrency: the parts
+      of a split section go out together up to
+      PRODUCT_EXTRACTION_PART_CONCURRENCY (1 unless set, the serial
+      order so far; the LONG_SECTION_SPLIT issue records it;
+      `mapWithConcurrency` keeps part order and lets a failed part's
+      siblings finish recording), and the hosted worker takes
+      `--workers` 1 to 8 (launch.sh reads PRODUCT_HOSTED_WORKERS, 2
+      unless set). (e) The gate (item 5): `runCostMetrics` per run
+      (cost a VALID fact, input and output tokens an agreement byte,
+      output tokens a fact, call minutes and calls a section, sends a
+      byte, the failed and uncommitted cost) against the NCS
+      generation 5 baseline fixture; `extraction-cost-ledger.js
+      --baseline` exits 3 on a rise over the tolerance unless
+      `--explain metric=reason` names the plan finding that accepted
+      it; tests/product-extraction-cost-ledger.test.js holds the rule
+      and the baseline. Asked of the manager, in order: (1) the proof,
+      `node scripts/product/replay-run.js --run
+      51577c57-41b1-4b75-bcdf-c84ef2558589 --out ncs5-replay.json`
+      where SUPABASE_URL names the preview branch, expected "identical
+      by proposal id and status" with 1,015 VALID and 22 held and
+      zero calls (a difference is a rule merged after the wake,
+      finding (94) and work package 19, and is the fix under test;
+      read it); (2) `extraction-cost-ledger.js --run` on both runs,
+      the two outputs beside the note; (3) the ablation snapshot
+      (`cost-ablation.js --run ... --sections 3.19,5.2,5.17
+      --dump-snapshot`) and the baseline variant, then the live ladder
+      at about $46 of Ben's credit on your word; (4) the console's
+      billed usage for the workspace over 13:27 to 20:47 UTC and the
+      workspace's output-tokens-per-minute limit for claude-opus-5
+      (eight loops need 42,000 a minute). Nothing in the LEAN config
+      is the default: V9 runs exactly as before until the ablation
+      table says which rungs hold.
+      Tests: tests/product-run-replay.test.js,
+      tests/product-lean-request-profile.test.js,
+      tests/product-cost-ablation.test.js, added to test:active
+      beside the ledger suite; tests/product-hosted-worker-pool.test.js
+      takes the new worker range. npm run test:active on the merged tree
+      of (182)'s push: 792 tests, 791 pass, the one failure the known
+      Codex-client final-message test.
+
+      (182) 2026-10-19 00:40 to 01:30 UTC (implementer E), the manager's
+      direction of 2026-10-18 22:30 UTC (finding (180) accepted; the
+      console figure "log not avail yet", the reconciliation line stays
+      pending) reconciled with (181), which was built on the brief's
+      terms before the direction arrived. Held as built: evidence_quotes
+      dropped where the components carry the words, the V1 roles dropped
+      from the request (finalisation checked first: a V10 call's
+      proposals skip the role check, the legacy-role note of finding
+      (65) untouched for V9 runs), span ids as a per-call alias table
+      (s1..sn) expanded before the compiler reads the answer, one
+      stable block that never changes per run plus the routed one, the
+      cached agreement, concurrency beyond two loops, the failed-attempt
+      and idle count (item 3: $13.84 and 69 call-minutes lost, every
+      cause fixed before this package by findings (74), (77), (81),
+      (83) and (87), the gate's uncommitted_attempt_cost_usd holds it at
+      zero). Added on the direction, each a request-profile setting and
+      a rung of the ladder, none the LEAN config's until the table says
+      it holds: `quote_mode: 'offsets'` (quote_offsets, the zero-based
+      character offsets of a component's words within the cited span's
+      exact_text; `resolveOffsetQuote` reads the words from the span, so
+      the verbatim check downstream is the span's own; the request and
+      answer contract are this package's, the validator's own
+      acceptance of offsets is implementer A's work package 21, to be
+      coordinated through the findings, not by editing each other's
+      files), `contracts_scope: 'all'` (every family's contracts and
+      table shapes in every extraction call's stable block with
+      `routed_families` named, the answer's allowed families, fact types
+      and subtypes still the routed ones: one stable block per call
+      kind for the run instead of 51), `context_mode: 'trimmed'`
+      (cross-references one hop deep, the sections the section's own
+      words name by "Section 5.2", "Article VI" or "Annex A",
+      `directlyReferencedNodeIds`, each whole and once, the rest listed
+      by section and first words). The thinking share measured, not
+      assumed: on a live call the visible answer's tokens are counted
+      by the API's own tokenizer (`count_tokens`, not billed) and taken
+      from the output tokens, per call and per section (`thinkingOf`;
+      the table shows "thinking N of M output (x%)"). The proof script
+      is `scripts/product/cost-ablation.js` (`lib/product/cost-ablation.js`;
+      renamed from section-ablation in (181)), built to run inside a
+      hosted worker sandbox through `createAnthropicApiProductModel`
+      (the sandbox holds the key at wake; no session reads it), the
+      three sections' stored closures, calls, work rows, proposals and
+      components from a snapshot file (`--run ... --dump-snapshot`),
+      one variant per `--variant` flag, and `--analysis-dir` writing
+      `stored.analysis.json` and `<variant>.analysis.json` in the
+      analysis read's shape for `compare-generations.js --v1-file
+      --v2-file` beside its own byte-matched table. The ladder is now
+      baseline, format, anchors, offsets, all_contracts, trimmed, lean,
+      lean_medium, lean_opus55, lean_opus55_medium, routing_sonnet,
+      routing_haiku; the nine extraction variants about $65 at the three
+      sections' size, the two routing variants under $1; the manager
+      chooses the rungs. Rate limits, from the platform's page through
+      the claude-api skill's live sources (not memory): `claude-opus-5`
+      has its own bucket, 400,000 output tokens a minute and 2,000,000
+      uncached input tokens a minute on the Start tier (1,000,000 and
+      5,000,000 on Build, 2,000,000 and 10,000,000 on Scale; cache reads
+      do not count towards input), so eight loops at 42,000 output
+      tokens a minute are a tenth of the Start tier and the sandbox and
+      the store's leases bound the concurrency, not the API; an
+      organisation new to the API may sit below Start until it has a
+      history, which the console's Rate limits page shows. Proven here
+      on Concho 6.3 through the synthetic routing: offsets resolved
+      from the span, every family's contract in the request with the
+      answer bound to NO_SHOP, the trimmed closure keeping the named
+      sections whole, the fact VALID
+      (tests/product-cost-ablation.test.js). Also in this push: the
+      recorded adapter's key tolerates an input without a prompt
+      version (the Modiv calibration's recordings; the active suite's
+      Modiv test failed on the first form of (181)'s callKey), and the
+      hosted worker's two tests take the one-to-eight range.
 
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 

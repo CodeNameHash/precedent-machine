@@ -1305,7 +1305,11 @@ test('a span cited by alias or id prefix, words named by offsets or anchors, evi
     components,
     ...extra,
   });
-  const baseline = wp20Compile({ canonical, reference: '3.27', proposals: [full([
+  const heading = 'Section 3.27 Reorganization Qualification.';
+  const chapeau = { span_id: 'abcdef12'.repeat(8), kind: 'CHAPEAU', structure_node_id: 'h'.repeat(64), start_byte: 0, end_byte: bytes(heading), exact_text: heading };
+  const inherited = { ref: 'c0', kind: 'TERM', label: 'heading', quote: heading, source_span_id: chapeau.span_id, occurrence: 0, origin: 'CHAPEAU', children: [] };
+  const baseline = wp20Compile({ canonical, reference: '3.27', contextSpans: [chapeau], proposals: [full([
+    inherited,
     own('c1', 'ACTOR', 'subject', subject),
     own('c2', 'OPERATION', 'no action taken', operation),
     own('c3', 'OBJECT', 'tax treatment', object),
@@ -1313,27 +1317,31 @@ test('a span cited by alias or id prefix, words named by offsets or anchors, evi
   const [before] = baseline.proposals;
   assert.equal(before.validation_status, 'VALID', issueLines(baseline));
   const closureSpans = baseline.source_closure ? baseline.source_closure.spans : null;
-  const aliases = spanAliases({ full_section_span_id: fullId, chapeau_span_ids: [], operative_span_ids: [], definition_span_ids: [], cross_reference_span_ids: [], spans: [{ span_id: fullId, kind: 'FULL_SECTION' }] });
-  assert.equal(aliases.bySpan.get(fullId), 'F');
+  assert.equal(spanAliases([{ span_id: fullId, kind: 'FULL_SECTION' }]).toAlias.get(fullId), 's1', "E's lean alias of the one span");
   // Component ids follow the fact id, which follows the evidence spans, so
   // the comparison is of the words, bytes and headline, not the ids.
   const shape = (proposal) => JSON.stringify({ status: proposal.validation_status, components: proposal.components.map((c) => [c.kind, c.text, c.start_byte, c.end_byte, c.origin]), headline: [proposal.headline.label, proposal.headline.summary, proposal.headline.distinguishing_component_ids.length] });
-  // (1) an integer alias from the response's table, a deterministic alias and a prefix; words by offsets and by anchors; no evidence_quotes, no roles.
-  const short = wp20Compile({ canonical, reference: '3.27', answer: { span_aliases: { 1: fullId } }, proposals: [{
+  // (1) an integer alias from the response's table, E's lean alias (s2 is
+  // the full section: the chapeau comes first in this closure) and a hex
+  // prefix; words by absolute offsets, by E's span-relative quote_offsets
+  // and by anchors under E's names; no evidence_quotes, no roles.
+  const short = wp20Compile({ canonical, reference: '3.27', contextSpans: [chapeau], answer: { span_aliases: { 1: fullId } }, proposals: [{
     subtype_key: 'NEGATIVE_REPRESENTATION',
     statement: 'The Company represents that neither it nor any Subsidiary has taken any action that would prevent the Intended Tax Treatment.',
     roles: undefined,
     components: [
+      { ref: 'c0', kind: 'TERM', label: 'heading', quote_offsets: [0, heading.length], source_span_id: 'abcdef12abcdef12', origin: 'CHAPEAU', children: [] },
       { ref: 'c1', kind: 'ACTOR', label: 'subject', start_byte: byteAt(subject), end_byte: byteAt(subject) + bytes(subject), source_span_id: 1, origin: 'OWN', children: [] },
-      { ref: 'c2', kind: 'OPERATION', label: 'no action taken', start_byte: byteAt(operation), end_byte: byteAt(operation) + bytes(operation), source_span_id: 'xxxxxxxxxx', origin: 'OWN', children: [] },
-      { ref: 'c3', kind: 'OBJECT', label: 'tax treatment', quote_start: 'prevent or preclude', quote_end: 'Intended Tax Treatment', source_span_id: 'f', origin: 'OWN', children: [] },
+      { ref: 'c2', kind: 'OPERATION', label: 'no action taken', quote_offsets: [canonical.indexOf(operation), canonical.indexOf(operation) + operation.length], source_span_id: 's2', origin: 'OWN', children: [] },
+      { ref: 'c3', kind: 'OBJECT', label: 'tax treatment', quote_from: 'prevent or preclude', quote_to: 'Intended Tax Treatment', source_span_id: 1, origin: 'OWN', children: [] },
     ],
   }] });
   const [after] = short.proposals;
   assert.equal(after.validation_status, 'VALID', issueLines(short));
   assert.equal(shape(after), shape(before), 'the same fact from the short form');
   assert.equal(after.evidence_derived, true);
-  assert.equal(after.source_span_ids.length, 3, 'the own components are the evidence');
+  assert.equal(after.source_span_ids.length, 4, 'every component is the evidence');
+  assert.deepEqual(after.components.map((component) => component.text), [heading, subject, operation, object]);
   assert.equal(short.issues.some((issue) => /ROLE|PROPOSAL_ROLES/.test(issue.code) && issue.kind !== 'NOTE'), false, issueLines(short));
   // Offsets name the occurrence by position: the second "has taken any action" is the second one.
   const second = canonical.lastIndexOf(operation);
@@ -1345,13 +1353,13 @@ test('a span cited by alias or id prefix, words named by offsets or anchors, evi
   // (2) anchors that name two runs are held; an occurrence picks one.
   const ambiguous = wp20Compile({ canonical, reference: '3.27', proposals: [full([
     own('c1', 'ACTOR', 'subject', subject),
-    { ref: 'c2', kind: 'OPERATION', label: 'action', quote_start: 'has taken', quote_end: 'any action', source_span_id: 'F', origin: 'OWN', children: [] },
+    { ref: 'c2', kind: 'OPERATION', label: 'action', quote_start: 'has taken', quote_end: 'any action', source_span_id: 's1', origin: 'OWN', children: [] },
   ])] });
   assert.equal(ambiguous.proposals[0].validation_status, 'INVALID');
   assert.ok(ambiguous.issues.some((issue) => issue.code === 'INVALID_FACT_COMPONENTS' && /ANCHORS_AMBIGUOUS/.test(issue.message)), issueLines(ambiguous));
   const picked = wp20Compile({ canonical, reference: '3.27', proposals: [full([
     own('c1', 'ACTOR', 'subject', subject),
-    { ref: 'c2', kind: 'OPERATION', label: 'action', quote_start: 'has taken', quote_end: 'any action', occurrence: 1, source_span_id: 'F', origin: 'OWN', children: [] },
+    { ref: 'c2', kind: 'OPERATION', label: 'action', quote_start: 'has taken', quote_end: 'any action', occurrence: 1, source_span_id: 's1', origin: 'OWN', children: [] },
   ])] });
   assert.equal(picked.proposals[0].validation_status, 'VALID', issueLines(picked));
   assert.equal(picked.proposals[0].components[1].start_byte, bytes(canonical.slice(0, second)));
@@ -1359,7 +1367,7 @@ test('a span cited by alias or id prefix, words named by offsets or anchors, evi
   // Anchors absent from the span hold.
   const absent = wp20Compile({ canonical, reference: '3.27', proposals: [full([
     own('c1', 'ACTOR', 'subject', subject),
-    { ref: 'c2', kind: 'OPERATION', label: 'action', quote_start: 'has refrained', quote_end: 'from action', source_span_id: 'F', origin: 'OWN', children: [] },
+    { ref: 'c2', kind: 'OPERATION', label: 'action', quote_start: 'has refrained', quote_end: 'from action', source_span_id: 's1', origin: 'OWN', children: [] },
   ])] });
   assert.equal(absent.proposals[0].validation_status, 'INVALID');
   assert.ok(absent.issues.some((issue) => /ANCHORS_NOT_FOUND/.test(issue.message)), issueLines(absent));
@@ -1372,7 +1380,7 @@ test('a span cited by alias or id prefix, words named by offsets or anchors, evi
   // (4) offsets outside the canonical text are held, never a crash; offsets that disagree with a quote beside them hold by name; an integer alias the table lacks holds by name.
   const outside = wp20Compile({ canonical, reference: '3.27', proposals: [full([
     own('c1', 'ACTOR', 'subject', subject),
-    { ref: 'c2', kind: 'OPERATION', label: 'action', start_byte: 10, end_byte: 5, source_span_id: 'F', origin: 'OWN', children: [] },
+    { ref: 'c2', kind: 'OPERATION', label: 'action', start_byte: 10, end_byte: 5, source_span_id: 's1', origin: 'OWN', children: [] },
   ])] });
   assert.equal(outside.proposals[0].validation_status, 'INVALID');
   assert.ok(outside.issues.some((issue) => /INVALID_OFFSETS/.test(issue.message)), issueLines(outside));
@@ -1394,7 +1402,6 @@ test('a span cited by alias or id prefix, words named by offsets or anchors, evi
   assert.equal(noAlias.proposals[0].validation_status, 'INVALID');
   assert.ok(noAlias.issues.some((issue) => /SPAN_ALIAS_UNKNOWN/.test(issue.message)), issueLines(noAlias));
   // Offsets inside the canonical text but outside the cited span hold by name.
-  const chapeau = { span_id: 'c'.repeat(64), kind: 'CHAPEAU', structure_node_id: 'h'.repeat(64), start_byte: 0, end_byte: bytes('Section 3.27 Reorganization Qualification.'), exact_text: 'Section 3.27 Reorganization Qualification.' };
   const elsewhere = wp20Compile({ canonical, reference: '3.27', contextSpans: [chapeau], proposals: [full([
     own('c1', 'ACTOR', 'subject', subject),
     { ref: 'c2', kind: 'OPERATION', label: 'action', start_byte: byteAt(operation), end_byte: byteAt(operation) + bytes(operation), source_span_id: chapeau.span_id, origin: 'OWN', children: [] },

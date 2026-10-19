@@ -2,37 +2,12 @@
 
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
-const fs = require('node:fs');
-const path = require('node:path');
 const test = require('node:test');
 
 process.env.PRODUCT_PHASE2_DB_HELPER_ONLY = '1';
 const database = require('./product-phase-2-db.test');
 delete process.env.PRODUCT_PHASE2_DB_HELPER_ONLY;
 
-const ROOT = path.resolve(__dirname, '..');
-const prerequisiteMigrations = [
-  'supabase/migrations/20260905070000_product_phase_3_review.sql',
-  'supabase/migrations/20260905203000_product_finalization_retry.sql',
-  'supabase/migrations/20260905205000_product_release_timing_guard.sql',
-  'supabase/migrations/20260905212000_product_review_citation_repair.sql',
-  'supabase/migrations/20260905213000_product_monotonic_failed_section_status.sql',
-  'supabase/migrations/20260905214000_product_cumulative_review_timing.sql',
-  'supabase/migrations/20260905215000_product_finding_resolution_validation.sql',
-  'supabase/migrations/20260905220000_product_review_proposition_group_repair.sql',
-  'supabase/migrations/20260905221000_product_analysis_running_progress.sql',
-  'supabase/migrations/20260905222000_product_relationship_review.sql',
-  'supabase/migrations/20260905223000_product_span_closure_lookup.sql',
-];
-const migration = fs.readFileSync(path.join(
-  ROOT, 'supabase/migrations/20260905224000_product_cross_section_relationship_staging.sql',
-), 'utf8');
-const schemaRevisionMigration = fs.readFileSync(path.join(
-  ROOT, 'supabase/migrations/20260905225000_product_legal_schema_v1_1_relationship_types.sql',
-), 'utf8');
-const noticeUpdateMigration = fs.readFileSync(path.join(
-  ROOT, 'supabase/migrations/20260905230000_product_notice_update_relationship_types.sql',
-), 'utf8');
 const sha = (value) => crypto.createHash('sha256').update(value).digest('hex');
 
 async function execute(sql) {
@@ -172,14 +147,13 @@ async function fixture({
   return { client, runId, sourceId, link, staging, relationshipSpanId };
 }
 
-test.before(async () => {
-  await database.setupDatabase();
-  for (const file of prerequisiteMigrations) await execute(fs.readFileSync(path.join(ROOT, file), 'utf8'));
-  await database.getDatabaseClient().query('SAVEPOINT before_cross_section_relationship_migration');
-  await execute(migration);
-  await execute(schemaRevisionMigration);
-  await execute(noticeUpdateMigration);
-});
+// The savepoint sits just before this migration in the full list (finding
+// (141)): the rollback at the end undoes it and every later one.
+test.before(() => database.setupDatabase({ hooks: {
+  '20260905224000_product_cross_section_relationship_staging.sql': {
+    before: (client) => client.query('SAVEPOINT before_cross_section_relationship_migration'),
+  },
+} }));
 
 test.after(async () => {
   const client = database.getDatabaseClient();
