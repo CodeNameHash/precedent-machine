@@ -1033,6 +1033,135 @@ test('a cross-reference to "this Article VI" resolves to the article node and th
   assert.equal(unresolved.proposals[0].validation_status, 'INVALID');
 });
 
+// Work package 22 (the manager's (216); the Sonnet 5.5 confirmation on NCS
+// generation 5): ten MAE carve-out, carve-back and underlying-cause facts
+// on 3.1 and 4.1 were held "CROSS_REFERENCE must resolve" because the
+// reference's words are the definition's own clause numbers ("clauses (1),
+// (2), (3), (4) and (7)", "this clause (10)"), which have no node of the
+// structure, and Sonnet gave no resolves_to where Opus 5 had filled it
+// with the section's node. The code now resolves the clause form from the
+// text; a plain "Section 2.1(a)" (8.3) resolves to its section; a LIST the
+// model wrote without words of its own takes its resolved elements' words
+// (5.16, 3.18).
+test('a cross-reference by clause number resolves to the clauses of the definition it sits in; a plain Section reference to its section; a wordless LIST takes its elements\' words', () => {
+  const definition = '"Material Adverse Effect" means any event, change or effect that is materially adverse to the Company, excluding (1) changes or conditions generally affecting the industry, (2) changes in Law, (3) changes in GAAP, (4) acts of war or terrorism, (5) the announcement of this Agreement, (6) any change in the market price of the Company Common Stock (provided, that the exception in this clause (6) shall not prevent a determination that the underlying cause has resulted in a Material Adverse Effect) or (7) seasonal fluctuations in revenue; provided that, with respect to clauses (1), (2), (3) and (4), the impact of such event is not disproportionately adverse to the Company as compared to other participants in the industry.';
+  const canonical = `Section 3.1 Organization, Standing and Power. The Company is duly organized. ${definition}\n`;
+  const fullId = 'x'.repeat(64);
+  const own = wp20Own(fullId);
+  const fact = (components, extra = {}) => ({
+    subtype_key: 'NEGATIVE_REPRESENTATION',
+    statement: 'The disproportionality carve-back applies to the industry, Law, GAAP and war carve-outs.',
+    evidence_quotes: [{ quote: 'is not disproportionately adverse to the Company', source_span_id: fullId, occurrence: 0 }],
+    components,
+    ...extra,
+  });
+  const compiled = wp20Compile({ canonical, reference: '3.1', proposals: [
+    // Sonnet's form: the clause numbers, no resolves_to.
+    fact([
+      own('c1', 'CROSS_REFERENCE', 'clauses subject to the carve-back', 'clauses (1), (2), (3) and (4)'),
+      own('c2', 'OPERATION', 'carve-back', 'is not disproportionately adverse to the Company'),
+    ]),
+    fact([
+      own('c1', 'CROSS_REFERENCE', 'share price exception', 'the exception in this clause (6)'),
+      own('c2', 'OPERATION', 'restoration', 'shall not prevent a determination that the underlying cause has resulted in a Material Adverse Effect'),
+    ]),
+    // Opus 5's form: the model's own resolves_to stands.
+    fact([
+      own('c1', 'CROSS_REFERENCE', 'clauses subject to the carve-back', 'with respect to clauses (1), (2), (3) and (4)', { resolves_to: { structure_node_id: 'n'.repeat(64), text: 'the carve-outs' } }),
+      own('c2', 'OPERATION', 'carve-back', 'is not disproportionately adverse to the Company'),
+    ]),
+    // A clause the text does not have stays unresolved and the fact held.
+    fact([
+      own('c1', 'CROSS_REFERENCE', 'clauses subject to the carve-back', 'clauses (1) and (9)'),
+      own('c2', 'OPERATION', 'carve-back', 'is not disproportionately adverse to the Company'),
+    ]),
+  ] });
+  const [carveBack, restoration, opus, missing] = compiled.proposals;
+  assert.equal(carveBack.validation_status, 'VALID', issueLines(compiled));
+  assert.equal(carveBack.components[0].resolves_to.structure_node_id, compiled.full.structure_node_id, 'the section the definition sits in');
+  assert.equal(carveBack.components[0].resolves_to.text, '(1) changes or conditions generally affecting the industry | (2) changes in Law | (3) changes in GAAP | (4) acts of war or terrorism');
+  assert.equal(restoration.validation_status, 'VALID', issueLines(compiled));
+  assert.match(restoration.components[0].resolves_to.text, /^\(6\) any change in the market price of the Company Common Stock \(provided, that the exception in this clause \(6\)/);
+  assert.equal(restoration.components[0].resolves_to.text.includes('(7) seasonal'), false, 'the clause ends at the next enumerator');
+  assert.equal(opus.validation_status, 'VALID', issueLines(compiled));
+  assert.deepEqual(opus.components[0].resolves_to, { structure_node_id: 'n'.repeat(64), text: 'the carve-outs' });
+  assert.equal(missing.validation_status, 'INVALID');
+  assert.ok(compiled.issues.some((issue) => issue.code === 'INVALID_FACT_COMPONENTS' && /CROSS_REFERENCE must resolve/.test(issue.message)), issueLines(compiled));
+
+  // A plain "Section 2.1(a)" resolves to its section node of the structure.
+  const { buildSourceClosure } = require('../lib/product/source-context');
+  const agreement = [
+    'AGREEMENT AND PLAN OF MERGER',
+    'ARTICLE II',
+    'THE MERGER',
+    'Section 2.1 Conversion of Capital Stock.',
+    '(a) Each Eligible Share shall be converted into the right to receive the Merger Consideration.',
+    'Section 2.3 Exchange Fund.',
+    'Parent shall deposit the Parent Ordinary Shares issuable pursuant to Section 2.1(a) with the Exchange Agent.',
+  ].join('\n');
+  const digest = sha(agreement);
+  const doc = {
+    schema_version: 'SOURCE_DOCUMENT/V1', source_document_id: digest, agreement_id: digest,
+    retrieval_url: 'https://www.sec.gov/Archives/edgar/data/1/000119312525000001/ex21.htm', final_url: 'https://www.sec.gov/Archives/edgar/data/1/000119312525000001/ex21.htm',
+    filing_accession: '0001193125-25-000001', exhibit_filename: 'ex21.htm', source_map_id: digest, canonical_text: agreement, canonical_text_sha256: digest,
+  };
+  const agreementStructure = buildAgreementStructure(doc);
+  const conversion = agreementStructure.nodes.find((candidate) => candidate.reference === '2.1');
+  const exchange = agreementStructure.nodes.find((candidate) => candidate.reference === '2.3');
+  assert.ok(conversion && exchange);
+  const exchangeClosure = buildSourceClosure({ sourceDocument: doc, agreementStructure, nodeId: exchange.node_id });
+  const exchangeSpan = exchangeClosure.spans.find((candidate) => candidate.span_id === exchangeClosure.full_section_span_id);
+  const sectionOwn = (ref, kind, label, quote, extra = {}) => ({ ref, kind, label, quote, source_span_id: exchangeSpan.span_id, occurrence: 0, origin: 'OWN', children: [], ...extra });
+  const deposited = compileExtraction({
+    sourceDocument: doc, legalSchema: legalSchemaV2, node: { node_id: exchange.node_id, reference: '2.3', kind: 'SECTION' }, closure: exchangeClosure, call,
+    routedFamilies: ['CONSIDERATION'], ownedNodeIds: new Set([exchange.node_id]), agreementStructure,
+    response: {
+      proposals: [{ client_ref: 'p1', group_ref: 'g1', family_key: 'CONSIDERATION', subtype_key: 'EXCHANGE_MECHANICS', fact_type: 'PER_SHARE_CASH_CONSIDERATION',
+        statement: 'Parent deposits the Parent Ordinary Shares issuable under Section 2.1(a) with the Exchange Agent.',
+        roles: { LEGAL_ACTOR_OR_SUBJECT: 'Parent', LEGAL_OPERATION: 'shall deposit', OPERATIVE_OBJECT: 'the Parent Ordinary Shares' },
+        value: null, evidence_quotes: [{ quote: 'Parent shall deposit the Parent Ordinary Shares issuable pursuant to Section 2.1(a)', source_span_id: exchangeSpan.span_id, occurrence: 0 }],
+        headline: { label: 'Exchange fund', distinguishing_refs: ['c2'], summary: 'Parent deposits the share consideration with the Exchange Agent' },
+        components: [
+          sectionOwn('c1', 'ACTOR', 'depositor', 'Parent'),
+          sectionOwn('c2', 'OPERATION', 'deposit', 'shall deposit the Parent Ordinary Shares issuable pursuant to Section 2.1(a)', { children: [sectionOwn('c2a', 'CROSS_REFERENCE', 'conversion provision', 'Section 2.1(a)')] }),
+        ] }],
+      groups: [{ client_ref: 'g1', family_key: 'CONSIDERATION', subtype_key: 'EXCHANGE_MECHANICS' }],
+      links: [],
+    },
+  });
+  assert.equal(deposited.proposals.length, 1, issueLines(deposited));
+  const [deposit] = deposited.proposals;
+  const sectionReference = deposit.components[1].children[0];
+  assert.equal(sectionReference.resolves_to?.structure_node_id, conversion.node_id, issueLines(deposited));
+  assert.equal(deposited.issues.some((issue) => /CROSS_REFERENCE must resolve/.test(issue.message)), false, issueLines(deposited));
+
+  // A LIST with no words of its own and every element resolved takes the
+  // elements' words; the note says so.
+  const welfare = 'Section 5.16 Employee Matters. Parent shall cause each welfare plan to waive all preexisting conditions or limitations, eligibility waiting periods, actively at work requirements and evidence of insurability requirements for the Continuing Employees.\n';
+  const listed = wp20Compile({ canonical: welfare, reference: '5.16', proposals: [{
+    subtype_key: 'NEGATIVE_REPRESENTATION',
+    statement: 'Parent causes each welfare plan to waive preexisting condition limitations, waiting periods, actively-at-work and insurability requirements.',
+    evidence_quotes: [{ quote: 'waive all preexisting conditions or limitations', source_span_id: fullId, occurrence: 0 }],
+    components: [
+      own('c1', 'OPERATION', 'waiver', 'waive all'),
+      { ref: 'c2', kind: 'LIST', label: 'waived requirements', source_span_id: fullId, origin: 'OWN', children: [
+        own('c2a', 'LIST_ELEMENT', 'preexisting conditions', 'preexisting conditions or limitations'),
+        own('c2b', 'LIST_ELEMENT', 'waiting periods', 'eligibility waiting periods'),
+        own('c2c', 'LIST_ELEMENT', 'actively at work', 'actively at work requirements'),
+        own('c2d', 'LIST_ELEMENT', 'insurability', 'evidence of insurability requirements'),
+      ] },
+    ],
+  }] });
+  const [waiver] = listed.proposals;
+  assert.equal(waiver.validation_status, 'VALID', issueLines(listed));
+  const list = waiver.components[1];
+  assert.equal(list.kind, 'LIST');
+  assert.equal(list.text, 'preexisting conditions or limitations, eligibility waiting periods, actively at work requirements and evidence of insurability requirements');
+  assert.equal(list.start_byte, list.children[0].start_byte);
+  assert.equal(list.end_byte, list.children[3].end_byte);
+  assert.deepEqual(JSON.parse(listed.issues.find((issue) => issue.code === 'LIST_WORDS_FROM_ELEMENTS').message), { client_ref: 'p1', lists: [{ path: '1', elements: 4 }] });
+});
+
 // Work package 20 (implementer B's defects (5) to (7) and rule, finding
 // (105); the manager's (168); 2026-10-18). The fixtures below are cut from
 // the NCS filing as stored for generation 5.
