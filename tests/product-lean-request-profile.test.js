@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 const test = require('node:test');
 const { cacheableContent, splitRequestForCache, createAnthropicApiProductModel, ROUTED_KEYS } = require('../lib/product/anthropic-api-model');
 const {
-  ANTHROPIC_API_DEFAULT_MODEL_CONFIG, ANTHROPIC_API_LEAN_MODEL_CONFIG, ANTHROPIC_API_MODEL_CONFIG, ANTHROPIC_API_REQUEST_PROFILES, ANTHROPIC_API_PRICES,
+  ANTHROPIC_API_DEFAULT_MODEL_CONFIG, ANTHROPIC_API_SONNET_MODEL_CONFIG, ANTHROPIC_API_LEAN_MODEL_CONFIG, ANTHROPIC_API_MODEL_CONFIG, ANTHROPIC_API_REQUEST_PROFILES, ANTHROPIC_API_PRICES,
   anthropicApiConfigForEnvironment, anthropicApiModelConfigFor, assertRunModelConfig, hostedModelConfigFor, requestProfileFor, resolveAnthropicApiCallModel,
 } = require('../lib/product/product-model-config');
 const { extractionPartConcurrency, leanClosureForModel, mapWithConcurrency, normaliseLeanResponse, resolveAnchoredQuote, spanAliases } = require('../lib/product/agreement-draft');
@@ -38,7 +38,8 @@ test('the lean config is a known API config by identity, with its own profile, a
   assert.equal(anthropicApiModelConfigFor({ ...ANTHROPIC_API_LEAN_MODEL_CONFIG, thinking: 'off' }), null);
   assert.deepEqual(resolveAnthropicApiCallModel(ANTHROPIC_API_LEAN_MODEL_CONFIG, 'EXTRACTION'), { model: 'claude-opus-5', effort: 'high' });
   assert.throws(() => resolveAnthropicApiCallModel({ ...ANTHROPIC_API_LEAN_MODEL_CONFIG, model_id: 'OTHER' }, 'EXTRACTION'), /PRODUCT_ANTHROPIC_API_MODEL_CONFIG_UNSUPPORTED/);
-  assert.equal(anthropicApiConfigForEnvironment({}), ANTHROPIC_API_DEFAULT_MODEL_CONFIG, 'work package E3: the default');
+  assert.equal(anthropicApiConfigForEnvironment({}), ANTHROPIC_API_SONNET_MODEL_CONFIG, 'work package E6: the default, Sonnet 5.5 for extraction');
+  assert.equal(anthropicApiConfigForEnvironment({ PRODUCT_REQUEST_PROFILE: 'OPUS' }), ANTHROPIC_API_DEFAULT_MODEL_CONFIG, 'work package E3\'s default by name');
   assert.equal(anthropicApiConfigForEnvironment({ PRODUCT_REQUEST_PROFILE: 'V9' }), ANTHROPIC_API_MODEL_CONFIG);
   assert.equal(anthropicApiConfigForEnvironment({ PRODUCT_REQUEST_PROFILE: 'LEAN', PRODUCT_ANTHROPIC_API_PROFILE: 'V9' }), ANTHROPIC_API_MODEL_CONFIG, 'the API\'s own switch wins');
   assert.equal(anthropicApiConfigForEnvironment({ PRODUCT_ANTHROPIC_API_PROFILE: 'lean' }), ANTHROPIC_API_LEAN_MODEL_CONFIG);
@@ -46,7 +47,7 @@ test('the lean config is a known API config by identity, with its own profile, a
   // A run created under the lean config advances under it whatever the environment says.
   const run = { run_id: 'r', model_config: ANTHROPIC_API_LEAN_MODEL_CONFIG };
   assert.equal(hostedModelConfigFor('ANTHROPIC_API', run, {}), ANTHROPIC_API_LEAN_MODEL_CONFIG);
-  assert.equal(hostedModelConfigFor('ANTHROPIC_API', null, {}), ANTHROPIC_API_DEFAULT_MODEL_CONFIG);
+  assert.equal(hostedModelConfigFor('ANTHROPIC_API', null, {}), ANTHROPIC_API_SONNET_MODEL_CONFIG);
   assert.equal(hostedModelConfigFor('ANTHROPIC_API', { model_config: ANTHROPIC_API_MODEL_CONFIG }, {}), ANTHROPIC_API_MODEL_CONFIG, 'a run created under V1 keeps it');
   assert.doesNotThrow(() => assertRunModelConfig(run, hostedModelConfigFor('ANTHROPIC_API', run, {})));
   assert.throws(() => assertRunModelConfig(run, ANTHROPIC_API_MODEL_CONFIG), /PRODUCT_RUN_MODEL_CONFIG_MISMATCH/);
