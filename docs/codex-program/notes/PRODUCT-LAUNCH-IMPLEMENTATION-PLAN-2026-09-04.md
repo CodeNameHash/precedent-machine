@@ -8319,7 +8319,9 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       tests/product-default-request-profile.test.js and
       tests/product-fresh-sheet-experiments.test.js (DEFAULT_CLI, the
       per-provider profile), tests/product-lean-request-profile.test.js.
-      npm run test:active: see the push.
+      npm run test:active on a clean checkout of the commit: 835 tests,
+      834 pass, the one failure the known Codex-client final-message
+      test.
 
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
