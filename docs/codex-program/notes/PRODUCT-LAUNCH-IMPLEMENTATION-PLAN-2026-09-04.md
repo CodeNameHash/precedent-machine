@@ -5254,6 +5254,44 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       which says whether the 3.1 and 4.1 holds repeat and whether Opus
       5.5 medium writes the reference the same way. The two deals
       paused ((175)); no intake ((172)).
+      (217) 2026-10-19 15:54 UTC (the manager): the variance job of
+      (216) is DONE (pm-ablation-20261019T151819Z, 15:18 to 15:54 UTC,
+      the sandbox at 7c82fea4, three sections at once, E's (193) retry
+      on; the seven sections that lost facts or failed in the
+      confirmation: 3.1, 4.1, 3.2, 2.3, 4.10, 3.10, 5.17; 151 stored
+      facts). anchors_sonnet55 again: 126 matched, 13 partial, 12
+      unmatched, 8 held; 322,725 output tokens. anchors_opus55_medium:
+      142 matched, 3 partial, 6 unmatched, 1 held; 308,371 output
+      tokens, fewer than Sonnet's. Section by section, Sonnet against
+      Opus 5.5 medium: 3.1 14 / 2 / 8 (6 held, CROSS_REFERENCE must
+      resolve) against 20 / 1 / 3 (1 held); 4.1 17 / 1 / 0, no hold,
+      against 17 / 1 / 0 (so Sonnet's seven holds on 4.1 in the
+      confirmation did not repeat: whether it fills resolves_to varies
+      run to run); 3.2 17 / 8 / 2 (the eight partials the
+      capitalisation numbers in fewer words) against 25 / 0 / 2; 2.3
+      34 / 2 / 1 against 35 / 1 / 1; 5.17 40 / 0 / 1 (the retry
+      recovered the section that failed whole in the confirmation; the
+      one lost the registration-rights indemnity cap (167) cuts)
+      against 41 / 0 / 0; 3.10 and 4.10 whole on both. The facts the
+      model itself omits are the same five on both tiers and on all
+      three runs so far: the four REPRESENTATION_QUALIFICATION facts
+      (3.1 and 3.2, the Disclosure Letter and SEC Documents qualifiers)
+      and 2.3's Exchange Fund definition; the stored Opus 5 at high
+      effort wrote them, the cheaper tiers do not: a contract
+      instruction matter (A's work package 22 item 4), not a tier
+      matter. Sonnet's other losses are the resolves_to holds A's
+      resolver change recovers, and its partials are the same facts in
+      fewer words. Reading: with A's change in, Sonnet 5.5 and Opus
+      5.5 medium match the same facts on these sections; Opus 5.5
+      medium writes fuller statements (3 partials against 13) and
+      holds steadier run to run, at about twice Sonnet's price and
+      about half the stored run's. Ben's tier stands unless he weighs
+      the fuller words; to give him the whole-agreement number for the
+      alternative, pm-ablation-20261019T155504Z fired at 15:55 UTC:
+      every section on anchors_opus55_medium, four sections at once
+      ((193)'s loops, their first use), about an hour. E's second job
+      (the two Sonnet levers) goes after it. The two deals paused
+      ((175)); no intake ((172)); 244acaa held.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
