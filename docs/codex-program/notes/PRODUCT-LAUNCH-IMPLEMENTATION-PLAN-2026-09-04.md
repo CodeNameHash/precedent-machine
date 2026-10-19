@@ -6837,6 +6837,48 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       anchors (1,066 of 1,066) are the same facts, the 22 held the same
       way with the same issues. Nothing else changed; no code in this
       finding.
+      (202) 2026-10-19 08:45 to 09:15 UTC (implementer A), from E's
+      (188) and the manager's (210), read against the canonical text
+      (nothing assigned; no run touched): the Registration Statement fact
+      the trimmed rung lost on 5.17 opens on "The Registration\n57\n
+      Statement (or any prospectus or prospectus supplement ...), as
+      initially filed" (canonical byte 228,113): an SEC page footer
+      inside the first words of its ACTOR component. Under anchors the
+      model names the first words without the number ("The Registration
+      Statement (or"), as the component instruction tells it to for a
+      quote, and work package 21's `anchorMatchesWithin` matched each
+      anchor phrase byte for byte, so the anchor was never found and the
+      component held ANCHORS_NOT_FOUND ("two unresolved anchors" on
+      trimmed's 5.17 row), while the same words as a quote match under
+      work package 20 (b)'s footer rule. That is a gap in my work package
+      21, not in the trimmed context: (200) said every form resolves
+      through the same footer rules, and the anchor phrases did not.
+      Fixed in lib/product/agreement-draft.js: an anchor phrase is found
+      verbatim or, when it has no verbatim occurrence in the span, with
+      a footer line skipped between two of its words (`anchorPhraseMatches`,
+      the same rule as `footerTolerantMatches`: the match must enclose a
+      footer line, so whitespace alone never relaxes the verbatim rule);
+      a run that holds a footer line, in an anchor or between the
+      anchors, carries it as `page_footer_skipped`. Pinned in
+      tests/product-fact-components-extraction.test.js with the 5.17
+      words: the fact compiles VALID with the component's bytes running
+      across the footer and its text the canonical bytes, and an anchor
+      with two spaces in a run without a footer still holds
+      ANCHORS_NOT_FOUND. Replay of the stored NCS generation 5 answers
+      (scripts/product/replay-answer-forms.js, unique anchors with the
+      alias table) is unchanged: 1,066 of 1,066 the same facts, 1,044
+      VALID and 22 held, 2.77 MB against 4.69 MB; the stored quotes
+      stopped at footers and crossed none, so no stored anchor crosses
+      one, and the second ladder run is where this shows (trimmed's and
+      direct_definitions' 5.17 rows should read 41 of 41 if the footer
+      was the whole of the Registration Statement loss; the aggregate
+      amount fact direct_definitions lost has no footer in its words,
+      bytes 239,905 on, so its hold is of another kind, as (188) says,
+      and the codes (188) now writes will name it). Whether the second
+      run's anchors should be longer is the manager's call; this change
+      makes the length irrelevant to a footer. npm run test:active on
+      the commit: 838 tests, 837 pass, the one failure the known
+      Codex-client final-message test.
       (120) 2026-10-18 19:10 to 19:45 UTC (implementer C), Q5: the limb
       names harvested. `scripts/product/harvest-rep-limbs.js` (library
       `lib/product/rep-limb-harvest.js`, `tests/product-rep-limb-harvest.test.js`)

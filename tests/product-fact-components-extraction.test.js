@@ -1371,6 +1371,40 @@ test('a span cited by alias or id prefix, words named by offsets or anchors, evi
   ])] });
   assert.equal(absent.proposals[0].validation_status, 'INVALID');
   assert.ok(absent.issues.some((issue) => /ANCHORS_NOT_FOUND/.test(issue.message)), issueLines(absent));
+  // Ablation run 1 (finding (188); NCS generation 5, 5.17): the trimmed rung
+  // lost the Registration Statement fact to ANCHORS_NOT_FOUND because its
+  // first words run across a page footer, "The Registration\n57\nStatement
+  // (or any prospectus". An anchor across a footer is found as a quote
+  // across one is (work package 20 (b)); the footer is recorded; whitespace
+  // alone still never relaxes the verbatim rule.
+  const paged = 'Section 5.17 Registration Rights. The Registration\n57\nStatement (or any prospectus or prospectus supplement forming a part of such Registration Statement), as initially filed, shall include the Registrable Securities of the Specified Stockholders.\n';
+  const pagedFact = (first, last) => wp20Compile({ canonical: paged, reference: '5.17', proposals: [{
+    subtype_key: 'NEGATIVE_REPRESENTATION',
+    statement: 'The Registration Statement as initially filed shall include the Registrable Securities of the Specified Stockholders.',
+    components: [
+      { ref: 'c1', kind: 'ACTOR', label: 'registration statement', quote_start: first, quote_end: last, source_span_id: 's1', origin: 'OWN', children: [] },
+      { ref: 'c2', kind: 'OPERATION', label: 'inclusion', quote_start: 'shall include', quote_end: 'Specified Stockholders', source_span_id: 's1', origin: 'OWN', children: [] },
+    ],
+  }] });
+  const acrossFooter = pagedFact('The Registration Statement (or', 'as initially filed');
+  assert.equal(acrossFooter.proposals[0].validation_status, 'VALID', issueLines(acrossFooter));
+  const [actor] = acrossFooter.proposals[0].components;
+  assert.equal(actor.start_byte, bytes(paged.slice(0, paged.indexOf('The Registration\n57'))));
+  assert.equal(actor.end_byte, bytes(paged.slice(0, paged.indexOf('as initially filed') + 'as initially filed'.length)), 'the run opens on the anchor across the footer and closes on the last words');
+  assert.match(actor.text, /^The Registration\n57\nStatement \(or any prospectus/, 'the text is the canonical bytes, footer included');
+  assert.equal(acrossFooter.proposals[0].components[1].text, 'shall include the Registrable Securities of the Specified Stockholders');
+  // The footer is not a licence for other whitespace differences: an anchor
+  // whose run holds no footer must be verbatim.
+  const doubleSpaced = wp20Compile({ canonical: paged, reference: '5.17', proposals: [{
+    subtype_key: 'NEGATIVE_REPRESENTATION',
+    statement: 'The Registration Statement as initially filed shall include the Registrable Securities of the Specified Stockholders.',
+    components: [
+      { ref: 'c1', kind: 'ACTOR', label: 'registration statement', quote_start: 'The Registration Statement (or', quote_end: 'as initially filed', source_span_id: 's1', origin: 'OWN', children: [] },
+      { ref: 'c2', kind: 'OPERATION', label: 'inclusion', quote_start: 'shall  include', quote_end: 'Specified Stockholders', source_span_id: 's1', origin: 'OWN', children: [] },
+    ],
+  }] });
+  assert.equal(doubleSpaced.proposals[0].validation_status, 'INVALID', 'two spaces are not a footer');
+  assert.ok(doubleSpaced.issues.some((issue) => /ANCHORS_NOT_FOUND/.test(issue.message)), issueLines(doubleSpaced));
   // (3) an alias no closure span answers to is an unknown span, as an unknown id is.
   const unknown = wp20Compile({ canonical, reference: '3.27', proposals: [full([
     own('c1', 'ACTOR', 'subject', subject),
