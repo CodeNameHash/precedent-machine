@@ -7470,6 +7470,103 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       Modiv test failed on the first form of (181)'s callKey), and the
       hosted worker's two tests take the one-to-eight range.
 
+      (183) 2026-10-19 02:55 to 04:30 UTC (implementer E), work package
+      E2, the ablation through the wake path. No run submitted, woken
+      or retried; no live call; no sandbox touched; no key read. (a)
+      The job: `POST /api/product/ablation`
+      (`lib/product/ablation-handler.js`, a sibling of the run route;
+      `scripts/product-hosted-worker.js` and the run route untouched,
+      implementer D's), opened by the internal bearer token alone (a
+      browser session is refused: the job spends subscription capacity
+      on purpose), with `{ run_id, sections, variants, sandbox_name?,
+      provider? }`; `wakeSandboxAblation` (lib/product/sandbox-wake.js)
+      resumes the experiments sandbox `pm-codex-preview-worker-3`
+      (`ABLATION_SANDBOX_NAME`, outside the run pool so no run is ever
+      placed on it; the create and update scripts take it by `--name`),
+      gives its session MINIMUM_SESSION_MS, and runs
+      `infra/codex-sandbox-worker/ablation-launch.sh` detached with the
+      job id (`pm-ablation-<timestamp>`), the run id, the sections and
+      the variants as arguments and the same environment a run wake
+      passes (the preview database URL and key, PRODUCT_MODEL_PROVIDER,
+      the CLI's OAuth token or the API key; the launcher's own checks,
+      its own lock /vercel/.codex/pm-ablation.lock). The launcher dumps
+      the snapshot on the sandbox from the database and runs
+      `cost-ablation.js --live --provider <the wake's>`, writing
+      job.log, ablation-rows.json, ablation.md, ablation.json,
+      ablation-recording.json, analysis/ (for compare-generations) and
+      exit-code under /vercel/sandbox/<job id>/ and nothing to the
+      product tables. (b) `{ status: true, job_id? }` runs a fixed
+      status shell on the sandbox (`ablationStatusScript`, the job id
+      validated to its pattern, nothing else variable) and returns the
+      job directory, the jobs present, RUNNING / DONE / FAILED /
+      NOT_FOUND, the exit code, the log tail (12,000 bytes) and the
+      table once written. Errors answer as the run route's do (a gone
+      sandbox 503 naming it, a missing credential 503 with the code in
+      the deployment log, a bad body 400 with the code). (c) The CLI
+      path of cost-ablation.js: `--provider` (PRODUCT_MODEL_PROVIDER as
+      the wake passes it, else the API) builds
+      `createClaudeCliProductModel({ callKindModels })`, the variant's
+      models through the CLI's --model and --effort (the one addition
+      to lib/product/claude-cli-model.js; a run never passes it);
+      `variantAvailability` says what the CLI can express: the lean*
+      rungs' agreement block is an API cache breakpoint the CLI does
+      not control, so they are listed as not run in the table, the json
+      and the script's first line, never faked; a two-block rung sends
+      the same words with the note that the cache split reported is
+      the CLI's own; the CLI-expressible model rungs added are
+      anchors_medium, anchors_opus55 and anchors_opus55_medium (the
+      lean_* tier changes on the inline context). On the CLI the
+      thinking share is what the CLI reports per call
+      (usage.output_tokens_details.thinking_tokens, read from Metsera
+      generation 8's stored calls: 5,041 of 10,208 on one 96-second
+      extraction), the list-price cost its model_usage costUSD, the
+      seconds its duration_api_ms; the table says "reported" or
+      "count_tokens" beside every thinking figure and "thinking not
+      reported" when neither. (d) Proven on the phase-1 fixture
+      (tests/product-ablation-wake.test.js, 6 tests): the fixture
+      through the pipeline on a synthetic model as the stored run (one
+      VALID termination fact in 3.1 with its component bytes); the CLI
+      path on baseline, format, lean and routing_haiku through a fake
+      `claude -p` client (format: one live extraction on
+      claude-opus-5 at high effort, the fact matched on the bytes, the
+      CLI's thinking, cache reads and list cost in the row; lean: not
+      run, listed; routing_haiku: routing and residual on
+      claude-haiku-5-5 at low effort through --model, the routing
+      agreed and the extraction replayed from the stored call); then
+      the same ladder from the recording through
+      `createRecordedModelAdapter` with the fake CLI never called and
+      the recording exhausted, the same fact by occurrence and bytes;
+      the script's main from a snapshot and a recording on the CLI
+      provider writing ablation.md ("Not expressible on this provider,
+      listed and not run: lean"), ablation.json and the three analysis
+      files; the wake's exact command (launcher, arguments, the run
+      wake's environment, no secret in the answer) and its refusals
+      (an unknown sandbox, a shell character in a section, a wrong
+      variant name, a missing credential, the production database);
+      the status shell and its parse; the route's 401 without the
+      bearer, 202 with the job, the API's key when named and the CLI's
+      token otherwise, 400s, 503s, 405. For the manager, in order: (1)
+      create the experiments sandbox,
+      `node scripts/product/create-sandbox-worker.js --provider
+      ANTHROPIC_CLAUDE_CLI_SUBSCRIPTION --name pm-codex-preview-worker-3`
+      (the branch tip after this push; the launcher is in the
+      checkout); (2) the job, the two curl lines in the note's section
+      12 (the twelve variants in the order given; the CLI lists lean as
+      not run); (3) `{status:true}` until DONE, then send the table and
+      the json; `analysis/` is there for compare-generations when
+      wanted. Known limits: one job at a time per sandbox (the lock;
+      a second wake waits up to an hour); a job runs as long as the
+      session the wake gave it (four hours; the twelve variants on
+      three sections are well inside); the route reads no database
+      and does not check the run exists, the job's first log line
+      says so if it does not.
+      Tests: tests/product-ablation-wake.test.js, added to test:active;
+      tests/product-sandbox-worker-scripts.test.js takes the
+      experiments sandbox; tests/product-cost-ablation.test.js takes
+      the thinking source. npm run test:active before the merge of
+      origin: 804 tests, 803 pass, the one failure the known
+      Codex-client final-message test.
+
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
 - [x] Take a database backup and restore it to a separate environment.

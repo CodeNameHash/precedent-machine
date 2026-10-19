@@ -251,8 +251,11 @@ test('the create script takes --name for one sandbox of the pool, else the whole
   assert.deepEqual(parseArguments(['--name', 'pm-codex-preview-worker-2'], {}).names, ['pm-codex-preview-worker-2']);
   assert.deepEqual(parseArguments(['--name', 'pm-codex-preview-worker', '--provider', CLAUDE_CLI_PROVIDER_ID], {}).names, ['pm-codex-preview-worker']);
   assert.deepEqual(parseArguments([], {}).names, [...SANDBOX_POOL]);
-  assert.throws(() => parseArguments(['--name', 'pm-codex-preview-worker-3'], {}), /--name must be a sandbox of the pool \(pm-codex-preview-worker, pm-codex-preview-worker-2\), not pm-codex-preview-worker-3/);
-  assert.throws(() => parseArguments(['--name', 'worker'], {}), /--name must be a sandbox of the pool/);
+  // Work package E2: the experiments sandbox is created by name for the
+  // ablation job; it is never part of the run pool.
+  assert.deepEqual(parseArguments(['--name', 'pm-codex-preview-worker-3', '--provider', CLAUDE_CLI_PROVIDER_ID], {}).names, ['pm-codex-preview-worker-3']);
+  assert.throws(() => parseArguments(['--name', 'pm-codex-preview-worker-4'], {}), /--name must be a sandbox of the pool or the experiments sandbox \(pm-codex-preview-worker, pm-codex-preview-worker-2, pm-codex-preview-worker-3\), not pm-codex-preview-worker-4/);
+  assert.throws(() => parseArguments(['--name', 'worker'], {}), /--name must be a sandbox of the pool or the experiments sandbox/);
 });
 
 test('the create script provisions each missing sandbox of the pool under its own name and leaves an existing one to the update script', async () => {
@@ -276,14 +279,15 @@ test('the create script provisions each missing sandbox of the pool under its ow
   const one = fakeSandboxApi({ onGet: () => { throw apiError(404, 'not found'); } });
   await createSandboxPool({ Sandbox: one, names: ['pm-codex-preview-worker-2'], branch: 'main', providerId: ANTHROPIC_API_PROVIDER_ID, credentials, log: () => {} });
   assert.deepEqual(one.calls.creates.map((params) => params.name), ['pm-codex-preview-worker-2']);
-  await assert.rejects(createSandboxWorker({ Sandbox: one, name: 'pm-codex-preview-worker-9', branch: 'main', providerId: ANTHROPIC_API_PROVIDER_ID, credentials, log: () => {} }), /not a sandbox of the pool/);
+  await assert.rejects(createSandboxWorker({ Sandbox: one, name: 'pm-codex-preview-worker-9', branch: 'main', providerId: ANTHROPIC_API_PROVIDER_ID, credentials, log: () => {} }), /not a sandbox of the pool or the experiments sandbox/);
 });
 
 test('the update script takes --name, --force and the branch, and refuses a name outside the pool', () => {
   assert.deepEqual(updateScript.parseArguments([]), { branch: 'codex/product-implementation-plan-20260904', names: [...SANDBOX_POOL], force: false });
   assert.deepEqual(updateScript.parseArguments(['main', '--name', 'pm-codex-preview-worker-2', '--force']), { branch: 'main', names: ['pm-codex-preview-worker-2'], force: true });
   assert.deepEqual(updateScript.parseArguments(['--branch', 'main']).branch, 'main');
-  assert.throws(() => updateScript.parseArguments(['--name', 'pm-codex-preview-worker-3']), /--name must be a sandbox of the pool/);
+  assert.deepEqual(updateScript.parseArguments(['--name', 'pm-codex-preview-worker-3']).names, ['pm-codex-preview-worker-3']);
+  assert.throws(() => updateScript.parseArguments(['--name', 'pm-codex-preview-worker-4']), /--name must be a sandbox of the pool or the experiments sandbox/);
   assert.throws(() => updateScript.parseArguments(['bad branch']), /unexpected characters/);
   assert.throws(() => updateScript.parseArguments(['--other']), /unknown option/);
 });

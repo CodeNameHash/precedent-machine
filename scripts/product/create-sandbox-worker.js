@@ -35,8 +35,7 @@
 // provider's login (finding (49): the Codex device login runs here; the
 // Claude CLI needs no login in the sandbox, its OAuth token arrives per wake).
 
-const { SANDBOX_NAME, SANDBOX_POOL, SANDBOX_WORKDIR, MINIMUM_SESSION_MS, isSandboxGone, sandboxCredentials } = require('../../lib/product/sandbox-wake');
-const { isSandboxPoolName } = require('../../lib/product/sandbox-pool');
+const { KNOWN_SANDBOX_NAMES, SANDBOX_NAME, SANDBOX_POOL, SANDBOX_WORKDIR, MINIMUM_SESSION_MS, isKnownSandboxName, isSandboxGone, sandboxCredentials } = require('../../lib/product/sandbox-wake');
 const { ANTHROPIC_API_PROVIDER_ID, CLAUDE_CLI_PROVIDER_ID, CODEX_PROVIDER_ID, isHostedProvider } = require('../../lib/product/product-model-config');
 
 const REPO = 'https://github.com/CodeNameHash/precedent-machine.git';
@@ -58,7 +57,9 @@ function parseArguments(argv, env = process.env) {
     if (argument === '--branch') { options.branch = argv[index + 1]; index += 1; continue; }
     if (argument === '--name') {
       const name = argv[index + 1];
-      if (!isSandboxPoolName(name, SANDBOX_POOL)) throw new TypeError(`--name must be a sandbox of the pool (${SANDBOX_POOL.join(', ')}), not ${name}`);
+      // The pool, or the experiments sandbox (work package E2: created for
+      // the CLI provider, used by the ablation job, never by a run).
+      if (!isKnownSandboxName(name)) throw new TypeError(`--name must be a sandbox of the pool or the experiments sandbox (${KNOWN_SANDBOX_NAMES.join(', ')}), not ${name}`);
       options.names = [name];
       index += 1;
       continue;
@@ -109,7 +110,7 @@ async function resumeOrClear(Sandbox, credentials, log, name = SANDBOX_NAME) {
 async function createSandboxWorker({ Sandbox, branch, providerId, name = SANDBOX_NAME, credentials = sandboxCredentials(), log = console.log, stdout = process.stdout }) {
   const setup = PROVIDER_SETUP[providerId];
   if (!setup) throw new TypeError(`unsupported provider ${providerId}`);
-  if (!isSandboxPoolName(name, SANDBOX_POOL)) throw new TypeError(`${name} is not a sandbox of the pool (${SANDBOX_POOL.join(', ')})`);
+  if (!isKnownSandboxName(name)) throw new TypeError(`${name} is not a sandbox of the pool or the experiments sandbox (${KNOWN_SANDBOX_NAMES.join(', ')})`);
   const existing = await resumeOrClear(Sandbox, credentials, log, name);
   if (existing) {
     log(`sandbox ${name} already exists (${existing.sandboxId || existing.id || 'id unknown'}); use update-sandbox-worker.js instead`);

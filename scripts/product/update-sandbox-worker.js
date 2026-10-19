@@ -20,8 +20,7 @@
 // Prints the commit each sandbox is on before and after. Exits non-zero if
 // a sandbox checkout is not a git repository, so nothing is half-updated.
 
-const { SANDBOX_NAME, SANDBOX_POOL, SANDBOX_WORKDIR, isSandboxGone, sandboxCredentials } = require('../../lib/product/sandbox-wake');
-const { isSandboxPoolName } = require('../../lib/product/sandbox-pool');
+const { KNOWN_SANDBOX_NAMES, SANDBOX_NAME, SANDBOX_POOL, SANDBOX_WORKDIR, isKnownSandboxName, isSandboxGone, sandboxCredentials } = require('../../lib/product/sandbox-wake');
 
 const REPO = 'https://github.com/CodeNameHash/precedent-machine.git';
 const DEFAULT_BRANCH = 'codex/product-implementation-plan-20260904';
@@ -42,7 +41,7 @@ function parseArguments(argv) {
     const argument = argv[index];
     if (argument === '--name') {
       const name = argv[index + 1];
-      if (!isSandboxPoolName(name, SANDBOX_POOL)) throw new TypeError(`--name must be a sandbox of the pool (${SANDBOX_POOL.join(', ')}), not ${name}`);
+      if (!isKnownSandboxName(name)) throw new TypeError(`--name must be a sandbox of the pool or the experiments sandbox (${KNOWN_SANDBOX_NAMES.join(', ')}), not ${name}`);
       options.names = [name];
       index += 1;
       continue;
@@ -69,7 +68,7 @@ async function run(sandbox, cmd, args) {
 // One sandbox. Returns { updated, skipped?, before?, after? }; a gone sandbox
 // throws with resumeFailureMessage's line.
 async function updateSandboxWorker({ Sandbox, name = SANDBOX_NAME, branch = DEFAULT_BRANCH, force = false, credentials = sandboxCredentials(), log = console.log }) {
-  if (!isSandboxPoolName(name, SANDBOX_POOL)) throw new TypeError(`${name} is not a sandbox of the pool (${SANDBOX_POOL.join(', ')})`);
+  if (!isKnownSandboxName(name)) throw new TypeError(`${name} is not a sandbox of the pool or the experiments sandbox (${KNOWN_SANDBOX_NAMES.join(", ")})`);
   let sandbox;
   try {
     sandbox = await Sandbox.get({ name, resume: true, ...credentials });

@@ -20,12 +20,13 @@
 //   node scripts/product/compare-generations.js --v1-file ablation-analysis/stored.analysis.json --v2-file ablation-analysis/lean.analysis.json --out lean-vs-stored.md
 
 const fs = require('node:fs');
-const { ABLATION_VARIANTS, analysisFromResults, analysisFromStoredRows, createRecorder, renderAblationTable, runSectionAblation } = require('../../lib/product/cost-ablation');
+const { ABLATION_VARIANTS, analysisFromResults, analysisFromStoredRows, createRecorder, renderAblationTable, runSectionAblation, variantAvailability } = require('../../lib/product/cost-ablation');
+const { ANTHROPIC_API_PROVIDER_ID, CLAUDE_CLI_PROVIDER_ID } = require('../../lib/product/product-model-config');
 const path = require('node:path');
 const { createEnvironmentClient, loadRunContext, loadTableRows, readRunSnapshot, writeRunSnapshot } = require('../../lib/product/run-rows');
 
 function parseArgs(argv) {
-  const args = { run: null, snapshot: null, sections: [], variants: [], live: false, record: null, recording: null, out: null, json: null, dumpSnapshot: null, analysisDir: null };
+  const args = { run: null, snapshot: null, sections: [], variants: [], live: false, record: null, recording: null, out: null, json: null, dumpSnapshot: null, analysisDir: null, provider: null };
   for (let i = 0; i < argv.length; i += 1) {
     if (argv[i] === '--run') args.run = argv[i += 1];
     else if (argv[i] === '--snapshot') args.snapshot = argv[i += 1];
@@ -38,10 +39,17 @@ function parseArgs(argv) {
     else if (argv[i] === '--json') args.json = argv[i += 1];
     else if (argv[i] === '--dump-snapshot') args.dumpSnapshot = argv[i += 1];
     else if (argv[i] === '--analysis-dir') args.analysisDir = argv[i += 1];
+    else if (argv[i] === '--provider') args.provider = argv[i += 1];
     else { console.error(`unknown argument ${argv[i]}`); process.exit(64); }
   }
-  if ((!args.run && !args.snapshot) || !args.sections.length) { console.error('usage: cost-ablation.js (--run <id> | --snapshot <file>) --sections a,b,c [--variant name,...] [--live] [--record file] [--recording file] [--out table.md] [--json results.json] [--dump-snapshot file]'); process.exit(64); }
+  if ((!args.run && !args.snapshot) || !args.sections.length) { console.error('usage: cost-ablation.js (--run <id> | --snapshot <file>) --sections a,b,c [--variant name,...] [--live] [--record file] [--recording file] [--out table.md] [--json results.json] [--dump-snapshot file] [--analysis-dir dir] [--provider ANTHROPIC_CLAUDE_CLI_SUBSCRIPTION|ANTHROPIC_API]'); process.exit(64); }
   for (const name of args.variants) if (!ABLATION_VARIANTS[name]) { console.error(`unknown variant ${name}; known: ${Object.keys(ABLATION_VARIANTS).join(', ')}`); process.exit(64); }
+  // Work package E2: the provider the live calls go through. The
+  // subscription CLI on the experiments sandbox (PRODUCT_MODEL_PROVIDER as
+  // the wake passes it), the API where a key is given; the API otherwise.
+  const envProvider = [CLAUDE_CLI_PROVIDER_ID, ANTHROPIC_API_PROVIDER_ID].includes(process.env.PRODUCT_MODEL_PROVIDER) ? process.env.PRODUCT_MODEL_PROVIDER : null;
+  args.provider = args.provider || envProvider || ANTHROPIC_API_PROVIDER_ID;
+  if (![CLAUDE_CLI_PROVIDER_ID, ANTHROPIC_API_PROVIDER_ID].includes(args.provider)) { console.error(`--provider must be ${CLAUDE_CLI_PROVIDER_ID} or ${ANTHROPIC_API_PROVIDER_ID}`); process.exit(64); }
   return args;
 }
 
@@ -73,7 +81,16 @@ async function loadAblationRows(client, runId, sections) {
   };
 }
 
-function liveModelFactory() {
+function liveModelFactory(providerId) {
+  if (providerId === CLAUDE_CLI_PROVIDER_ID) {
+    // The subscription CLI (lib/product/claude-cli-model.js): the variant's
+    // models through --model and --effort; the request profile shapes the
+    // request the same way (the CLI sends one prompt; what it cannot
+    // express is not run, lib/product/cost-ablation.js variantAvailability).
+    if (!process.env.CLAUDE_CODE_OAUTH_TOKEN) throw new Error('--live on the CLI needs CLAUDE_CODE_OAUTH_TOKEN in the environment');
+    const { createClaudeCliProductModel } = require('../../lib/product/claude-cli-model');
+    return ({ callKindModels }) => createClaudeCliProductModel({ callKindModels });
+  }
   if (!process.env.ANTHROPIC_API_KEY) throw new Error('--live needs ANTHROPIC_API_KEY in the environment');
   const { createAnthropicApiProductModel } = require('../../lib/product/anthropic-api-model');
   return ({ profile, callKindModels, modelConfig }) => createAnthropicApiProductModel({ modelConfig, requestProfile: profile, callKindModels });
@@ -106,8 +123,10 @@ async function main(argv) {
   if (args.dumpSnapshot) { writeRunSnapshot(args.dumpSnapshot, run); console.log(`wrote ${args.dumpSnapshot}`); }
   if (!args.variants.length) return [];
   const recorder = createRecorder(args.recording ? JSON.parse(fs.readFileSync(args.recording, 'utf8')).calls : []);
-  const factory = args.live ? liveModelFactory() : null;
-  const tokenCounter = args.live ? tokenCounterFromEnvironment() : null;
+  const factory = args.live ? liveModelFactory(args.provider) : null;
+  const tokenCounter = args.live && args.provider === ANTHROPIC_API_PROVIDER_ID ? tokenCounterFromEnvironment() : null;
+  const notRun = args.variants.filter((name) => !variantAvailability(ABLATION_VARIANTS[name], args.provider).runnable);
+  console.log(`provider ${args.provider}; variants ${args.variants.join(', ')}${notRun.length ? `; not expressible on this provider and listed, not run: ${notRun.join(', ')}` : ''}`);
   const ablations = [];
   if (args.analysisDir) {
     fs.mkdirSync(args.analysisDir, { recursive: true });
@@ -116,17 +135,17 @@ async function main(argv) {
   }
   for (const variantName of args.variants) {
     const ablation = await runSectionAblation({
-      run, sections: args.sections, variantName, liveModelFactory: factory, recorder, tokenCounter,
+      run, sections: args.sections, variantName, liveModelFactory: factory, recorder, tokenCounter, providerId: args.provider,
       log: (event) => process.stderr.write(`${JSON.stringify(event)}\n`),
     });
     ablations.push(ablation);
     if (args.record) fs.writeFileSync(args.record, `${JSON.stringify({ schema_version: 'PRODUCT_MODEL_RECORDING/V1', calls: recorder.entries() })}\n`);
     if (args.analysisDir) {
       const results = ablation.sections.map((section) => section.result).filter(Boolean);
-      fs.writeFileSync(path.join(args.analysisDir, `${variantName}.analysis.json`), `${JSON.stringify({ analysis: analysisFromResults({ run, results, label: variantName }) })}\n`);
+      if (results.length) fs.writeFileSync(path.join(args.analysisDir, `${variantName}.analysis.json`), `${JSON.stringify({ analysis: analysisFromResults({ run, results, label: variantName }) })}\n`);
     }
   }
-  const table = renderAblationTable(ablations);
+  const table = `${renderAblationTable(ablations)}\n\nProvider: ${args.provider}.${notRun.length ? ` Not expressible on this provider, listed and not run: ${notRun.join(', ')}.` : ''}`;
   if (args.out) { fs.writeFileSync(args.out, `${table}\n`); console.log(`wrote ${args.out}`); } else console.log(table);
   if (args.json) {
     const slim = ablations.map((ablation) => ({ ...ablation, recording: undefined, sections: ablation.sections.map(({ result: _result, ...section }) => section) }));

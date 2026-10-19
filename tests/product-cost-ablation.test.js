@@ -156,7 +156,8 @@ test('the offsets mode reads a component\'s words from the span by character off
   assert.equal(result.proposals.length, 1);
   assert.equal(result.proposals[0].validation_status, 'VALID', JSON.stringify(result.issues.map((issue) => [issue.code, issue.message]).slice(0, 6)));
   assert.equal(result.proposals[0].components[0].text.length, 120);
-  assert.deepEqual(thinkingOf([{ output_tokens: 100, visible_output_tokens: 64 }, { output_tokens: 50 }]), { visible_output_tokens: 64, thinking_tokens: 36, thinking_share: 0.36 });
+  assert.deepEqual(thinkingOf([{ output_tokens: 100, visible_output_tokens: 64 }, { output_tokens: 50 }]), { visible_output_tokens: 64, thinking_tokens: 36, thinking_share: 0.36, thinking_source: null });
+  assert.deepEqual(thinkingOf([{ output_tokens: 100, visible_output_tokens: 60, thinking_source: 'reported', list_cost_microusd: 12300 }]), { list_cost_microusd: 12300, visible_output_tokens: 60, thinking_tokens: 40, thinking_share: 0.4, thinking_source: 'reported' });
   assert.deepEqual(thinkingOf([]), {});
 });
 
