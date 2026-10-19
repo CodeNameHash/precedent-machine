@@ -8831,8 +8831,8 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       the manager's to report once fired; no run was submitted or
       woken, no live model call made. (3) The default change, prepared
       and not pushed, as the manager asked: on implementer E's local
-      branch codex/e6-sonnet-default (its commit hash goes to the
-      manager with this push's report), a fourth API config
+      branch codex/e6-sonnet-default, commit 244acaa, its touched
+      suites 61 of 61, a fourth API config
       (PRODUCT_ANTHROPIC_API_CALL_KIND_MAP/V4) and a third CLI config
       (PRODUCT_CLAUDE_CLI_CALL_KIND_MAP/V3) carrying claude-sonnet-5-5
       at high effort for EXTRACTION, Haiku 5.5 routing and residual as
@@ -8853,7 +8853,8 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       manager reads the whole-agreement totals row and writes the
       decision into a finding; a lost fact a lawyer keeps goes to Ben
       by name. Tests: tests/product-fresh-sheet-experiments.test.js
-      (10). npm run test:active: see the push.
+      (10). npm run test:active: 842 tests, 841 pass, the one known
+      failure.
 
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
