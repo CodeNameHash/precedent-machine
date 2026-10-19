@@ -9437,6 +9437,50 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       (the same). npm run test:active: 851 tests, 850 pass, the one
       known failure.
 
+      (196) 2026-10-19 17:30 to 18:00 UTC (implementer E), on the
+      manager's two reads while the second job runs
+      (pm-ablation-20261019T171620Z, fired 17:16 UTC, loops 4, the
+      (193) retry on; nothing run here, the sandbox untouched). (1)
+      The 122404Z recording for 5.17 part 3 and 3.10: as (194) found,
+      the recording holds answered calls only and the ablation's rows
+      at that commit did not keep a rejected call's text, so what
+      Sonnet wrote there is not recoverable from the job's files; from
+      (194)'s commit every row keeps it (`failed_calls` with the lines
+      reader's reading), and the second job's rows are the first that
+      do. This session still cannot read the sandbox; the reading is
+      the manager's. (2) A part with a tiny answer (5.1 parts 1 and 3
+      on Opus 5.5 medium, (219): 2,079 and 4,429 output tokens against
+      22,739 and 92,153 on the sibling parts, 17 facts lost whole, no
+      call failed, nothing retried): proposed, not built, in the
+      ledger note's section 16. On a fresh deal the floor has to come
+      from the answer and the request, and three signals are already
+      in hand: first, the residual pass's own dispositions, a
+      paragraph inside the part's spans that the residual put in a
+      routed family (KNOWN_FAMILY with family_keys) and that no fact of
+      the part cites, two independent readers disagreeing, deal-free
+      and naming the words; second, the uncited operative bytes, the
+      share of the part's operative bytes in spans no component cites,
+      with a floor in bytes and a share (noisy alone: a long limb that
+      is one fact); third, the fact budget's floor, fewer than a
+      quarter of `factBudgetFor`'s expected count on a part of 2,000
+      bytes or more, as the row's note. The rule: a part the first or
+      the second signal trips is a thin answer, not a failed attempt;
+      the facts written are kept, the part is asked once more with an
+      instruction naming the uncited spans and the residual's
+      paragraphs, the answers merge as parts merge ((192)'s
+      continuation shape), and a second thin answer records a
+      THIN_PART_ANSWER coverage issue naming the paragraphs with the
+      routed family's fact types UNRESOLVED for that part, never
+      NOT_FOUND. One extra call on the parts that trip it; on NCS
+      under Sonnet high none of 5.1's parts would have, under Opus 5.5
+      medium two. Before building: the per-call output tokens, facts
+      and uncited-byte share against operative bytes on the stored NCS
+      calls, to see where healthy parts sit, and the ablation row
+      carrying `uncited_operative_bytes` and
+      `residual_paragraphs_uncited` per part from the next job, so the
+      thresholds come from the sandbox's figures. No code in this
+      push; the suite is the merged tree's.
+
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
 - [x] Take a database backup and restore it to a separate environment.
