@@ -13,7 +13,7 @@ umask 077
 # compare-generations.js, and exit-code when the job ends. Nothing is
 # written to the product tables.
 
-if [[ $# -ne 4 || ! "$1" =~ ^pm-ablation-[0-9]{8}T[0-9]{6}Z$ ]]; then
+if [[ ($# -ne 4 && $# -ne 5) || ! "$1" =~ ^pm-ablation-[0-9]{8}T[0-9]{6}Z$ ]]; then
   printf '%s\n' 'PRODUCT_ABLATION_JOB_ID_REQUIRED' >&2
   exit 64
 fi
@@ -23,6 +23,12 @@ if [[ ! "$2" =~ ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a
 fi
 if [[ ! "$3" =~ ^[A-Za-z0-9][A-Za-z0-9.()_,-]*$ || ! "$4" =~ ^[a-z][a-z0-9_,]*$ ]]; then
   printf '%s\n' 'PRODUCT_ABLATION_ARGUMENTS_INVALID' >&2
+  exit 64
+fi
+# Plan finding (193): the fifth argument is how many sections run at once (1 to 16); absent, one.
+LOOPS="${5:-1}"
+if [[ ! "$LOOPS" =~ ^([1-9]|1[0-6])$ ]]; then
+  printf '%s\n' 'PRODUCT_ABLATION_LOOPS_INVALID' >&2
   exit 64
 fi
 
@@ -70,14 +76,14 @@ cd /vercel/sandbox/pm-product
 exec flock --wait 3600 --conflict-exit-code 75 /vercel/.codex/pm-ablation.lock \
   bash -c '
     set -o pipefail
-    job_dir="$1"; run_id="$2"; sections="$3"; variants="$4"
+    job_dir="$1"; run_id="$2"; sections="$3"; variants="$4"; loops="$5"
     printf "%s\n" "{\"event\":\"ABLATION_JOB_START\",\"at\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"run_id\":\"$run_id\",\"sections\":\"$sections\",\"variants\":\"$variants\",\"provider\":\"$PRODUCT_MODEL_PROVIDER\",\"commit\":\"$(git rev-parse --short HEAD 2>/dev/null || echo unknown)\"}" | tee -a "$job_dir/job.log"
     node scripts/product/cost-ablation.js --run "$run_id" --sections "$sections" --variant "$variants" \
-      --provider "$PRODUCT_MODEL_PROVIDER" --live \
+      --provider "$PRODUCT_MODEL_PROVIDER" --live --loops "$loops" \
       --dump-snapshot "$job_dir/ablation-rows.json" --record "$job_dir/ablation-recording.json" \
       --out "$job_dir/ablation.md" --json "$job_dir/ablation.json" --analysis-dir "$job_dir/analysis" 2>&1 | tee -a "$job_dir/job.log"
     code=${PIPESTATUS[0]}
     printf "%s\n" "{\"event\":\"ABLATION_JOB_END\",\"at\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"exit_code\":$code}" | tee -a "$job_dir/job.log"
     printf "%s\n" "$code" > "$job_dir/exit-code"
     exit "$code"
-  ' bash "$JOB_DIR" "$2" "$3" "$4"
+  ' bash "$JOB_DIR" "$2" "$3" "$4" "$LOOPS"

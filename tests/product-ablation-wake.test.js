@@ -10,7 +10,7 @@ const { buildAgreementStructure } = require('../lib/product/agreement-structure'
 const { buildAgreementDraft } = require('../lib/product/agreement-draft');
 const { createProductAblationHandler } = require('../lib/product/ablation-handler');
 const { createClaudeCliProductModel } = require('../lib/product/claude-cli-model');
-const { ABLATION_VARIANTS, createRecorder, estimateAblationTokens, renderAblationTable, runSectionAblation, variantAvailability } = require('../lib/product/cost-ablation');
+const { ABLATION_VARIANTS, ablationTotals, createRecorder, estimateAblationTokens, isRetryableAblationFailure, mapInOrder, renderAblationTable, runSectionAblation, variantAvailability } = require('../lib/product/cost-ablation');
 const { createRecordedModelAdapter } = require('../lib/product/model-adapter');
 const { ANTHROPIC_API_PROVIDER_ID, CLAUDE_CLI_PROVIDER_ID } = require('../lib/product/product-model-config');
 const { internalBearerActor } = require('../lib/product/request-auth');
@@ -313,7 +313,7 @@ test('the ablation wake resumes the experiments sandbox, passes the run wake\'s 
   });
   assert.deepEqual(result, {
     schema_version: 'PRODUCT_SANDBOX_ABLATION_WAKE/V1', job_id: 'pm-ablation-20261019T031000Z', job_dir: '/vercel/sandbox/pm-ablation-20261019T031000Z',
-    run_id: '51577c57-41b1-4b75-bcdf-c84ef2558589', sandbox_name: ABLATION_SANDBOX_NAME, provider_id: CLAUDE_CLI_PROVIDER_ID, sections: ['3.19', '5.2', '5.17'], variants: ['baseline', 'format'], command_id: 'ablation-command-1',
+    run_id: '51577c57-41b1-4b75-bcdf-c84ef2558589', sandbox_name: ABLATION_SANDBOX_NAME, provider_id: CLAUDE_CLI_PROVIDER_ID, sections: ['3.19', '5.2', '5.17'], variants: ['baseline', 'format'], loops: 1, command_id: 'ablation-command-1',
   });
   assert.doesNotMatch(JSON.stringify(result), /secret-value/);
   const base = { runId: '51577c57-41b1-4b75-bcdf-c84ef2558589', sections: ['3.19'], variants: ['baseline'], databaseUrl: 'https://ecrtoofsyxozazkvsvcl.supabase.co', serviceRoleKey: 'service-role-secret-value', providerId: CLAUDE_CLI_PROVIDER_ID, claudeOauthToken: 'claude-oauth-token-secret-value', sandboxApi: { get: async () => assert.fail('must fail before the resume') } };
@@ -376,7 +376,7 @@ test('the ablation route opens to the internal bearer token alone, starts the jo
   assert.equal(response.statusCode, 202, JSON.stringify(response.body));
   assert.equal(response.headers['Cache-Control'], 'private, no-store');
   assert.deepEqual({ ...wakeInput, now: undefined }, {
-    runId: '51577c57-41b1-4b75-bcdf-c84ef2558589', sections: ['3.19', '5.2', '5.17'], variants: ['baseline', 'format'], providerId: CLAUDE_CLI_PROVIDER_ID, sandboxName: ABLATION_SANDBOX_NAME, now: undefined,
+    runId: '51577c57-41b1-4b75-bcdf-c84ef2558589', sections: ['3.19', '5.2', '5.17'], variants: ['baseline', 'format'], providerId: CLAUDE_CLI_PROVIDER_ID, sandboxName: ABLATION_SANDBOX_NAME, now: undefined, loops: 1,
     databaseUrl: 'https://ecrtoofsyxozazkvsvcl.supabase.co', serviceRoleKey: 'service-role-secret-value', claudeOauthToken: 'claude-oauth-token-secret-value',
   });
   assert.equal(typeof wakeInput.now, 'function');
@@ -457,4 +457,130 @@ test('sections "all" runs every section the stored run has a closure for, and th
   }
   assert.match(logs.join('\n'), new RegExp(`estimate over ${draft.sections.length} sections`));
   assert.match(logs.join('\n'), /anchors_opus55_medium: about [0-9,]+ input and [0-9,]+ output tokens/);
+});
+
+
+// Plan finding (193), work package E7: the ablation retries a section once
+// after a retryable provider failure, as the pipeline's attempt would be
+// retried; `loops` sections run at once; the estimate's minutes follow the
+// loops asked for; the route, the wake and the launcher carry `loops`.
+test('a section whose live call fails on CLAUDE_PRODUCT_JSON is tried once more with the same request; a second failure stays a failed row; a non-retryable failure is not retried', async () => {
+  const { rows } = await storedRun();
+  const outcomes = { live: [] };
+  const factoryWith = (plan) => ({ callKindModels }) => createClaudeCliProductModel({
+    callKindModels,
+    clientFactory() {
+      return { messages: { create: async (request) => {
+        const sent = JSON.parse(request.messages[0].content);
+        const { call_kind: kind, prompt_version: promptVersion, ...rest } = sent;
+        if (kind === 'EXTRACTION') {
+          const step = plan.shift();
+          outcomes.live.push(step);
+          if (step === 'bad') return cliCompleted('prose around the object { not json');
+        }
+        return cliCompleted(answerFor(kind, { ...rest, prompt_version: promptVersion }));
+      } } };
+    },
+  });
+  const logs = [];
+  const retried = await runSectionAblation({ run: rows, sections: ['3.1'], variantName: 'format', providerId: CLAUDE_CLI_PROVIDER_ID, liveModelFactory: factoryWith(['bad', 'good']), recorder: createRecorder(), log: (event) => logs.push(event) });
+  const row = retried.sections[0];
+  assert.equal(row.error, null, JSON.stringify(row.error));
+  assert.equal(row.attempts, 2);
+  assert.equal(row.retried_after, 'CLAUDE_PRODUCT_JSON');
+  assert.equal(row.facts.valid, 1, 'the second attempt extracted the fact');
+  assert.equal(row.extraction.live_calls, 1, 'the failed call is not a model call of the section; the good one is');
+  assert.ok(logs.some((event) => event.event === 'SECTION_RETRY' && event.after === 'CLAUDE_PRODUCT_JSON' && event.section_reference === '3.1'));
+  assert.ok(logs.some((event) => event.event === 'SECTION_ABLATED' && event.attempts === 2 && event.retried_after === 'CLAUDE_PRODUCT_JSON'));
+  assert.match(renderAblationTable([retried]), /\| format \| 3\.1 \| 1 \(0\) \|[^\n]*second attempt after CLAUDE_PRODUCT_JSON/);
+  const twice = await runSectionAblation({ run: rows, sections: ['3.1'], variantName: 'format', providerId: CLAUDE_CLI_PROVIDER_ID, liveModelFactory: factoryWith(['bad', 'bad', 'bad']), recorder: createRecorder() });
+  assert.equal(twice.sections[0].attempts, 2);
+  assert.equal(twice.sections[0].retried_after, 'CLAUDE_PRODUCT_JSON');
+  assert.match(twice.sections[0].error.code, /CLAUDE_PRODUCT_JSON/);
+  assert.match(renderAblationTable([twice]), /\| format \| 3\.1 \| failed \|[^\n]*failed twice \(second attempt after CLAUDE_PRODUCT_JSON\)/);
+  assert.equal(ablationTotals(twice), null, 'no section done: no totals row');
+  const other = await runSectionAblation({ run: rows, sections: ['3.1'], variantName: 'format', providerId: CLAUDE_CLI_PROVIDER_ID, liveModelFactory: () => ({ async complete() { throw Object.assign(new Error('PROVIDER_DOWN: no'), { code: 'PROVIDER_DOWN' }); } }), recorder: createRecorder() });
+  assert.equal(other.sections[0].attempts, 1, 'an unknown failure is not retried');
+  assert.equal(other.sections[0].retried_after, undefined);
+  assert.equal(isRetryableAblationFailure({ code: 'ANTHROPIC_API_OUTPUT_TRUNCATED' }), true);
+  assert.equal(isRetryableAblationFailure({ code: 'REPLAY_MISS' }), false);
+  assert.equal(isRetryableAblationFailure({ message: 'CLAUDE_PRODUCT_JSON: response must be one exact JSON object [section 5.17]' }), true);
+});
+
+test('loops runs that many sections at once with the rows in the run\'s order; the estimate\'s minutes follow the loops asked; the route, the wake and the launcher carry loops', async () => {
+  const { rows, draft } = await storedRun();
+  let inFlight = 0;
+  let peak = 0;
+  const factory = ({ callKindModels }) => createClaudeCliProductModel({
+    callKindModels,
+    clientFactory() {
+      return { messages: { create: async (request) => {
+        inFlight += 1; peak = Math.max(peak, inFlight);
+        await new Promise((resolve) => setTimeout(resolve, 15));
+        inFlight -= 1;
+        const sent = JSON.parse(request.messages[0].content);
+        const { call_kind: kind, prompt_version: promptVersion, ...rest } = sent;
+        return cliCompleted(answerFor(kind, { ...rest, prompt_version: promptVersion }));
+      } } };
+    },
+  });
+  // routing_haiku routes every section live, so two sections' calls overlap; format's one live extraction (3.1) does not.
+  const two = await runSectionAblation({ run: rows, sections: ['all'], variantName: 'routing_haiku', providerId: CLAUDE_CLI_PROVIDER_ID, liveModelFactory: factory, recorder: createRecorder(), loops: 2 });
+  assert.deepEqual(two.sections.map((section) => section.section_reference), draft.sections.map((section) => section.section_reference), 'the rows keep the run\'s order');
+  assert.ok(two.sections.every((section) => section.error === null), JSON.stringify(two.sections.map((section) => section.error).filter(Boolean)));
+  assert.equal(peak, 2, 'two sections in flight at once');
+  const one = await runSectionAblation({ run: rows, sections: ['all'], variantName: 'routing_haiku', providerId: CLAUDE_CLI_PROVIDER_ID, liveModelFactory: factory, recorder: createRecorder() });
+  assert.equal(one.sections.length, two.sections.length);
+  const ordered = await mapInOrder([30, 5, 1], 3, async (ms) => { await new Promise((resolve) => setTimeout(resolve, ms)); return ms; });
+  assert.deepEqual(ordered, [30, 5, 1]);
+  const estimate = estimateAblationTokens({ run: rows, sections: ['all'], variants: ['anchors_sonnet55'], loops: 4 });
+  const single = estimateAblationTokens({ run: rows, sections: ['all'], variants: ['anchors_sonnet55'] });
+  assert.equal(estimate.loops, 4);
+  assert.equal(single.loops, 1, 'one loop unless asked: the job runs sections one after another');
+  assert.equal(estimate.variants[0].wall_minutes_at_loops, Math.round(estimate.variants[0].serial_seconds / 4 / 60));
+  assert.equal(single.variants[0].wall_minutes_at_loops, Math.round(single.variants[0].serial_seconds / 60));
+  // The wake: a fifth argument only when more than one.
+  let commandInput;
+  const api = { async get() { return { currentSession: () => ({ createdAt: new Date('2026-10-19T03:00:00.000Z'), timeout: 60 * 60 * 1000 }), async extendTimeout() {}, async runCommand(command) { commandInput = command; return { cmdId: 'c', async wait({ signal }) { return new Promise((resolve, reject) => { signal.addEventListener('abort', () => reject(signal.reason), { once: true }); }); } }; } }; } };
+  const base = { runId: '51577c57-41b1-4b75-bcdf-c84ef2558589', sections: ['all'], variants: ['anchors_sonnet55'], databaseUrl: 'https://ecrtoofsyxozazkvsvcl.supabase.co', serviceRoleKey: 'service-role-secret-value', providerId: CLAUDE_CLI_PROVIDER_ID, claudeOauthToken: 'claude-oauth-token-secret-value', sandboxApi: api, now: () => Date.parse('2026-10-19T03:10:00.000Z') };
+  const woke = await wakeSandboxAblation({ ...base, loops: 3 });
+  assert.deepEqual(commandInput.args, ['pm-ablation-20261019T031000Z', '51577c57-41b1-4b75-bcdf-c84ef2558589', 'all', 'anchors_sonnet55', '3']);
+  assert.equal(woke.loops, 3);
+  await wakeSandboxAblation(base);
+  assert.deepEqual(commandInput.args, ['pm-ablation-20261019T031000Z', '51577c57-41b1-4b75-bcdf-c84ef2558589', 'all', 'anchors_sonnet55'], 'one loop: the launcher\'s four arguments as before');
+  await assert.rejects(() => wakeSandboxAblation({ ...base, loops: 0 }), /PRODUCT_ABLATION_LOOPS_INVALID/);
+  // The route body.
+  let wakeInput;
+  const handler = createProductAblationHandler({ actorResolver: (req) => internalBearerActor(req, INTERNAL_ENV), wakeAblation: async (input) => { wakeInput = input; return { job_id: 'pm-ablation-20261019T031000Z' }; }, databaseUrlResolver: () => 'https://ecrtoofsyxozazkvsvcl.supabase.co', serviceRoleKeyResolver: () => 'service-role-secret-value', claudeOauthTokenResolver: () => 'claude-oauth-token-secret-value' });
+  const bearer = { authorization: `Bearer ${INTERNAL_ENV.PRODUCT_INTERNAL_TOKEN}` };
+  const body = { run_id: '51577c57-41b1-4b75-bcdf-c84ef2558589', sections: ['all'], variants: ['anchors_sonnet55'] };
+  let response = responseDouble();
+  await handler({ method: 'POST', headers: bearer, body: { ...body, loops: 4 } }, response);
+  assert.equal(response.statusCode, 202);
+  assert.equal(wakeInput.loops, 4);
+  response = responseDouble();
+  await handler({ method: 'POST', headers: bearer, body }, response);
+  assert.equal(wakeInput.loops, 1, 'one unless asked');
+  response = responseDouble();
+  await handler({ method: 'POST', headers: bearer, body: { ...body, loops: 99 } }, response);
+  assert.equal(response.statusCode, 400);
+  assert.equal(response.body.error, 'PRODUCT_ABLATION_LOOPS_INVALID');
+  // The launcher takes a fifth argument and passes it as --loops.
+  const launcher = fs.readFileSync(path.join(__dirname, '../infra/codex-sandbox-worker/ablation-launch.sh'), 'utf8');
+  assert.match(launcher, /\(\$# -ne 4 && \$# -ne 5\)/);
+  assert.match(launcher, /LOOPS="\$\{5:-1\}"/);
+  assert.match(launcher, /--loops "\$loops"/);
+  // The script prints the minutes at the loops asked.
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pm-ablation-loops-'));
+  fs.writeFileSync(path.join(dir, 'rows.json'), JSON.stringify({ schema_version: 'PRODUCT_RUN_SNAPSHOT/V1', ...rows }));
+  const script = require('../scripts/product/cost-ablation');
+  const logs = [];
+  const originalLog = console.log;
+  console.log = (line) => logs.push(String(line));
+  try {
+    await script.main(['--snapshot', path.join(dir, 'rows.json'), '--sections', 'all', '--variant', 'anchors_sonnet55', '--provider', CLAUDE_CLI_PROVIDER_ID, '--estimate', '--loops', '2']);
+  } finally {
+    console.log = originalLog;
+  }
+  assert.match(logs.join('\n'), /min at 2 loops/);
 });

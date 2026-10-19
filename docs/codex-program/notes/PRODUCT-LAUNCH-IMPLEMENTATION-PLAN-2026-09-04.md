@@ -8954,6 +8954,57 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       section unchanged without the flag), registered in test:active.
       npm run test:active: 846 tests, 845 pass, the one known failure.
 
+      (193) 2026-10-19 13:25 to 14:15 UTC (implementer E), work package
+      E7 on the manager's interim of the confirmation job
+      (pm-ablation-20261019T122404Z, the third launch, (215)): 19 of
+      104 sections in 42 minutes, 5.17 whole lost to one
+      CLAUDE_PRODUCT_JSON on part 3 of 5. Built, nothing run, the job
+      untouched. (1) The ablation now retries as the pipeline's attempt
+      would be retried: a section whose live call failed on a
+      retryable provider error (`RETRYABLE_ABLATION_FAILURE` in
+      lib/product/cost-ablation.js: the CLI's CLAUDE_PRODUCT_JSON,
+      CLAUDE_PRODUCT_RESPONSE, CLAUDE_PRODUCT_COMPLETION and
+      CLAUDE_OUTPUT_TRUNCATED, the API's JSON, response, truncation and
+      refusal failures, MODEL_RESPONSE_SHAPE, EXTRACTION_DECLINED, or a
+      message saying the response was not one JSON object or ran past
+      the cap) is tried once more with the same request; the row
+      carries `attempts` and `retried_after` and the table says "second
+      attempt after CLAUDE_PRODUCT_JSON"; a second failure stays a
+      failed row ("failed twice (second attempt after ...)"); a replay
+      miss, a missing provider or a compiler rule on the content is not
+      retried (the same answer would fail the same way). Both attempts'
+      calls are counted in the section's usage; the job log carries a
+      SECTION_RETRY event. (2) `loops`: `cost-ablation.js --loops N`
+      (1 to 16; the route body `loops`, the wake's fifth launcher
+      argument when more than one, `--loops` in ablation-launch.sh)
+      runs N sections at once with the rows in the run's order; the
+      default is 1, so a running job's shape is unchanged. The
+      estimate's wall minutes are now at the loops asked (default 1):
+      (189)'s 66 minutes for anchors_sonnet55 assumed the sandbox's
+      eight loops, which the job never had; at one loop the same
+      method gives about 530 minutes at 87 output tokens a second, and
+      about 390 at the 119 a second Sonnet 5.5 measured on run 2; the
+      manager's interim pace (19 sections in 42 minutes) says about
+      four hours, the parts of a split section being the only
+      parallelism. For the second job (the two Sonnet levers), `loops`
+      of 4 by that pace is about an hour each rung, within the
+      five-hour window with the first job's remainder; the number is
+      the operator's, against the subscription's rate limit. (3) 5.17
+      part 3: what Sonnet wrote is in the job's ablation-recording.json
+      on the sandbox, which this session cannot read; the manager reads
+      it after DONE. If it is a second text block or a cut, (192)'s
+      lines reader (`answer_mode: 'lines'`, rung `fact_lines`) is the
+      lever; if it is prose around the object, the retry of (1) is.
+      Tests: tests/product-ablation-wake.test.js (9: the retry on
+      CLAUDE_PRODUCT_JSON with the fact extracted on the second
+      attempt and the note, the second failure as a failed row, an
+      unknown failure not retried; loops 2 with two sections in flight
+      and the rows in order, the estimate at 4 loops and at 1, the
+      wake's fifth argument only above one, the route's loops and its
+      400, the launcher's argument, the script's "min at 2 loops"),
+      tests/product-cost-ablation.test.js (9). npm run test:active: see
+      the push.
+
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
 - [x] Take a database backup and restore it to a separate environment.

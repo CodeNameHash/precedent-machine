@@ -41,9 +41,13 @@ function parseArgs(argv) {
     else if (argv[i] === '--analysis-dir') args.analysisDir = argv[i += 1];
     else if (argv[i] === '--provider') args.provider = argv[i += 1];
     else if (argv[i] === '--estimate') args.estimate = true;
+    else if (argv[i] === '--loops') args.loops = Number(argv[i += 1]);
     else { console.error(`unknown argument ${argv[i]}`); process.exit(64); }
   }
   if ((!args.run && !args.snapshot) || !args.sections.length) { console.error('usage: cost-ablation.js (--run <id> | --snapshot <file>) --sections a,b,c [--variant name,...] [--live] [--record file] [--recording file] [--out table.md] [--json results.json] [--dump-snapshot file] [--analysis-dir dir] [--provider ANTHROPIC_CLAUDE_CLI_SUBSCRIPTION|ANTHROPIC_API]'); process.exit(64); }
+  // Plan finding (193): sections at once; 1 unless asked, so a running job's shape is unchanged.
+  if (args.loops === undefined) args.loops = 1;
+  if (!Number.isInteger(args.loops) || args.loops < 1 || args.loops > 16) { console.error('--loops must be an integer from 1 to 16'); process.exit(64); }
   for (const name of args.variants) if (!ABLATION_VARIANTS[name]) { console.error(`unknown variant ${name}; known: ${Object.keys(ABLATION_VARIANTS).join(', ')}`); process.exit(64); }
   // Work package E2: the provider the live calls go through. The
   // subscription CLI on the experiments sandbox (PRODUCT_MODEL_PROVIDER as
@@ -126,9 +130,9 @@ async function main(argv) {
   if (args.dumpSnapshot) { writeRunSnapshot(args.dumpSnapshot, run); console.log(`wrote ${args.dumpSnapshot}`); }
   if (args.estimate) {
     // The subscription tokens the ladder would take, from the stored run's own calls; nothing runs.
-    const estimate = estimateAblationTokens({ run, sections: args.sections, variants: args.variants });
+    const estimate = estimateAblationTokens({ run, sections: args.sections, variants: args.variants, loops: args.loops });
     console.log(`estimate over ${estimate.sections} sections (${estimate.stored_extraction_calls} stored extraction calls, ${estimate.stored_input_tokens.toLocaleString('en-US')} input and ${estimate.stored_output_tokens.toLocaleString('en-US')} output tokens stored):`);
-    for (const item of estimate.variants) console.log(`  ${item.variant}: about ${item.input_tokens.toLocaleString('en-US')} input and ${item.output_tokens.toLocaleString('en-US')} output tokens; ${item.serial_seconds.toLocaleString('en-US')} s of output serial, about ${item.wall_minutes_at_loops} min at eight loops`);
+    for (const item of estimate.variants) console.log(`  ${item.variant}: about ${item.input_tokens.toLocaleString('en-US')} input and ${item.output_tokens.toLocaleString('en-US')} output tokens; ${item.serial_seconds.toLocaleString('en-US')} s of output serial, about ${item.wall_minutes_at_loops} min at ${estimate.loops} loop${estimate.loops === 1 ? '' : 's'}`);
     console.log(`  total: about ${estimate.total_input_tokens.toLocaleString('en-US')} input and ${estimate.total_output_tokens.toLocaleString('en-US')} output tokens`);
     return [];
   }
@@ -146,7 +150,7 @@ async function main(argv) {
   }
   for (const variantName of args.variants) {
     const ablation = await runSectionAblation({
-      run, sections: args.sections, variantName, liveModelFactory: factory, recorder, tokenCounter, providerId: args.provider,
+      run, sections: args.sections, variantName, liveModelFactory: factory, recorder, tokenCounter, providerId: args.provider, loops: args.loops,
       log: (event) => process.stderr.write(`${JSON.stringify(event)}\n`),
     });
     ablations.push(ablation);
