@@ -7105,6 +7105,81 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       no code, schema or rule changed. npm run test:active:
       774 of 775, the one failure the known Codex-client final-message
       test. No run, worker or sandbox touched.
+      (108) 2026-10-18 23:00 to 2026-10-19 00:40 UTC (implementer B), work
+      package B5 on the manager's message of 22:55 UTC: the local path of
+      (107) made the product's own pre-intake check.
+      scripts/product/structure-check.js <url> [--json] [--schema
+      <version>] [--provider <hosted provider>] [--generation N]
+      [--attempts N] over lib/product/structure-check.js: exactly the
+      intake's steps with no database and no model call, the SEC
+      adapter's own fetch (its User-Agent, timeout and byte limit), the
+      canonical text, the document identity (extractDocumentIdentity
+      inside the adapter; lib/product/sec-intake.js untouched, C6 is
+      C's) and buildAgreementStructure; it prints the node count by
+      kind, every article's byte span with its child count, every annex,
+      exhibit or schedule the sectionizer keeps at the root, any node
+      outside its parent's span, the identity status with its reasons,
+      the parties and date, and the submission fingerprint. The
+      fingerprint is product_phase1_create_run's own (the migration of
+      2026-09-05: sha256 of source_document_id, schema_version,
+      prompt_bundle_version, model_config::text, explicit_generation and
+      max_attempts joined by chr(31)), with Postgres's jsonb text
+      rendering reproduced in code (keys by length then bytes, ", " and
+      ": " separators; jsonbText checked against Postgres 17 on the
+      embedded database) and proved on two fingerprints the preview
+      branch stores: Metsera generation 8 (run 72d94dd2) and NCS
+      generation 5 (run 51577c57, its stored config with
+      max_output_tokens 64000) reproduce byte for byte from their rows'
+      inputs. The schema, prompt bundle and model config are the
+      environment's (PRODUCT_LEGAL_SCHEMA_VERSION, PRODUCT_MODEL_PROVIDER)
+      or the flags, so the fingerprint printed is the one the deployment
+      would compute only when the flags name its settings; the report
+      says which were used. One caution the run showed: SEC serves the
+      same exhibit with small byte variations between fetches (Verve:
+      600,983 bytes on 2026-10-18's fetch, 600,995 on this one; canonical
+      text identical, sha256 90242bd6), so the source document id and
+      the fingerprint can differ from an earlier intake's while the
+      canonical text, the structure and the identity do not. Pinned in
+      tests/product-structure-check.test.js (in test:active): the jsonb
+      rendering on values read back from Postgres, the two preview
+      fingerprints, the Verve annex fixture of (107) served through a
+      fake fetch as an HTML exhibit (identity CONFIRMED with the three
+      parties and the date, 13 nodes, Annex I at the root with two limbs,
+      the last article ending at the annex, no node outside its parent,
+      the fingerprint equal to the function's), a 404 reported as the
+      intake stage and a whitespace exhibit as the structure stage,
+      neither thrown. The sweep the manager asked for, the 34 agreements
+      of docs/codex-program/notes/BIOPHARMA-DEALS-OVER-1BN-2026-10-18.md
+      plus Metsera's Amendment No. 1 (35 URLs, LEGAL_SCHEMA/V2, the
+      subscription config, about 119 s of fetches, nothing submitted),
+      appended to that note as a table: 35 of 35 build; 28 identities
+      CONFIRMED, seven NEEDS_REVIEW (PARTIES_UNCONFIRMED on Avidity,
+      Centessa, Akero, Supernus and the amendment; AGREEMENT_DATE_
+      UNCONFIRMED on Crinetics, Day One, Supernus and the amendment;
+      REVISION_UNCONFIRMED and DOCUMENT_INCOMPLETE on the amendment
+      alone, right for an amendment); eleven carry Annex I at the root.
+      What the check found that an error never would: eight agreements
+      build to almost nothing. Akero 2 nodes, Amicus 2, KalVista 14,
+      Cidara 22, Dynavax 35, RAPT 80, Apellis 100, Catalyst 273 with no
+      SECTION at all. Every one heads its sections with a bare decimal on
+      its own line ("3.17 Employee Matters; Benefit Plans." and the text
+      on the next line; about 160 such lines each, contents table and
+      body) without the word "Section", which the sectionizer's heading
+      rules do not take, and Akero, Amicus and KalVista name their
+      articles "Section 1. MERGER TRANSACTION" and get no ARTICLE. An
+      intake of any of them would pay for the model over a handful of
+      huge nodes: the same cost as a full structure and almost none of
+      the result. Proposed, not done (B5 was "small and complete"): a
+      sectionizer rule, for every agreement, accepting a line of the
+      form "<n>.<m> <Title>" as a section heading when its number
+      follows the previous accepted section's in sequence and the
+      article (or "Section <n>." heading) it belongs to precedes it,
+      pinned on Akero's and Cidara's bytes the way (107) is; the
+      manager's call whose work package it is (A's defect track or B).
+      Until it lands these eight are not ready to intake, and the check
+      says so before a run is paid for. No intake submitted, no run,
+      worker or sandbox touched. npm run test:active: 784 of 785, the
+      one failure the known Codex-client final-message test.
 - [x] Q6 (earlier note, kept for the record). The interim operating covenants section is one
       structure node with twenty-odd child limbs; the extractor returned
       five facts and marked the family UNRESOLVED (Metsera generation 3).
