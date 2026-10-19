@@ -5150,6 +5150,20 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       same job if the estimate fits the window, else after. The two
       deals stay paused ((175)) and no intake ((172)) until the default
       is changed and the pool workers carry it.
+      (213) 2026-10-19 10:50 UTC (the manager): E's (189) and (190)
+      merged and the suite on 213470a4 run whole: 841 tests, 840 pass,
+      the known Codex final-message failure only (the SEC timing test
+      passed here). E's (190) hands the Batch API design (the ledger
+      note's section 15) to implementer D for the hosted worker; held,
+      not packaged, until the full-agreement confirmation ((212), E6)
+      is DONE: D's session and the experiments sandbox draw on the
+      same five-hour window, the design is for the API provider, which
+      the paused pool runs do not use, and the worker change is better
+      written once the Sonnet default is settled, since the batch
+      waves carry the default's call-kind map. E6 at 10:47 UTC: E's
+      suite running before its push; the confirmation job not yet
+      started (the sandbox lists the two ladder jobs only). The two
+      deals paused ((175)); no intake ((172)).
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
