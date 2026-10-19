@@ -5164,6 +5164,20 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       suite running before its push; the confirmation job not yet
       started (the sandbox lists the two ladder jobs only). The two
       deals paused ((175)); no intake ((172)).
+      (214) 2026-10-19 11:27 UTC (the manager): the Sonnet confirmation
+      job fired through the ablation route, E's (191) order (the
+      confirmation alone first; the two Sonnet levers as a second job
+      after it): job pm-ablation-20261019T112716Z on the experiments
+      sandbox pm-codex-preview-worker-3, run 51577c57 (NCS generation
+      5), sections all, variant anchors_sonnet55, the deployment READY
+      at 80a76cd1 (E's E6 merged), E's estimate about 12.8m input and
+      2.77m output tokens of the subscription and about 66 minutes.
+      E's prepared default commit (244acaa, local to E) stays unpushed
+      until the manager reads the whole-agreement totals row ((212)).
+      E's (191) could not fire the job itself: that session holds
+      neither the internal bearer nor the sandbox credentials, by
+      design; the manager fires and reports. The two deals paused
+      ((175)); no intake ((172)).
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
