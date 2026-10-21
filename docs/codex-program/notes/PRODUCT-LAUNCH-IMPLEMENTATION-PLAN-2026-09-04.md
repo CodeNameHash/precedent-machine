@@ -5381,6 +5381,35 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       default, the qualifier placement, the Opus 5.5 medium remainder.
       The implementers woken: A on (204), E on (197) and the re-run.
       The two deals paused ((175)); no intake ((172)).
+      (222) 2026-10-21 23:50 UTC (the manager): the active suite run
+      whole in the manager's environment stalled twice today after
+      about 420 passing tests, on 381c7592 in tests/product-phase-1.test.js
+      ("Preview run boundary starts one detached Sandbox worker") and
+      on 07dd0c5a in tests/product-phase-3.test.js ("migration exposes
+      only server RPC writes"), with no output for over half an hour
+      and the node process gone without the runner's summary; each
+      file passes alone (product-phase-3: 31 of 31 in under five
+      minutes), and the same heads pass whole in the implementers'
+      environments (E: 853 of 854 on 381c7592, 854 of 855 on 07dd0c5a,
+      the known failure only). Read as this container's resources
+      after two days idle, not the code; the implementers' whole-suite
+      results stand as section 9's check for these heads. Merged and
+      pushed at 07dd0c5a: E's (198) (the lean normaliser repairs
+      components' span ids before the compiler resolves them) and A's
+      (204) (introducing words stripped before an Article, Section or
+      Agreement reference is read; "Article VI" resolves without
+      "this"; a framing phrase such as "For purposes of this
+      Agreement" is not a CROSS_REFERENCE and resolves "this
+      Agreement" to the root). The levers' re-run of (220)
+      (pm-ablation-20261021T213656Z, on 381c7592 without (198)):
+      derived_statement_sonnet55 complete, 830 matched, 12 partial, 34
+      unmatched of 876, five sections failed on
+      proposal.evidence_quotes[].source_span_id (3.2, 8.3, 5.17, 5.19,
+      2.5), 5.1 at 50 / 1 / 15 of 66 and the two article
+      introductions lost whole (the thin-answer pattern of (196));
+      merged_residual_sonnet55 under way. The re-fire with (198)
+      follows its end. The two deals paused ((175)); no intake
+      ((172)); Ben's three answers pending.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
