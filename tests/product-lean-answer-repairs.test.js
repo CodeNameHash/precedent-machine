@@ -61,6 +61,20 @@ function answerFor(request, shape) {
       coverage,
     };
   }
+  if (shape === 'component_spans') {
+    // p1: the top-level component names its span as span_id and its child names none; p2 cites no span anywhere.
+    return {
+      proposals: [
+        proposal('p1', [{ ref: 'c1', kind: 'OPERATION', label: 'the covenant', quote: firstWordsOf(sentence, 5), span_id: operative.span_id, occurrence: 0, origin: 'OWN', gap_before: false, children: [
+          { ref: 'c2', kind: 'QUALIFIER', label: 'the rest', quote: lastWordsOf(sentence, 4), occurrence: 0, origin: 'OWN', gap_before: true, children: [] },
+        ] }], { statement: sentence }),
+        proposal('p2', [{ ref: 'c1', kind: 'OPERATION', label: 'nowhere', quote: 'words with no span', occurrence: 0, origin: 'OWN', gap_before: false, children: [] }], { statement: 'A fact citing no span.' }),
+      ],
+      groups: [group('p1'), group('p2')],
+      links: [{ from_ref: 'p2', to_ref: 'p1', relationship_type: 'EXCEPTS', source_span_ids: [] }],
+      coverage,
+    };
+  }
   throw new Error(`shape ${shape}`);
 }
 
@@ -141,4 +155,30 @@ test('a link from a component ref is read as its proposal; a link to nothing is 
   assert.deepEqual(prefixed.response.cross_section_links.map((link) => link.from_ref), ['p1']);
   assert.equal(prefixed.stats.link_endpoints_mapped, 2);
   assert.equal(prefixed.stats.links_dropped, 1);
+});
+
+test('a component naming its span as span_id, a child naming none, a proposal citing none at all: the spans repaired and inherited, the span-less proposal dropped with its ref in the note, the section compiles', async () => {
+  const { result } = await runConcho63({ ...REQUEST_PROFILES.DEFAULT, statement_mode: 'derived' }, 'component_spans');
+  assert.equal(result.proposals.length, 1, 'p1 compiled; p2 dropped before the compiler, no MODEL_RESPONSE_SHAPE proposal.evidence_quotes[].source_span_id');
+  assert.equal(result.proposals[0].validation_status, 'VALID', JSON.stringify(result.issues.map((issue) => [issue.code, issue.message]).slice(0, 6)));
+  assert.equal(result.proposals[0].components.length, 1);
+  assert.equal(result.proposals[0].components[0].children.length, 1, 'the child kept, on its parent\'s span');
+  assert.equal(result.links.length, 0, 'the link from the dropped proposal went with it');
+  const note = leanNote(result);
+  assert.equal(note.component_spans_repaired, 1);
+  assert.equal(note.component_spans_inherited, 1);
+  assert.equal(note.proposals_dropped, 1);
+  assert.deepEqual(note.dropped_proposals, ['p2']);
+  // A numeric span id becomes its string; a span-less child under a span-less parent with a cited sibling takes the proposal's first span.
+  const unit = normaliseLeanResponse({ proposals: [{ client_ref: 'p', family_key: 'NO_SHOP', statement: 's', components: [
+    { ref: 'a', kind: 'ACTOR', quote: 'w', source_span_id: 7, occurrence: 0, origin: 'OWN' },
+    { ref: 'b', kind: 'OPERATION', quote: 'x', origin: 'OWN', children: [{ ref: 'c', kind: 'OBJECT', quote: 'y', origin: 'OWN' }] },
+  ] }] }, { aliases: { toId: new Map([['7', 'SPAN-7']]), toAlias: new Map([['SPAN-7', '7']]) }, sourceDocument: { canonical_text: '' }, spansById: new Map() });
+  const [a, b] = unit.response.proposals[0].components;
+  assert.equal(a.source_span_id, 'SPAN-7');
+  assert.equal(b.source_span_id, 'SPAN-7');
+  assert.equal(b.children[0].source_span_id, 'SPAN-7');
+  assert.equal(unit.stats.component_spans_repaired, 1);
+  assert.equal(unit.stats.component_spans_inherited, 2);
+  assert.equal(unit.stats.proposals_dropped, 0);
 });

@@ -9574,6 +9574,46 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       re-fire both levers on every section, four at once. npm run
       test:active: 854 tests, 853 pass, the one known failure.
 
+      (198) 2026-10-21 22:30 to 23:10 UTC (implementer E), on the
+      manager's interim of the levers' re-run
+      (pm-ablation-20261021T213656Z, loops 4, (197) on the sandbox):
+      derived_statement_sonnet55 failed 3.2, 8.3, 5.17 and 5.19 after
+      the retry, all MODEL_RESPONSE_SHAPE
+      proposal.evidence_quotes[].source_span_id again, so (197)'s
+      evidence-quote repair did not reach the path. Traced from the
+      code (the sandbox's recording is still not this session's to
+      read): the label is the evidence quote's, the raise is the
+      components'. `compileProposalComponents` resolves every
+      component that names words through `resolveEvidenceQuote`, whose
+      first line is `requiredString(source_span_id, 'proposal.
+      evidence_quotes[].source_span_id')`; a component without a
+      string span id, a child the model left without one (inheriting
+      its parent's in the model's mind), a span under another name
+      (span_id, source_span, span) or as a number, throws for the whole
+      section. The derived mode asks for every operative word in the
+      components, so it writes more children than the plain mode and
+      trips this more often (five sections in the first run, four in
+      this one; the plain mode's confirmation lost two to it as well:
+      3.10's "proposal.client_ref" was the same kind of shape loss).
+      Now the lean normaliser repairs the components before anything
+      else: a span by any name, a number as its string, the alias
+      mapped (component_spans_repaired); a child without a span
+      inherits its nearest ancestor's, a top-level component without
+      one the first span the proposal cites (component_spans_inherited);
+      a proposal that cites no span at all is dropped with its ref in
+      the LEAN_RESPONSE_NORMALISED note (proposals_dropped,
+      dropped_proposals) and its links go with it, so the other facts
+      of the section compile and the review sees the loss by name,
+      never a failed section. The compiler is unchanged. Pinned on
+      Concho 6.3: a top-level component under span_id with a span-less
+      child and a second proposal citing no span, the section compiling
+      with one VALID fact, the child kept on its parent's span, the
+      dropped ref in the note; and a numeric id with span-less children
+      in the normaliser. Tests: tests/product-lean-answer-repairs.test.js
+      (4), tests/product-lean-request-profile.test.js (the stats' new
+      keys). Ready for the manager to update the sandbox and re-fire
+      after this job ends. npm run test:active: see the push.
+
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
 - [x] Take a database backup and restore it to a separate environment.
