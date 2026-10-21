@@ -5348,6 +5348,39 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       completed. The two deals paused ((175)); no intake
       ((172)); the pool sandboxes still on the old default until Ben
       says resume.
+      (220) 2026-10-21 21:00 UTC (the manager, on Ben's "Restart"):
+      the loop stopped on 2026-10-19 between 18:28 and 18:35 UTC when
+      the implementer sessions A and E and the subscription sandbox
+      all met the account's weekly limit ("You're out of usage
+      credits"; "You've hit your weekly limit"), which reset on
+      2026-10-21 at 18:00 UTC; the branch stood at 4c4e918c throughout
+      (suite 850 of 851, the known failure). E's second job
+      (pm-ablation-20261019T171620Z, finding (219)) ended at 19:31 UTC
+      on 2026-10-19, exit 0, read now from the sandbox:
+      derived_statement_sonnet55 answered 96 of 104 sections, 818
+      matched, 14 partial, 11 unmatched of 843 stored (the same
+      omitted facts as (216) and (217), plus III-INTRO's three and one
+      on 6.1), 823 VALID and 8 held, 1,844,268 output tokens where
+      anchors_sonnet55 wrote 2,224,248 on 102 sections (about 17 per
+      cent fewer per section: the statement no longer written back);
+      eight sections failed after the retry, six on
+      MODEL_RESPONSE_SHAPE (5.17, 5.11, 3.15, 2.5 and 3.13 on
+      proposal.evidence_quotes[].source_span; 5.1 on
+      proposal.statement) and two on FACT_LINK_ENDPOINT (4.12 p3c1:p3,
+      3.3 p2c1:p2), where the confirmation lost two: the derived mode
+      trips shape checks the plain mode does not, E's to fix before it
+      is a default ((197) assigned 18:19 UTC, not started: E's
+      credits). merged_residual_sonnet55 answered 13 sections before
+      the weekly limit (129 / 5 / 9 of 143; 91 failed on the limit):
+      not measured; re-run after E's fix. Reading: the derived
+      statement holds the facts and saves about a sixth of the output;
+      it goes into the default only when its eight failures are
+      fixed and a clean whole-agreement run shows no more failed
+      sections than the plain mode. Ben's three answers still pending
+      ((218), (219)): resume the two paused deals on the Sonnet
+      default, the qualifier placement, the Opus 5.5 medium remainder.
+      The implementers woken: A on (204), E on (197) and the re-run.
+      The two deals paused ((175)); no intake ((172)).
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
