@@ -7359,7 +7359,12 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       kind (the `seen` order, the real call order, was pinned already
       and is unchanged). npm run test:active on the commit: 851 tests,
       850 pass, the one failure the known Codex-client final-message
-      test.
+      test. Pushed 2026-10-19 16:57 UTC as 1f2cae8 (merge 5d34ed9), an
+      ancestor of 4c4e918c and 381c7592; re-read on 2026-10-21 22:30
+      UTC at the manager's third ask ((220) and the messages of 20:58
+      and 22:26 UTC): the code, the four pinned assertions and this
+      finding are all in the head, the extraction test file passes 30
+      of 30 there, nothing to redo.
       (120) 2026-10-18 19:10 to 19:45 UTC (implementer C), Q5: the limb
       names harvested. `scripts/product/harvest-rep-limbs.js` (library
       `lib/product/rep-limb-harvest.js`, `tests/product-rep-limb-harvest.test.js`)
