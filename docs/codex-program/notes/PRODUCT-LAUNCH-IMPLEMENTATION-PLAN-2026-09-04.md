@@ -9515,6 +9515,65 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       push. npm run test:active: 851 tests, 850 pass, the one known
       failure.
 
+      (197) 2026-10-21 21:05 to 22:00 UTC (implementer E), work package
+      E8 on the manager's read of the second job ((219), (220):
+      derived_statement_sonnet55 answered 96 of 104 sections, 818 / 14
+      / 11 of 843 stored, 1,844,268 output tokens against the plain
+      mode's 2,224,248 on 102, about 17 per cent fewer per section;
+      eight sections failed after the retry where the plain mode lost
+      two). The recording is the sandbox's, which this session cannot
+      read, so the three kinds are traced from the failure sites and
+      pinned on answers of the shapes the messages name; nothing run.
+      All three were compiler shape checks that threw for the whole
+      section on one proposal, and the lean normaliser
+      (`normaliseLeanResponse`, lib/product/agreement-draft.js) now
+      repairs the answer before any check sees it. (1)
+      MODEL_RESPONSE_SHAPE proposal.statement (5.1, four parts): under
+      statement_mode 'derived' the statement came from the OWN
+      components' resolved words, and a proposal whose anchors did not
+      resolve (anchors_unresolved) had none, so `requiredString` threw
+      and the part, then the section, was lost. Now a lean answer
+      without a statement always gets one, derived mode or not: the
+      OWN words, else any resolved words, else the anchors the model
+      wrote verbatim ("first words ... last words"; the validator holds
+      the fact on its unresolved component, which is what the review
+      should see), else the headline, else a placeholder that says so;
+      the proposal carries statement_source and the note counts
+      statements_fallback beside statements_derived. (2)
+      MODEL_RESPONSE_SHAPE proposal.evidence_quotes[].source_span_id
+      (5.17, 5.11, 3.15, 2.5, 3.13): the lean contract asks for no
+      evidence quotes and the compiler derives them from the
+      components, but a model that writes some anyway under another
+      name (source_span, span_id, span; text for quote) or without a
+      span reached `resolveEvidenceQuote`'s requiredString. Now each
+      written entry is read by whatever name it gave (the alias
+      mapped), an entry with no span or no words is dropped, and a
+      proposal left with none takes its evidence from its components as
+      before (evidence_repaired, evidence_dropped in the note). (3)
+      FACT_LINK_ENDPOINT p3c1:p3 (4.12), p2c1:p2 (3.3): a link endpoint
+      naming a component ("p3c1") rather than its proposal ("p3"). Now
+      an endpoint is read as the proposal that owns the component (by
+      the component's ref, else by the proposal ref the name begins
+      with followed by c and digits); an endpoint that is neither drops
+      the link (links_dropped), never the section; cross-section links
+      the same. The compiler's checks are unchanged, so an answer that
+      reaches them under the V9 contract fails as before. Measured in
+      the job: the derived mode writes about a sixth less output per
+      section than the plain mode with the same facts matched on the
+      sections that answered, the omissions the same five ((217)) plus
+      III-INTRO's three and one on 6.1. Tests:
+      tests/product-lean-answer-repairs.test.js (3, on Concho 6.3: the
+      unresolved-anchors answer with no statement compiling whole and
+      held, and the same across a split into parts; the evidence quotes
+      under span_id and text repaired and the span-less one dropped,
+      the fact VALID; the component-ref link read as its proposal and
+      the link to nothing dropped, with the prefix form and
+      cross-section links in the normaliser), registered in
+      test:active; tests/product-lean-request-profile.test.js (the
+      stats' new keys). Ready for the manager to update the sandbox and
+      re-fire both levers on every section, four at once. npm run
+      test:active: see the push.
+
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
 - [x] Take a database backup and restore it to a separate environment.
