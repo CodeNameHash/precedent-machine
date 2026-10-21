@@ -9572,7 +9572,7 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       test:active; tests/product-lean-request-profile.test.js (the
       stats' new keys). Ready for the manager to update the sandbox and
       re-fire both levers on every section, four at once. npm run
-      test:active: see the push.
+      test:active: 854 tests, 853 pass, the one known failure.
 
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
