@@ -9612,7 +9612,8 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       in the normaliser. Tests: tests/product-lean-answer-repairs.test.js
       (4), tests/product-lean-request-profile.test.js (the stats' new
       keys). Ready for the manager to update the sandbox and re-fire
-      after this job ends. npm run test:active: see the push.
+      after this job ends. npm run test:active: 855 tests, 854 pass,
+      the one known failure.
 
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
