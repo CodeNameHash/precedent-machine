@@ -5694,6 +5694,39 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       the facts that come back partial (Ben's, with (c) of E13). The
       two deals paused ((175)); no intake ((172)); Ben's three answers
       pending.
+      (229) 2026-10-22 15:30 UTC (the manager): E's (199f) readings
+      merged at d9f3d613 and agreed. (b) as (228). (c) Two shapes for
+      Ben, no rule change until he answers: a covenant whose object is
+      a semicolon list of prohibited actions under one verb and one
+      consent standard (5.1's Tax covenant: the stored run one fact
+      with five LIST elements, the live rungs five facts each
+      repeating the chapeau), and a restriction with a proviso (5.1(b)'s
+      extraordinary dividends: the stored run one fact with the
+      proviso an EXCEPTION component, the live rungs two facts, the
+      proviso unlinked and in the model's words). E's reading on both:
+      the stored cut reads the words better; the repeatable fix for
+      the first is one sentence in the extractor's instruction, for
+      the second the linked-exception rule the schema already states.
+      Decision taken: the comparison matcher is fixed now, since the
+      ladder's rows are what the tier and lever decisions read.
+      Mechanism (E): a stored 5.1 covenant's OWN component bytes are
+      mostly the chapeau words the proposal repeats, so a live fact
+      that cites the whole chapeau scores MATCHED on a stored fact
+      whose limb it never cites (the equity-award covenant matched the
+      Tax covenant at share 1 on the default rung), and live facts
+      citing fragments score PARTIAL on facts they do state. Work
+      package E14 (E): in lib/product/generation-comparison.js (the
+      rule compareFacts uses), score a stored fact on its bytes
+      outside the section's chapeau span when any remain, and let a
+      live fact match one stored fact at most (best share first);
+      pinned on 5.1's Tax and equity-award facts; then re-score the
+      stored job dirs on the sandbox from their analysis files (the
+      six 5.1 jobs of (226) and (227), the eight-section jobs of (225)
+      and (228)) with a script under scripts/product, and report the
+      rows that change; no extraction change, no new run. The two
+      deals paused ((175)); no intake ((172)); Ben's answers pending:
+      resume the deals; qualifier placement ((218)); the Opus
+      remainder; the two fact shapes above.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
