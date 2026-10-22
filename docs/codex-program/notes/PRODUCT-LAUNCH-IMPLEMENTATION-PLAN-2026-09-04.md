@@ -5549,6 +5549,80 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       chapeau) and the introductions' duplicate holds (A, work package
       24: read, no rule change until Ben answers). The two deals
       paused ((175)); no intake ((172)).
+      (226) 2026-10-22 10:03 to 10:35 UTC (the manager): the three 5.1
+      variance jobs with E11 (pm-ablation-20261022T090218Z, 093531Z and
+      100454Z; the sandbox at 7acf9c4f; the plain rung anchors_sonnet55
+      and counts_sonnet55, two at once, each over 5.1's 66 stored
+      facts), read against the stored facts, the recorded calls and the
+      words sent. Rows: plain 48 / 1 / 17, 49 / 2 / 15, 47 / 4 / 15;
+      counts 60 / 2 / 4, 60 / 6 / 0, 58 / 8 / 0, the counts rows each
+      "attempts": 2 after THIN_ANSWER (BELOW_PART_MINIMUM on part 1:
+      "expected_facts": 1, "proposals": 0, "operative_bytes": 32). With
+      the six earlier plain readings on the same bytes (63, 48, 48, 56,
+      60, 48 of 66) the plain rung spans 48 to 63. Read, not inferred:
+      (1) part 1 is the heading. 5.1's chapeau span s4 is "Section 5.1
+      Conduct of Business." (32 bytes, one sentence); the four-part
+      layout (the heading; (b) 1,772 bytes; (c) 416 bytes; (a) 13,100
+      bytes whole) is the stored run's output-cap re-split carried into
+      the ablation through splitForAttempt (the stored claim's history
+      names the cap failures), on both rungs, so the part-1 call (1,807
+      to 1,849 output tokens on every job) reads 300 KB of context to
+      write nothing, and E11's count minimum trips on it. The retry
+      that follows is the harness's whole-section retry: the second
+      attempt re-ran all four calls (293,266 output tokens, twice the
+      146,633 recorded; $3.04 at list against the plain rung's $1.24),
+      so the counts rung's rows are second rolls of the whole section,
+      not a thin part recovered. What the rows do show: the counts
+      rung's three rolls (60, 60, 58) each held every lead-paragraph
+      fact (unmatched 4, 0, 0) and the plain rung's three (48, 49, 47)
+      each lost them (15, 15, 15), the difference between the two
+      requests being part_fact_budget and part_count_instruction on
+      every part (part 4, limb (a), hears its budget of about 45) and
+      the one-sentence chapeau count on part 1; whether the budget line
+      alone holds 58 to 60 without the forced second roll is what the
+      next three jobs answer once (b) below stops the heading part
+      tripping the minimum. (2) The facts
+      plain loses are limb (a)'s opening words, not the section's. The
+      15 to 17 unmatched are the same each job: the affirmative
+      covenants (ordinary course, preserve organisation, assets in good
+      repair, officers and consultants, goodwill), the consent standard
+      and the exceptions (consent, the Agreement, Law; the Disclosure
+      Letter, the Agreement, Law), all stated in the two sentences
+      (1,565 bytes) of limb (a) before "(i)", and (b)'s consent standard
+      and exceptions in its 425-byte lead. Part 4 is limb (a) whole:
+      13,100 bytes, 86,722 to 104,362 output tokens, forty-odd list
+      limbs, and Sonnet writes the lead paragraph's covenants in some
+      rolls (63, 60) and not others (48). E11 counted the sentences of
+      the chapeau span, which for 5.1 is the heading; the opening words
+      that carry facts are the limb's. (3) The stored run and the earlier
+      readings called this "part 1, the chapeau's covenants" ((199d),
+      (225)); the words were limb (a)'s all along. Decision: part_counts
+      does not enter the default as built. Work package E12 (E, now):
+      (a) the opening-words count moves to the limb: for every limb in a
+      part whose text has a lead paragraph before its first numbered
+      sub-limb (the bytes before the first "(i)" or "(1)" marker, at or
+      over paragraph_min_bytes), the part instruction names that limb
+      and its lead's sentence count and asks a proposal for each legal
+      effect of each sentence (each affirmative covenant, each consent
+      standard, each source of exception, never fewer than the
+      sentences), and the part's minimum is the sum of those counts; the
+      chapeau_own_part split and the section-chapeau sentence stay for
+      a chapeau that states covenants, never for one of fewer than
+      paragraph_min_bytes; (b) no part of a heading alone: the re-split
+      and longSectionGroups fold a chapeau or paragraph under
+      paragraph_min_bytes into the part that follows, and
+      thinAnswerSignals applies no minimum to a part under
+      min_operative_bytes; (c) a THIN_ANSWER retry re-runs the thin part
+      only: confirm the pipeline's attempt-resume replays the healthy
+      parts' records on the next attempt (lib/product/attempt-resume.js)
+      and give the ablation harness the same, so a retry costs one part;
+      (d) behind the part_counts flag still, pinned in
+      tests/product-thin-answer.test.js and
+      tests/product-fresh-sheet-experiments.test.js on 5.1's real
+      layout (the heading chapeau, limb (a)'s two-sentence lead), then
+      the three 5.1 jobs again on both rungs. Not changed: the Sonnet
+      default; the two deals paused ((175)); no intake ((172)); Ben's
+      three answers pending.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
