@@ -110,7 +110,7 @@ test('the comparison pairs V1 facts with V2 facts on bytes and names every diffe
   assert.deepEqual(model.runs.v1, { ...model.runs.v1, proposals: 6, valid: 5, held: 1, layered: 0 });
   assert.deepEqual(model.runs.v2, { ...model.runs.v2, proposals: 5, valid: 4, held: 1, layered: 4 });
   assert.deepEqual(model.totals, {
-    v1_valid: 5, v2_valid: 4, v1_matched: 2, v1_partial: 1, v1_unmatched: 2, v1_unmatched_held_in_v2: 1,
+    v1_valid: 5, v2_valid: 4, v1_matched: 2, v1_bundled: 0, v1_partial: 1, v1_unmatched: 2, v1_unmatched_held_in_v2: 1,
     v2_new: 1, v2_held: 1, v1_held: 1, routing_same: 1, routing_differs: 2,
   });
 

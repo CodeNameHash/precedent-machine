@@ -173,7 +173,7 @@ test('compareFacts matches stored facts to a variant\'s on the bytes and names t
     { proposal_id: 'z', validation_status: 'VALID', family_key: 'F', subtype_key: 'T', components: [{ origin: 'OWN', start_byte: 700, end_byte: 720 }] },
   ];
   const comparison = compareFacts({ storedFacts: stored, variantFacts: variant });
-  assert.deepEqual(comparison.counts, { stored: 3, matched: 1, partial: 1, unmatched: 1, new: 1 });
+  assert.deepEqual(comparison.counts, { stored: 3, matched: 1, partial: 1, unmatched: 1, bundled: 0, new: 1 });
   assert.deepEqual(comparison.rows.map((row) => [row.proposal_id, row.status, row.counterpart]), [['a', 'MATCHED', 'x'], ['b', 'PARTIAL', 'y'], ['c', 'UNMATCHED', null]]);
   assert.deepEqual(comparison.new_facts.map((fact) => fact.proposal_id), ['z']);
 });
@@ -280,7 +280,7 @@ test('the fixed-layout prices bracket a call at the model\'s published rates, an
   assert.deepEqual(fixedLayoutPrices(usage, 'unknown-model'), { list_price_written_usd: null, list_price_read_usd: null });
   const section = (reference, valid, matched) => ({ section_reference: reference, facts: { valid, held: 0 }, comparison: { counts: { stored: valid, matched, partial: 0, unmatched: valid - matched, new: 1 } }, extraction: { fresh_input_tokens: 10, cache_read_tokens: 20, cache_write_tokens: 30, output_tokens: 40, duration_ms: 1000, cost_microusd: 0, list_cost_microusd: 5000, list_price_written_usd: 0.5, list_price_read_usd: 0.25 } });
   const totals = ablationTotals({ sections: [section('1.1', 7, 7), section('2.2', 27, 26), { section_reference: '3.3', error: { message: 'x' } }] });
-  assert.deepEqual(totals, { sections: 2, failed: 1, valid: 34, held: 0, stored: 34, matched: 33, partial: 0, unmatched: 1, new: 2, fresh_input_tokens: 20, cache_read_tokens: 40, cache_write_tokens: 60, output_tokens: 80, duration_ms: 2000, cost_microusd: 0, list_cost_microusd: 10000, list_price_written_usd: 1, list_price_read_usd: 0.5 });
+  assert.deepEqual(totals, { sections: 2, failed: 1, valid: 34, held: 0, stored: 34, matched: 33, bundled: 0, partial: 0, unmatched: 1, new: 2, fresh_input_tokens: 20, cache_read_tokens: 40, cache_write_tokens: 60, output_tokens: 80, duration_ms: 2000, cost_microusd: 0, list_cost_microusd: 10000, list_price_written_usd: 1, list_price_read_usd: 0.5 });
   assert.equal(ablationTotals({ sections: [] }), null);
 });
 

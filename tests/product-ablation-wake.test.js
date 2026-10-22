@@ -244,7 +244,7 @@ test('the CLI path of the cost ablation runs the expressible variants through th
   const section = format.sections[0];
   assert.equal(section.error, null);
   assert.equal(section.extraction.live_calls, 1);
-  assert.deepEqual(section.comparison.counts, { stored: 1, matched: 1, partial: 0, unmatched: 0, new: 0 });
+  assert.deepEqual(section.comparison.counts, { stored: 1, matched: 1, partial: 0, unmatched: 0, bundled: 0, new: 0 });
   assert.equal(section.facts.valid, 1);
   assert.equal(section.extraction.thinking_source, 'reported');
   assert.ok(section.extraction.thinking_tokens > 0 && section.extraction.thinking_share > 0.25 && section.extraction.thinking_share < 0.35);
