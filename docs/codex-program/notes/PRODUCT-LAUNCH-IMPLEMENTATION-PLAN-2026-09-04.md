@@ -11077,7 +11077,8 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       stored fact took is the better of the two readings, since it
       names the live facts outside every stored fact's cover rather
       than the ones left over by answer order. Not changed: the
-      matcher; nothing else is open for E.
+      matcher; nothing else is open for E. npm run
+      test:active: 872 tests, 871 pass, the one known failure.
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
 - [x] Take a database backup and restore it to a separate environment.
