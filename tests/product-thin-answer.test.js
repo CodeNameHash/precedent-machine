@@ -27,7 +27,7 @@ function spansOf(sizes) {
 const cite = (ids) => ({ proposals: ids.map((id, index) => ({ client_ref: `p${index + 1}`, components: [{ ref: 'c', kind: 'OPERATION', quote: 'w', source_span_id: id, occurrence: 0, origin: 'OWN' }] })) });
 
 test('the signals: 5.1 part 1\'s shape is thin by its uncited bytes and its output; a full answer is not; a residual paragraph in a routed family that no fact cites is thin on its own', () => {
-  assert.deepEqual(THIN_ANSWER, { uncited_share: 0.5, uncited_min_bytes: 1500, min_operative_bytes: 2000, budget_fraction: 0.25, output_tokens_per_byte: 0.5 });
+  assert.deepEqual(THIN_ANSWER, { uncited_share: 0.5, uncited_min_bytes: 1500, min_operative_bytes: 2000, budget_fraction: 0.25, paragraph_min_bytes: 80, output_tokens_per_byte: 0.5 });
   const spans = spansOf([3000, 2500, 2800, 2200]);
   // One fact on the first span of a 10,500-byte part, 2,079 output tokens: the shape of 5.1 part 1 on Opus 5.5 medium.
   const thin = thinAnswerSignals({ answer: cite(['op1']), spans, outputTokens: 2079, routedFamilies: ['INTERIM_OPERATING_COVENANTS'] });
@@ -52,6 +52,9 @@ test('the signals: 5.1 part 1\'s shape is thin by its uncited bytes and its outp
   assert.equal(residual.thin, true);
   assert.deepEqual(residual.reasons, ['RESIDUAL_PARAGRAPHS_UNCITED']);
   assert.deepEqual(residual.uncited_known_paragraphs, ['para7']);
+  // A paragraph shorter than a sentence (a heading line) does not count.
+  const short = [{ span_id: 'para8', start_byte: spans[2].start_byte + 10, end_byte: spans[2].start_byte + 40 }];
+  assert.equal(thinAnswerSignals({ answer: cite(['op1', 'op2', 'op4']), spans, paragraphs: short, dispositions: [{ source_span_id: 'para8', disposition: 'KNOWN_FAMILY', family_keys: ['NO_SHOP'] }], routedFamilies: ['NO_SHOP'], outputTokens: 20000 }).thin, false);
   // The same paragraph in a family not routed, or cited, is nothing.
   assert.equal(thinAnswerSignals({ answer: cite(['op1', 'op2', 'op4']), spans, paragraphs, dispositions, routedFamilies: ['TERMINATION'], outputTokens: 20000 }).thin, false);
   assert.equal(thinAnswerSignals({ answer: cite(['op1', 'op2', 'op3', 'op4']), spans, paragraphs, dispositions, routedFamilies: ['NO_SHOP'], outputTokens: 20000 }).thin, false);
@@ -149,4 +152,109 @@ test('a split section: the thin part fails the attempt naming its part, the othe
   assert.equal(JSON.parse(issue.message).part, 1);
   assert.ok(marked.result.proposals.length >= 3, 'the other parts\' facts are kept');
   assert.deepEqual(marked.result.coverage.filter((item) => item.subject_kind === 'SECTION_FAMILY' && item.family_key === 'NO_SHOP').map((item) => item.state), ['UNRESOLVED']);
+});
+
+// Plan finding (199d), work package E11: under part_counts a chapeau of
+// enough sentences is a part of its own, and each part's count is a
+// minimum the guard checks.
+function chapeauAnswerFor(request, { chapeauFacts, limbFacts }) {
+  const family = request.family_contracts.find((item) => item.family_key === 'NO_SHOP');
+  const subtype = family.subtypes[0];
+  const operative = request.source_closure.operative;
+  const chapeauOnly = operative.length === 0;
+  const counted = /The opening words state (\d+) sentence/.exec(request.part_instruction || '');
+  const chapeauCount = counted ? Number(counted[1]) : 0;
+  const coversChapeau = Boolean(request.source_closure.extraction_part?.covers_chapeau);
+  const chapeauSpan = request.source_closure.chapeau.slice(0, 1);
+  // The chapeau's facts: 'full' answers the count the instruction names; a number answers that many.
+  const chapeauWanted = chapeauFacts === 'full' ? chapeauCount : chapeauFacts;
+  const spans = chapeauOnly ? chapeauSpan : [...(coversChapeau ? Array.from({ length: chapeauWanted }, () => chapeauSpan[0]) : []), ...operative];
+  const wanted = chapeauOnly ? chapeauWanted : (coversChapeau ? chapeauWanted : 0) + Math.min(limbFacts(operative.length), operative.length * 3);
+  const coverage = Object.fromEntries(Object.keys(request.response_contract.allowed_fact_types_by_family).map((key) => [key, key === 'NO_SHOP' && wanted > 0 ? 'FOUND' : 'NOT_FOUND']));
+  const proposals = [];
+  const groups = [];
+  for (let index = 0; index < wanted; index += 1) {
+    const span = chapeauOnly ? spans[0] : (index < (coversChapeau ? chapeauWanted : 0) ? spans[index] : operative[(index - (coversChapeau ? chapeauWanted : 0)) % operative.length]);
+    const sentences = span.exact_text.split(/(?<=\.)\s+/).filter((item) => item.trim().length > 0);
+    const sentence = sentences[index % sentences.length];
+    groups.push({ client_ref: `g${index + 1}`, family_key: 'NO_SHOP', subtype_key: subtype.subtype_key });
+    proposals.push({
+      client_ref: `p${index + 1}`, group_ref: `g${index + 1}`, family_key: 'NO_SHOP', subtype_key: subtype.subtype_key, fact_type: family.required_fact_types[0], statement: sentence,
+      headline: { label: subtype.label || subtype.subtype_key, distinguishing_refs: [`c${index + 1}`], summary: 'The no-shop covenant' },
+      components: [{ ref: `c${index + 1}`, kind: 'OPERATION', label: 'the covenant', quote: sentence, source_span_id: span.span_id, occurrence: 0, origin: 'OWN', gap_before: false, children: [] }],
+    });
+  }
+  return { proposals, groups, links: [], coverage };
+}
+
+async function runChapeau({ chapeauFacts, limbFacts = (limbs) => limbs, longSectionSplit, profile = { ...REQUEST_PROFILES.DEFAULT, part_counts: true } }) {
+  const sourceDocument = await conchoSource();
+  const agreementStructure = buildAgreementStructure(sourceDocument);
+  const node = substantiveSections(agreementStructure).find((item) => item.reference === '6.3');
+  const synthetic = createSyntheticConchoModel();
+  const seen = [];
+  const model = { async complete(input) {
+    seen.push(input);
+    if (input.call_kind !== 'EXTRACTION') return synthetic.complete(input);
+    const response = chapeauAnswerFor(input.request, { chapeauFacts, limbFacts });
+    return { provider_id: 'SYNTHETIC', model_id: 'CHAPEAU/V1', raw_request: input.request, raw_response: response, response, input_tokens: 10, output_tokens: 20000, cost_microusd: 0, duration_ms: 1 };
+  } };
+  const result = await buildAgreementSectionDraft({ sourceDocument, agreementStructure, legalSchema: schemaV2, model, node, requestProfile: profile, longSectionSplit, thinAnswerGuard: true });
+  return { result, seen };
+}
+
+test('under part_counts a chapeau of enough sentences is a part of its own: no limb in its operative list, the instruction says so, the split issue names it; without the flag the first part carries the chapeau with the limbs', async () => {
+  const split = { min_section_bytes: 1000, min_children: 3, group_bytes: 6000, chapeau_min_sentences: 1 };
+  const own = await runChapeau({ chapeauFacts: 'full', longSectionSplit: split });
+  const requests = own.seen.filter((input) => input.call_kind === 'EXTRACTION').map((input) => input.request);
+  const first = requests.find((request) => request.source_closure.extraction_part.part === 1);
+  assert.deepEqual(first.source_closure.operative, [], 'the chapeau part lists no limb');
+  assert.equal(first.source_closure.extraction_part.covers_chapeau, true);
+  assert.match(first.part_instruction, /This part covers only the section's own opening words/);
+  assert.match(first.part_instruction, /The opening words state \d+ sentences? of covenant/);
+  assert.ok(requests.filter((request) => request.source_closure.extraction_part.part > 1).every((request) => request.source_closure.operative.length >= 1 && !request.source_closure.extraction_part.covers_chapeau));
+  const splitIssue = JSON.parse(own.result.issues.find((issue) => issue.code === 'LONG_SECTION_SPLIT').message);
+  assert.equal(splitIssue.chapeau_own_part, true);
+  assert.equal(splitIssue.chapeau_in_part, 1);
+  assert.equal(splitIssue.operative_spans_per_part[0], 1);
+  assert.ok(!own.result.issues.some((issue) => issue.code === 'THIN_PART_ANSWER'));
+  assert.ok(own.result.proposals.length >= requests.length, 'the chapeau facts and one per limb');
+  // Without the flag: the first part carries the chapeau and the first limbs, as before.
+  const plain = await runChapeau({ chapeauFacts: 'full', longSectionSplit: split, profile: REQUEST_PROFILES.DEFAULT });
+  const plainIssue = JSON.parse(plain.result.issues.find((issue) => issue.code === 'LONG_SECTION_SPLIT').message);
+  assert.equal(plainIssue.chapeau_own_part, undefined);
+  assert.ok(plainIssue.operative_spans_per_part[0] > 1);
+  assert.ok(plain.seen.find((input) => input.call_kind === 'EXTRACTION' && input.request.source_closure.extraction_part.part === 1).request.source_closure.operative.length >= 1);
+  // The threshold: a chapeau under the sentence floor stays with the limbs even under the flag.
+  const high = await runChapeau({ chapeauFacts: 'full', longSectionSplit: { ...split, chapeau_min_sentences: 99 } });
+  assert.equal(JSON.parse(high.result.issues.find((issue) => issue.code === 'LONG_SECTION_SPLIT').message).chapeau_own_part, undefined);
+});
+
+test('the part minimum: a chapeau part with fewer proposals than its sentences, or a limb part with fewer than its limbs, fails the attempt the first time and is marked after', async () => {
+  const split = { min_section_bytes: 1000, min_children: 3, group_bytes: 6000, chapeau_min_sentences: 1 };
+  await assert.rejects(() => runChapeau({ chapeauFacts: 0, longSectionSplit: split }), (error) => {
+    assert.equal(error.code, 'THIN_ANSWER');
+    assert.equal(error.thin_answer.part, 1);
+    assert.ok(error.thin_answer.reasons.includes('BELOW_PART_MINIMUM'), error.thin_answer.reasons.join(','));
+    assert.ok(error.thin_answer.minimum_proposals >= 1);
+    assert.equal(error.thin_answer.proposals, 0);
+    return true;
+  });
+  // The chapeau part whole, a limb part with one fewer proposal than its limbs.
+  await assert.rejects(() => runChapeau({ chapeauFacts: 'full', limbFacts: (limbs) => Math.max(0, limbs - 1), longSectionSplit: split }), (error) => {
+    assert.equal(error.code, 'THIN_ANSWER');
+    assert.ok(error.thin_answer.part > 1);
+    assert.ok(error.thin_answer.reasons.includes('BELOW_PART_MINIMUM'), error.thin_answer.reasons.join(','));
+    return true;
+  });
+  // The attempt after: kept and marked.
+  const marked = await runChapeau({ chapeauFacts: 0, longSectionSplit: splitForAttempt(split, { error_history: [{ error: { code: 'THIN_ANSWER', message: 'x' } }] }) });
+  const issue = marked.result.issues.find((item) => item.code === 'THIN_PART_ANSWER');
+  assert.ok(issue);
+  assert.equal(JSON.parse(issue.message).part, 1);
+  assert.ok(JSON.parse(issue.message).reasons.includes('BELOW_PART_MINIMUM'));
+  assert.ok(marked.result.proposals.length >= 1, 'the limb parts\' facts are kept');
+  // The signal on its own.
+  assert.deepEqual(thinAnswerSignals({ answer: cite(['op1', 'op2']), spans: spansOf([900, 800]), outputTokens: 5000, minimumProposals: 3 }).reasons, ['BELOW_PART_MINIMUM']);
+  assert.equal(thinAnswerSignals({ answer: cite(['op1', 'op2']), spans: spansOf([900, 800]), outputTokens: 5000, minimumProposals: 2 }).thin, false);
 });

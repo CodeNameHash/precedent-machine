@@ -10053,6 +10053,46 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       absent without the flag; the rung). npm run test:active: 860
       tests, 859 pass, the one known failure.
 
+      (199d) 2026-10-22 08:35 to 09:30 UTC (implementer E), work package
+      E11, 5.1's part 1 across five runs on identical bytes ((225):
+      plain 63 / 3 / 0, 48 / 3 / 15, 48 / 3 / 15, 56 / 3 / 7, 60 / 2 /
+      4; derived 47 to 50; counts_sonnet55 56 / 3 / 7; the lost facts
+      the chapeau's covenants; the guard silent because the part cites
+      its words and omits facts). The five rows and the recorded part-1
+      answers are the sandbox's, not this session's; built from the
+      code and the manager's reading, both of the asked changes, (c),
+      behind the part_counts flag so the plain rung stays the control.
+      (a) The split rule: under part_counts a chapeau of
+      CHAPEAU_OWN_PART_SENTENCES (3) or more sentences is a part of its
+      own (`longSectionGroups` with `chapeau_own_part`, the floor
+      `chapeau_min_sentences`), the lettered limbs grouped after it as
+      before; the part's operative list is empty and its instruction
+      says so ("This part covers only the section's own opening words
+      ... the lettered limbs are other parts' and are context here"),
+      with the sentence count of (199c); the LONG_SECTION_SPLIT issue
+      carries chapeau_own_part and chapeau_in_part 1. A chapeau under
+      the floor stays with the first limbs as before, and without the
+      flag nothing changes. (b) The minimum: under part_counts every
+      part has a required minimum the thin-answer guard checks, the
+      opening words' sentences on the part that covers them plus one
+      proposal per lettered limb; fewer proposals is BELOW_PART_MINIMUM
+      (`thinAnswerSignals` with minimumProposals), a failed attempt the
+      first time and a marked part after, as (199)'s other signals,
+      whether or not the words are cited. The cost: a limb that states
+      no fact (a definition, a cross-reference) makes its part short by
+      one and buys one retry and a mark the review sees, which is the
+      right side to err on for the interim covenants. Pinned
+      (tests/product-thin-answer.test.js, 5): Concho 6.3 split with the
+      floor at one sentence: the chapeau part with no limb, its
+      instruction and the split issue, the limb parts without the
+      chapeau, the section whole; without the flag the first part
+      carrying the chapeau with the limbs; the floor at 99 keeping them
+      together; a chapeau part with no proposal failing the attempt on
+      BELOW_PART_MINIMUM with the part named, a limb part one short the
+      same, the attempt after kept and marked. Ready for the manager's
+      three runs of 5.1 on the plain rung and counts_sonnet55. npm run
+      test:active: see the push.
+
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
 - [x] Take a database backup and restore it to a separate environment.
