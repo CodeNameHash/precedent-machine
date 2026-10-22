@@ -9674,6 +9674,60 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       after this job ends. npm run test:active: 855 tests, 854 pass,
       the one known failure.
 
+      (199) 2026-10-22 01:55 to 03:00 UTC (implementer E), work package
+      E9: the thin-answer guard of (196) built, on the manager's read
+      of the levers' re-run ((221): both levers 50 / 1 / 15 of 66 on
+      5.1 where the plain mode held 63 / 3 / 0, and the two article
+      introductions lost whole; nothing run here). `thinAnswerSignals`
+      (lib/product/agreement-draft.js) reads a part's, or an unsplit
+      section's, answer against its request: the operative bytes in
+      spans no component or evidence quote cites (the cited spans'
+      byte ranges against the part's spans), the residual pass's
+      KNOWN_FAMILY paragraphs in a routed family inside the part that
+      nothing cites, the proposals against `factBudgetFor`'s expected
+      count, and the call's output tokens against the bytes. Thin when
+      a residual paragraph is uncited, or the uncited bytes are 1,500
+      or more and over half the part, or (on a part of 2,000 bytes or
+      more) the proposals are under a quarter of the expected count and
+      the output under half a token a byte (`THIN_ANSWER`; NCS 5.1's
+      healthy parts wrote two to nine tokens a byte with the thinking,
+      the thin ones a fifth). The first thin answer of a section is a
+      failed attempt: the draft throws THIN_ANSWER with the signals,
+      the part named on extraction_part as an output-cap failure is,
+      so the pipeline's attempt retry re-runs the section and
+      `splitForAttempt` counts the failure from the claim's
+      error_history (`thin_answers`); the ablation's (193) retry treats
+      THIN_ANSWER as retryable and hands the second attempt the first's
+      failure. On an attempt after one, the answer is kept and marked:
+      a THIN_PART_ANSWER coverage issue with the signals and the part,
+      and the routed families' SECTION_FAMILY and FACT_TYPE coverage
+      UNRESOLVED on the section whatever the model's coverage said;
+      never accepted in silence. The guard runs on lean attempts (a
+      run's work row or the ablation's row; a bare draft call in a test
+      does not carry an attempt and is unchanged unless it asks with
+      thinAnswerGuard), so the fixtures' minimal answers stand. Cost:
+      one extra call on the parts that trip it; on the confirmation's
+      Sonnet high run none of 5.1's parts would have, on Opus 5.5
+      medium two, and the article introductions answered with no facts
+      would be re-asked once and then marked for the review. Pinned
+      (tests/product-thin-answer.test.js, 3, registered in
+      test:active): the 5.1 part 1 shape (one fact on a 10,500-byte
+      part, 2,079 output tokens: thin by uncited bytes and by budget
+      and output; the same part with 17 facts and 22,739 tokens not;
+      a residual paragraph in the routed family uncited thin on its
+      own, the same paragraph in another family or cited not; a short
+      empty part not, a long empty one yes); Concho 6.3 unsplit
+      answered with no facts (the article-introduction shape): the
+      first attempt THIN_ANSWER, the attempt after kept with
+      THIN_PART_ANSWER and NO_SHOP UNRESOLVED, a full answer untouched,
+      a bare call unchanged, an attempt token alone turning it on; and
+      split into parts with part 1 thin: the failure names part 1, and
+      the attempt after keeps the other parts' facts with part 1
+      marked. Not read: the job's recording for III-INTRO (the sandbox
+      is not this session's); the shape pinned is the empty routed
+      answer the manager's read describes. npm run test:active: see
+      the push.
+
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
 - [x] Take a database backup and restore it to a separate environment.

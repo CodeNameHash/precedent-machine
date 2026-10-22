@@ -339,7 +339,7 @@ The design, against today's worker (`scripts/product-hosted-worker.js`, implemen
 
 Cost on the default's projection: $72 to $36. Time: three batch turnarounds in series, typically well under an hour each, against the 70 minutes the loop takes at eight loops; the floor is no longer the longest section's output but the batch's queue. The subscription CLI has no batch; the design is the API provider's only, and so is the full-agreement confirmation run's second half where it goes to the API.
 
-## 16. The thin answer: a part that wrote almost nothing (finding (196), proposed, not built)
+## 16. The thin answer: a part that wrote almost nothing (finding (196) proposed; built in finding (199): `thinAnswerSignals`, THIN_ANSWER once, THIN_PART_ANSWER after)
 
 The case (finding (219)): Opus 5.5 at medium effort on NCS 5.1, four parts, wrote 2,079 and 4,429 output tokens on parts 1 and 3 against 22,739 and 92,153 on parts 2 and 4, and part 1's 17 facts were lost whole; no call failed, so nothing retried. The pipeline treats a provider failure as a failed attempt and retries it; a complete, well-formed, nearly empty answer passes. On a fresh deal there is no stored generation to count against, so the floor has to come from the answer and the request themselves. Three signals are there already, none used for this:
 
