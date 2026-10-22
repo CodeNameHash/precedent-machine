@@ -9755,7 +9755,7 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       answer would need the routed families handed to the normaliser.
       Tests: tests/product-lean-answer-repairs.test.js (5),
       tests/product-lean-request-profile.test.js (the stats' keys). npm
-      run test:active: see the push.
+      run test:active: 859 tests, 858 pass, the one known failure.
 
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
