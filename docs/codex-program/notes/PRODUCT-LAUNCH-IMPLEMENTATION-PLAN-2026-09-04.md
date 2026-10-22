@@ -7453,6 +7453,58 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       and 22:26 UTC): the code, the four pinned assertions and this
       finding are all in the head, the extraction test file passes 30
       of 30 there, nothing to redo.
+      (205) 2026-10-22 06:35 to 07:05 UTC (implementer A), work package
+      23 (the manager's message of 06:31 UTC): the guard's check (job
+      pm-ablation-20261022T053736Z, the plain Sonnet rung on a sandbox
+      carrying (203)) held nine of 4.1's twenty facts and one of 3.1's;
+      the components as Sonnet wrote them are in
+      docs/codex-program/notes/sonnet-confirmation/sonnet-held-proposals-ncs5.json
+      under held_after_203. The form, read against clauseReferenceTarget:
+      all seven 4.1 cross-references are one text, the clause numbers
+      alone, "(1), (2), (3), (4) and (7)", the word "clauses" left in the
+      component before them ("with respect to clauses" cut as a
+      QUALIFIER); Opus 5 wrote "with respect to clauses (1), (2), (3),
+      (4) and (7)" or "clauses (1), ...". (203)'s rule required a clause
+      word; a reference that is nothing but enumerators and their
+      connectors (`BARE_ENUMERATOR_LIST`) is now the clause form too and
+      resolves from the section's enumerated items as before, the
+      model's own resolves_to still kept when given. The two LISTs:
+      "business, assets, liabilities, condition (financial or otherwise)
+      or results of operations" (3.1; 4.1 with "of Parent and its
+      Subsidiaries"), written with words and no LIST_ELEMENT children,
+      where Opus 5 wrote five elements (four once, "assets, liabilities"
+      together). Decision: derive, not hold. The elements are cut from
+      the list's own resolved words (`listElementRanges` in
+      lib/product/fact-components.js), deterministically: at its
+      enumerators when it has two or more, else at its semicolons, else
+      at its commas, the last comma piece split once at its first
+      depth-zero "or" or "and" ("A, B, C or D"), a parenthesis kept
+      whole, a leading "and" or "or" dropped as the series' conjunction;
+      each element a LIST_ELEMENT on the span the list cited, at its
+      words' bytes, labelled by its words; the fact VALID with the note
+      LIST_ELEMENTS_FROM_WORDS {path, elements, split}. Words with no
+      series (no enumerator, semicolon or comma; "A or B" too, since a
+      bare conjunction would split "results of operations of Parent and
+      its Subsidiaries") stay a LIST without elements and the fact held
+      as before. Why derive: the fact is the MAE prong and its words are
+      the agreement's, verbatim and resolved; the cut reproduces Opus
+      5's five elements on both sections; and the rule is the inverse of
+      (203)'s wordless-LIST rule and as deterministic, so a model that
+      writes either half of a list gets the whole. The component
+      instruction names both forms (the bare numbers; the elements cut
+      by the code from a LIST with a quote and no children). Pinned in
+      tests/product-fact-components-extraction.test.js on the exact
+      texts: "(1), (2), (3), (4) and (7)" resolving to the five clauses,
+      the comma LIST to five elements in order inside the list's bytes
+      with no relocation, an enumerated LIST to three, "the business"
+      held; the instruction sentences in the request. On the real rows:
+      the eight held proposals rebuilt as answers from their stored
+      components and compiled against the NCS canonical text all come
+      out VALID, the 4.1 reference resolving to (1) to (4) and (7) with
+      (7) ending at (8), the two LISTs to five elements each. The
+      stored-answer replay is unchanged (1,066 of 1,066; 1,044 VALID, 22
+      held). npm run test:active on the commit: 860 tests, 859 pass, the
+      one failure the known Codex-client final-message test.
       (120) 2026-10-18 19:10 to 19:45 UTC (implementer C), Q5: the limb
       names harvested. `scripts/product/harvest-rep-limbs.js` (library
       `lib/product/rep-limb-harvest.js`, `tests/product-rep-limb-harvest.test.js`)

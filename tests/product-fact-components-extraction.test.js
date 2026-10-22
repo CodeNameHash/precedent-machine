@@ -1065,6 +1065,9 @@ test('the extraction request names the representation qualification facts and th
   assert.match(both.component_instruction, /return one REPRESENTATION_QUALIFICATION proposal per source of exception as a fact of this section, its components the introduction's words with origin INTRO/);
   // Finding (204): a framing phrase is not a reference; the agreement as a whole resolves to the agreement.
   assert.match(both.component_instruction, /a framing phrase that names no provision \("For purposes of this Agreement", "hereof", "as used herein"\) is not a CROSS_REFERENCE/);
+  // Finding (205): the bare clause numbers are the clause form; a LIST with words and no elements has them cut by the code.
+  assert.match(both.component_instruction, /or the bare numbers "\(1\), \(2\), \(3\), \(4\) and \(7\)"\), quote the reference words/);
+  assert.match(both.component_instruction, /a LIST with a quote and no LIST_ELEMENT children has its elements cut by the code at the quote's enumerators, semicolons or commas/);
   assert.match(both.component_instruction, /The sentence that constitutes the exchange fund \(the deposit of the consideration with the Exchange Agent, "\(the “Exchange Fund”\)"\) is an EXCHANGE_MECHANICS fact of its own/);
   // The merger article's section, routed to the merger family alone,
   // carries neither sentence.
@@ -1209,6 +1212,76 @@ test('a cross-reference by clause number resolves to the clauses of the definiti
   assert.equal(list.start_byte, list.children[0].start_byte);
   assert.equal(list.end_byte, list.children[3].end_byte);
   assert.deepEqual(JSON.parse(listed.issues.find((issue) => issue.code === 'LIST_WORDS_FROM_ELEMENTS').message), { client_ref: 'p1', lists: [{ path: '1', elements: 4 }] });
+});
+
+// Work package 23 (the guard's check of 2026-10-22, job
+// pm-ablation-20261022T053736Z, NCS generation 5 on the plain Sonnet rung
+// after (203)): 4.1 held seven cross-references whose words were the
+// clause numbers alone, "(1), (2), (3), (4) and (7)", the word "clauses"
+// left in the component before them, and 4.1 and 3.1 each held a LIST
+// with words and no LIST_ELEMENT children ("business, assets,
+// liabilities, condition (financial or otherwise) or results of
+// operations", which Opus 5 wrote as five elements).
+test('the bare clause numbers resolve as the clause form; a LIST with words and no elements has its elements cut from its words, or stays held when its words have no series', () => {
+  const definition = '"Parent Material Adverse Effect" means any event, change or effect that is materially adverse to the business, assets, liabilities, condition (financial or otherwise) or results of operations of Parent and its Subsidiaries, taken as a whole, excluding (1) changes or conditions generally affecting the industry, (2) changes in Law, (3) changes in GAAP, (4) acts of war or terrorism, (5) the announcement of this Agreement, (6) any change in the market price of the Parent Common Stock, (7) seasonal fluctuations in revenue or (8) any failure to meet projections; provided that, with respect to clauses (1), (2), (3), (4) and (7), the impact of such event is not disproportionately adverse to Parent as compared to other participants in the industry; and Parent shall deliver (i) the Parent Disclosure Letter, (ii) the Parent SEC Documents and (iii) the Parent Permits.';
+  const canonical = `Section 4.1 Organization, Standing and Power. Parent is duly organized. ${definition}\n`;
+  const fullId = 'x'.repeat(64);
+  const own = wp20Own(fullId);
+  const fact = (components) => ({
+    subtype_key: 'NEGATIVE_REPRESENTATION',
+    statement: 'The disproportionality carve-back applies to the industry, Law, GAAP, war and seasonal carve-outs.',
+    evidence_quotes: [{ quote: 'is not disproportionately adverse to Parent', source_span_id: fullId, occurrence: 0 }],
+    components,
+  });
+  const compiled = wp20Compile({ canonical, reference: '4.1', proposals: [
+    // Sonnet's form of 2026-10-22: the numbers alone.
+    fact([
+      own('c1', 'QUALIFIER', 'proviso', 'with respect to clauses'),
+      own('c2', 'CROSS_REFERENCE', 'Disproportionality proviso clauses', '(1), (2), (3), (4) and (7)'),
+      own('c3', 'OPERATION', 'carve-back', 'is not disproportionately adverse to Parent'),
+    ]),
+    // A LIST with words and no elements: five elements cut at the commas,
+    // the parenthesis kept whole, the last piece split at its "or".
+    fact([
+      own('c1', 'OPERATION', 'test', 'is materially adverse to'),
+      own('c2', 'LIST', 'Affected business', 'business, assets, liabilities, condition (financial or otherwise) or results of operations of Parent and its Subsidiaries'),
+    ]),
+    // Enumerated words cut at the enumerators.
+    fact([
+      own('c1', 'OPERATION', 'delivery', 'shall deliver'),
+      own('c2', 'LIST', 'deliverables', '(i) the Parent Disclosure Letter, (ii) the Parent SEC Documents and (iii) the Parent Permits'),
+    ]),
+    // Words with no series stay a LIST without elements: held.
+    fact([
+      own('c1', 'OPERATION', 'test', 'is materially adverse to'),
+      own('c2', 'LIST', 'Affected business', 'the business'),
+    ]),
+  ] });
+  const [bare, commas, enumerated, held] = compiled.proposals;
+  assert.equal(bare.validation_status, 'VALID', issueLines(compiled));
+  assert.equal(bare.components[1].resolves_to.structure_node_id, compiled.full.structure_node_id);
+  assert.equal(bare.components[1].resolves_to.text, '(1) changes or conditions generally affecting the industry | (2) changes in Law | (3) changes in GAAP | (4) acts of war or terrorism | (7) seasonal fluctuations in revenue');
+  assert.equal(commas.validation_status, 'VALID', issueLines(compiled));
+  const list = commas.components[1];
+  assert.equal(list.kind, 'LIST');
+  assert.deepEqual(list.children.map((child) => [child.kind, child.text]), [
+    ['LIST_ELEMENT', 'business'], ['LIST_ELEMENT', 'assets'], ['LIST_ELEMENT', 'liabilities'],
+    ['LIST_ELEMENT', 'condition (financial or otherwise)'], ['LIST_ELEMENT', 'results of operations of Parent and its Subsidiaries'],
+  ]);
+  assert.equal(list.children[0].start_byte, list.start_byte);
+  assert.equal(list.children[4].end_byte, list.end_byte);
+  assert.ok(list.children.every((child, index) => index === 0 || child.start_byte > list.children[index - 1].end_byte), 'the elements sit in order inside the list');
+  assert.ok(list.children.every((child) => /^[0-9a-f]{64}$/.test(child.source_span_id) && child.origin === 'OWN' && child.label === child.text), 'each element has its own span, the list\'s origin and its words as its label');
+  assert.equal(compiled.issues.filter((issue) => issue.code === 'COMPONENT_SPAN_RELOCATED').length, 0, 'the elements cite the span the list cited');
+  assert.equal(enumerated.validation_status, 'VALID', issueLines(compiled));
+  assert.deepEqual(enumerated.components[1].children.map((child) => child.text), ['(i) the Parent Disclosure Letter', '(ii) the Parent SEC Documents', '(iii) the Parent Permits']);
+  const notes = compiled.issues.filter((issue) => issue.code === 'LIST_ELEMENTS_FROM_WORDS').map((issue) => JSON.parse(issue.message));
+  assert.deepEqual(notes, [
+    { client_ref: 'p2', lists: [{ path: '1', elements: 5, split: 'COMMAS' }] },
+    { client_ref: 'p3', lists: [{ path: '1', elements: 3, split: 'ENUMERATORS' }] },
+  ]);
+  assert.equal(held.validation_status, 'INVALID');
+  assert.ok(compiled.issues.some((issue) => issue.code === 'INVALID_FACT_COMPONENTS' && /LIST without LIST_ELEMENT children/.test(issue.message)), issueLines(compiled));
 });
 
 // Work package 20 (implementer B's defects (5) to (7) and rule, finding
