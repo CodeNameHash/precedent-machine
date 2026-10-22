@@ -5665,6 +5665,35 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       stored facts and say whether the stored split or the live whole
       is right, without a rule change. The two deals paused ((175)); no
       intake ((172)); Ben's three answers pending.
+      (228) 2026-10-22 14:06 to 14:40 UTC (the manager): the eight-section
+      check on the default (pm-ablation-20261022T140617Z; the sandbox at
+      3be795f with E's default_sonnet55 rung, REQUEST_PROFILES.DEFAULT
+      itself, against counts_sonnet55, the default plus
+      introduction_counts; two at once, no retry on any row). Rows,
+      default then counts: III-INTRO 3 / 0 / 0 of 3 on both; IV-INTRO
+      2 / 0 / 0 of 2 on both; 3.1 22 / 0 / 2 and 21 / 1 / 2 of 24; 3.2
+      24 / 1 / 2 and 17 / 8 / 2 of 27; 3.7 5 of 5 on both; 4.1 17 / 1 /
+      0 of 18 on both; 8.3 44 / 2 / 0 of 46 on both; 5.1 60 / 2 / 4 and
+      51 / 15 / 0 of 66; the rungs 177 / 6 / 8 and 160 / 27 / 4 of 191.
+      Decision: introduction_counts stays out of the default. With A's
+      (207) the introductions are whole on the default (III-INTRO 3 of
+      3, IV-INTRO 2 of 2, the (225) holds gone) and the count sentence
+      adds nothing. The default holds the earlier readings elsewhere
+      (4.1, 8.3, 3.7 as in (225); 3.1 and 3.2's two unmatched are the
+      representation qualifiers whose placement is Ben's open question,
+      (218)). 5.1 on the default this roll dropped four of limb (a)'s
+      and (b)'s consent-standard and exception facts (60 / 2 / 4) after
+      three rolls at none in (227): the limb's sentence count narrows
+      the loss and does not close it on every roll; the counts rung's
+      51 / 15 / 0 and 3.2's 17 / 8 / 2 are partials, the share-count
+      and covenant facts written in a different cut from the stored
+      run's, not omissions. Open, no rule change: whether a part's
+      answer below its minimum should be retried in the pipeline too
+      (the ablation's guard is the pipeline's, (199e); 5.1's four were
+      above the minimum, so no guard fires on them) and the shape of
+      the facts that come back partial (Ben's, with (c) of E13). The
+      two deals paused ((175)); no intake ((172)); Ben's three answers
+      pending.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
