@@ -9921,8 +9921,8 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       sentence's clauses; part_counts on Concho 6.3 split, the
       opening-words part's sentence count and every part's budget,
       absent without the flag; introduction_counts on Concho III-INTRO,
-      absent without the flag; the rung). npm run test:active: see the
-      push.
+      absent without the flag; the rung). npm run test:active: 860
+      tests, 859 pass, the one known failure.
 
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
