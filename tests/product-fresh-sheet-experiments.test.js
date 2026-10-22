@@ -6,7 +6,7 @@ const assert = require('node:assert/strict');
 const test = require('node:test');
 const { buildAgreementStructure } = require('../lib/product/agreement-structure');
 const { FACT_BUDGET_BYTES_PER_FACT, THIN_ANSWER, buildAgreementSectionDraft, definedTermOf, deterministicRoutingDecision, directDefinitionSpanIds, factBudgetFor, limbLead, listedClosureSpanIds, normaliseLeanResponse } = require('../lib/product/agreement-draft');
-const { ABLATION_VARIANTS, variantAvailability } = require('../lib/product/cost-ablation');
+const { ABLATION_VARIANTS, ESTIMATE_FACTORS, variantAvailability } = require('../lib/product/cost-ablation');
 const { CLAUDE_CLI_PROVIDER_ID, REQUEST_PROFILES } = require('../lib/product/product-model-config');
 const { substantiveSections } = require('../lib/product/source-context');
 const { conchoSource, createSyntheticConchoModel } = require('./product-phase-2.test.js');
@@ -302,7 +302,6 @@ test('residual_mode in_extraction: an unsplit section asks the residual inside i
 // chose ("Sonnet makes sense"), so the confirmation job measures them on
 // the model the default is to carry.
 test('the Sonnet 5.5 variants of derived_statement and merged_residual carry the same profile flags with claude-sonnet-5-5 at high effort writing the facts', () => {
-  const { ESTIMATE_FACTORS } = require('../lib/product/cost-ablation');
   for (const [name, base, flag] of [['derived_statement_sonnet55', 'derived_statement', 'statement_mode'], ['merged_residual_sonnet55', 'merged_residual', 'residual_mode']]) {
     const variant = ABLATION_VARIANTS[name];
     assert.deepEqual(variant.profile, ABLATION_VARIANTS[base].profile, `${name} sends ${base}'s words`);
@@ -403,4 +402,11 @@ test('the derived sentence keeps its first clause and loses the second; part_cou
   assert.equal(ABLATION_VARIANTS.counts_sonnet55.profile.part_counts, true);
   assert.equal(ABLATION_VARIANTS.counts_sonnet55.profile.introduction_counts, true);
   assert.deepEqual(ABLATION_VARIANTS.counts_sonnet55.models, { EXTRACTION: { model: 'claude-sonnet-5-5', effort: 'high' } });
+  // Plan finding (199f): default_sonnet55 is the default profile object itself, so a default change flows into the ladder.
+  assert.equal(ABLATION_VARIANTS.default_sonnet55.profile, REQUEST_PROFILES.DEFAULT, 'the same object, not a copy');
+  assert.equal(ABLATION_VARIANTS.default_sonnet55.profile.part_counts, true, 'the (227) default carries part_counts');
+  assert.equal(ABLATION_VARIANTS.default_sonnet55.profile.introduction_counts, undefined);
+  assert.deepEqual(ABLATION_VARIANTS.default_sonnet55.models, { EXTRACTION: { model: 'claude-sonnet-5-5', effort: 'high' } });
+  assert.deepEqual(ABLATION_VARIANTS.default_sonnet55.replay, ['ROUTING', 'RESIDUAL']);
+  assert.ok(ESTIMATE_FACTORS.default_sonnet55.output < 1);
 });
