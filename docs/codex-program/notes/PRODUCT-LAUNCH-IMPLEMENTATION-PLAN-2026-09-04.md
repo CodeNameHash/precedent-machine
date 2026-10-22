@@ -9867,7 +9867,8 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       output in (223) after 12 and 17 in the two runs before, is inside
       Sonnet's run-to-run variance; the merged residual's saving is the
       residual calls, which the rows' extraction columns do not count
-      and the job log's call count does. No code in this push.
+      and the job log's call count does. No code in this push. npm run
+      test:active: 859 tests, 858 pass, the one known failure.
 
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
