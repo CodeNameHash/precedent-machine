@@ -69,6 +69,11 @@ test('matchFacts: the old rule matched the Tax covenant with the equity-award co
   assert.equal(one.assigned.get('s2').id, 'v');
   assert.equal(one.assigned.has('s1'), false);
   assert.deepEqual(one.shares.get('s1').map((entry) => entry.id), ['v'], 'the candidate list still names it');
+  // A tie on the stored side (a live fact covering two stored facts whole, as a LIST quoted from its first element to its last does) goes to the stored fact that covers more of the live fact's own bytes.
+  const tie = matchFacts({ stored: [{ id: 'small', ranges: [[100, 150]] }, { id: 'large', ranges: [[200, 500]] }], candidates: [{ id: 'wide', ranges: [[100, 500]] }, { id: 'narrow', ranges: [[100, 150]] }] });
+  assert.equal(tie.assigned.get('large').id, 'wide');
+  assert.equal(tie.assigned.get('small').id, 'narrow');
+  assert.equal(tie.shares.get('small')[0].reverse_share, 1, 'the narrow candidate is covered whole by the small fact');
 });
 
 test('compareFacts with the section\'s chapeau ranges: the Tax covenant is PARTIAL by its own limb, the equity covenant MATCHED, nothing new; without them the old reading returns', () => {
