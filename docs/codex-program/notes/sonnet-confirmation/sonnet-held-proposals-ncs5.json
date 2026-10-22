@@ -1,5 +1,5 @@
 {
- "note": "Sonnet 5.5 held proposals (INVALID_FACT_COMPONENTS) from job pm-ablation-20261019T122404Z, with their components as written; six VALID 4.1 proposals as a sample; the issues. Evidence for plan finding (216) and work package 22. The 5.10 and 8.3 held proposals added at A s request (finding (203)). 3.2 new facts added (new_facts_3_2).",
+ "note": "Sonnet 5.5 held proposals (INVALID_FACT_COMPONENTS) from job pm-ablation-20261019T122404Z, with their components as written; six VALID 4.1 proposals as a sample; the issues. Evidence for plan finding (216) and work package 22. The 5.10 and 8.3 held proposals added at A s request (finding (203)). 3.2 new facts added (new_facts_3_2). held_after_203: the 4.1 and 3.1 proposals held on the plain rung of the guard check job 053736Z, on a sandbox carrying (203).",
  "sections": {
   "3.2": "21c7c3d3c7712a8d76b40d173cb4f40393553124b4344eedfea60ec74ea922c1",
   "3.1": "230912891860832d48acf866a3eb3646fe9e09a77581a2e52dc46564ad65d967",
@@ -3117,6 +3117,664 @@
      "source_span_id": "9397320b8aa420a4279336972aa34740ea09a0de6972ff74c0ac6c6871b1ccea",
      "start_byte": 61018,
      "end_byte": 61030,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    }
+   ]
+  }
+ ],
+ "held_after_203": [
+  {
+   "job": "pm-ablation-20261022T053736Z",
+   "variant": "anchors_sonnet55",
+   "section": "3.1",
+   "proposal_id": "901857a4f75e199bd6aefc7d4c0129dcb91dd3017b218ca256d6d90018a84b0c",
+   "family_key": "MAE_DEFINITION",
+   "subtype_key": "DEFINITION_PRONG",
+   "components": [
+    {
+     "component_id": "aec8b3a2830a567a3ca2b4f6d072748a4afa86de55addd19dececc0bd01f2c83",
+     "kind": "TERM",
+     "label": "Defined meaning",
+     "text": "means",
+     "source_span_id": "0a2e16da98e734760598d8b447296a54bf4c3ea1a13036717113a9dedf66f5a5",
+     "start_byte": 56339,
+     "end_byte": 56344,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "1d5c16a6714ec8bb5aedcbd8179b8fe59ae51a42fdf5a2eea067ece82a12a737",
+     "kind": "OPERATION",
+     "label": "Material adverse effect test",
+     "text": "any event, change, circumstance, occurrence, effect or state of facts that, individually or in the aggregate, is or would reasonably be expected to be materially adverse to the business, assets, liabilities, condition (financial or otherwise) or results of operations of the Company and its Subsidiaries, taken as a whole",
+     "source_span_id": "8b2204924b749536a75642be7f0eadb25858d7c9b4cf929972b343af8be7bb2e",
+     "start_byte": 56345,
+     "end_byte": 56666,
+     "origin": "OWN",
+     "gap_before": true,
+     "children": [
+      {
+       "component_id": "43eba310d9268f685f03d6e41c4508db62ab5a5d67fc88c5f49d71e8d55a7644",
+       "kind": "LITANY",
+       "label": "Affected matters",
+       "text": "event, change, circumstance, occurrence, effect or state of facts",
+       "source_span_id": "9215a0a4abed1bf6206a55bb0b201b721d259d05a69fd13b94321ecc55cf74bd",
+       "start_byte": 56349,
+       "end_byte": 56414,
+       "origin": "OWN",
+       "gap_before": false,
+       "members": [
+        "event",
+        "change",
+        "circumstance",
+        "occurrence",
+        "effect",
+        "state of facts"
+       ],
+       "children": []
+      },
+      {
+       "component_id": "7632a9bcf2dc3cb6708ceea67cb41b484f8a20ec0d31fa9856478c48a80563e1",
+       "kind": "STANDARD",
+       "label": "Aggregation standard",
+       "text": "individually or in the aggregate",
+       "source_span_id": "e82abf613dc72fe844d01498e2accb7d372dfc3e67f79d00e9b97278ca7c84c2",
+       "start_byte": 56421,
+       "end_byte": 56453,
+       "origin": "OWN",
+       "gap_before": true,
+       "children": []
+      },
+      {
+       "component_id": "f1d4f493ccfff494a7321732cb4530c9fa14be2c88b1268a6d4ae2699564c572",
+       "kind": "STANDARD",
+       "label": "Probability standard",
+       "text": "is or would reasonably be expected to be",
+       "source_span_id": "2702c0b7344541556ee7e8cea1150c9f3b9cc1c5d2a230425a3d556b965d61cf",
+       "start_byte": 56455,
+       "end_byte": 56495,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      },
+      {
+       "component_id": "6e7497dd7b5da011b27254eb1bc1999ed273bc4d6d2ef6325a224ef571357b06",
+       "kind": "MATERIALITY_QUALIFIER",
+       "label": "Materially adverse",
+       "text": "materially adverse",
+       "source_span_id": "f4f9515286e6cc29a42fca089e16cd8b57696eba152257c5f2ead20e02a82ef5",
+       "start_byte": 56496,
+       "end_byte": 56514,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      },
+      {
+       "component_id": "7a6fae98383ffaa17f793808f50ea17818b1033d2d6dabf3d665464e3b374cbe",
+       "kind": "LIST",
+       "label": "Affected business matters",
+       "text": "business, assets, liabilities, condition (financial or otherwise) or results of operations",
+       "source_span_id": "a1eaf97c98bd3069721bc2f0e1e4f3d625ba95918c7322bde43919eb2bac164c",
+       "start_byte": 56522,
+       "end_byte": 56612,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      },
+      {
+       "component_id": "74ace921b63a78432aca9a75c7c9b7c56a7c4dc537cb258abc8975658cd70e7d",
+       "kind": "QUALIFIER",
+       "label": "Taken as a whole",
+       "text": "taken as a whole",
+       "source_span_id": "6794f463578e14fa6ae57ca1b919334ce67a62e7eb159a7cd9f1ac6af39a773a",
+       "start_byte": 56650,
+       "end_byte": 56666,
+       "origin": "OWN",
+       "gap_before": true,
+       "children": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "job": "pm-ablation-20261022T053736Z",
+   "variant": "anchors_sonnet55",
+   "section": "4.1",
+   "proposal_id": "27854b5e03719c3b2e36f786d9ba7b6aeacf821d96ec10f27d1775c8637ebbeb",
+   "family_key": "MAE_DEFINITION",
+   "subtype_key": "EXCLUSION",
+   "components": [
+    {
+     "component_id": "b8eb9a837bf163f41b43544b7b6ac98c6ff27814a62e60615483dc8269bc7ef3",
+     "kind": "ACTOR",
+     "label": "Parent Material Adverse Effect",
+     "text": "Parent Material Adverse Effect shall",
+     "source_span_id": "5043fad8a2cc419d066bbbd17777549cbc490213eb0eeeb5561557c0bdbc900e",
+     "start_byte": 139277,
+     "end_byte": 139313,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "12a777df5f2e313e45beba6eab02ef9163929cd5e61dc3ae4fa2d0e5ded857e2",
+     "kind": "OPERATION",
+     "label": "Exclusion from the definition",
+     "text": "not include any event, change, circumstance, occurrence, effect or state of facts to the extent resulting from",
+     "source_span_id": "2946c9b0881ac32385e5d66af5a8c5266ae8bde6f5101f290dd375ee7c1a0beb",
+     "start_byte": 139314,
+     "end_byte": 139424,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "3dfbc71c0ba534bc111b3e888064432bea1c8ca80639e427f88ef139152e8f68",
+     "kind": "TERM",
+     "label": "Industry, economy and markets",
+     "text": "changes or conditions generally affecting the oilfield services industry, or the economy or the financial or securities markets, in the United States or Canada, including effects on such industry, economy or markets resulting from any regulatory and political conditions or developments in general",
+     "source_span_id": "bbc126cf0f56fc65b61840c9234e0c56cb46dbeb3c6609e9372eb107cbe3e4c5",
+     "start_byte": 139429,
+     "end_byte": 139726,
+     "origin": "OWN",
+     "gap_before": true,
+     "children": []
+    },
+    {
+     "component_id": "26e720f5132ea6976493625893066509e4976ac9869b94813f667a2635204b5a",
+     "kind": "CROSS_REFERENCE",
+     "label": "Disproportionality proviso clauses",
+     "text": "(1), (2), (3), (4) and (7)",
+     "source_span_id": "678d707159644384820baaa085857e7249ab28873210b97530a103eb2edd1917",
+     "start_byte": 142291,
+     "end_byte": 142317,
+     "origin": "OWN",
+     "gap_before": true,
+     "resolves_to": null,
+     "children": []
+    },
+    {
+     "component_id": "bc6a8945e4c4eab4c949a9de4e16ff40465f2a9ee41614a99678d038feeacc87",
+     "kind": "QUALIFIER",
+     "label": "Not disproportionately adverse proviso",
+     "text": "the impact of such event, change, circumstance, occurrence, effect or state of facts is not disproportionately adverse to the Parent and its Subsidiaries, taken as a whole, as compared to other participants in the industries in which the Parent and its Subsidiaries operate",
+     "source_span_id": "8a226c1785ff317d0d15151a9a507632654e54d3f383d718a1d18f6f75f47abe",
+     "start_byte": 142319,
+     "end_byte": 142592,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    }
+   ]
+  },
+  {
+   "job": "pm-ablation-20261022T053736Z",
+   "variant": "anchors_sonnet55",
+   "section": "4.1",
+   "proposal_id": "5df9c8535a7b0e2f42964ef9beef4b984657fdccdef7e55082438025da7d4567",
+   "family_key": "MAE_DEFINITION",
+   "subtype_key": "DISPROPORTIONALITY_CARVEBACK",
+   "components": [
+    {
+     "component_id": "42b6c173f53e490a180d2726444644a305c232b7307cd125f7780fc04d401020",
+     "kind": "CROSS_REFERENCE",
+     "label": "Clauses (1), (2), (3), (4) and (7)",
+     "text": "(1), (2), (3), (4) and (7)",
+     "source_span_id": "678d707159644384820baaa085857e7249ab28873210b97530a103eb2edd1917",
+     "start_byte": 142291,
+     "end_byte": 142317,
+     "origin": "OWN",
+     "gap_before": false,
+     "resolves_to": null,
+     "children": []
+    },
+    {
+     "component_id": "ca8a188cf1d3b2c76ea053792c9267a34567059b35a3914b4124a4ab7ec9e902",
+     "kind": "OBJECT",
+     "label": "Impact of the excluded matters",
+     "text": "the impact of such event, change, circumstance, occurrence, effect or state of facts",
+     "source_span_id": "ae736976d6b3577a85491c49bcb81b4d26a9750f3c1f05bf710ff90652135290",
+     "start_byte": 142319,
+     "end_byte": 142403,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "defb7d3ae62a34d3d285d8ff4c736681c0db6fb0ccda4d3d7d7f101e64d89de9",
+     "kind": "STANDARD",
+     "label": "Not disproportionately adverse",
+     "text": "is not disproportionately adverse",
+     "source_span_id": "f68a77be4fc4a8543877f28cb83acb80a5e132b9828c368aa3372713f5442c4d",
+     "start_byte": 142404,
+     "end_byte": 142437,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "465791ad077853a5909d729446f23ae380daa09bfd6af920b7de194622a7ce75",
+     "kind": "ACTOR",
+     "label": "Parent and its Subsidiaries taken as a whole",
+     "text": "the Parent and its Subsidiaries, taken as a whole",
+     "source_span_id": "cd0967d3274e42ba74e1b659bde6a00ab2f01db21615ed64031eef0237c855f6",
+     "start_byte": 142441,
+     "end_byte": 142490,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "ea09c5082059b0a4b3cd60aa000649ec06cb3cdb41510c7661e63088d64bdf90",
+     "kind": "QUALIFIER",
+     "label": "Comparison to industry participants",
+     "text": "as compared to other participants in the industries in which the Parent and its Subsidiaries operate",
+     "source_span_id": "5a9faa011841321e91d8b79f30567c8a94374c54ff975cc89a674a17192950c8",
+     "start_byte": 142492,
+     "end_byte": 142592,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    }
+   ]
+  },
+  {
+   "job": "pm-ablation-20261022T053736Z",
+   "variant": "anchors_sonnet55",
+   "section": "4.1",
+   "proposal_id": "8af38f11e9995cc08c670c44f3e21d006e2e722f0ee0dee0cd23cc1d6f853f8e",
+   "family_key": "MAE_DEFINITION",
+   "subtype_key": "EXCLUSION",
+   "components": [
+    {
+     "component_id": "5bcd1c3169210061987067eb16f2ead058f44dd83e8831a2ad8ddbfea4d82865",
+     "kind": "ACTOR",
+     "label": "Parent Material Adverse Effect",
+     "text": "Parent Material Adverse Effect shall",
+     "source_span_id": "5043fad8a2cc419d066bbbd17777549cbc490213eb0eeeb5561557c0bdbc900e",
+     "start_byte": 139277,
+     "end_byte": 139313,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "0ccf1d79a38539e0de1eca25017832965db5e40add5a3184cb950003c83afca4",
+     "kind": "OPERATION",
+     "label": "Exclusion from the definition",
+     "text": "not include any event, change, circumstance, occurrence, effect or state of facts to the extent resulting from",
+     "source_span_id": "2946c9b0881ac32385e5d66af5a8c5266ae8bde6f5101f290dd375ee7c1a0beb",
+     "start_byte": 139314,
+     "end_byte": 139424,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "4be53987661c5f62ba788896e21a048984678bed1ff14255d3da85f94d8df4f6",
+     "kind": "TERM",
+     "label": "Changes in Laws of general applicability",
+     "text": "changes or proposed changes (after the date of this Agreement) in Laws of general applicability to companies in the areas and industries in which Parent or any of its Subsidiaries operate (including changes in the interpretations thereof by any applicable Governmental Entity)",
+     "source_span_id": "ba7c05944f9612ce4dda157bb868e94d736e7497175c01ceae947ab41557c1bc",
+     "start_byte": 140013,
+     "end_byte": 140289,
+     "origin": "OWN",
+     "gap_before": true,
+     "children": []
+    },
+    {
+     "component_id": "1eaf3fc121ab42077f4fdc353f2120dd4e04e1dbd88a6334696015269ceeea80",
+     "kind": "CROSS_REFERENCE",
+     "label": "Disproportionality proviso clauses",
+     "text": "(1), (2), (3), (4) and (7)",
+     "source_span_id": "678d707159644384820baaa085857e7249ab28873210b97530a103eb2edd1917",
+     "start_byte": 142291,
+     "end_byte": 142317,
+     "origin": "OWN",
+     "gap_before": true,
+     "resolves_to": null,
+     "children": []
+    },
+    {
+     "component_id": "e6a587e5c82e99a03ce5fc34ae2564dd186a20f22b4a4e8281021a08fc1bd48c",
+     "kind": "QUALIFIER",
+     "label": "Not disproportionately adverse proviso",
+     "text": "the impact of such event, change, circumstance, occurrence, effect or state of facts is not disproportionately adverse to the Parent and its Subsidiaries, taken as a whole, as compared to other participants in the industries in which the Parent and its Subsidiaries operate",
+     "source_span_id": "8a226c1785ff317d0d15151a9a507632654e54d3f383d718a1d18f6f75f47abe",
+     "start_byte": 142319,
+     "end_byte": 142592,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    }
+   ]
+  },
+  {
+   "job": "pm-ablation-20261022T053736Z",
+   "variant": "anchors_sonnet55",
+   "section": "4.1",
+   "proposal_id": "b00233ed87b5a43b806c8ee40a5145fbea18aca2125603ee90e13e7cc842e79c",
+   "family_key": "MAE_DEFINITION",
+   "subtype_key": "EXCLUSION",
+   "components": [
+    {
+     "component_id": "5baece5593e0f2a6bf5232ca33e3ea24ba8029b2282ac44a281104cfbe5460fd",
+     "kind": "ACTOR",
+     "label": "Parent Material Adverse Effect",
+     "text": "Parent Material Adverse Effect shall",
+     "source_span_id": "5043fad8a2cc419d066bbbd17777549cbc490213eb0eeeb5561557c0bdbc900e",
+     "start_byte": 139277,
+     "end_byte": 139313,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "aab09f5653ade4894e78b10002e77661971b42ca406299139f39ff2f85e248da",
+     "kind": "OPERATION",
+     "label": "Exclusion from the definition",
+     "text": "not include any event, change, circumstance, occurrence, effect or state of facts to the extent resulting from",
+     "source_span_id": "2946c9b0881ac32385e5d66af5a8c5266ae8bde6f5101f290dd375ee7c1a0beb",
+     "start_byte": 139314,
+     "end_byte": 139424,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "791ecafbf9f28d05c6e77809997ed836815faa9489b332d2d7bd6e76202cb625",
+     "kind": "TERM",
+     "label": "Changes in GAAP",
+     "text": "changes (after the date of this Agreement) in GAAP or interpretations thereof",
+     "source_span_id": "6035a7c58a2e5187119fd78fea1236c5ee978ff6555a26bc7d7bfe707e96a1c6",
+     "start_byte": 139930,
+     "end_byte": 140007,
+     "origin": "OWN",
+     "gap_before": true,
+     "children": []
+    },
+    {
+     "component_id": "a0437af34fe16d7ee2b7510633be486d065c9e53b8a8820f0b1df499d3d7f1e3",
+     "kind": "CROSS_REFERENCE",
+     "label": "Disproportionality proviso clauses",
+     "text": "(1), (2), (3), (4) and (7)",
+     "source_span_id": "678d707159644384820baaa085857e7249ab28873210b97530a103eb2edd1917",
+     "start_byte": 142291,
+     "end_byte": 142317,
+     "origin": "OWN",
+     "gap_before": true,
+     "resolves_to": null,
+     "children": []
+    },
+    {
+     "component_id": "eb0e3ea0c380de231a3bf9239334c5b17ca8dc2f6836822b7ced16d219b8fc92",
+     "kind": "QUALIFIER",
+     "label": "Not disproportionately adverse proviso",
+     "text": "the impact of such event, change, circumstance, occurrence, effect or state of facts is not disproportionately adverse to the Parent and its Subsidiaries, taken as a whole, as compared to other participants in the industries in which the Parent and its Subsidiaries operate",
+     "source_span_id": "8a226c1785ff317d0d15151a9a507632654e54d3f383d718a1d18f6f75f47abe",
+     "start_byte": 142319,
+     "end_byte": 142592,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    }
+   ]
+  },
+  {
+   "job": "pm-ablation-20261022T053736Z",
+   "variant": "anchors_sonnet55",
+   "section": "4.1",
+   "proposal_id": "c0e98949552a46691f4b81a2217925a2af840cb854735dc4a256d754c1498e5e",
+   "family_key": "MAE_DEFINITION",
+   "subtype_key": "DEFINITION_PRONG",
+   "components": [
+    {
+     "component_id": "0086d63473c0a621bc2f7f35ea902b394bffd20964fca0b1d1f6d0f7f6b63698",
+     "kind": "TERM",
+     "label": "Parent Material Adverse Effect",
+     "text": "“Parent Material Adverse Effect”",
+     "source_span_id": "9b3b2cc0aab033122befac271144f21096c4b5e62e26b511c1e056e8892539b3",
+     "start_byte": 138892,
+     "end_byte": 138928,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "455a3fd3d885252f10fd3f3ebac919e2b5c8f6113bd1f498471729c827e4ec5f",
+     "kind": "LITANY",
+     "label": "Affected matters",
+     "text": "any event, change, circumstance, occurrence, effect or state of facts",
+     "source_span_id": "45e196386c7838ee235b1e24e8a2adda46ae790450ebc44b50f1fe58f18e99d3",
+     "start_byte": 138935,
+     "end_byte": 139004,
+     "origin": "OWN",
+     "gap_before": false,
+     "members": [
+      "event",
+      "change",
+      "circumstance",
+      "occurrence",
+      "effect",
+      "state of facts"
+     ],
+     "children": []
+    },
+    {
+     "component_id": "5ce4d0a235d199c34011f9dcfc8dad197b78f59e8f9e93bf28f23113f652e259",
+     "kind": "STANDARD",
+     "label": "Aggregation standard",
+     "text": "individually or in the aggregate",
+     "source_span_id": "1857c28ea231183fbf114032ad4e019c06e979fab767a068ec58f8144d0c12e6",
+     "start_byte": 139011,
+     "end_byte": 139043,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "4fd87ec06ab7e60e282ceb2a2e2a90d087944113ffea70a42e26ccd4d5d9bb9d",
+     "kind": "OPERATION",
+     "label": "Probability standard",
+     "text": "is or would reasonably be expected to be",
+     "source_span_id": "055497f7b81f87bc083e1beb1153277e3309e9166c012fe0bb6ad780f33ecd10",
+     "start_byte": 139045,
+     "end_byte": 139085,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": [
+      {
+       "component_id": "f1cb244b369f878d65aba7c7246c17a8ffeaaf45e61dbd5ef2fbb531292b86d4",
+       "kind": "STANDARD",
+       "label": "Reasonable expectation",
+       "text": "would reasonably be expected",
+       "source_span_id": "08e1bc3ce6a5b0a0a60c7ca6c3da6a702b375bc9bd4d17d6ef4dcd6b7ce59c49",
+       "start_byte": 139051,
+       "end_byte": 139079,
+       "origin": "OWN",
+       "gap_before": false,
+       "children": []
+      }
+     ]
+    },
+    {
+     "component_id": "608e88333e4bf52fb211913d183eae400724126b5f40665cf81f85a1b5e9aa65",
+     "kind": "MATERIALITY_QUALIFIER",
+     "label": "Materially adverse",
+     "text": "materially adverse",
+     "source_span_id": "6757a017f121637d94cf1c321f9a866d9d7b555342399c7c9ca8922910b991be",
+     "start_byte": 139086,
+     "end_byte": 139104,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "32d6ac1fab4addeef7ccbfb85bd766f4dc7e76699915dc317aeb30891eb363cd",
+     "kind": "LIST",
+     "label": "Affected business",
+     "text": "business, assets, liabilities, condition (financial or otherwise) or results of operations of Parent and its Subsidiaries",
+     "source_span_id": "677822e88b4760e0125486d9d3c97e96766d9a50e2d3ecbccf8440dca51aa717",
+     "start_byte": 139112,
+     "end_byte": 139233,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "65f840e789d700b3f9d025c2a80ac7a5f836eaf518db1066ae30ccf0da26ed68",
+     "kind": "STANDARD",
+     "label": "Taken as a whole",
+     "text": "taken as a whole",
+     "source_span_id": "b132c623b3990fb787e90b505f0691966f6817fd08bff976bc0e590f6eafb567",
+     "start_byte": 139235,
+     "end_byte": 139251,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    }
+   ]
+  },
+  {
+   "job": "pm-ablation-20261022T053736Z",
+   "variant": "anchors_sonnet55",
+   "section": "4.1",
+   "proposal_id": "dcb97cadecad004c1669f24da78270a5c4614b00a9fc38645bae4483edf48d0d",
+   "family_key": "MAE_DEFINITION",
+   "subtype_key": "EXCLUSION",
+   "components": [
+    {
+     "component_id": "28c04b34748f98a42b6b50d6ca2012c6fc61246a2ff42eebc5d4a28a5c516e19",
+     "kind": "ACTOR",
+     "label": "Parent Material Adverse Effect",
+     "text": "Parent Material Adverse Effect shall",
+     "source_span_id": "5043fad8a2cc419d066bbbd17777549cbc490213eb0eeeb5561557c0bdbc900e",
+     "start_byte": 139277,
+     "end_byte": 139313,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "e14b93b313ce3c2214e4a90f9720b312db12455bc94494298574b6389d1ec2ad",
+     "kind": "OPERATION",
+     "label": "Exclusion from the definition",
+     "text": "not include any event, change, circumstance, occurrence, effect or state of facts to the extent resulting from",
+     "source_span_id": "2946c9b0881ac32385e5d66af5a8c5266ae8bde6f5101f290dd375ee7c1a0beb",
+     "start_byte": 139314,
+     "end_byte": 139424,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "b3cb65bad57d3477c9f2058f8b5cdf14c483072ca693d924d4ecdc52584f0115",
+     "kind": "TERM",
+     "label": "Geopolitical conditions, war and terrorism",
+     "text": "geopolitical conditions or changes that are the result of the outbreak, conduct or escalation of war (whether declared or undeclared) or acts of terrorism or sabotage (including cyber-attacks)",
+     "source_span_id": "b679e30b854134626cb978be44976254a8f9598b10e3b78cedd6d0e2075cd703",
+     "start_byte": 139732,
+     "end_byte": 139924,
+     "origin": "OWN",
+     "gap_before": true,
+     "children": []
+    },
+    {
+     "component_id": "2d0c8b89a3fe2ce72fe2b4b381da673dd09b9efbfd7d50f9009022b1401bbef0",
+     "kind": "CROSS_REFERENCE",
+     "label": "Disproportionality proviso clauses",
+     "text": "(1), (2), (3), (4) and (7)",
+     "source_span_id": "678d707159644384820baaa085857e7249ab28873210b97530a103eb2edd1917",
+     "start_byte": 142291,
+     "end_byte": 142317,
+     "origin": "OWN",
+     "gap_before": true,
+     "resolves_to": null,
+     "children": []
+    },
+    {
+     "component_id": "eb05528aa0b716ec1cbdee6881023eb1092dac059a8d59bb3f6abbc002061441",
+     "kind": "QUALIFIER",
+     "label": "Not disproportionately adverse proviso",
+     "text": "the impact of such event, change, circumstance, occurrence, effect or state of facts is not disproportionately adverse to the Parent and its Subsidiaries, taken as a whole, as compared to other participants in the industries in which the Parent and its Subsidiaries operate",
+     "source_span_id": "8a226c1785ff317d0d15151a9a507632654e54d3f383d718a1d18f6f75f47abe",
+     "start_byte": 142319,
+     "end_byte": 142592,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    }
+   ]
+  },
+  {
+   "job": "pm-ablation-20261022T053736Z",
+   "variant": "anchors_sonnet55",
+   "section": "4.1",
+   "proposal_id": "f8ab46c9a4f8b40f9973ae0ec9f192b4a655995c386509ae734f768a8c0761e8",
+   "family_key": "MAE_DEFINITION",
+   "subtype_key": "EXCLUSION",
+   "components": [
+    {
+     "component_id": "6823401a87e72d0dd8c25a6926fc1086911c33d14f8b8a2afc174ff6c49c14ba",
+     "kind": "ACTOR",
+     "label": "Parent Material Adverse Effect",
+     "text": "Parent Material Adverse Effect shall",
+     "source_span_id": "5043fad8a2cc419d066bbbd17777549cbc490213eb0eeeb5561557c0bdbc900e",
+     "start_byte": 139277,
+     "end_byte": 139313,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "d18b74045b7509723169478ce74a8562ccdb71d3186b7a13d12d52f66b6ac647",
+     "kind": "OPERATION",
+     "label": "Exclusion from the definition",
+     "text": "not include any event, change, circumstance, occurrence, effect or state of facts to the extent resulting from",
+     "source_span_id": "2946c9b0881ac32385e5d66af5a8c5266ae8bde6f5101f290dd375ee7c1a0beb",
+     "start_byte": 139314,
+     "end_byte": 139424,
+     "origin": "OWN",
+     "gap_before": false,
+     "children": []
+    },
+    {
+     "component_id": "b6c9c44e4d5698112b7aaece68290d3a1a0c1a94a63eca267ae958e629409d8b",
+     "kind": "TERM",
+     "label": "Public health crises and natural disasters",
+     "text": "any epidemic, pandemic, disease outbreak or other public health crisis, public health event, or the worsening of any of the foregoing, or any hurricane, tornado, flood, fire, volcano, earthquake, freeze, or other natural disaster",
+     "source_span_id": "d26bb8894bf590c59c8b3d7aab7c7519c73171fcd1f6f9b148c006b5124a7a28",
+     "start_byte": 140970,
+     "end_byte": 141199,
+     "origin": "OWN",
+     "gap_before": true,
+     "children": []
+    },
+    {
+     "component_id": "184f89d1c72caf4200b116d577d8536559431054236700fdd8206c067db3b215",
+     "kind": "CROSS_REFERENCE",
+     "label": "Disproportionality proviso clauses",
+     "text": "(1), (2), (3), (4) and (7)",
+     "source_span_id": "678d707159644384820baaa085857e7249ab28873210b97530a103eb2edd1917",
+     "start_byte": 142291,
+     "end_byte": 142317,
+     "origin": "OWN",
+     "gap_before": true,
+     "resolves_to": null,
+     "children": []
+    },
+    {
+     "component_id": "3122babc57e9499311557265b455415abd72546ddeb46333aaadfe41ab72ff7e",
+     "kind": "QUALIFIER",
+     "label": "Not disproportionately adverse proviso",
+     "text": "the impact of such event, change, circumstance, occurrence, effect or state of facts is not disproportionately adverse to the Parent and its Subsidiaries, taken as a whole, as compared to other participants in the industries in which the Parent and its Subsidiaries operate",
+     "source_span_id": "8a226c1785ff317d0d15151a9a507632654e54d3f383d718a1d18f6f75f47abe",
+     "start_byte": 142319,
+     "end_byte": 142592,
      "origin": "OWN",
      "gap_before": false,
      "children": []
