@@ -10486,16 +10486,119 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       four recorder reads counted again (live_calls 4 reported as a
       doubled usage, the thin part marked); after, one live call for
       the thin part and three records at zero, live_calls 4 + 1, the
-      usage the calls made. (b) The eight-section check (III-INTRO,
-      IV-INTRO, 3.1, 3.2, 3.7, 4.1, 8.3, 5.1; default_sonnet55 and
-      counts_sonnet55; loops 2; run 51577c57) is the manager's to fire
-      on the sandbox at this head; the reading (does introduction_counts
-      add facts on the two introductions over the default with (207);
-      does the default hold the earlier readings elsewhere) and (c) the
-      two standing 5.1 partials (the Tax covenant, Parent's
-      extraordinary dividends: the stored split or the live whole)
-      follow in (199g) once the job id and its ablation.json comparison
-      rows are sent; no rule changes from either. Not changed: the
+      usage the calls made. (b) The eight-section check, read 15:05 to 15:40 UTC from the
+      rows the manager pasted (pm-ablation-20261022T140617Z, the
+      sandbox at 3be795f; default_sonnet55 and counts_sonnet55, two at
+      once; no SECTION_RETRY, no "attempts": 2, no replayed_calls on
+      any row, so every part was above its minimum). The
+      introductions: III-INTRO 3 / 0 / 0 of 3 and IV-INTRO 2 / 0 / 0
+      of 2 on both rungs, two valid facts each and nothing held, where
+      (225) had 0 of 3 and 0 of 2 on the plain rung with every fact
+      held on DUPLICATE_FACT_OCCURRENCE. A's (207), one voice on the
+      introduction node, is what closed that; introduction_counts adds
+      no fact over it (the output on III-INTRO 9,390 tokens on the
+      default and 5,086 with the count, IV-INTRO 5,509 and 6,302:
+      noise, not a pattern). Agreed with (228): introduction_counts
+      stays out of the default; INTRODUCTION_COUNT_INSTRUCTION stays
+      on the counts rung alone, a parked lever. The default holds the
+      earlier readings elsewhere: 3.7 5 of 5 ((225) 5 of 5), 4.1 17 /
+      1 / 0 ((225) 17 / 1 / 0 and 18 / 0 / 0), 8.3 44 / 2 / 0 with no
+      retry ((225) 46 / 0 / 0 on a retry; the (199) guard did not need
+      to fire this roll), 3.1 22 / 0 / 2 ((225) 20 / 1 / 3), 3.2 24 /
+      1 / 2 ((225) 25 / 0 / 2); 3.1's and 3.2's unmatched on both
+      rungs are the representation qualifiers of (218), the SEC
+      filings exception and the Company Disclosure Letter exception,
+      whose placement is Ben's open question, not a loss of the
+      default. 5.1: the default 60 / 2 / 4 of 66 (the four lost: the
+      Company consent standard, the Disclosure Letter exclusion, the
+      Disclosure Letter, Agreement and Law carve-outs, the Parent
+      consent requirement: limb (a)'s and (b)'s consent-standard and
+      exception facts, the words the limb's sentence count names)
+      against 63 / 3 / 0, 53 / 6 / 7 and 59 / 7 / 0 in (227); the
+      counts rung 51 / 15 / 0, no fact lost and fifteen partials. The
+      rungs whole: 177 / 6 / 8 and 160 / 27 / 4 of 191. What the
+      fifteen partials are is (c)'s question: a different cut of the
+      same words, not omissions; the one roll's list prices ($11.09
+      against $4.29) are the CLI's reported cache split and are not
+      read ((189)).
+      (c) The two standing partials, read against docs/core/LEGAL-
+      RULES.md ("One independently operative authored unit is one
+      proposition. Store its conditions, exceptions and timing as
+      roles or linked facts"), the schema's fact rule and the
+      INTERIM_OPERATING layer rule ("Components follow the sentence:
+      actor, operation, object, then each condition, exception,
+      threshold, period and qualifier as its own component; lists that
+      vary between deals as LIST with LIST_ELEMENTs"), the components
+      contract's R2 (one LIST_ELEMENT per element that could vary
+      between deals) and the extractor's instruction ("Emit one
+      proposal for each independently operative legal effect ... Do
+      not combine distinct duties, actions, protections or remedies
+      merely because they share a type or subtype. Never combine
+      separate numbered or lettered sibling limbs in one proposal").
+      No rule change; Ben decides the shape of a fact. The Tax
+      covenant: the stored run wrote one fact for the limb (one "shall
+      not", one consent standard, five prohibited Tax actions
+      separated by semicolons, no numbering); the live rungs wrote one
+      fact per action (the counts rung's counterpart, the limitation-
+      period waiver alone, overlaps 0.24 of the stored bytes, about
+      one action in five). The instruction's sibling-limb sentence
+      does not reach it (nothing is numbered); its distinct-actions
+      sentence does, since settling a Tax liability, filing an amended
+      return, making an election, waiving a limitation period and
+      changing a Tax accounting method are each breachable alone; the
+      family's layer rule and R2 point the other way, a list of
+      prohibited actions that varies between deals being the LIST
+      case. Reading the words: one operative verb, one consent
+      qualifier, one object list, so the stored cut (one fact, the
+      five actions as LIST_ELEMENTs under the operation) reads them
+      better, and the live cut multiplies the chapeau and the consent
+      standard five times over, which is what the counts rung's
+      fifteen partials look like. If Ben confirms that shape, the
+      repeatable fix is one sentence in the extractor's instruction
+      naming a semicolon list of objects under one verb as LIST
+      elements of one proposal, across the corpus; not written. The
+      default rung's MATCHED counterpart for the Tax covenant is the
+      equity-award covenant, not a Tax fact: the comparison
+      (compareFacts in lib/product/cost-ablation.js, generation-
+      comparison's rule) scores a stored fact by the best overlap of
+      any live fact's OWN component bytes over the stored fact's OWN
+      component bytes, MATCHED at 0.5 or more, the best candidate
+      taken whatever else it already matched. A stored 5.1 covenant's
+      OWN components carry the chapeau words the proposal repeats (the
+      actor and permission "the Company shall not, and shall not
+      permit any Subsidiary to", the consent standard, the Disclosure
+      Letter, Agreement and Law exceptions) beside its limb's words,
+      and on a short limb the chapeau bytes are the larger part; a
+      live fact that quotes the whole chapeau as its own components
+      (the default's equity-award counterpart does) overlaps that
+      larger part and scores over 0.5 on a stored fact whose limb it
+      never cites, while the live Tax facts, citing chapeau fragments,
+      score under. To confirm from analysis/*.analysis.json: the
+      stored Tax fact's component rows, their origin and bytes; if the
+      chapeau rows are OWN and more than half its bytes, this is the
+      mechanism. The matcher rule to consider, not changed: score on
+      the stored fact's bytes outside the section's chapeau span when
+      any remain (the limb's own words), so shared chapeau words never
+      make a match alone, and let a live fact match one stored fact at
+      most. Parent's extraordinary dividends: the stored run wrote one
+      fact, the restriction with its proviso inside; the live rungs
+      wrote two, the restriction and the proviso as a permission
+      ("Notwithstanding the restriction ... Parent may make regular
+      quarterly cash dividends", the default at 0.43 and the counts
+      rung at 0.31 of the stored bytes). The proviso operates only as
+      a carve-out from the restriction: it grants Parent nothing it
+      lacked but for the covenant, so it is not an independently
+      operative unit; LEGAL-RULES stores exceptions as roles or linked
+      facts and the layer rule makes each exception a component of its
+      covenant, an EXCEPTION component under the restriction. The
+      schema's EXCEPTION subtype allows an exception as a fact of its
+      own when linked, but the live rungs wrote it unlinked and with
+      "Notwithstanding the restriction" in the model's words, not the
+      agreement's. Reading: the stored cut (one fact, the proviso an
+      EXCEPTION component) reads the words better; the live cut loses
+      the tie between the restriction and its carve-out. Both readings
+      are the manager's and Ben's to decide; nothing in the default,
+      the rungs or the matcher changed for them. Not changed: the
       default profiles, the other rungs, the sandboxes, the deals,
       intake. npm run test:active: 866 tests, 865 pass, the one known
       failure.
