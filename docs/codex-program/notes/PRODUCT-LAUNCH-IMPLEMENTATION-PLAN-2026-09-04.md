@@ -7582,6 +7582,80 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       stored-answer replay is unchanged (1,066 of 1,066; 1,044 VALID, 22
       held). npm run test:active on the commit: 860 tests, 859 pass, the
       one failure the known Codex-client final-message test.
+      (206) 2026-10-22 08:35 to 08:50 UTC (implementer A), work package
+      24 (the manager's message of 08:33 UTC): the article introductions
+      held whole on the second eight-section check (III-INTRO 0 of 3,
+      IV-INTRO 0 of 2, every fact DUPLICATE_FACT_OCCURRENCE; (225)),
+      read against the rule, no rule change. The rule
+      (lib/product/agreement-draft.js, compileExtraction): the
+      occurrence key PRODUCT_FACT_OCCURRENCE/V1 is {source_document_id,
+      family_key, subtype_key, fact_type, source_span_ids}, where
+      source_span_ids are the fact's evidence spans, each a
+      PRODUCT_SOURCE_SPAN/V1 content id of the document and the matched
+      bytes; under the V10 lean format (no evidence_quotes) they are the
+      spans of the fact's own top-level OWN components
+      (ownWordsAsEvidence). The key names no node and no actor, and the
+      check runs over one extraction answer at a time (the `temporary`
+      list of one compileExtraction call), so a fact of the
+      introduction node can never collide with a fact of a section:
+      the sections' qualification facts and the introduction's are
+      compiled in different calls and kept apart by proposal_id, which
+      carries structure_node_id; the draft assembly dedupes by
+      proposal_id only. Which wins: none. Candidates sharing a key are
+      re-keyed (PRODUCT_COLLIDED_FACT_OCCURRENCE/V1); when their
+      component footprints (every OWN component's byte range, children
+      included) are all distinct they all stay VALID (the 3.13 limbs
+      rule, Metsera generation 5); when any two are identical every
+      candidate in the set is held, the distinct ones too. So "0 of 3"
+      means the introduction's own answer carried two or more facts
+      whose own words were byte-identical, and the third was held as a
+      member of the same set (or duplicated as well). The stored
+      generation shows the shape: III-INTRO's three facts and IV-INTRO's
+      two are all REPRESENTATION_QUALIFICATION /
+      REPRESENTATION_ACCURACY_STANDARD, one family, subtype and fact
+      type, so the key reduces to the bytes of their own words and any
+      two written on the same words collide. Why this run and not the
+      one before: the request was the same on both (the per-family
+      reminder of a8656b3c, 2026-10-19, is appended to every request
+      whose routing has REPRESENTATIONS, the introduction node's
+      included, and the article_introduction_instruction of 2026-09-14
+      is on the introduction node too); on the introduction node the
+      two ask for the same facts in two voices ("one per source of
+      exception the introduction states" and "one
+      REPRESENTATION_QUALIFICATION proposal per source of exception as
+      a fact of this section ... besides inheriting the qualifier into
+      each representation's tree"), and a model that answers each
+      sentence once writes each qualification twice; which run Sonnet
+      collapses the two asks is its run-to-run variance (the same
+      variance as 5.1's part 1 in (225)). The check's rows are on the
+      sandbox and would name the duplicated pair; the mechanism above
+      is the only one the rule allows. The two placements and their
+      consequences, for Ben ((218)): per section, each representation
+      section carries the two qualification facts as its own (the
+      stored generation already does on 3.1 and 3.2, two each, Opus 5
+      writing them without the reminder; the reminder makes Sonnet do
+      the same), the introduction node then carries none, so its
+      request must say so (the article_introduction_instruction turned
+      round: the introduction's qualifications are facts of the
+      sections that inherit them, the introduction returns no
+      proposal) and the page's General Exceptions row is built from
+      the sections' facts instead of the introduction's
+      (intro_facts_row in lib/product/table-view.js reads only -INTRO
+      facts today); the alternative the manager names, the duplicate
+      rule treating the introduction's as the originals and the
+      sections' as inherited, needs a new cross-node rule (none exists)
+      keyed on the INTRO-origin bytes, and the page then shows one
+      General Exceptions row per article and no per-section copies.
+      Once per article, the per-section reminder goes from the request
+      and a REPRESENTATION_QUALIFICATION fact from a non-introduction
+      node whose components are all inherited (origin INTRO) is held
+      or dropped in code, since Opus 5 wrote such facts unprompted;
+      the sections keep the qualifier inside each representation's
+      tree, the introduction node keeps its two or three facts and the
+      General Exceptions row as now, and the duplicate holds of this
+      run end because the introduction's request asks once. Either
+      way the introduction's own answer must be asked for once, not
+      twice; nothing changed until Ben answers.
       (120) 2026-10-18 19:10 to 19:45 UTC (implementer C), Q5: the limb
       names harvested. `scripts/product/harvest-rep-limbs.js` (library
       `lib/product/rep-limb-harvest.js`, `tests/product-rep-limb-harvest.test.js`)
