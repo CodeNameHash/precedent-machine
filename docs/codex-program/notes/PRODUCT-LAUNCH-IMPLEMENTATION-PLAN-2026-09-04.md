@@ -10428,6 +10428,48 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       lib/product/fact-components.js. Ready for the manager's three 5.1
       jobs on both rungs once the sandbox is at this sha. npm run
       test:active: 866 tests, 865 pass, the one known failure.
+      (199f) 2026-10-22 13:10 to 13:50 UTC (implementer E), work package
+      E13 ((227)), the split changed by the manager at 13:32 UTC: E
+      commits and pushes, the manager updates the sandbox and fires the
+      eight-section job (this session holds no Vercel credentials; the
+      Vercel MCP's named-sandbox read stops at a permission prompt no
+      one can approve, so it is not used for the sandbox). (a) Built:
+      the default_sonnet55 rung in lib/product/cost-ablation.js, whose
+      profile is REQUEST_PROFILES.DEFAULT itself (the object, not a
+      copy), claude-sonnet-5-5 at high effort writing the facts, routing
+      and residual replayed, so a change to the default (part_counts in
+      it since (227)) flows into the ladder without a new rung; its
+      estimate factor is counts_sonnet55's (0.75 of the output), the
+      same request on the same tier. Pinned in
+      tests/product-fresh-sheet-experiments.test.js (11): the profile
+      is the same object as REQUEST_PROFILES.DEFAULT, carries
+      part_counts and not introduction_counts, the models and the
+      replay, the factor under one. The retry fix the manager asked
+      after: it shipped in (199e) at fb0b270/ebe5dc0 (the variant
+      model's `refresh(section, parts)` sends the failed part live on
+      the retry rather than reading the first attempt's answer back
+      from the job's recording; the healthy parts come from the first
+      attempt's records at zero spend through resumingModel), with its
+      harness test in tests/product-ablation-wake.test.js (the provider
+      sees part 1, part 2, then part 1 alone; the row's replayed_calls;
+      live_calls 3); nothing more was needed for it here. What it
+      changes on a row: before, a retried section's second attempt was
+      four recorder reads counted again (live_calls 4 reported as a
+      doubled usage, the thin part marked); after, one live call for
+      the thin part and three records at zero, live_calls 4 + 1, the
+      usage the calls made. (b) The eight-section check (III-INTRO,
+      IV-INTRO, 3.1, 3.2, 3.7, 4.1, 8.3, 5.1; default_sonnet55 and
+      counts_sonnet55; loops 2; run 51577c57) is the manager's to fire
+      on the sandbox at this head; the reading (does introduction_counts
+      add facts on the two introductions over the default with (207);
+      does the default hold the earlier readings elsewhere) and (c) the
+      two standing 5.1 partials (the Tax covenant, Parent's
+      extraordinary dividends: the stored split or the live whole)
+      follow in (199g) once the job id and its ablation.json comparison
+      rows are sent; no rule changes from either. Not changed: the
+      default profiles, the other rungs, the sandboxes, the deals,
+      intake. npm run test:active: 866 tests, 865 pass, the one known
+      failure.
 
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
