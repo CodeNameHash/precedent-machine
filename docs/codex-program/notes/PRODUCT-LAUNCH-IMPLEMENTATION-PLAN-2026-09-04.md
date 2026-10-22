@@ -5510,6 +5510,42 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       lever run until it reads clean ((220)). The Sonnet default
       stands. The two deals paused ((175)); no intake ((172)); Ben's
       three answers pending.
+      (225) 2026-10-22 08:20 UTC (the manager): the second eight-section
+      check (pm-ablation-20261022T070212Z, the sandbox at 3915a106 with
+      A's (205) and E's (199c), the plain rung, the two levers and
+      counts_sonnet55, three at once, 07:02 UTC on, the counts rung's
+      last row pending) read against the stored counts and (224).
+      Settled: 4.1 is whole on every rung (plain 18 / 0 / 0, derived
+      17 / 1 / 0, merged 18 / 0 / 0): A's (205) resolves the bare
+      clause numbers. E's (199) guard works: 8.3 carries "attempts": 2
+      on the plain, derived and counts rungs and the retry held 46 / 0
+      / 0, 44 / 2 / 0 and 45 / 1 / 0. The derived lever with its
+      sentence trimmed ((199c)) now matches the plain rung on every
+      section but 5.1 (III-INTRO 3 of 3, IV-INTRO 2 of 2, 3.7 5 of 5,
+      3.1 20 / 1 / 3, 3.2 25 / 0 / 2, 4.1 17 / 1 / 0). Not settled: 5.1
+      part 1, the chapeau's covenants: plain 60 / 2 / 4 this run (63 /
+      3 / 0, 48 / 3 / 15, 56 / 3 / 7 before on the same bytes), derived
+      49 / 2 / 15, merged 50 / 1 / 15, counts 56 / 3 / 7; the
+      part_counts instruction narrows the loss and does not close it,
+      and the guard does not fire on it (the part cites its words and
+      omits facts). And the article introductions on the plain and
+      merged rungs this run: III-INTRO 0 of 3 and IV-INTRO 0 of 2 with
+      every fact held on DUPLICATE_FACT_OCCURRENCE: the introduction's
+      qualification facts now collide with the same facts written per
+      section under A's a8656b3c instruction (the stored generation
+      wrote them per section, and the introduction node carried its
+      own), so the placement question put to Ben ((218)) has a
+      concrete cost either way: per section, the introduction node
+      should not also carry them; once per article, the per-section
+      instruction goes. Decision: the levers are parked; the derived
+      statement is no worse than the plain rung now but saves nothing
+      measurable in output ((223)), and the merged residual's saving is
+      the residual calls, to be taken when the unsplit-section path is
+      measured on its own. The Sonnet default stands; the open defects
+      are 5.1's part 1 (E, work package E11: the split and the
+      chapeau) and the introductions' duplicate holds (A, work package
+      24: read, no rule change until Ben answers). The two deals
+      paused ((175)); no intake ((172)).
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
