@@ -5469,6 +5469,47 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       lever runs until it reads clean (the weekly budget, (220)). The
       Sonnet default of (218) stands. The two deals paused ((175)); no
       intake ((172)); Ben's three answers pending.
+      (224) 2026-10-22 07:05 UTC (the manager): the guard's check
+      (pm-ablation-20261022T053736Z, the sandbox at d249a73 with E's
+      (199) guard and (199a), the eight lossy sections on the plain
+      rung and the two levers, three at once, 05:37 to 06:36 UTC, exit
+      0) read row by row. The guard fired on no row: every row carries
+      "attempts": 1, including derived_statement III-INTRO (2 facts
+      written, both held, 0 of 3 matched), 3.7 (0 of 5) and 5.1 (47 /
+      3 / 16 of 66). So the losses it was built for are not thin
+      answers: the introductions' facts were written and held (E's
+      (199b) reading (b)), and the guard's signal, words left uncited,
+      does not see a held-whole answer. The plain rung on the eight:
+      III-INTRO 3 of 3, IV-INTRO 2 of 2, 3.7 5 of 5, 5.1 63 / 3 / 0,
+      8.3 45 / 1 / 0, 3.2 25 / 0 / 2, 3.1 17 / 3 / 4, 4.1 10 / 2 / 6
+      with 9 of 20 facts held: seven CROSS_REFERENCE must resolve,
+      Sonnet this time writing the bare numbers "(1), (2), (3), (4) and
+      (7)" without the word "clauses", which A's (203) rule required,
+      and a LIST with words and no elements (also one on 3.1). The
+      merged residual on the eight: 5.1 56 / 3 / 7, 3.1 17 / 3 / 4,
+      3.2 24 / 1 / 2, 4.1 11 / 1 / 6 (8 held), 8.3 43 / 1 / 2,
+      III-INTRO 0 of 3, IV-INTRO and 3.7 whole. E's (199b): on a
+      split section the merged lever's requests are byte-identical to
+      the plain rung's, so 5.1's 48 / 3 / 15 twice and 63 / 3 / 0 and
+      56 / 3 / 7 on the same bytes is the plain default's own
+      run-to-run variance on part 1 (the chapeau's covenants), the
+      open stability risk of the Sonnet default. Built on it today:
+      A's (205) (the bare clause numbers resolve as the clause form;
+      a LIST with words and no elements has its elements cut from its
+      words at enumerators, semicolons or commas, else held) and E's
+      (199c) (the derived sentence without its second clause;
+      part_counts, the opening-words part told its sentence count and
+      every part its budget; introduction_counts, an article
+      introduction told its qualification count; rung
+      counts_sonnet55), merged and pushed with their test files run
+      here. Decision: the levers stay parked; one more check on the
+      same eight sections with (205) and (199c), the plain rung, the
+      two levers and counts_sonnet55, fired at 07:05 UTC (the job id
+      in the next finding), decides whether 4.1's holds, the
+      introductions and 5.1's part 1 come back; no whole-agreement
+      lever run until it reads clean ((220)). The Sonnet default
+      stands. The two deals paused ((175)); no intake ((172)); Ben's
+      three answers pending.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
