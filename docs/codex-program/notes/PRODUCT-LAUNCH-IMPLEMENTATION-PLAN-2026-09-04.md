@@ -10636,6 +10636,102 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       intake. npm run test:active: 866 tests, 865 pass, the one known
       failure.
 
+      (199g) 2026-10-22 15:40 to 16:45 UTC (implementer E), work
+      package E14 ((229)): the comparison matcher's rule, the re-score
+      script, the pins; no extraction change, no run, no rule on fact
+      shape; the sandboxes, the deals and intake untouched. The job
+      dirs are on pm-codex-preview-worker-3 and this session reaches
+      neither the status route nor the sandbox helper (no internal
+      token, no Vercel credentials; the Vercel MCP not used), so the
+      mechanism is confirmed on the code path and against the figure
+      the manager quoted, and the re-score of the eight job dirs is
+      the manager's to run with the command below; its rows are
+      recorded here in place once sent. What "MATCHED share 1" says:
+      the share is the live fact's OWN bytes over the stored fact's
+      OWN bytes, so every OWN byte of the stored Tax covenant lay
+      under the live equity-award covenant's OWN bytes. The chapeau
+      mechanism of (199f) alone gives a share under 1 whenever the
+      stored fact carries its limb's words with bytes, so one of two
+      things holds: the stored Tax fact's OWN components with bytes
+      are the chapeau words only (its five actions carried without
+      bytes or under another origin), or the live equity-award fact
+      carries a LIST component quoted from its first element to its
+      last (the components contract: "A LIST quotes the words from its
+      first element to its last"), which spans every sub-limb between
+      them, the Tax sub-limb among them. `--dump 5.1:Tax` on a job dir
+      prints the rows that settle it. The rule built covers both.
+      (a) The rule, in lib/product/generation-comparison.js
+      (`rangesOutside`, `scoredRanges`, `chapeauRangesOf`,
+      `matchFacts`): a stored fact is scored on its OWN bytes outside
+      the section's own chapeau span (kind CHAPEAU on the node) when
+      any remain, else on all its bytes (a chapeau-only fact keeps
+      them); every live fact is the counterpart of one stored fact at
+      most, the pairs assigned best share first, a tie on the stored
+      side broken by the live fact's own covered bytes (a wide LIST
+      fact goes to the stored fact it mostly is), then source order.
+      `compareFacts` in lib/product/cost-ablation.js uses it with the
+      chapeau ranges of the stored closure row
+      (`chapeauRangesOfClosure`: the section's own chapeau span ids,
+      not a parent's) and its rows carry scored_bytes;
+      `compareGenerations` uses it per node with the chapeau from both
+      analyses' spans, its pairs carry scored_bytes and counterpart, a
+      V1 fact V1 held takes no counterpart, and its `matches` list and
+      the V2-side counterparts are unchanged in shape. Without chapeau
+      ranges and with exclusivity off the function is the old rule,
+      kept for the re-score. Expected on the rows: shared chapeau
+      words no longer make a match, so a stored covenant is MATCHED or
+      PARTIAL by its limb's words or UNMATCHED; a live fact that
+      quoted the chapeau whole over one limb counts once, and the
+      others it covered on the chapeau alone fall to their next
+      candidate or to UNMATCHED; the partial counts of 5.1 and 3.2
+      should fall where they were chapeau overlaps and the unmatched
+      may rise; "new" counts the live facts no stored fact took.
+      (b) The script, scripts/product/re-score-ablation.js: `node
+      scripts/product/re-score-ablation.js <job dir> [<job dir> ...]
+      [--json <file>] [--dump <section>:<summary words>]`, reading
+      analysis/stored.analysis.json, analysis/<variant>.analysis.json
+      and ablation.json of each job dir (the launcher writes all
+      three), nothing written to the job dir. Per variant and section
+      it prints the recorded counts (ablation.json), the old rule re-
+      computed from the analysis files (the two should agree; a
+      difference means the analysis files hold facts the row did not),
+      the new rule, and every row whose status or counterpart changes
+      with its old and new counterpart's summary and the scored bytes.
+      On the sandbox at this head, from /vercel/sandbox/pm-product:
+      `node scripts/product/re-score-ablation.js /vercel/sandbox/pm-
+      ablation-20261022T070212Z /vercel/sandbox/pm-
+      ablation-20261022T090218Z /vercel/sandbox/pm-
+      ablation-20261022T093531Z /vercel/sandbox/pm-
+      ablation-20261022T100454Z /vercel/sandbox/pm-
+      ablation-20261022T113757Z /vercel/sandbox/pm-
+      ablation-20261022T115652Z /vercel/sandbox/pm-
+      ablation-20261022T121703Z /vercel/sandbox/pm-
+      ablation-20261022T140617Z --json /vercel/sandbox/re-
+      score-20261022.json`, and for the fixture rows `node
+      scripts/product/re-score-ablation.js /vercel/sandbox/pm-
+      ablation-20261022T140617Z --dump "5.1:Tax"` (the stored facts
+      whose summary contains the words, their component rows with
+      kind, origin and bytes, the section's chapeau spans, and every
+      live fact that overlapped them under the old rule, per variant).
+      The rows that change: pending the manager's run of the
+      command; recorded here in place once sent.
+      (c) Pinned in tests/product-rescore-ablation.test.js (5) on
+      5.1's shape as read in (199f), the byte numbers the shape's
+      until the dump's real rows replace them: the chapeau bytes out
+      of a fact's ranges and a chapeau-only fact keeping its own; the
+      old rule matching the Tax covenant with the equity-award
+      covenant on the shared chapeau (0.69 of its bytes) and the rule
+      scoring the limb (400 bytes) and taking the one-action Tax fact
+      at 0.2; exclusivity and the tie; compareFacts with and without
+      the chapeau ranges; compareGenerations' pairs with scored_bytes
+      and counterpart; the script on a temp job dir, its old-rule
+      counts equal to the recorded row, the changed row rendered, and
+      --dump's rows. The existing suites hold (tests/product-
+      generation-comparison.test.js 4, tests/product-cost-
+      ablation.test.js 9, tests/product-ablation-wake.test.js 10);
+      tests/product-cost-ablation.test.js is not in the test:active
+      list (it runs under `npm test`'s glob), noted, not changed in
+      this push. SUITE_LINE
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
 - [x] Take a database backup and restore it to a separate environment.
