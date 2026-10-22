@@ -5771,6 +5771,21 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       were judged on unmatched facts, which bundling does not touch,
       and the chapeau false match is one row. The two deals paused
       ((175)); no intake ((172)); Ben's answers pending as in (229).
+      (231) 2026-10-22 16:50 UTC, Ben, on the manager's status and next
+      steps, verbatim: "For 2 - shouldn't we let everything land first?
+      And shouldn't we just run one?" (resuming the paused deals);
+      "On the fact shape - can you be more precise/clear?"; "Same on
+      qualifier"; "5 - seems right" (the Opus 5.5 medium remainder).
+      Decisions: the Opus 5.5 medium comparison is dropped; its
+      partial rows stay in SONNET-CONFIRMATION-NCS-2026-10-19.md as
+      evidence and no further section of it runs. The deals resume
+      only after E15 lands and the re-scored ladder is read, and one
+      deal first (the manager proposes Olaplex 686c3bf2, 38 of 97
+      sections, the further along), on the Sonnet default, with its
+      unspent retry key; Apogee waits for that run's reading. The two
+      fact shapes and the qualifier placement are put to Ben again in
+      plain terms (the manager's reply of this time); no rule changes
+      until he answers.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
