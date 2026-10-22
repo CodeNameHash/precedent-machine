@@ -5727,6 +5727,50 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       deals paused ((175)); no intake ((172)); Ben's answers pending:
       resume the deals; qualifier placement ((218)); the Opus
       remainder; the two fact shapes above.
+      (230) 2026-10-22 16:15 to 16:40 UTC (the manager): E14 merged at
+      72e25cf1 (tests 18 of 18 here; the sandbox at 72e25cf) and the
+      re-score run over the eight job dirs (scripts/product/re-score-
+      ablation.js; the table in the manager's scratchpad). Read: the
+      rule as built is not accepted. Its two halves act differently.
+      The chapeau exclusion removes the false match of (229). The
+      one-live-fact-one-stored-fact rule turns true coverage into
+      losses wherever the live run bundles what the stored run split:
+      3.7 reads 5 / 0 / 0 of 5 with one valid live fact on every rung
+      and every job, and under the new rule 1 / 0 / 4; 5.1's five
+      affirmative covenants of limb (a)'s lead (stored as five facts,
+      written live as one or two) go MATCHED 1 and 0.99 to UNMATCHED
+      0; 3.1 drops three to four, III-INTRO one, on every rung. Rows
+      whole, old rule then new: 070212Z plain 5.1 64 / 2 / 0 then 52 /
+      2 / 12, counts 62 / 4 / 0 then 53 / 3 / 10; 140617Z default 5.1
+      64 / 2 / 0 then 54 / 2 / 10, 3.7 5 of 5 then 1 of 5. What this
+      shows, read both ways: the old rule counts a stored fact matched
+      when any live fact covers its words, so one bundled live fact
+      counts five stored facts matched (3.7: valid 1, matched 5) and
+      the ladder's matched counts have hidden bundling; the new rule
+      counts the same bundle as four losses. Neither is the reading.
+      The script's old-rule column also does not reproduce the
+      recorded rows on several jobs (070212Z plain 5.1 recorded 60 / 2
+      / 4, re-scored 64 / 2 / 0; 115652Z plain 53 / 6 / 7 against 62 /
+      4 / 0): the baseline differs from the live comparison and must
+      be explained before any re-scored row is read. Decision: the
+      matcher keeps every stored fact's best live cover (no exclusive
+      assignment), with the chapeau exclusion where bytes remain, and
+      reports bundling beside the match: a stored fact whose
+      counterpart is also another stored fact's counterpart is counted
+      MATCHED and flagged BUNDLED, with the rung's bundled count in
+      the table, so a 5 of 5 on one live fact reads as what it is.
+      Work package E15 (E): (a) remove the exclusive assignment and
+      add the BUNDLED flag and column; (b) find why the re-score's
+      old-rule column differs from the recorded rows (held facts,
+      rejected answers, the thin-answer attempt's facts, or a
+      different fact set) and make it reproduce them exactly before
+      the new column is printed; (c) re-run over the eight job dirs
+      and report, per job and rung, matched, bundled, partial,
+      unmatched. The (227) and (228) decisions stand until the
+      corrected re-score is read: the layout fix and the count line
+      were judged on unmatched facts, which bundling does not touch,
+      and the chapeau false match is one row. The two deals paused
+      ((175)); no intake ((172)); Ben's answers pending as in (229).
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
