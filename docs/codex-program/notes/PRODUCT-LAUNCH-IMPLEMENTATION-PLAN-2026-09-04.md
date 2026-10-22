@@ -9725,8 +9725,8 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       the attempt after keeps the other parts' facts with part 1
       marked. Not read: the job's recording for III-INTRO (the sandbox
       is not this session's); the shape pinned is the empty routed
-      answer the manager's read describes. npm run test:active: see
-      the push.
+      answer the manager's read describes. npm run test:active: 858
+      tests, 857 pass, the one known failure.
 
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
