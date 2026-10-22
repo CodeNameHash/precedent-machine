@@ -316,3 +316,59 @@ test('the Sonnet 5.5 variants of derived_statement and merged_residual carry the
   assert.equal(Math.round(ESTIMATE_FACTORS.derived_statement_sonnet55.output * 100), Math.round(0.73 * ESTIMATE_FACTORS.derived_statement.output * 100));
   assert.equal(Math.round(ESTIMATE_FACTORS.merged_residual_sonnet55.output * 100), Math.round(0.73 * ESTIMATE_FACTORS.merged_residual.output * 100));
 });
+
+// Plan finding (199c), work package E10: the derived sentence without its
+// second clause; the counts the model is told under part_counts and
+// introduction_counts; the rung that carries them on Ben's tier.
+async function requestsFor(reference, profile, { longSectionSplit = null, routeTo = null } = {}) {
+  const sourceDocument = await conchoSource();
+  const agreementStructure = buildAgreementStructure(sourceDocument);
+  const node = substantiveSections(agreementStructure).find((item) => item.reference === reference);
+  const synthetic = createSyntheticConchoModel();
+  const seen = [];
+  const model = { async complete(input) {
+    seen.push(input);
+    if (input.call_kind === 'ROUTING' && routeTo) {
+      const response = { families: routeTo, disposition: 'FAMILY_ASSIGNED', rationale: 'The test routes it.', deterministic_disagreements: [] };
+      return { provider_id: 'SYNTHETIC', model_id: 'COUNTS/V1', raw_request: input.request, raw_response: response, response, input_tokens: 1, output_tokens: 1, cost_microusd: 0, duration_ms: 1 };
+    }
+    if (input.call_kind !== 'EXTRACTION') return synthetic.complete(input);
+    const response = mergedAnswer(input.request);
+    return { provider_id: 'SYNTHETIC', model_id: 'COUNTS/V1', raw_request: input.request, raw_response: response, response, input_tokens: 10, output_tokens: 5, cost_microusd: 0, duration_ms: 1 };
+  } };
+  try { await buildAgreementSectionDraft({ sourceDocument, agreementStructure, legalSchema: schemaV2, model, node, requestProfile: profile, longSectionSplit }); } catch (error) { if (error.code !== 'PROPOSAL_FAMILY' && error.code !== 'GROUP_FAMILY' && error.code !== 'EXTRACTION_DECLINED') throw error; }
+  return seen.filter((input) => input.call_kind === 'EXTRACTION').map((input) => input.request);
+}
+
+test('the derived sentence keeps its first clause and loses the second; part_counts tells the opening-words part its sentence count and every part its budget; introduction_counts adds the qualification count to an article introduction; the rung carries both', async () => {
+  const [derived] = await requestsFor('6.3', { ...REQUEST_PROFILES.DEFAULT, statement_mode: 'derived' });
+  assert.match(derived.scope_instruction, /Do not return statement: the code writes it from the OWN components' words in source order\./);
+  assert.doesNotMatch(derived.scope_instruction, /put every operative word in the components/);
+  const split = { min_section_bytes: 1000, min_children: 3, group_bytes: 6000 };
+  const parts = await requestsFor('6.3', { ...REQUEST_PROFILES.DEFAULT, part_counts: true }, { longSectionSplit: split });
+  assert.ok(parts.length >= 2, `the section split into ${parts.length} parts`);
+  const opening = parts.find((request) => request.source_closure.extraction_part.covers_chapeau);
+  assert.ok(opening, 'one part covers the opening words');
+  const count = /The opening words state (\d+) sentences? of covenant, standard or exception; emit a proposal for each legal effect of each of them/.exec(opening.part_instruction);
+  assert.ok(count, opening.part_instruction);
+  assert.ok(Number(count[1]) >= 1);
+  for (const request of parts) {
+    assert.equal(request.part_fact_budget.part, request.source_closure.extraction_part.part);
+    assert.ok(request.part_fact_budget.expected >= 1 && request.part_fact_budget.ceiling > request.part_fact_budget.expected);
+    assert.ok(request.part_fact_budget.operative_bytes > 0);
+    assert.match(request.part_count_instruction, /part_fact_budget says how many facts a part of this size usually yields/);
+  }
+  const plainParts = await requestsFor('6.3', REQUEST_PROFILES.DEFAULT, { longSectionSplit: split });
+  assert.ok(plainParts.every((request) => request.part_fact_budget === undefined && request.part_count_instruction === undefined));
+  assert.doesNotMatch(plainParts.find((request) => request.source_closure.extraction_part.covers_chapeau).part_instruction, /The opening words state/);
+  // The introduction to the representations article: the count sentence under the flag, not without.
+  const [intro] = await requestsFor('III-INTRO', { ...REQUEST_PROFILES.DEFAULT, introduction_counts: true }, { routeTo: ['REPRESENTATIONS'] });
+  assert.ok(intro, 'III-INTRO is extracted once routed to REPRESENTATIONS');
+  assert.match(intro.article_introduction_instruction, /introduction to an article of representations/);
+  assert.match(intro.introduction_count_instruction, /one REPRESENTATION_QUALIFICATION proposal per source of exception/);
+  const [plainIntro] = await requestsFor('III-INTRO', REQUEST_PROFILES.DEFAULT, { routeTo: ['REPRESENTATIONS'] });
+  assert.equal(plainIntro.introduction_count_instruction, undefined);
+  assert.equal(ABLATION_VARIANTS.counts_sonnet55.profile.part_counts, true);
+  assert.equal(ABLATION_VARIANTS.counts_sonnet55.profile.introduction_counts, true);
+  assert.deepEqual(ABLATION_VARIANTS.counts_sonnet55.models, { EXTRACTION: { model: 'claude-sonnet-5-5', effort: 'high' } });
+});
