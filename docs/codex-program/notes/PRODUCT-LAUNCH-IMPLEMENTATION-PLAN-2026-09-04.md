@@ -5840,6 +5840,35 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       instruction is pm-ablation-20261022T173641Z (default_sonnet55,
       loops 2), fired 17:36 UTC; its reading, then the Olaplex resume
       proposal ((231)). The two deals paused; no intake ((172)).
+      (234) 2026-10-22 18:05 UTC (the manager): the eight-section check
+      on work package 26's instruction (pm-ablation-20261022T173641Z;
+      the sandbox at 401c035; default_sonnet55, loops 2; no retry on
+      any row), read against (228) and (232). Rows: III-INTRO 3 / 0 /
+      0 of 3; IV-INTRO 2 / 0 / 0 of 2; 3.1 19 / 2 / 3 of 24; 3.2 25 /
+      0 / 2 of 27; 3.7 5 of 5 (one live fact, 5 bundled); 4.1 17 / 1 /
+      0 of 18; 8.3 46 / 0 / 0 of 46; 5.1 64 / 2 / 0 of 66 (21
+      bundled); the rung 181 / 5 / 5 of 191, 42 bundled, $10.92 at
+      list, the best eight-section reading on any rung ((225) plain
+      177 / 6 / 8, (228) default 177 / 6 / 8). The five unmatched:
+      four are (232)'s expected rows, the per-section copies of the
+      article's two qualifiers on 3.1 and 3.2 (now on the
+      introduction alone, 3 of 3 and 2 of 2); one is a loss, 3.1's
+      "underlying causes of a missed projection may be a Material
+      Adverse Effect" (the MAE proviso on projections), to watch on
+      Olaplex, no rule from one roll. 5.1 for the first time loses
+      nothing: the lead paragraph's consent standard and exceptions
+      held, the Tax covenant is PARTIAL as one bundled fact (the shape
+      Ben chose), the proviso of (b) is inside its restriction. 8.3 is
+      whole with no retry. Decision: the instruction stands and the
+      deals may resume on it. Proposed to Ben now ((231): one deal
+      first): Olaplex 686c3bf2 (38 of 97 sections) on the Sonnet
+      default with retry key olaplex-apogee-a-retry-2, after the pool
+      sandboxes pm-codex-preview-worker and -2 are updated to the
+      head; the remaining 59 sections take the new instruction and the
+      38 extracted stay as they are (the run's facts are read whole
+      on the provisions page; the cut differs on those 38 where a
+      list or a proviso is one fact now). Apogee waits for Olaplex's
+      reading. No intake ((172)).
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
