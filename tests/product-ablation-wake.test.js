@@ -20,6 +20,7 @@ const {
 const { createSecIntakeAdapter } = require('../lib/product/sec-intake');
 const { substantiveSections } = require('../lib/product/source-context');
 const schemaV2 = require('../contracts/product/legal-schema.v2.json');
+const { FAMILY_FOR, conductOfBusinessSource, countedAnswerFor } = require('./fixtures/product/conduct-of-business-layout');
 
 // Work package E2 (implementer E; the manager, 2026-10-19 02:55 UTC): the
 // ablation job through the deployment's wake path on the experiments
@@ -116,6 +117,14 @@ async function buildStoredRun() {
     return { provider_id: 'SYNTHETIC', model_id: 'SYNTHETIC/V9', raw_request: request, raw_response: response, response, input_tokens: 100, output_tokens: 50, cost_microusd: 0, duration_ms: 5 };
   } };
   const draft = await buildAgreementDraft({ sourceDocument, agreementStructure, legalSchema: schemaV2, model });
+  return { draft, rows: rowsFrom(draft, { sourceDocument, agreementStructure }) };
+}
+
+// The draft's rows as the tables hold them; `errorHistoryFor(reference)`
+// is the section's work-row history (plan finding (199e): the stored
+// claim's cap failures shape the split the ablation runs).
+function rowsFrom(draft, { sourceDocument, agreementStructure, errorHistoryFor = () => [] }) {
+  const referenceOf = new Map(draft.source_closures.map((closure) => [closure.structure_node_id, closure.section_reference]));
   const components = [];
   const flatten = (proposalId, list, parentId) => {
     (list || []).forEach((component, ordinal) => {
@@ -129,7 +138,7 @@ async function buildStoredRun() {
     tables: {
       product_analysis_runs: [{ run_id: RUN_ID, status: 'READY', schema_version: schemaV2.schema_version, prompt_bundle_version: 'PRODUCT_V1', model_config: { provider_id: 'SYNTHETIC_TEST_PROVIDER' } }],
       product_model_calls: draft.model_calls.map((call) => ({ run_id: RUN_ID, ...call, created_at: '2026-10-19T00:00:00Z' })),
-      product_section_work: draft.sections.map((section, index) => ({ run_id: RUN_ID, node_id: section.node_id, authored_order: index, status: 'COMPLETE', attempts: 1, attempt_token: null, error_history: [] })),
+      product_section_work: draft.sections.map((section, index) => ({ run_id: RUN_ID, node_id: section.node_id, authored_order: index, status: 'COMPLETE', attempts: 1, attempt_token: null, error_history: errorHistoryFor(referenceOf.get(section.node_id)) })),
       product_source_closures: draft.source_closures.map((closure) => ({ run_id: RUN_ID, source_closure_id: closure.source_closure_id, structure_node_id: closure.structure_node_id, section_reference: closure.section_reference, payload: closure })),
       product_source_spans: draft.source_closures.flatMap((closure) => closure.spans.map((span) => ({ run_id: RUN_ID, ...span }))),
       product_section_routings: (draft.section_routings || []).map((routing) => ({ run_id: RUN_ID, structure_node_id: routing.structure_node_id, families: routing.families, disposition: routing.disposition, payload: routing })),
@@ -140,7 +149,38 @@ async function buildStoredRun() {
     },
     context: { run: { run_id: RUN_ID, schema_version: schemaV2.schema_version, prompt_bundle_version: 'PRODUCT_V1' }, sourceDocument, agreementStructure },
   };
-  return { draft, rows };
+  return rows;
+}
+
+// Plan finding (199e): a stored run on NCS 5.1's layout (the fixture of
+// tests/fixtures/product/conduct-of-business-layout.js), 5.1's work row
+// carrying one output-cap failure as NCS 5.1's does, so the ablation
+// splits it (two parts: the heading with limb (a); limbs (b) and (c)).
+const CAP_FAILURE = { error: { code: 'ANTHROPIC_API_OUTPUT_TRUNCATED', message: 'ran past the output cap' } };
+function layoutAnswer(kind, request) {
+  const reference = request.section_reference || request.source_closure?.section_reference;
+  const familyKey = FAMILY_FOR[reference] || null;
+  if (kind === 'ROUTING') {
+    return {
+      families: familyKey ? [familyKey] : [], disposition: familyKey ? 'FAMILY_ASSIGNED' : 'IMMATERIAL', rationale: familyKey ? 'The section states covenants.' : 'No family of the slice.',
+      deterministic_disagreements: (request.deterministic_family_evidence || []).filter((item) => item.section_family !== familyKey).map((item) => ({ family_key: item.section_family, reason: 'Not this family.' })),
+    };
+  }
+  if (kind === 'RESIDUAL') return { paragraphs: request.paragraphs.map((paragraph) => ({ source_span_id: paragraph.source_span_id, disposition: 'IMMATERIAL', family_keys: [], rationale: 'Covered by the limbs.' })) };
+  if (!familyKey || !request.family_contracts.some((family) => family.family_key === familyKey)) {
+    return { proposals: [], groups: [], links: [], coverage: Object.fromEntries(Object.keys(request.response_contract.allowed_fact_types_by_family).map((key) => [key, 'NOT_FOUND'])) };
+  }
+  return countedAnswerFor(request, { familyKey });
+}
+async function buildLayoutRun() {
+  const sourceDocument = await conductOfBusinessSource();
+  const agreementStructure = buildAgreementStructure(sourceDocument);
+  const model = { async complete({ call_kind: kind, request }) {
+    const response = layoutAnswer(kind, request);
+    return { provider_id: 'SYNTHETIC', model_id: 'SYNTHETIC/V9', raw_request: request, raw_response: response, response, input_tokens: 100, output_tokens: 50, cost_microusd: 0, duration_ms: 5 };
+  } };
+  const draft = await buildAgreementDraft({ sourceDocument, agreementStructure, legalSchema: schemaV2, model });
+  return rowsFrom(draft, { sourceDocument, agreementStructure, errorHistoryFor: (reference) => (reference === '5.1' ? [CAP_FAILURE] : []) });
 }
 
 // A fake `claude -p` client: the answer as the CLI returns it (one text
@@ -524,6 +564,48 @@ test('a section whose live call fails on CLAUDE_PRODUCT_JSON is tried once more 
   assert.equal(isRetryableAblationFailure({ code: 'ANTHROPIC_API_OUTPUT_TRUNCATED' }), true);
   assert.equal(isRetryableAblationFailure({ code: 'REPLAY_MISS' }), false);
   assert.equal(isRetryableAblationFailure({ message: 'CLAUDE_PRODUCT_JSON: response must be one exact JSON object [section 5.17]' }), true);
+});
+
+// Plan finding (199e), work package E12: a THIN_ANSWER retry costs the
+// thin part alone: the first attempt lets every part answer, the second
+// replays the healthy parts' records (the pipeline's attempt-resume rule)
+// and sends the thin part again.
+test('a THIN_ANSWER on one part is retried with the first attempt\'s other calls replayed: the provider answers the thin part alone the second time, the row names the replayed calls and the spend is counted once', async () => {
+  const rows = await buildLayoutRun();
+  assert.deepEqual(rows.tables.product_section_work.map((row) => row.error_history.length), rows.tables.product_section_work.map((row) => (rows.tables.product_source_closures.find((closure) => closure.structure_node_id === row.node_id)?.section_reference === '5.1' ? 1 : 0)));
+  const provider = [];
+  let partOneShort = true;
+  const factory = ({ callKindModels }) => createClaudeCliProductModel({
+    callKindModels,
+    clientFactory() {
+      return { messages: { create: async (request) => {
+        const sent = JSON.parse(request.messages[0].content);
+        const { call_kind: kind, prompt_version: promptVersion, ...rest } = sent;
+        const logical = { ...rest, prompt_version: promptVersion };
+        const part = logical.source_closure?.extraction_part?.part || null;
+        provider.push(`${kind}${part ? ` part ${part}` : ''}`);
+        if (kind !== 'EXTRACTION') return cliCompleted(layoutAnswer(kind, logical));
+        const answer = countedAnswerFor(logical, { familyKey: 'INTERIM_OPERATING', shortfall: (which) => (which === 1 && partOneShort ? 1 : 0) });
+        if (part === 1) partOneShort = false;
+        return cliCompleted(answer);
+      } } };
+    },
+  });
+  const logs = [];
+  const result = await runSectionAblation({ run: rows, sections: ['5.1'], variantName: 'counts_sonnet55', providerId: CLAUDE_CLI_PROVIDER_ID, liveModelFactory: factory, recorder: createRecorder(), log: (event) => logs.push(event) });
+  const row = result.sections[0];
+  assert.equal(row.error, null, JSON.stringify(row.error));
+  assert.equal(row.attempts, 2);
+  assert.equal(row.retried_after, 'THIN_ANSWER');
+  assert.deepEqual(provider.filter((entry) => entry.startsWith('EXTRACTION')), ['EXTRACTION part 1', 'EXTRACTION part 2', 'EXTRACTION part 1'], 'every part answered on the first attempt; the thin part alone on the second');
+  assert.ok(row.replayed_calls.includes('EXTRACTION part 2'), JSON.stringify(row.replayed_calls));
+  const extraction = row.result.model_calls.filter((call) => call.call_kind === 'EXTRACTION');
+  assert.equal(extraction.filter((call) => call.resumed_from_model_call_id).length, 1, 'part 2 of the second attempt is a record of the first\'s with no spend');
+  assert.ok(extraction.filter((call) => call.resumed_from_model_call_id).every((call) => call.output_tokens === 0 && call.cost_microusd === 0));
+  assert.equal(row.extraction.live_calls, 3, 'three extraction calls were made');
+  assert.ok(logs.some((event) => event.event === 'SECTION_ABLATED' && event.attempts === 2 && event.replayed_calls.includes('EXTRACTION part 2')));
+  assert.match(renderAblationTable([result]), /second attempt after THIN_ANSWER \(\d+ of the first attempt's calls replayed: [^)]*EXTRACTION part 2[^)]*\)/);
+  assert.ok(row.facts.valid >= 3, `limb (a)'s two lead sentences, limb (b)'s one and limb (c): ${row.facts.valid}`);
 });
 
 test('loops runs that many sections at once with the rows in the run\'s order; the estimate\'s minutes follow the loops asked; the route, the wake and the launcher carry loops', async () => {

@@ -5,14 +5,13 @@ process.env.PRODUCT_PHASE2_HELPER_ONLY = '1';
 const assert = require('node:assert/strict');
 const test = require('node:test');
 const { buildAgreementStructure } = require('../lib/product/agreement-structure');
-const {
-  FACT_BUDGET_BYTES_PER_FACT, buildAgreementSectionDraft, definedTermOf, deterministicRoutingDecision, directDefinitionSpanIds, factBudgetFor, listedClosureSpanIds, normaliseLeanResponse,
-} = require('../lib/product/agreement-draft');
+const { FACT_BUDGET_BYTES_PER_FACT, THIN_ANSWER, buildAgreementSectionDraft, definedTermOf, deterministicRoutingDecision, directDefinitionSpanIds, factBudgetFor, limbLead, listedClosureSpanIds, normaliseLeanResponse } = require('../lib/product/agreement-draft');
 const { ABLATION_VARIANTS, variantAvailability } = require('../lib/product/cost-ablation');
 const { CLAUDE_CLI_PROVIDER_ID, REQUEST_PROFILES } = require('../lib/product/product-model-config');
 const { substantiveSections } = require('../lib/product/source-context');
 const { conchoSource, createSyntheticConchoModel } = require('./product-phase-2.test.js');
 const schemaV2 = require('../contracts/product/legal-schema.v2.json');
+const { conductOfBusinessSource } = require('./fixtures/product/conduct-of-business-layout');
 
 // Work package E3 part 2 (plan finding (185)), Ben's brief (finding (177)):
 // "It can experiment, tear up ideas etc. cone at completely fresh". The
@@ -320,8 +319,8 @@ test('the Sonnet 5.5 variants of derived_statement and merged_residual carry the
 // Plan finding (199c), work package E10: the derived sentence without its
 // second clause; the counts the model is told under part_counts and
 // introduction_counts; the rung that carries them on Ben's tier.
-async function requestsFor(reference, profile, { longSectionSplit = null, routeTo = null } = {}) {
-  const sourceDocument = await conchoSource();
+async function requestsFor(reference, profile, { longSectionSplit = null, routeTo = null, source = conchoSource } = {}) {
+  const sourceDocument = await source();
   const agreementStructure = buildAgreementStructure(sourceDocument);
   const node = substantiveSections(agreementStructure).find((item) => item.reference === reference);
   const synthetic = createSyntheticConchoModel();
@@ -330,6 +329,10 @@ async function requestsFor(reference, profile, { longSectionSplit = null, routeT
     seen.push(input);
     if (input.call_kind === 'ROUTING' && routeTo) {
       const response = { families: routeTo, disposition: 'FAMILY_ASSIGNED', rationale: 'The test routes it.', deterministic_disagreements: [] };
+      return { provider_id: 'SYNTHETIC', model_id: 'COUNTS/V1', raw_request: input.request, raw_response: response, response, input_tokens: 1, output_tokens: 1, cost_microusd: 0, duration_ms: 1 };
+    }
+    if (input.call_kind === 'RESIDUAL' && source !== conchoSource) {
+      const response = { paragraphs: input.request.paragraphs.map((paragraph) => ({ source_span_id: paragraph.source_span_id, disposition: 'IMMATERIAL', family_keys: [], rationale: 'Covered by the limbs.' })) };
       return { provider_id: 'SYNTHETIC', model_id: 'COUNTS/V1', raw_request: input.request, raw_response: response, response, input_tokens: 1, output_tokens: 1, cost_microusd: 0, duration_ms: 1 };
     }
     if (input.call_kind !== 'EXTRACTION') return synthetic.complete(input);
@@ -349,9 +352,38 @@ test('the derived sentence keeps its first clause and loses the second; part_cou
   assert.ok(parts.length >= 2, `the section split into ${parts.length} parts`);
   const opening = parts.find((request) => request.source_closure.extraction_part.covers_chapeau);
   assert.ok(opening, 'one part covers the opening words');
-  const count = /The opening words state (\d+) sentences? of covenant, standard or exception; emit a proposal for each legal effect of each of them/.exec(opening.part_instruction);
-  assert.ok(count, opening.part_instruction);
-  assert.ok(Number(count[1]) >= 1);
+  // Plan finding (199e): 6.3's chapeau is its heading line (35 bytes), so
+  // no section-chapeau count; the opening-words count is each limb's, for
+  // a lead paragraph at or over paragraph_min_bytes before its first
+  // numbered sub-limb.
+  assert.doesNotMatch(opening.part_instruction, /The opening words state/);
+  const leadsNamed = (request) => new Map([...request.part_instruction.matchAll(/limb (s\d+) states (\d+) sentences? before its first numbered sub-limb/g)].map((match) => [match[1], Number(match[2])]));
+  let namedLeads = 0;
+  for (const request of parts) {
+    const expected = new Map(request.source_closure.operative.map((span) => [span.span_id, limbLead(span.exact_text)]).filter(([, lead]) => lead && lead.bytes >= THIN_ANSWER.paragraph_min_bytes).map(([id, lead]) => [id, lead.sentences]));
+    assert.deepEqual([...leadsNamed(request)], [...expected], request.part_instruction);
+    namedLeads += expected.size;
+  }
+  assert.ok(namedLeads >= 1, '6.3 has limbs with leads before their roman sub-limbs');
+  // NCS 5.1's layout (finding (226)): the heading chapeau goes with limb
+  // (a) and is not counted; part 1 names limb (a)'s two-sentence lead,
+  // part 2 names limb (b)'s one sentence; limb (c) has no sub-limb.
+  const layout = await requestsFor('5.1', { ...REQUEST_PROFILES.DEFAULT, part_counts: true }, { longSectionSplit: { min_section_bytes: 1000, min_children: 3, group_bytes: 1500 }, source: conductOfBusinessSource, routeTo: ['INTERIM_OPERATING'] });
+  assert.equal(layout.length, 2);
+  const [one, two] = [1, 2].map((part) => layout.find((request) => request.source_closure.extraction_part.part === part));
+  assert.equal(one.source_closure.extraction_part.covers_chapeau, true);
+  assert.equal(one.source_closure.operative.length, 1);
+  assert.doesNotMatch(one.part_instruction, /The opening words state/);
+  assert.deepEqual([...leadsNamed(one)], [[one.source_closure.operative[0].span_id, 2]]);
+  assert.match(one.part_instruction, /Opening words of the limbs in this part: limb s\d+ states 2 sentences before its first numbered sub-limb\. Emit a proposal for each legal effect of each of those sentences \(each affirmative covenant, each consent standard, each source of exception\), never fewer than the sentences, each citing that limb's span\./);
+  assert.deepEqual([...leadsNamed(two)], [[two.source_closure.operative[0].span_id, 1]]);
+  assert.equal(two.source_closure.operative.length, 2);
+  for (const request of layout) {
+    assert.equal(request.part_fact_budget.part, request.source_closure.extraction_part.part);
+    assert.match(request.part_count_instruction, /part_fact_budget says how many facts a part of this size usually yields/);
+  }
+  const plainLayout = await requestsFor('5.1', REQUEST_PROFILES.DEFAULT, { longSectionSplit: { min_section_bytes: 1000, min_children: 3, group_bytes: 1500 }, source: conductOfBusinessSource, routeTo: ['INTERIM_OPERATING'] });
+  assert.ok(plainLayout.every((request) => request.part_fact_budget === undefined && !/numbered sub-limb/.test(request.part_instruction)));
   for (const request of parts) {
     assert.equal(request.part_fact_budget.part, request.source_closure.extraction_part.part);
     assert.ok(request.part_fact_budget.expected >= 1 && request.part_fact_budget.ceiling > request.part_fact_budget.expected);
