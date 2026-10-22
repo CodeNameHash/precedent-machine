@@ -10270,6 +10270,122 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       same, the attempt after kept and marked. Ready for the manager's
       three runs of 5.1 on the plain rung and counts_sonnet55. npm run
       test:active: 863 tests, 862 pass, the one known failure.
+      (199e) 2026-10-22 10:40 to 12:20 UTC (implementer E), work package
+      E12 ((226), the four items), behind the part_counts flag; nothing
+      run on the sandbox, no job fired, no live call. (a) The
+      opening-words count is the limb's. `limbLead(text)` reads a limb's
+      lead paragraph: the words before its first "(i)" or "(1)" after
+      white space, a cross-reference ("clause (i)", "and (i)") passed
+      over, a colon or semicolon before the marker ending the lead, the
+      limb's own label stripped. For every limb of a part whose lead is
+      at or over THIN_ANSWER.paragraph_min_bytes (80) the part
+      instruction names the limb and its lead's sentence count
+      ("Opening words of the limbs in this part: limb s8 states 2
+      sentences before its first numbered sub-limb; limb s9 states 1
+      sentence ... Emit a proposal for each legal effect of each of
+      those sentences (each affirmative covenant, each consent
+      standard, each source of exception), never fewer than the
+      sentences, each citing that limb's span."), and the part's
+      minimum is the sum of those counts, plus the chapeau's sentences
+      when the chapeau is at or over paragraph_min_bytes (the (199c)
+      sentence and the (199d) own-part split stay for such a chapeau
+      and for no other: a heading line of 32 bytes gets neither), plus
+      one for a limb without a lead that is at or over
+      paragraph_min_bytes (as (199d) counted every limb; one under 80
+      bytes counts nothing). part_fact_budget and
+      part_count_instruction stay on every part. On 5.1's layout the
+      part with the heading and limb (a) has a minimum of 2 (the two
+      sentences before "(i)") and the part with (b) and (c) names (b)'s
+      one sentence. (b) No part of a heading alone. `foldShortGroups`
+      in `longSectionGroups` folds a group under paragraph_min_bytes
+      into the group that follows it (the heading joins limb (a)'s
+      group even when every limb exceeds group_bytes: [32, 2729],
+      [609], [347]); `resplitAfterOutputCap` halves a failed group
+      between its substantive members only, and a failed group with one
+      substantive member (5.1's [heading, limb]) is split by that
+      limb's paragraphs with the heading folded into the first run, a
+      paragraph part that also covers the chapeau (mode 'paragraphs',
+      covers_chapeau true, the chapeau words in its instruction); a
+      chapeau under paragraph_min_bytes is never its own part whatever
+      chapeau_min_sentences says; `thinAnswerSignals` applies no
+      minimum to a part under min_operative_bytes (2,000), so 5.1's
+      limb (b) part (1,772 bytes) hears its count and is not failed on
+      it. For the next 5.1 jobs the stored claim's cap history still
+      shapes the split through splitForAttempt, and the heading no
+      longer stands alone: the failed group [s4, s2] now becomes s2's
+      paragraphs in runs of group_bytes with s4 in the first run when
+      s2 holds two or more paragraphs and more than one run, else the
+      group stays whole; the job's LONG_SECTION_SPLIT issue
+      (operative_spans_per_part, mode) shows which. (c) A THIN_ANSWER
+      retry re-runs the thin part alone. The draft no longer fails the
+      attempt at the first thin part: every part answers, then the
+      attempt fails naming the thin parts (error.extraction_part.mode
+      'thin', thin_parts [1, ...]; the store's failureRecord keeps
+      extraction_part as the history entry's `part`, so thin_parts
+      travels), so the healthy parts' calls are recorded under their
+      invocation ids. In lib/product/attempt-resume.js,
+      `resumableInvocations` on a failure whose part has mode 'thin'
+      makes every other part's invocation eligible (before: the parts
+      below the failed part only, the output-cap rule), and the
+      resuming model answers them from the record with zero spend and
+      resumed_from_model_call_id; confirmed end to end on the code path
+      (the first attempt's records through resumableCalls and
+      resumingModel, the provider seeing part 1 alone the second time).
+      The ablation harness has the same: `reusableAfterFailure` builds
+      the identity map from the job's own records, the second attempt
+      runs through resumingModel, the row carries replayed_calls and
+      the table note names them. Read from the harness while building
+      it, about the three (226) jobs: the job's recorder answers a
+      request byte-identical to one it recorded, under the same model,
+      effort and profile, from its own entry; the second attempt's four
+      requests were byte-identical to the first's (the split and the
+      instructions do not change between attempts), so by the code the
+      retry read the first attempt's four answers back, the thin part
+      1's included (kept and marked THIN_PART_ANSWER under the (199)
+      rule), and the row's usage counted the recorded tokens twice:
+      293,266 is 2 x 146,633 to the token. So the counts rung's 60, 60
+      and 58 are first-attempt answers whole, one roll each, not second
+      rolls, and the $3.04 is the double count; the rows'
+      extraction.live_calls should read 4, not 8, and their issue codes
+      THIN_PART_ANSWER 1. The harness test pinned this (the retry read
+      the thin answer back) before the fix: the variant model's
+      `refresh(section, parts)` now sends the failed part(s) live on
+      the retry whatever the recording holds, and the healthy parts are
+      records at zero, so a retry costs one part on the API and the CLI
+      alike. (d) Pinned: tests/fixtures/product/conduct-of-business-
+      layout.js (5.1's layout as the structure reads it: the 32-byte
+      heading chapeau, limb (a) with a two-sentence lead before roman
+      sub-limbs, limb (b) with a one-sentence lead, limb (c) with no
+      sub-limb; 5.3 with a chapeau that states covenants in three
+      sentences; the model that answers the counts the instruction
+      names, less a shortfall); tests/product-thin-answer.test.js (7):
+      5.3's chapeau its own part under the flag, 5.1's heading never
+      (with limb (a), no chapeau count, limb (a)'s lead counted 2 and
+      (b)'s 1, the split issue without chapeau_own_part), the fold at
+      group_bytes 20, the lead reader's four cases; part 1 one short
+      failing on BELOW_PART_MINIMUM (minimum 2, proposals 1) after both
+      parts answered, thin_parts [1], the (b) part short but under
+      min_operative_bytes passing, the attempt after kept and marked,
+      the signal at 2,100 bytes and not at 1,700; the thin retry through
+      attempt-resume (three calls reusable, part 1 not; the provider
+      sees part 1 alone; three records at zero naming the originals;
+      reusableAfterFailure the same map, nothing for a failure without
+      a part); the cap re-split of [heading, (a)] into paragraph parts
+      with the heading in part 1 and no empty part, and the halving of
+      [32, 2000, 1800] cutting after the first substantive member;
+      tests/product-fresh-sheet-experiments.test.js (11): 6.3's heading
+      uncounted and each limb lead named exactly as limbLead reads it,
+      5.1's two parts under the flag with the lead counts and the
+      budgets, none of it without the flag;
+      tests/product-ablation-wake.test.js (10): the harness on a stored
+      run of the layout fixture whose 5.1 row carries a cap failure,
+      the first attempt thin on part 1, the second replaying part 2 and
+      sending part 1 live, the row's replayed_calls and attempts 2, the
+      table note. Not changed: the Sonnet default, the rung names, the
+      plain rung, scripts/product-hosted-worker.js,
+      lib/product/fact-components.js. Ready for the manager's three 5.1
+      jobs on both rungs once the sandbox is at this sha. npm run
+      test:active: 866 tests, 865 pass, the one known failure.
 
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
