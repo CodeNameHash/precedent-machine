@@ -10091,7 +10091,7 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       BELOW_PART_MINIMUM with the part named, a limb part one short the
       same, the attempt after kept and marked. Ready for the manager's
       three runs of 5.1 on the plain rung and counts_sonnet55. npm run
-      test:active: see the push.
+      test:active: 863 tests, 862 pass, the one known failure.
 
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
