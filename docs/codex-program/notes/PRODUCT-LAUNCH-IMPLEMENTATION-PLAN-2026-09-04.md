@@ -5435,6 +5435,40 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       the sandbox at b5045dde, the same two variants, every section,
       four at once (the job id in the next finding). The two deals
       paused ((175)); no intake ((172)); Ben's three answers pending.
+      (223) 2026-10-22 05:40 UTC (the manager): the levers re-fired
+      with E's (198) (pm-ablation-20261022T013924Z, the sandbox at
+      6c6b7dca, 01:39 to 05:30 UTC, exit 0, four sections at once)
+      against the plain mode ((216): 931 / 20 / 20 of 971, 2,224,248
+      output tokens, two sections failed) and the run before ((221)).
+      derived_statement_sonnet55: 103 of 104 sections, 933 matched, 23
+      partial, 41 unmatched of 997, 968 VALID 17 held, 2,136,847
+      output tokens, one failed (4.1, MODEL_RESPONSE_SHAPE
+      proposal.client_ref, which E's (199a) now repairs; the
+      source_span_id failures of (221) are gone). merged_residual_sonnet55:
+      103 of 104, 927 / 32 / 33 of 992, 954 VALID 12 held, 2,308,326
+      output tokens, one failed (7.3, the same client_ref shape). So
+      (198) holds: the shape failures went from five per lever to one,
+      and (199a) covers that one. The facts: both levers still lose
+      what the plain mode does not, 5.1 at 50 / 1 / 15 and 48 / 3 / 15
+      of 66 (the plain mode 63 / 3 / 0), the article introductions
+      whole (III-INTRO 3, IV-INTRO 2), 3.7 whole (5) on the derived
+      rung, and 3.1 and 3.2 a few more; the thin-answer pattern E's
+      (199) guard now fails and retries, built after this job's
+      sandbox update. The saving: the derived statement wrote 4 per
+      cent fewer output tokens than the plain mode on this run (12 to
+      17 per cent on the two before: run-to-run variance in Sonnet's
+      thinking swamps it), the merged residual the same output and
+      the residual calls' tokens besides, which these columns do not
+      count. Reading: neither lever earns the default on the facts
+      yet; the guard decides whether 5.1 and the introductions come
+      back. Its check fired at 05:40 UTC on the sandbox at 62221f61
+      ((199) and (199a)): the eight lossy sections (5.1, III-INTRO,
+      IV-INTRO, 3.7, 3.1, 3.2, 8.3, 4.1) on anchors_sonnet55,
+      derived_statement_sonnet55 and merged_residual_sonnet55, three
+      at once, the job id in the next finding; no more whole-agreement
+      lever runs until it reads clean (the weekly budget, (220)). The
+      Sonnet default of (218) stands. The two deals paused ((175)); no
+      intake ((172)); Ben's three answers pending.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
