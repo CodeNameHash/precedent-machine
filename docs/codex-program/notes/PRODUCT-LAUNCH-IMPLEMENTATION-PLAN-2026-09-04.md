@@ -7951,6 +7951,79 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       the plain default does not carry it, and it is left as it is. npm
       run test:active on the commit: 863 tests, 862 pass, the one failure
       the known Codex-client final-message test.
+      (208) 2026-10-22 17:10 to 18:05 UTC (implementer A), work package
+      26 (the manager's message of 17:09 UTC; Ben's three answers in
+      (232), verbatim: "Yep, don't think you even need to say parent
+      consent as that is up too in intro no?"; "A on dividend point";
+      "Option a on placement"). (1) The extractor's instruction
+      (lib/product/agreement-draft.js, the same text on every section of
+      every deal) carries one sentence per shape: a list of objects
+      under one operative verb inside one lettered or numbered limb is
+      one proposal, its objects one LIST with one LIST_ELEMENT per
+      object, never one proposal per object, separate limbs separate
+      proposals; a proviso that only carves out from its covenant is an
+      EXCEPTION component of that covenant's proposal and not a
+      proposal, a proviso that creates an obligation or right of its own
+      a proposal, linked to the covenant it follows; the opening words'
+      consent standard, time window and sources of exception are the
+      opening words' own proposals, stated once, and a limb's proposal
+      states its own action and cites the governing opening words as
+      inherited evidence (an evidence quote, a CHAPEAU or INTRO
+      component) without restating them in its statement. The third
+      replaces "Repeat a parent or chapeau qualification in each affected
+      proposal when needed"; the scope_instruction says the same after
+      its citation sentence ("Those opening words are the limb's
+      evidence, not its statement"); the two part instructions say "cite
+      the chapeau words that qualify a limb as that limb's inherited
+      evidence, not in its statement" where they said "repeat". Under
+      the lean default the statement is already the OWN components'
+      words ((190)), so the third shape binds the code on that path and
+      the model's own statement elsewhere. Nothing in the normaliser or
+      the validators holds the shapes, checked on NCS 5.1's own words
+      (tests/fixtures/product/conduct-of-business-ncs-words.js: limb
+      (a)'s lead, (a)(xi), limb (b)'s lead, (b)(i), (b)(ii), cut from the
+      stored generation 5 text; the synthetic layout fixture of (199e)
+      stays beside it): the Tax covenant as an ACTOR and a CONDITION of
+      origin CHAPEAU on the lead plus one OWN LIST with no children
+      compiles VALID with five LIST_ELEMENTs cut at the semicolons
+      (LIST_ELEMENTS_FROM_WORDS, SEMICOLONS, (205)'s cutter) and a
+      statement that is the limb's words alone; the dividends
+      restriction with "provided that Parent may make (A) ... and (B)
+      ..." as an EXCEPTION component compiles VALID, no
+      REPRESENTATION_EXCEPTION_NOT_A_FACT (the work package 20 (d) rule
+      reads representations only) and no fused-limb note; the lead's
+      consent standard, time window and sources of exception compile as
+      three VALID facts citing the lead alone, and the Tax limb's fact
+      cites the very consent words the standard's fact states (the
+      evidence spans are one per quote, so the two share an id); two
+      limbs under one lead keep occurrences of their own. No code change
+      was needed below the instruction. (2) Placement: (207) stands, no
+      extraction change. lib/product/table-view.js articleQualifications
+      (its party rule the General Exceptions row's, now
+      articleIntroductionParties) hands each representation table its
+      article's valid REPRESENTATION_QUALIFICATION facts from the
+      introduction node as article_qualifications (fact, article, the
+      fact's statement, or its OWN words when none), and
+      components/product/ProvisionTables.jsx renders them above that
+      table in the page's quiet style ("Article III introduction,
+      qualifying every representation below: " then the words, which
+      open the fact in the sidebar), nothing when the article has none;
+      the General Exceptions row keeps its coded reading. Built in the
+      table view rather than in provisions-preview.js, so every page
+      that renders the tables shows the lines (the lawyer preview under
+      /review/product/[id]/provisions, the page (232) names; the query
+      page) and the preview module stays the read-only join it is.
+      Pinned in tests/product-provisions-preview.test.js on NCS's
+      III-INTRO and IV-INTRO words: one block per representation table,
+      before the table and under its own section heading, the parent's
+      introduction on the parent table, a held or STATUS_REPRESENTATION
+      introduction fact not shown, no block without an introduction.
+      (3) This finding; docs/core/CODEBASE-GUIDE.md. Against the stored
+      Opus run, which repeats the qualifiers per section and splits the
+      Tax covenant, the new rules read as (232) says: two unmatched per
+      representation section and one bundled Tax fact, expected, not
+      losses. npm run test:active on the commit: 872 tests, 871 pass, the one failure
+      the known Codex-client final-message test.
       (120) 2026-10-18 19:10 to 19:45 UTC (implementer C), Q5: the limb
       names harvested. `scripts/product/harvest-rep-limbs.js` (library
       `lib/product/rep-limb-harvest.js`, `tests/product-rep-limb-harvest.test.js`)

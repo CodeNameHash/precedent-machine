@@ -438,6 +438,27 @@ const DEFINED_TERMS_KEY = 'defined-terms';
 // an icon at the left, the title at 19px medium in the tint's darker
 // colour and a chevron at the far right; still the button that collapses
 // the section (the chevron turns when it is collapsed).
+// Work package 26 (plan finding (232), 2026-10-22). Ben, on the placement
+// of the representation qualifiers: "Option a on placement": the article's
+// REPRESENTATION_QUALIFICATION facts are extracted once, on the
+// introduction node ((207)), and the page joins them above each
+// representation section's table by code (lib/product/table-view.js
+// articleQualifications), in the page's quiet style, only when the
+// introduction has them; each line's words open the fact in the sidebar.
+function ArticleQualifications({ entries, tableKey, onSelect }) {
+  if (!entries || entries.length === 0) return null;
+  return (
+    <div className="mb-[7px] space-y-[2px] text-[9.5px] font-ui text-[#6b6b6b]" data-testid="article-qualifications" data-table-key={tableKey}>
+      {entries.map((entry) => (
+        <p key={entry.fact_id} data-testid="article-qualification">
+          {`${entry.article ? `Article ${entry.article}` : 'The article'} introduction, qualifying every representation below: `}
+          <button type="button" data-testid="article-qualification-words" onClick={() => onSelect({ tableKey, rowIndex: null, subIndex: null, columnId: null, componentId: null, componentIds: [], factId: entry.fact_id })} className="text-left text-[#1f1f1f] underline-offset-2 hover:underline">{entry.text}</button>
+        </p>
+      ))}
+    </div>
+  );
+}
+
 function SectionIcon({ tint }) {
   return tint === 'blue' ? (
     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -775,6 +796,7 @@ export default function ProvisionTables({
                   <div className="space-y-[18.5px]">
                     {section.tables.map((table) => (
                       <div key={table.table_key}>
+                        <ArticleQualifications entries={table.article_qualifications} tableKey={table.table_key} onSelect={setSelection} />
                         <Table table={table} selection={selection} onSelect={setSelection} initialSubRowsOpen={initialSubRowsOpen} />
                         {table.other_provisions?.length ? (
                           <OtherProvisions groups={table.other_provisions} tableKey={table.table_key} onSelect={setSelection} label={table.other_provisions_label || 'Other provisions'} />

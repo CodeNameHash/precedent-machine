@@ -279,3 +279,94 @@ test('an out-of-scope exhibit is one quiet line under the title, and absent when
   assert.doesNotMatch(quiet, /preview-out-of-scope/);
   assert.deepEqual(previewFactsFromWorkspace(workspace()).out_of_scope, []);
 });
+
+// Work package 26 (plan finding (232), 2026-10-22). Ben, on the three
+// placements of the representation qualifiers put to him: "Option a on
+// placement": the article's REPRESENTATION_QUALIFICATION facts are
+// extracted once, on the introduction node ((207), one voice there), and
+// the page shows them above each representation section's table, joined by
+// code (lib/product/table-view.js articleQualifications, rendered by
+// components/product/ProvisionTables.jsx) in the page's quiet style, only
+// when the introduction has them. The words are NCS's (run 51577c57,
+// III-INTRO and IV-INTRO).
+const III_WORDS = 'Except as set forth in the disclosure letter delivered by the Company to Parent immediately prior to or simultaneously with the execution of this Agreement (the Company Disclosure Letter), the Company represents and warrants to Parent and Merger Sub as follows.';
+const IV_WORDS = 'Every representation and warranty made by Parent and Merger Sub to the Company in Article IV is given except as set forth in the disclosure letter delivered by Parent to the Company immediately prior to or simultaneously with the execution of this Agreement (the \u201cParent Disclosure Letter\u201d).';
+const COMPANY_ACTOR = 'the Company represents and warrants to Parent and Merger Sub as follows';
+const PARENT_ACTOR = 'Parent and Merger Sub represent and warrant to the Company';
+
+function introductionFact({ id, node, actor, exception, statement, subtype = 'REPRESENTATION_QUALIFICATION', status = 'VALID' }) {
+  return {
+    schema_version: 'PRODUCT_PROPOSAL/V1', proposal_id: id, structure_node_id: node, source_closure_id: `c-${node}`,
+    family_key: 'REPRESENTATIONS', subtype_key: subtype, fact_type: 'REPRESENTATION_ACCURACY_STANDARD',
+    statement, roles: {}, source_span_ids: [`s-${node}`], proposition_group_id: null, validation_status: status,
+    headline: { label: 'Representation qualification', distinguishing_component_ids: [`${id}-x`], summary: statement },
+    components: [
+      { component_id: `${id}-x`, kind: 'EXCEPTION', label: 'Disclosure Letter exception', text: exception, source_span_id: `s-${node}`, start_byte: 0, end_byte: exception.length, origin: 'OWN', gap_before: false, children: [] },
+      { component_id: `${id}-a`, kind: 'ACTOR', label: 'Representing party', text: actor, source_span_id: `s-${node}`, start_byte: exception.length + 2, end_byte: exception.length + 2 + actor.length, origin: 'OWN', gap_before: false, children: [] },
+    ],
+  };
+}
+
+function withIntroductions(ws, { company = true, parent = true, extra = [] } = {}) {
+  const nodes = [
+    ...(company ? [{ node_id: 'node-iii-intro', reference: 'III-INTRO', authored_order: 0 }] : []),
+    ...(parent ? [{ node_id: 'node-iv-intro', reference: 'IV-INTRO', authored_order: 1 }] : []),
+  ];
+  for (const node of nodes) {
+    ws.analysis.agreement_structure.nodes.unshift(node);
+    ws.analysis.sections.unshift({ structure_node_id: node.node_id, section_reference: node.reference });
+    ws.analysis.source_closures.push({ source_closure_id: `c-${node.node_id}`, structure_node_id: node.node_id, section_reference: node.reference, full_section_span_id: `s-${node.node_id}` });
+    const text = node.reference === 'III-INTRO' ? III_WORDS : IV_WORDS;
+    ws.analysis.spans.push({ span_id: `s-${node.node_id}`, kind: 'CHAPEAU', structure_node_id: node.node_id, start_byte: 0, end_byte: text.length, exact_text: text });
+  }
+  if (company) ws.analysis.proposals.push(introductionFact({ id: 'p-iii-letter', node: 'node-iii-intro', actor: COMPANY_ACTOR, exception: 'Except as set forth in the disclosure letter delivered by the Company to Parent immediately prior to or simultaneously with the execution of this Agreement (the Company Disclosure Letter)', statement: III_WORDS }));
+  if (parent) ws.analysis.proposals.push(introductionFact({ id: 'p-iv-letter', node: 'node-iv-intro', actor: PARENT_ACTOR, exception: 'except as set forth in the disclosure letter delivered by Parent to the Company immediately prior to or simultaneously with the execution of this Agreement (the \u201cParent Disclosure Letter\u201d)', statement: IV_WORDS }));
+  for (const fact of extra) ws.analysis.proposals.push(fact);
+  return ws;
+}
+
+const unescapeHtml = (text) => text.replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&amp;/g, '&');
+
+test('the article\'s qualification facts sit above each representation section\'s table, in the quiet style, only when the introduction has them', () => {
+  const tableShapes = require('../contracts/product/table-shapes.v3.json');
+  const { articleQualifications } = require('../lib/product/table-view');
+  const ws = withIntroductions(workspace(), { extra: [
+    // A held qualification and an introduction fact of another subtype are
+    // not shown (the held one is not a fact of the page; the other is held
+    // at extraction, INTRO_NOT_QUALIFICATION, and would be a generation 6
+    // leftover).
+    introductionFact({ id: 'p-iii-held', node: 'node-iii-intro', actor: COMPANY_ACTOR, exception: 'Except as set forth in any Company SEC Document', statement: 'Held words', status: 'INVALID' }),
+    introductionFact({ id: 'p-iii-status', node: 'node-iii-intro', actor: COMPANY_ACTOR, exception: 'Except as set forth in any Company SEC Document', statement: 'Status words', subtype: 'STATUS_REPRESENTATION' }),
+  ] });
+  const preview = previewFactsFromWorkspace(ws);
+  const byTable = articleQualifications(preview.facts, tableShapes);
+  assert.deepEqual([...byTable.entries()].map(([key, entries]) => [key, entries.map((entry) => [entry.fact_id, entry.section_reference, entry.article, entry.text])]), [
+    ['representations-qualifiers-table', [['p-iii-letter', 'III-INTRO', 'III', III_WORDS]]],
+    ['parent-representations-qualifiers-table', [['p-iv-letter', 'IV-INTRO', 'IV', IV_WORDS]]],
+  ]);
+
+  const html = renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: ws, runId: 'run-1' }));
+  const blocks = [...html.matchAll(/<div class="mb-\[7px\] space-y-\[2px\] text-\[9\.5px\] font-ui text-\[#6b6b6b\]" data-testid="article-qualifications" data-table-key="([^"]+)">(.*?)<\/div>/g)];
+  assert.deepEqual(blocks.map((match) => match[1]), ['representations-qualifiers-table', 'parent-representations-qualifiers-table']);
+  const lines = blocks.map((match) => [...match[2].matchAll(/<p data-testid="article-qualification">([^<]*)<button type="button" data-testid="article-qualification-words"[^>]*>([^<]*)<\/button><\/p>/g)].map((line) => [unescapeHtml(line[1]), unescapeHtml(line[2])]));
+  assert.deepEqual(lines, [
+    [['Article III introduction, qualifying every representation below: ', III_WORDS]],
+    [['Article IV introduction, qualifying every representation below: ', IV_WORDS]],
+  ]);
+  // Above the table of its section, under the section heading; the General
+  // Exceptions row the same facts fill is still there.
+  for (const key of ['representations-qualifiers-table', 'parent-representations-qualifiers-table']) {
+    const block = html.indexOf(`data-testid="article-qualifications" data-table-key="${key}"`);
+    const table = html.indexOf(`data-testid="provision-table" data-table-key="${key}"`);
+    assert.ok(block > 0 && table > block, `${key}: the lines come before the table`);
+    assert.ok(html.lastIndexOf('data-testid="section-heading"', block) > html.lastIndexOf('data-testid="provision-table"', block), `${key}: the lines sit under their own section heading`);
+  }
+  assert.match(html, /General Exceptions/);
+  assert.doesNotMatch(html, /Held words|Status words/);
+
+  // Only the company's introduction: one block; no introduction: none.
+  const companyOnly = renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: withIntroductions(workspace(), { parent: false }), runId: 'run-1' }));
+  assert.deepEqual([...companyOnly.matchAll(/data-testid="article-qualifications" data-table-key="([^"]+)"/g)].map((match) => match[1]), ['representations-qualifiers-table']);
+  assert.doesNotMatch(renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: workspace(), runId: 'run-1' })), /article-qualification/);
+  assert.equal(articleQualifications(previewFactsFromWorkspace(workspace()).facts, tableShapes).size, 0);
+});

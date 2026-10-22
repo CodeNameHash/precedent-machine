@@ -1063,6 +1063,15 @@ test('the extraction request names the representation qualification facts and th
   };
   const both = await requestFor(representationNode, ['REPRESENTATIONS', 'CONSIDERATION']);
   assert.match(both.component_instruction, /return one REPRESENTATION_QUALIFICATION proposal per source of exception as a fact of this section, its components the introduction's words with origin INTRO/);
+  // Work package 26 (finding (232)): Ben's three fact shapes in the
+  // instruction on every section. "Yep, don't think you even need to say
+  // parent consent as that is up too in intro no?"; "A on dividend point";
+  // "Option a on placement".
+  assert.match(both.instruction, /A list of objects under one operative verb inside one lettered or numbered limb \(a semicolon or comma list of prohibited actions, assets or persons under one "shall not"\) is one proposal, its objects one LIST with one LIST_ELEMENT per object, never one proposal per object; separate limbs stay separate proposals\./);
+  assert.match(both.instruction, /A proviso that only carves out from its covenant \("provided that Parent may make regular quarterly cash dividends" after a restriction on extraordinary dividends\) is an EXCEPTION component of that covenant's proposal and not a proposal of its own; a proviso that creates an obligation or right of its own is a proposal, linked to the covenant it follows\./);
+  assert.match(both.instruction, /The opening words' consent standard, time window and sources of exception are the opening words' own proposals, stated once; a limb's proposal states the limb's own action and cites the governing opening words as its inherited evidence \(an evidence quote, or a CHAPEAU or INTRO component\) without restating them in its statement\./);
+  assert.doesNotMatch(both.instruction, /Repeat a parent or chapeau qualification/);
+  assert.match(both.scope_instruction, /Cite those exact words as well as the local limb\. Those opening words are the limb's evidence, not its statement: do not restate them in the limb's statement, and emit the consent standard, time window and sources of exception they state once, as the opening words' own proposals\./);
   assert.equal(both.article_introduction_instruction, undefined, 'a representation section is not an introduction');
   // Work package 25 (finding (207)): the article introduction node hears
   // one voice, its own instruction; the per-family reminder that asks for
@@ -1298,7 +1307,7 @@ test('the bare clause numbers resolve as the clause form; a LIST with words and 
 // Work package 20 (implementer B's defects (5) to (7) and rule, finding
 // (105); the manager's (168); 2026-10-18). The fixtures below are cut from
 // the NCS filing as stored for generation 5.
-function wp20Compile({ canonical, reference, contextSpans = [], proposals, sectionText = canonical, answer = {} }) {
+function wp20Compile({ canonical, reference, contextSpans = [], proposals, sectionText = canonical, answer = {}, routedFamilies = ['REPRESENTATIONS'], base = {} }) {
   const sectionNode = 'w'.repeat(64);
   const sectionStart = bytes(canonical) - bytes(sectionText);
   const full = { span_id: 'x'.repeat(64), kind: 'FULL_SECTION', structure_node_id: sectionNode, start_byte: sectionStart, end_byte: bytes(canonical), exact_text: sectionText };
@@ -1314,6 +1323,7 @@ function wp20Compile({ canonical, reference, contextSpans = [], proposals, secti
       roles: { LEGAL_ACTOR_OR_SUBJECT: 'the Company', LEGAL_OPERATION: 'represents and warrants', OPERATIVE_OBJECT: 'the matter' },
       value: null,
       headline: { label: 'Representation', distinguishing_refs: [proposal.components[0].ref], summary: 'The Company represents the matter stated in the section' },
+      ...base,
       ...proposal,
     };
     // A key given as undefined is a key the model left out.
@@ -1326,7 +1336,7 @@ function wp20Compile({ canonical, reference, contextSpans = [], proposals, secti
     links: [],
     ...answer,
   };
-  const result = compileExtraction({ sourceDocument: doc, legalSchema: legalSchemaV2, node: { node_id: sectionNode, reference, kind: 'SECTION' }, closure, call, response: body, routedFamilies: ['REPRESENTATIONS'], ownedNodeIds: new Set([sectionNode]) });
+  const result = compileExtraction({ sourceDocument: doc, legalSchema: legalSchemaV2, node: { node_id: sectionNode, reference, kind: 'SECTION' }, closure, call, response: body, routedFamilies, ownedNodeIds: new Set([sectionNode]) });
   return { ...result, full, doc };
 }
 function* walkComponents(list) { for (const component of list || []) { yield component; yield* walkComponents(component.children); } }
@@ -1783,4 +1793,107 @@ test('the stored 6.4 call compiles to the same facts from the full answer and fr
     });
     assert.ok(Buffer.byteLength(text, 'utf8') < Buffer.byteLength(JSON.stringify(fixture.answer), 'utf8') * 0.7, `${mode}: the answer is under 70 per cent of the full form`);
   }
+});
+
+// Work package 26 (plan finding (232), 2026-10-22): Ben's three fact shapes,
+// pinned on NCS 5.1's own words (tests/fixtures/product/conduct-of-business-
+// ncs-words.js). Shape 1, (a)(xi), the Tax covenant: a semicolon list of
+// five prohibited Tax actions under the opening words' one "shall not" is
+// one fact with LIST elements, and the limb's statement does not restate
+// the opening words' consent standard, which the limb cites as inherited
+// evidence. Ben: "Yep, don't think you even need to say parent consent as
+// that is up too in intro no?". Shape 2, (b)(i): the dividend proviso is
+// the restriction's EXCEPTION component, one fact. Ben: "A on dividend
+// point". The opening words' consent standard, time window and sources of
+// exception are their own facts, stated once on the lead's span. Nothing in
+// the normaliser or the validators holds any of these shapes: the list is
+// cut at its semicolons when the model gives no elements, the proviso's
+// words sit in an EXCEPTION component (the representation rule of work
+// package 20 (d) does not reach a covenant), the chapeau-origin components
+// carry their origin node, two limbs under one lead collide on the
+// occurrence key and are re-keyed apart, and the statement that omits the
+// chapeau is kept as written.
+test('5.1: the Tax covenant is one fact with five LIST elements, the dividend proviso an EXCEPTION of its restriction, and the opening words\' standards are stated once and cited, not restated, by the limbs', () => {
+  const words = require('./fixtures/product/conduct-of-business-ncs-words');
+  const canonical = words.canonical();
+  const sectionNode = 'w'.repeat(64);
+  const offset = (text) => { const at = canonical.indexOf(text); assert.ok(at >= 0, text.slice(0, 40)); return bytes(canonical.slice(0, at)); };
+  const leadA = `(a) ${words.LEAD_A}`;
+  const leadB = `(b) ${words.LEAD_B}`;
+  const chapeauA = { span_id: 'a'.repeat(64), kind: 'CHAPEAU', structure_node_id: sectionNode, start_byte: offset(leadA), end_byte: offset(leadA) + bytes(leadA), exact_text: leadA };
+  const chapeauB = { span_id: 'b'.repeat(64), kind: 'CHAPEAU', structure_node_id: sectionNode, start_byte: offset(leadB), end_byte: offset(leadB) + bytes(leadB), exact_text: leadB };
+  const fullId = 'x'.repeat(64);
+  const own = wp20Own(fullId);
+  const inherited = (span) => (ref, kind, label, quote) => ({ ref, kind, label, quote, source_span_id: span.span_id, occurrence: 0, origin: 'CHAPEAU', children: [] });
+  const onA = inherited(chapeauA);
+  const onB = inherited(chapeauB);
+  const openingA = (ref, kind, label, quote) => ({ ref, kind, label, quote, source_span_id: chapeauA.span_id, occurrence: 0, origin: 'OWN', children: [] });
+  const companyActor = 'the Company shall not, and shall not permit any of its Subsidiaries to';
+  const companyConsent = 'without Parent\u2019s prior written consent (such consent not to be unreasonably withheld, conditioned or delayed)';
+  const window = 'during the period from the date of this Agreement to the earlier of the Effective Time or the date this Agreement is terminated in accordance with Article VII';
+  const sources = 'except as set forth in Section 5.1(a) of the Company Disclosure Letter or as specifically required or permitted by this Agreement or required by applicable Law';
+  const tax = words.TAX_XI.replace(/;$/, '');
+  const parentActor = 'Parent shall not, and shall not permit any of its Subsidiaries to';
+  const restriction = 'declare, set aside or pay any extraordinary dividends or distributions in respect of, any of its capital stock';
+  const proviso = words.DIVIDENDS_I.slice(words.DIVIDENDS_I.indexOf('provided that')).replace(/;$/, '');
+  const articles = words.ARTICLES_II.replace(/;$/, '');
+  for (const quote of [companyActor, companyConsent, window, sources]) assert.ok(leadA.includes(quote), quote.slice(0, 30));
+  const evidence = (components) => components.map((component) => ({ quote: component.quote, source_span_id: component.source_span_id, occurrence: 0 }));
+  const covenant = (statement, components, extra = {}) => ({ statement, evidence_quotes: evidence(components), components, ...extra });
+  const result = wp20Compile({
+    canonical, reference: '5.1', contextSpans: [chapeauA, chapeauB], routedFamilies: ['INTERIM_OPERATING'],
+    base: { family_key: 'INTERIM_OPERATING', subtype_key: 'RESTRICTIVE_COVENANT', fact_type: 'IOC_RESTRICTION_PRESENT', roles: { LEGAL_ACTOR_OR_SUBJECT: 'the Company and its Subsidiaries', LEGAL_OPERATION: 'shall not', OPERATIVE_OBJECT: 'the restricted actions' } },
+    proposals: [
+      // Shape 1: the Tax covenant, its five actions one LIST the code cuts at
+      // the semicolons; the opening words cited, not restated.
+      covenant(tax, [onA('c1', 'ACTOR', 'Company and its Subsidiaries', companyActor), onA('c2', 'CONDITION', 'Parent consent standard', companyConsent), own('c3', 'LIST', 'Restricted Tax actions', tax)]),
+      // Shape 2: the restriction with its proviso as an EXCEPTION component.
+      covenant(words.DIVIDENDS_I.replace(/;$/, ''), [onB('c1', 'ACTOR', 'Parent and its Subsidiaries', parentActor), own('c2', 'OPERATION', 'Extraordinary dividends restriction', restriction), own('c3', 'EXCEPTION', 'Permitted regular quarterly dividends', proviso)]),
+      // A sibling limb under the same lead: the same spans, its own words.
+      covenant(articles, [onB('c1', 'ACTOR', 'Parent and its Subsidiaries', parentActor), own('c2', 'OPERATION', 'Charter amendments', articles)]),
+      // The opening words' own facts, stated once on the lead's span.
+      covenant(companyConsent, [openingA('c1', 'STANDARD', 'Parent consent standard', companyConsent)], { subtype_key: 'CONSENT_STANDARD' }),
+      covenant(window, [openingA('c1', 'TRIGGER', 'Interim period', window)]),
+      covenant(sources, [openingA('c1', 'EXCEPTION', 'Sources of exception', sources)], { subtype_key: 'EXCEPTION' }),
+    ],
+  });
+  const [taxFact, dividends, charter, consent, period, exceptions] = result.proposals;
+  for (const fact of result.proposals) assert.equal(fact.validation_status, 'VALID', `${fact.client_ref}: ${issueLines(result)}`);
+  // Shape 1.
+  const list = taxFact.components[2];
+  assert.equal(list.kind, 'LIST');
+  assert.deepEqual(list.children.map((child) => [child.kind, child.text]), [
+    ['LIST_ELEMENT', 'settle or compromise any material liability for Taxes'],
+    ['LIST_ELEMENT', 'file any material amended Tax Return or material claim for Tax refund'],
+    ['LIST_ELEMENT', 'make, other than in the ordinary course of business, or revoke or modify any material Tax election'],
+    ['LIST_ELEMENT', 'consent to any extension or waiver of the limitation period applicable to any claim or assessment in respect of a material amount of Taxes'],
+    ['LIST_ELEMENT', 'change any material method of accounting for Tax purposes'],
+  ]);
+  assert.deepEqual(result.issues.filter((issue) => issue.code === 'LIST_ELEMENTS_FROM_WORDS').map((issue) => JSON.parse(issue.message)), [{ client_ref: 'p1', lists: [{ path: '2', elements: 5, split: 'SEMICOLONS' }] }]);
+  assert.equal(taxFact.statement, tax, 'the statement is the limb\'s words');
+  assert.doesNotMatch(taxFact.statement, /prior written consent|shall not/, 'the opening words are not restated');
+  assert.deepEqual(taxFact.components.slice(0, 2).map((component) => [component.kind, component.origin, component.origin_structure_node_id, component.start_byte >= chapeauA.start_byte && component.end_byte <= chapeauA.end_byte]), [
+    ['ACTOR', 'CHAPEAU', sectionNode, true], ['CONDITION', 'CHAPEAU', sectionNode, true],
+  ], 'the opening words are the limb\'s inherited evidence, placed in the lead paragraph');
+  assert.ok(list.start_byte > chapeauA.end_byte, 'the list is the limb\'s own words, after the lead');
+  // The evidence spans are one per quote: the limb's fact cites the very
+  // consent-standard words the lead's own fact states once.
+  const spanById = new Map(result.spans.map((span) => [span.span_id, span]));
+  const within = (id, span) => spanById.has(id) && spanById.get(id).start_byte >= span.start_byte && spanById.get(id).end_byte <= span.end_byte;
+  assert.ok(taxFact.source_span_ids.includes(consent.source_span_ids[0]), 'the limb cites the words the consent-standard fact states');
+  assert.equal(taxFact.source_span_ids.filter((id) => within(id, chapeauA)).length, 2, 'two quotes from the lead');
+  assert.equal(taxFact.source_span_ids.filter((id) => !within(id, chapeauA)).length, 1, 'one quote of the limb\'s own');
+  // Shape 2.
+  assert.deepEqual(dividends.components.map((component) => [component.kind, component.origin]), [['ACTOR', 'CHAPEAU'], ['OPERATION', 'OWN'], ['EXCEPTION', 'OWN']]);
+  assert.equal(dividends.components[2].text, proviso);
+  assert.equal(result.issues.filter((issue) => ['REPRESENTATION_EXCEPTION_NOT_A_FACT', 'FUSED_REPRESENTATION_LIMBS', 'DUPLICATE_FACT_OCCURRENCE'].includes(issue.code)).length, 0, issueLines(result));
+  // Two limbs under one lead cite the same opening words and keep
+  // occurrences of their own.
+  assert.notEqual(dividends.fact_occurrence_id, charter.fact_occurrence_id);
+  const shared = dividends.source_span_ids.filter((id) => charter.source_span_ids.includes(id));
+  assert.equal(shared.length, 1);
+  assert.ok(within(shared[0], chapeauB), 'the shared quote is the lead\'s');
+  // The opening words' own facts cite the lead alone.
+  for (const fact of [consent, period, exceptions]) assert.ok(fact.source_span_ids.length === 1 && within(fact.source_span_ids[0], chapeauA), `${fact.client_ref} cites the lead alone`);
+  assert.deepEqual([consent, period, exceptions].map((fact) => fact.subtype_key), ['CONSENT_STANDARD', 'RESTRICTIVE_COVENANT', 'EXCEPTION']);
 });
