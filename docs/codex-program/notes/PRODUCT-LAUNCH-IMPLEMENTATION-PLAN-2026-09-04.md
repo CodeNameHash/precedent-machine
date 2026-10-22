@@ -9922,6 +9922,60 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       and the job log's call count does. No code in this push. npm run
       test:active: 859 tests, 858 pass, the one known failure.
 
+      (199c) 2026-10-22 06:35 to 07:30 UTC (implementer E), work package
+      E10 from the guard's check rows (pm-ablation-20261022T053736Z,
+      the manager's reading at 06:32 UTC: every row "attempts": 1; the
+      derived rung's III-INTRO two facts written and held, 3.7 none of
+      five, 5.1 47 / 3 / 16; the plain rung whole on the introductions
+      and 3.7 and 63 / 3 / 0 on 5.1; the merged rung III-INTRO 0 of 3).
+      Nothing run. (a) The derived sentence's second clause is gone
+      ("put every operative word in the components"); the first stays.
+      The held III-INTRO facts are (199b)'s reading (b): written, and
+      held or dropped on their components' words. (b) 5.1: with the
+      merged lever's part requests byte-identical to the plain mode's
+      ((199b)) and the plain rung at 63 / 3 / 0 once and 48 / 3 / 15
+      twice on those bytes, the loss is the model's own variance on the
+      part that covers the opening words, reading (c); the split and
+      the notes in the rows are the manager's to confirm, the sandbox
+      being out of this session's reach. Built behind its own flag,
+      `part_counts`: the part that covers the section's opening words
+      hears how many sentences they state ("The opening words state N
+      sentences of covenant, standard or exception; emit a proposal for
+      each legal effect of each of them, never fewer than the sentences
+      that state one"; `sentenceCount`, a page-footer number between two
+      words not a boundary), and every part carries `part_fact_budget`
+      from its own bytes (`factBudgetFor`, the part named) with the
+      check-not-target sentence and "treat an answer well under it as a
+      sign that limbs were skipped". (c) Behind `introduction_counts`:
+      an article introduction routed to REPRESENTATIONS also hears
+      INTRODUCTION_COUNT_INSTRUCTION, one REPRESENTATION_QUALIFICATION
+      proposal per source of exception named, returned although no
+      numbered representation is in the section, each citing its
+      exception's words. Rung `counts_sonnet55` carries both flags on
+      Ben's tier (the default words otherwise), so the next job can
+      measure them against anchors_sonnet55 on the eight sections. (d)
+      The guard and a held-whole answer: the uncited-words signal
+      cannot see a part whose every written fact is held, since held
+      facts cite their words; for the review the outcome is the same as
+      an empty part, so the retry should see it, with a distinction the
+      hold reasons make: a hold on the model's own words (anchors or
+      offsets unresolved, a span-less component dropped by (198), a
+      missing span) is a slip a second attempt can mend and belongs to
+      the guard; a hold the validator's rules make on correct words (a
+      cross-reference that does not resolve, a role missing, a
+      qualification subtype rule) would recur and belongs to the
+      validator alone. Not built here: the guard runs before the
+      compiler and the hold reasons are known after it, so the signal
+      needs the compile result handed back to the guard; proposed as
+      the guard's fourth signal, "every written fact held on the
+      model's own words", for the next package. Tests:
+      tests/product-fresh-sheet-experiments.test.js (the derived
+      sentence's clauses; part_counts on Concho 6.3 split, the
+      opening-words part's sentence count and every part's budget,
+      absent without the flag; introduction_counts on Concho III-INTRO,
+      absent without the flag; the rung). npm run test:active: 860
+      tests, 859 pass, the one known failure.
+
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
 - [x] Take a database backup and restore it to a separate environment.
