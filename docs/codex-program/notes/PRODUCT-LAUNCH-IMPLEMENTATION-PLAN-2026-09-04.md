@@ -5814,6 +5814,32 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       representation section and one bundled Tax fact: expected, not
       losses. Order: work package 26 lands; the eight-section check
       and the 5.1 jobs run once on it; then Olaplex resumes ((231)).
+      (233) 2026-10-22 17:35 to 17:50 UTC (the manager): E15 and work
+      package 26 merged at 401c0350 (tests 88 of 88 here, both
+      branches; the sandbox at 401c035). The re-score run again over
+      the eight job dirs: the rebuilt baseline now equals the recorded
+      matched / partial / unmatched on every row (eleven rows differ
+      only in the "new" count, by one to seven, the live facts no
+      stored fact covers; E to say why in (199h), no decision rests on
+      it), and the new rule (the chapeau exclusion, no exclusive
+      assignment, BUNDLED flagged and counted) leaves every matched /
+      partial / unmatched count where the recorded row had it: "rows
+      that change: none" on every row. So (227) and (228) hold as
+      read. What the re-score adds is the bundling: 5.1 carries 5 to
+      45 bundled stored facts of 66 by rung and roll (the default
+      34 of 60 matched on 140617Z), 3.7 all 5 (one live fact), 3.1 5
+      to 8, 4.1 2 to 3, III-INTRO 2; 8.3 and IV-INTRO none. Read: the
+      live Sonnet rung writes one fact where the stored Opus run wrote
+      several, most of all on 5.1's lists, which is the shape Ben
+      chose in (232) for a list under one verb; the stored baseline
+      is the older cut, so bundling against it is expected where a
+      list is the reason and a defect where a limb's distinct duties
+      were merged. The next baseline (Olaplex's own run and NCS
+      re-extracted on the new instruction, when Ben asks) carries the
+      new cut. The eight-section check on work package 26's
+      instruction is pm-ablation-20261022T173641Z (default_sonnet55,
+      loops 2), fired 17:36 UTC; its reading, then the Olaplex resume
+      proposal ((231)). The two deals paused; no intake ((172)).
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
