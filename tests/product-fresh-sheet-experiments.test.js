@@ -382,7 +382,7 @@ test('the derived sentence keeps its first clause and loses the second; part_cou
     assert.equal(request.part_fact_budget.part, request.source_closure.extraction_part.part);
     assert.match(request.part_count_instruction, /part_fact_budget says how many facts a part of this size usually yields/);
   }
-  const plainLayout = await requestsFor('5.1', REQUEST_PROFILES.DEFAULT, { longSectionSplit: { min_section_bytes: 1000, min_children: 3, group_bytes: 1500 }, source: conductOfBusinessSource, routeTo: ['INTERIM_OPERATING'] });
+  const plainLayout = await requestsFor('5.1', { ...REQUEST_PROFILES.DEFAULT, part_counts: false }, { longSectionSplit: { min_section_bytes: 1000, min_children: 3, group_bytes: 1500 }, source: conductOfBusinessSource, routeTo: ['INTERIM_OPERATING'] });
   assert.ok(plainLayout.every((request) => request.part_fact_budget === undefined && !/numbered sub-limb/.test(request.part_instruction)));
   for (const request of parts) {
     assert.equal(request.part_fact_budget.part, request.source_closure.extraction_part.part);
@@ -390,7 +390,7 @@ test('the derived sentence keeps its first clause and loses the second; part_cou
     assert.ok(request.part_fact_budget.operative_bytes > 0);
     assert.match(request.part_count_instruction, /part_fact_budget says how many facts a part of this size usually yields/);
   }
-  const plainParts = await requestsFor('6.3', REQUEST_PROFILES.DEFAULT, { longSectionSplit: split });
+  const plainParts = await requestsFor('6.3', { ...REQUEST_PROFILES.DEFAULT, part_counts: false }, { longSectionSplit: split });
   assert.ok(plainParts.every((request) => request.part_fact_budget === undefined && request.part_count_instruction === undefined));
   assert.doesNotMatch(plainParts.find((request) => request.source_closure.extraction_part.covers_chapeau).part_instruction, /The opening words state/);
   // The introduction to the representations article: the count sentence under the flag, not without.

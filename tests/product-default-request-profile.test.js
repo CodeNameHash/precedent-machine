@@ -23,7 +23,9 @@ const schemaV2 = require('../contracts/product/legal-schema.v2.json');
 // advances under it.
 
 test('the default profile and configs: new runs take them on both providers, earlier runs keep theirs by identity, the environment can choose V9', () => {
-  assert.deepEqual(REQUEST_PROFILES.DEFAULT, { name: 'DEFAULT', response_format: 'V10', quote_mode: 'anchors', context_mode: 'inline', stable_blocks: 2, contracts_scope: 'all' });
+  // Plan finding (227): part_counts in the default on both providers.
+  assert.deepEqual(REQUEST_PROFILES.DEFAULT, { name: 'DEFAULT', response_format: 'V10', quote_mode: 'anchors', context_mode: 'inline', stable_blocks: 2, contracts_scope: 'all', part_counts: true });
+  assert.equal(REQUEST_PROFILES.DEFAULT_CLI.part_counts, true);
   assert.equal(requestProfileNameForEnvironment({}), 'DEFAULT');
   assert.equal(requestProfileNameForEnvironment({ PRODUCT_REQUEST_PROFILE: 'v9' }), 'V9');
   assert.equal(requestProfileNameForEnvironment({ PRODUCT_REQUEST_PROFILE: 'V9', PRODUCT_ANTHROPIC_API_PROFILE: 'LEAN' }, ANTHROPIC_API_PROVIDER_ID), 'LEAN');

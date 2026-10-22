@@ -5623,6 +5623,48 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       the three 5.1 jobs again on both rungs. Not changed: the Sonnet
       default; the two deals paused ((175)); no intake ((172)); Ben's
       three answers pending.
+      (227) 2026-10-22 11:38 to 12:55 UTC (the manager): E12 merged at
+      ebe5dc08 ((199e): the opening-words count on the limb's lead, no
+      part of a heading alone, a thin retry of the thin part only; the
+      changed test files 33 of 33 here), the sandbox at ebe5dc0, and the
+      three 5.1 variance jobs again (pm-ablation-20261022T113757Z,
+      115652Z, 121703Z; the plain rung anchors_sonnet55 and
+      counts_sonnet55, two at once, 5.1's 66 stored facts). The layout
+      on both rungs is now three parts (limb (a) with the heading
+      chapeau folded in, 13,132 bytes, part 1; (b) 1,772; (c) 416), no
+      heading-only call, no retry on any job ("attempts": 1 on all six
+      rows). Rows: plain 63 / 3 / 0, 53 / 6 / 7, 59 / 7 / 0; counts 63 /
+      3 / 0, 61 / 5 / 0, 63 / 3 / 0. List prices (the CLI, cache split
+      as reported): plain $2.90, $1.58, $1.57; counts $2.85, $1.25,
+      $1.46. Against (226)'s six (plain 48 / 1 / 17, 49 / 2 / 15, 47 / 4
+      / 15 with the heading part and limb (a) last; counts 60, 60, 58 as
+      forced second rolls at twice the cost): the layout fix alone
+      lifts the plain rung to 53 to 63 (limb (a) now runs first, with
+      the heading), and the count line holds what the plain rung still
+      drops once in three (job 5's seven unmatched: the consent
+      standards and the exceptions of (a) and (b), the words the limb's
+      sentence count names). The partials left on every roll are the
+      same two stored facts, the Tax covenant and Parent's extraordinary
+      dividends, each written whole where the stored run split them
+      (not a count matter; read with the next partial list). Decision:
+      part_counts enters the default on both providers
+      (lib/product/product-model-config.js, DEFAULT and DEFAULT_CLI,
+      pinned in tests/product-default-request-profile.test.js; the
+      tests' plain controls now say part_counts: false). Not in the
+      default: introduction_counts, untested on an introduction since
+      A's (207) (one voice on the introduction node). Runs in flight
+      keep their config identity and take the count line on the
+      sections still to extract: the same words sent plus one
+      instruction sentence per part. Work package E13 (E): (a) a
+      default_sonnet55 rung that is REQUEST_PROFILES.DEFAULT as it
+      stands, so a default change flows into the ladder without a new
+      rung; (b) the eight-section check (III-INTRO, IV-INTRO, 3.1, 3.2,
+      3.7, 4.1, 8.3, 5.1) on default_sonnet55 and counts_sonnet55, two
+      at once, which decides introduction_counts; (c) read the two
+      standing partials (Tax, extraordinary dividends) against the
+      stored facts and say whether the stored split or the live whole
+      is right, without a rule change. The two deals paused ((175)); no
+      intake ((172)); Ben's three answers pending.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is

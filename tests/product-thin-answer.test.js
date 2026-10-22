@@ -104,7 +104,7 @@ async function runConcho63({ factsByPart, longSectionSplit = null, outputTokens 
     const response = answerFor(input.request, { facts });
     return { provider_id: 'SYNTHETIC', model_id: 'THIN/V1', raw_request: input.request, raw_response: response, response, input_tokens: 10, output_tokens: typeof outputTokens === 'function' ? outputTokens(part) : outputTokens, cost_microusd: 0, duration_ms: 1 };
   } };
-  const result = await buildAgreementSectionDraft({ sourceDocument, agreementStructure, legalSchema: schemaV2, model, node, requestProfile: REQUEST_PROFILES.DEFAULT, longSectionSplit, thinAnswerGuard, attemptToken });
+  const result = await buildAgreementSectionDraft({ sourceDocument, agreementStructure, legalSchema: schemaV2, model, node, requestProfile: { ...REQUEST_PROFILES.DEFAULT, part_counts: false }, longSectionSplit, thinAnswerGuard, attemptToken });
   return { result, seen };
 }
 
@@ -208,7 +208,7 @@ test('under part_counts a chapeau that states covenants is a part of its own (5.
   assert.ok(!own.result.issues.some((issue) => issue.code === 'THIN_PART_ANSWER'));
   assert.ok(own.result.proposals.length >= 4 + 4, 'the chapeau\'s four sentences and one per limb');
   // Without the flag: the first part carries the chapeau and the limbs, as before.
-  const plain = await runLayout('5.3', { longSectionSplit: SPLIT_53, profile: REQUEST_PROFILES.DEFAULT });
+  const plain = await runLayout('5.3', { longSectionSplit: SPLIT_53, profile: { ...REQUEST_PROFILES.DEFAULT, part_counts: false } });
   const plainIssue = plain.result.issues.find((issue) => issue.code === 'LONG_SECTION_SPLIT');
   assert.ok(!plainIssue || JSON.parse(plainIssue.message).chapeau_own_part === undefined);
   // 5.1: the heading chapeau (32 bytes) is never a part of its own, whatever
