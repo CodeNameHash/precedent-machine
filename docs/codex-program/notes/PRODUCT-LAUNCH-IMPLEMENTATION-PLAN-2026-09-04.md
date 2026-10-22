@@ -10818,7 +10818,103 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       ablation.test.js 9, tests/product-ablation-wake.test.js 10);
       tests/product-cost-ablation.test.js is not in the test:active
       list (it runs under `npm test`'s glob), noted, not changed in
-      this push. SUITE_LINE
+      this push. npm run test:active: 871 tests, 870 pass, the one
+      known failure.
+      (199h) 2026-10-22 16:50 to 17:50 UTC (implementer E), work
+      package E15 ((230)): the matcher's second half withdrawn,
+      bundling reported, the re-score's baseline made the recorded
+      row; no extraction change, no run, no rule on fact shape; the
+      sandboxes, the deals and intake untouched; the Vercel MCP not
+      used. (a) `matchFacts` in lib/product/generation-comparison.js
+      no longer assigns exclusively: every stored fact keeps its best
+      live cover (the share on its bytes outside the section's chapeau
+      span when any remain, (199g); a tie by the live fact's own
+      covered bytes), and the stored facts whose counterpart is also
+      another stored fact's counterpart come back as `bundled`.
+      `compareFacts` (lib/product/cost-ablation.js) carries `bundled`
+      on each row and `bundled` in the counts, the ablation table
+      prints it beside the match ("5 / 0 / 0 of 5 (5 bundled)") on the
+      rows and the totals (`ablationTotals.bundled`), and
+      `compareGenerations` carries `bundled` on each pair and
+      `v1_bundled` in its totals. So 3.7's five stored facts under one
+      live fact read 5 / 0 / 0 of 5 (5 bundled), what they are; 5.1's
+      five affirmative covenants of limb (a)'s lead, written live as
+      one fact, MATCHED and bundled; and the Tax covenant, whose only
+      overlap with the equity-award fact was the chapeau, PARTIAL by
+      its own limb's words. On the old rule the same Tax row reads
+      MATCHED and bundled with the equity covenant, which is the false
+      match of (229) named for what it was: a bundle on shared chapeau
+      bytes.
+      (b) Why the earlier re-score's old-rule column did not reproduce
+      the recorded rows, read from the code (the job dirs are out of
+      this session's reach): the live comparison and the first script
+      derived the facts' bytes differently. The live comparison ranges
+      a stored fact from the snapshot's component rows (every depth,
+      OWN origin, bytes present) and a live fact from its compiled
+      components with no span map, so a VALID fact with no OWN
+      component carrying bytes has no bytes and matches nothing; the
+      first script read both sides from the analysis files through
+      `factRanges` with the section's span map, under which such a
+      fact takes its cited spans whole (its whole limb, or the chapeau
+      and limb spans a V1 fact cites), and matches everything in them,
+      which is more matches, as every disagreement the manager listed
+      was (64 / 2 / 0 against the recorded 60 / 2 / 4; 62 / 4 / 0
+      against 53 / 6 / 7). Two smaller differences beside it: the
+      stored analysis export attached a fact's children one level
+      deep, so a LIST's elements under a nested component were missing
+      from the analysis file (fixed: `componentTree`, every depth, in
+      `analysisFromStoredRows`), and the first script counted a live
+      proposal without a validation status as VALID where the live
+      comparison requires the status. Built so the question cannot
+      recur: `storedFactsForNode` is now the one derivation of a
+      section's stored facts and chapeau ranges, used by
+      `runSectionAblation` and by the re-score; the re-score reads the
+      job's ablation-rows.json (the launcher dumps it) for the stored
+      side and the variant's analysis file for the live side with the
+      compiled bytes and no fallback, and computes its baseline
+      through `compareFacts` with no chapeau ranges, the very function
+      and inputs that wrote the recorded row. It prints the recorded
+      counts, the rebuilt baseline, "NOT REPRODUCED" with the rows
+      that differ when they do not agree (from ablation.json's
+      comparison rows), the new rule's counts with the bundled count,
+      the rows that change, the bundled rows, and a `drift` note per
+      section naming the facts the analysis-file derivation treated
+      differently (stored or live facts without OWN byte components
+      and the span bytes they would have taken; stored facts whose
+      analysis-file tree carried other bytes than the snapshot rows;
+      live facts without a status). Which of these carried each job's
+      difference is in that note when the manager runs it; the code
+      says the fallback, and the note will say the facts.
+      (c) The command, on the sandbox at this head, from
+      /vercel/sandbox/pm-product: `node scripts/product/re-score-
+      ablation.js /vercel/sandbox/pm-ablation-20261022T070212Z
+      /vercel/sandbox/pm-ablation-20261022T090218Z /vercel/sandbox/pm-
+      ablation-20261022T093531Z /vercel/sandbox/pm-
+      ablation-20261022T100454Z /vercel/sandbox/pm-
+      ablation-20261022T113757Z /vercel/sandbox/pm-
+      ablation-20261022T115652Z /vercel/sandbox/pm-
+      ablation-20261022T121703Z /vercel/sandbox/pm-
+      ablation-20261022T140617Z --json /vercel/sandbox/re-
+      score-20261022b.json`. Read first whether any row says NOT
+      REPRODUCED; the rest is read only where the baseline is the
+      recorded row. The reading per job and rung (matched, bundled,
+      partial, unmatched; whether (227) and (228) hold) follows in
+      place once the table is pasted. Pinned in tests/product-rescore-
+      ablation.test.js (5): the helpers; matchFacts on the Tax and
+      equity shape with and without the chapeau (the old rule's
+      bundle), 3.7's five under one, the tie; compareFacts with the
+      five affirmative covenants bundled and counted, the old reading,
+      the table's bundled column on the row and the totals;
+      compareGenerations' pairs and totals with bundled; the script on
+      a job dir with the snapshot (the baseline equal to the recorded
+      row, the new column, the changed rows, the bundled rows, the
+      table), the drift note on span-only facts, the nested tree read
+      whole, a job dir without the snapshot, a recorded row the
+      baseline cannot reproduce said so, and --dump. The existing pins
+      updated for the bundled count (tests/product-cost-
+      ablation.test.js, tests/product-ablation-wake.test.js,
+      tests/product-generation-comparison.test.js). npm run
+      test:active: 871 tests, 870 pass, the one known failure.
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
 - [x] Take a database backup and restore it to a separate environment.
