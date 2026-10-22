@@ -9791,6 +9791,84 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       tests/product-lean-request-profile.test.js (the stats' keys). npm
       run test:active: 859 tests, 858 pass, the one known failure.
 
+      (199b) 2026-10-22 05:55 to 06:40 UTC (implementer E), read-only
+      on the manager's question ((223): where the thin answers on 5.1
+      and the article introductions come from under Sonnet in the
+      derived and merged modes, when the plain mode held 5.1 at 63 / 3
+      / 0). The recorded answers are the sandbox's; what this session
+      can do is build the requests the three rungs send and diff them,
+      which it did on Concho 6.3 split into four parts with the
+      ablation's own profile mapping for the CLI (profileForProvider:
+      the DEFAULT profile's all-families contracts become the routed
+      ones on the CLI, as anchors_sonnet55 sends). The result, every
+      key compared: on a split section the merged_residual_sonnet55
+      part requests are byte-identical to anchors_sonnet55's (the
+      residual folds into the extraction only when the section goes out
+      as one call; a split section keeps its residual call and its
+      extraction requests unchanged); the derived_statement_sonnet55
+      part requests differ by one sentence in scope_instruction ("Do not
+      return statement ... put every operative word in the components")
+      and the statement field absent from the response contract. On an
+      unsplit section the merged request adds residual_paragraphs, the
+      residual instruction and paragraph_dispositions to the contract.
+      So on 5.1 the prompt cannot be the cause for the merged lever,
+      and the same loss on both levers in both runs ((221) and (223):
+      50 / 1 / 15 of 66 four times, against one plain measurement of
+      63 / 3 / 0) is the shape of a deterministic difference, not of
+      the model's run-to-run variance in thinking. What differs
+      deterministically between the plain rung and both levers, by
+      the code: the variant's profile name (ANCHORS against DEFAULT,
+      which runSectionAblation maps to a different model config for
+      the live factory, ANTHROPIC_API_MODEL_CONFIG against the V3
+      default), and nothing in the request bytes. Three readings of
+      the 5.1 rows settle it, all in ablation.json: (1) the LONG_
+      SECTION_SPLIT issue's message on the plain row and the levers'
+      rows (parts, operative_spans_per_part, chapeau_in_part,
+      after_output_cap, resplit_parts): if the parts or the chapeau's
+      part differ, the split is the cause and the lost facts are the
+      chapeau's (the ordinary-course and efforts covenants, the consent
+      standards and the exceptions the manager named on Opus 5.5
+      medium are the section's opening words, which only the part that
+      "also covers the section's own opening words" is told to emit);
+      (2) the lean_note and issue_codes of the levers' 5.1 rows
+      (anchors_unresolved, statements_fallback, proposals_dropped,
+      INVALID_FACT_COMPONENTS): facts written and held or dropped
+      against facts never written; (3) the fifteen unmatched facts'
+      summaries against the chapeau sentences. For the introductions
+      (III-INTRO 3, IV-INTRO 2, lost whole on the derived rung and not
+      on the plain): the article_introduction_instruction is the same
+      on both (the routing is replayed), so the derived sentence is the
+      only difference in the request; the same two readings, (2) and
+      the issue codes, say whether the model wrote qualification facts
+      the normaliser dropped (a span-less component under "put every
+      operative word in the components" would have been dropped by
+      (198) with its ref in dropped_proposals) or wrote none. Proposed,
+      not built, in the order the evidence would support them: (a) if
+      the split differs, nothing in the prompt; the split's input is
+      the stored claim's error_history and the closure, both the same
+      for every rung, so the difference would be in how the two profile
+      names reach longSectionGroups, to be read in the rows first; (b)
+      if the introductions' facts were written and dropped, the derived
+      sentence's second clause goes ("put every operative word in the
+      components" pushes the model to component trees whose children
+      carry words without spans; the statement is derived from whatever
+      OWN words resolve, so the clause is not needed) and the first
+      clause stays; (c) if the facts were never written, the part
+      instruction for the part that covers the opening words gains the
+      count: "the opening words state N sentences of covenant and
+      standard; emit a proposal for each" where N is the chapeau's
+      sentence count, and the levers run with fact_budget: true so every
+      part carries its expected count from its bytes (the rung exists,
+      (185)); for an introduction, "an introduction that states
+      exceptions yields one REPRESENTATION_QUALIFICATION per source of
+      exception; return them although no numbered representation is in
+      this section", added to article_introduction_instruction. The
+      measured saving of the derived statement, 4 per cent of the
+      output in (223) after 12 and 17 in the two runs before, is inside
+      Sonnet's run-to-run variance; the merged residual's saving is the
+      residual calls, which the rows' extraction columns do not count
+      and the job log's call count does. No code in this push.
+
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
 - [x] Take a database backup and restore it to a separate environment.
