@@ -1063,6 +1063,17 @@ test('the extraction request names the representation qualification facts and th
   };
   const both = await requestFor(representationNode, ['REPRESENTATIONS', 'CONSIDERATION']);
   assert.match(both.component_instruction, /return one REPRESENTATION_QUALIFICATION proposal per source of exception as a fact of this section, its components the introduction's words with origin INTRO/);
+  assert.equal(both.article_introduction_instruction, undefined, 'a representation section is not an introduction');
+  // Work package 25 (finding (207)): the article introduction node hears
+  // one voice, its own instruction; the per-family reminder that asks for
+  // the same qualification facts is not appended there (III-INTRO and
+  // IV-INTRO held whole on DUPLICATE_FACT_OCCURRENCE when Sonnet answered
+  // both voices, 2026-10-22).
+  const introNode = substantiveSections(agreementStructure).find((candidate) => candidate.reference === 'III-INTRO');
+  const intro = await requestFor(introNode, ['REPRESENTATIONS', 'CONSIDERATION']);
+  assert.match(intro.article_introduction_instruction, /Every REPRESENTATIONS proposal from it is subtype REPRESENTATION_QUALIFICATION, one per source of exception the introduction states/);
+  assert.doesNotMatch(intro.component_instruction, /return one REPRESENTATION_QUALIFICATION proposal per source of exception/);
+  assert.match(intro.component_instruction, /The sentence that constitutes the exchange fund/, 'the other families\' reminders are unchanged on the introduction');
   // Finding (204): a framing phrase is not a reference; the agreement as a whole resolves to the agreement.
   assert.match(both.component_instruction, /a framing phrase that names no provision \("For purposes of this Agreement", "hereof", "as used herein"\) is not a CROSS_REFERENCE/);
   // Finding (205): the bare clause numbers are the clause form; a LIST with words and no elements has them cut by the code.

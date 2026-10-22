@@ -7659,6 +7659,33 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       run end because the introduction's request asks once. Either
       way the introduction's own answer must be asked for once, not
       twice; nothing changed until Ben answers.
+      (207) 2026-10-22 09:12 to 09:35 UTC (implementer A), work package
+      25 (the manager's message of 09:11 UTC, from (206)): one voice on
+      the introduction node. The request builder knows the node where
+      the reminder is appended (buildAgreementSectionDraft builds
+      component_instruction with `node` in scope, and
+      isArticleIntroduction(node) is the test the
+      article_introduction_instruction itself uses), so no other signal
+      was needed: familyFactReminders(routing.families, {
+      articleIntroduction }) leaves the REPRESENTATIONS reminder out on
+      an article introduction node and keeps every other family's; a
+      representation section keeps the reminder as it was (its
+      qualification facts are the ones the cheaper tier omits, (217)).
+      The duplicate rule is untouched. Pinned in
+      tests/product-fact-components-extraction.test.js on requests built
+      through buildAgreementSectionDraft: the 3.01 request carries the
+      reminder and no article_introduction_instruction; the III-INTRO
+      request carries the article_introduction_instruction, no
+      REPRESENTATIONS reminder, and the CONSIDERATION reminder still.
+      The stored-answer replay is a compile-side check and does not
+      read the request, so it is unaffected. One more voice remains on
+      one rung only, for the manager: E's INTRODUCTION_COUNT_INSTRUCTION
+      ((199c), the counts_sonnet55 profile, introduction_counts) tells
+      the introduction node again to return one REPRESENTATION_
+      QUALIFICATION proposal per source of exception; it is E's field,
+      the plain default does not carry it, and it is left as it is. npm
+      run test:active on the commit: 863 tests, 862 pass, the one failure
+      the known Codex-client final-message test.
       (120) 2026-10-18 19:10 to 19:45 UTC (implementer C), Q5: the limb
       names harvested. `scripts/product/harvest-rep-limbs.js` (library
       `lib/product/rep-limb-harvest.js`, `tests/product-rep-limb-harvest.test.js`)
