@@ -11014,6 +11014,41 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       ablation.test.js, tests/product-ablation-wake.test.js,
       tests/product-generation-comparison.test.js). npm run
       test:active: 871 tests, 870 pass, the one known failure.
+      (c), read 17:55 to 18:15 UTC from the manager's run ((233), the
+      sandbox at 401c035): the rebuilt baseline equals the recorded
+      matched / partial / unmatched on every row of the eight job
+      dirs, and the rule as it stands changes none of them, so (227)
+      and (228) hold as read; what the re-score adds is the bundled
+      count (5.1 5 to 45 of 66 by rung and roll, 3.7 all 5, 3.1 5 to
+      8, 4.1 2 to 3, III-INTRO 2, 8.3 and IV-INTRO none). Eleven rows
+      differ in the "new" count alone, the recorded one larger by one
+      to seven (070212Z plain 5.1 9 against 8, counts 34 against 31,
+      merged 37 against 30; 090218Z plain 5.1 32 against 28; 093531Z
+      counts 36 against 35; 121703Z counts 11 against 10; 140617Z
+      counts 3.2 3 against 4, default 3.1 2 against 1, default 5.1 27
+      against 26, derived 4.1 2 against 1, plain 3.2 3 against 2).
+      Why, from the code: "new" is the live facts no stored fact took
+      as its counterpart. The job's compareFacts took, for each stored
+      fact, the first live fact in answer order among those at the
+      best share; the matcher since (199g) resolves that tie by the
+      live fact's own covered bytes, so a stored fact covered whole by
+      a wide live fact and by a narrow one of its own takes the narrow
+      one where the job took the wide one, every status and share the
+      same, and the narrow facts the job counted new are taken. That
+      is one direction, and the eleven rows all run that way (3.2 on
+      the counts rung, 3 against 4, is the same tie resolved the other
+      way round). Pinned in tests/product-rescore-ablation.test.js:
+      two stored facts under one wide live fact and two narrow ones,
+      the job's count new 2, the rule's new 1, the statuses equal; the
+      script now judges reproduction on the status columns and prints
+      "new differs ... a tie on equal shares" as its own note rather
+      than NOT REPRODUCED. Does it matter: no reading rested on the
+      new count ((227), (228) and (233) read matched, partial and
+      unmatched); with bundling reported, the count of live facts no
+      stored fact took is the better of the two readings, since it
+      names the live facts outside every stored fact's cover rather
+      than the ones left over by answer order. Not changed: the
+      matcher; nothing else is open for E.
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
 - [x] Take a database backup and restore it to a separate environment.

@@ -84,7 +84,15 @@ function recordedSection(ablation, variant, reference) {
   return entry && Array.isArray(entry.sections) ? entry.sections.find((row) => row.section_reference === reference) || null : null;
 }
 
-const sameCounts = (left, right) => Boolean(left && right) && ['stored', 'matched', 'partial', 'unmatched', 'new'].every((key) => Number(left[key]) === Number(right[key]));
+// The recorded row is reproduced when its stored, matched, partial and
+// unmatched agree; `new` is compared apart (plan finding (199h), (c)):
+// the matcher since (199g) resolves a tie on equal shares by the live
+// fact's own covered bytes where the job's code took the first live fact
+// in order, so a stored fact covered whole by two live facts may take the
+// other one, the statuses unchanged and the count of live facts no stored
+// fact took moved by one.
+const sameCounts = (left, right) => Boolean(left && right) && ['stored', 'matched', 'partial', 'unmatched'].every((key) => Number(left[key]) === Number(right[key]));
+const newDiffers = (left, right) => Boolean(left && right) && Number(left.new) !== Number(right.new);
 
 function rescoreJobDir(dir) {
   const analysisDir = path.join(dir, 'analysis');
@@ -115,7 +123,7 @@ function rescoreJobDir(dir) {
       const rowDrift = recordedRows ? before.rows.filter((row) => { const was = recordedRows.find((item) => item.proposal_id === row.proposal_id); return was && (was.status !== row.status || (was.counterpart || null) !== (row.counterpart || null)); }).map((row) => ({ proposal_id: row.proposal_id, summary: row.summary, recorded: recordedRows.find((item) => item.proposal_id === row.proposal_id).status, baseline: row.status })) : [];
       sections.push({
         section_reference: section.section_reference, node_id: nodeId, stored_source: tables ? 'ablation-rows.json' : 'stored.analysis.json', chapeau_bytes: totalBytes(storedSide.chapeauRanges),
-        recorded: recordedCounts, baseline: before.counts, baseline_reproduces_recorded: recordedCounts ? sameCounts(before.counts, recordedCounts) : null, baseline_row_drift: rowDrift,
+        recorded: recordedCounts, baseline: before.counts, baseline_reproduces_recorded: recordedCounts ? sameCounts(before.counts, recordedCounts) : null, baseline_new_differs: recordedCounts ? newDiffers(before.counts, recordedCounts) : null, baseline_row_drift: rowDrift,
         new: after.counts, changes, bundled_rows: after.rows.filter((row) => row.bundled).map((row) => ({ proposal_id: row.proposal_id, summary: row.summary, counterpart: label(row.counterpart) })),
         drift: driftOf({ storedAnalysis, liveAnalysis: analysis, nodeId, storedFacts: storedSide.storedFacts }),
       });
@@ -159,6 +167,7 @@ function renderRescore(results) {
         const changes = section.changes.map((change) => `${change.summary}: ${change.old_status}${change.old_bundled ? ' bundled' : ''} ${change.old_share}${change.old_counterpart ? ` (${change.old_counterpart})` : ''} -> ${change.new_status}${change.new_bundled ? ' bundled' : ''} ${change.new_share}${change.new_counterpart ? ` (${change.new_counterpart})` : ''}`).join('; ');
         const reproduces = section.baseline_reproduces_recorded === null ? '' : section.baseline_reproduces_recorded ? '' : ' NOT REPRODUCED';
         lines.push(`| ${result.job} | ${variant.variant} | ${section.section_reference} | ${fmt(section.recorded)} | ${fmt(section.baseline)}${reproduces} | ${fmt(section.new)} | ${changes || 'none'} |`);
+        if (section.baseline_new_differs) notes.push(`${result.job} ${variant.variant} ${section.section_reference}: new differs (recorded ${section.recorded.new}, rebuilt ${section.baseline.new}), the statuses the same: a tie on equal shares resolved by the live fact's own covered bytes ((199g)) where the job took the first live fact in order, so the counterparts spread over other live facts`);
         if (section.baseline_reproduces_recorded === false) notes.push(`${result.job} ${variant.variant} ${section.section_reference}: the rebuilt baseline differs from the recorded row (stored side from ${section.stored_source}); rows: ${section.baseline_row_drift.map((row) => `${row.summary}: recorded ${row.recorded}, baseline ${row.baseline}`).join('; ') || 'counts only'}`);
         if (driftCount(section.drift) > 0) {
           const parts = [];

@@ -204,6 +204,23 @@ test('the re-score script: the baseline is the recorded row rebuilt from the sna
   // A recorded row the baseline cannot reproduce is said so.
   const off = jobDir({ storedFacts: [storedTax, storedEquity], liveFacts: [liveEquity, liveWaiver], recordedCounts: { stored: 2, matched: 1, partial: 0, unmatched: 1, new: 1 } });
   assert.match(renderRescore([rescoreJobDir(off)]), /NOT REPRODUCED/);
+  // (199h) (c): the recorded "new" can differ from the rebuilt one with every status the same. The job's code took the first live fact in order on a tie; the matcher since (199g) takes the one whose own bytes the stored fact covers more. Two stored facts each covered whole by a wide live fact (first in order) and by a narrow one of their own: the job counted both narrow facts new (the wide one taken twice); the rule takes each narrow one, none new.
+  const wide = fact('live-wide', 'Wide live fact over both', [component('w1', 'OPERATION', 2000, 2200, 'both')]);
+  const narrowA = fact('live-narrow-a', 'Narrow live fact A', [component('n1', 'OPERATION', 2000, 2100, 'a')]);
+  const narrowB = fact('live-narrow-b', 'Narrow live fact B', [component('n2', 'OPERATION', 2100, 2200, 'b')]);
+  const storedA = fact('stored-a', 'Stored A', [component('s1', 'OPERATION', 2000, 2100, 'a')]);
+  const storedB = fact('stored-b', 'Stored B', [component('s2', 'OPERATION', 2100, 2200, 'b')]);
+  const rebuilt = compareFacts({ storedFacts: storedFactsForNode({ product_proposals: [storedA, storedB].map((item) => ({ proposal_id: item.proposal_id, structure_node_id: NODE, validation_status: 'VALID', payload: {} })), product_fact_components: flatRows([storedA, storedB]), product_fact_headlines: [] }, NODE).storedFacts, variantFacts: [wide, narrowA, narrowB] });
+  assert.deepEqual(rebuilt.rows.map((row) => [row.status, row.counterpart]), [['MATCHED', narrowA.proposal_id], ['MATCHED', narrowB.proposal_id]]);
+  assert.deepEqual(rebuilt.counts, { stored: 2, matched: 2, partial: 0, unmatched: 0, bundled: 0, new: 1 }, 'the wide fact is the one no stored fact took');
+  const tied = jobDir({ storedFacts: [storedA, storedB], liveFacts: [wide, narrowA, narrowB], recordedCounts: { stored: 2, matched: 2, partial: 0, unmatched: 0, new: 2 } });
+  const tiedResult = rescoreJobDir(tied);
+  assert.equal(tiedResult.variants[0].sections[0].baseline_reproduces_recorded, true, 'the statuses are the recorded row');
+  assert.equal(tiedResult.variants[0].sections[0].baseline_new_differs, true);
+  const tiedTable = renderRescore([tiedResult]);
+  assert.doesNotMatch(tiedTable, /NOT REPRODUCED/);
+  assert.match(tiedTable, /new differs \(recorded 2, rebuilt 1\), the statuses the same: a tie on equal shares/);
+  fs.rmSync(tied, { recursive: true, force: true });
   // --dump: the stored facts matching the words, their component rows, the chapeau spans, and the live facts that overlap them.
   const dump = dumpFacts(dir, '5.1', 'tax covenant');
   assert.equal(dump.stored.length, 1);
