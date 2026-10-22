@@ -5410,6 +5410,31 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       merged_residual_sonnet55 under way. The re-fire with (198)
       follows its end. The two deals paused ((175)); no intake
       ((172)); Ben's three answers pending.
+      (221) 2026-10-22 01:40 UTC (the manager): the levers' re-run
+      (pm-ablation-20261021T213656Z, on 381c7592 without E's (198),
+      21:37 to 01:28 UTC, exit 0, four sections at once) read against
+      the plain mode's confirmation ((216): anchors_sonnet55 931 / 20
+      / 20 of 971, 2,224,248 output tokens, two sections failed).
+      derived_statement_sonnet55: 99 of 104 sections, 830 matched, 12
+      partial, 34 unmatched of 876, 846 VALID 15 held, 1,956,587
+      output tokens (about 12 per cent fewer per section than the
+      plain mode), five failed on proposal.evidence_quotes[].source_span_id
+      (3.2, 8.3, 5.17, 5.19, 2.5). merged_residual_sonnet55: 99 of
+      104, 851 / 27 / 39 of 917, 903 VALID 26 held, 2,239,064 output
+      tokens (the plain mode's; this lever saves the residual calls,
+      which the extraction columns do not count), five failed on the
+      same shape (8.3, 4.3, 5.5, 5.16, 2.5). Both levers lose the same
+      facts beyond the plain mode's: 5.1 at 50 / 1 / 15 of 66 on both
+      (the plain mode 63 / 3 / 0: the thin-answer part of (196) and
+      (219), now on Sonnet too), III-INTRO 3 and IV-INTRO 2 lost whole,
+      3.1 and 3.2 as before. Reading: neither lever is a default yet;
+      the shape failures are (198)'s to prove on the re-fire, the 5.1
+      and introduction losses are the thin-answer signal E's (196)
+      proposed and nothing yet guards, so the plain Sonnet mode of
+      (218) stays the default. Re-fired at 01:40 UTC with (198) on
+      the sandbox at b5045dde, the same two variants, every section,
+      four at once (the job id in the next finding). The two deals
+      paused ((175)); no intake ((172)); Ben's three answers pending.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
