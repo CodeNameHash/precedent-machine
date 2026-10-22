@@ -5869,6 +5869,22 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       on the provisions page; the cut differs on those 38 where a
       list or a proviso is one fact now). Apogee waits for Olaplex's
       reading. No intake ((172)).
+      (235) 2026-10-22 18:10 UTC, Ben: "Go" on (234)'s resume. Done
+      before the run: the pool sandboxes pm-codex-preview-worker and
+      -2 updated to 014ac07 (E's (199h) (c) merged, tests 5 of 5
+      here). Found before the retry, and put to Ben instead: the two
+      paused runs are pinned to the config they were created under
+      (model_config PRODUCT_CLAUDE_CLI_CALL_KIND_MAP/V1: Opus 5, the V9
+      profile), and a run advances under its own config
+      (claudeCliModelConfigFor, (184)), so a retry with the unspent key
+      would finish the remaining sections on the old stack, without
+      Sonnet, the split fixes or (232)'s shapes. Correction to (234):
+      run 686c3bf2 (38 of 97) is Apogee (CIK 1974640, parties Andor
+      LLC, Andor Merger Co., Apogee Therapeutics, Inc.); f1e2493f (34
+      of 85) is Olaplex. Put to Ben: A, a fresh intake of Apogee on
+      the Sonnet default (the whole agreement on one cut; the old run
+      kept as evidence), recommended; B, the retry on the old stack.
+      No run woken, no intake, until he answers.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
