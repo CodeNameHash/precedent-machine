@@ -5530,14 +5530,17 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       and the guard does not fire on it (the part cites its words and
       omits facts). And the article introductions on the plain and
       merged rungs this run: III-INTRO 0 of 3 and IV-INTRO 0 of 2 with
-      every fact held on DUPLICATE_FACT_OCCURRENCE: the introduction's
-      qualification facts now collide with the same facts written per
-      section under A's a8656b3c instruction (the stored generation
-      wrote them per section, and the introduction node carried its
-      own), so the placement question put to Ben ((218)) has a
-      concrete cost either way: per section, the introduction node
-      should not also carry them; once per article, the per-section
-      instruction goes. Decision: the levers are parked; the derived
+      every fact held on DUPLICATE_FACT_OCCURRENCE. Read by A ((206)):
+      not a collision with the sections' copies (the occurrence key
+      names no node and the check runs over one answer at a time) but
+      the introduction node's own answer written twice: the
+      article_introduction_instruction and the a8656b3c per-family
+      reminder both ask the introduction node for the qualification
+      facts, in two voices, and Sonnet some runs writes each twice on
+      the same bytes, which the occurrence rule holds whole. A fixes
+      that now (work package 25: one voice on the introduction node);
+      the placement question of (218) stays Ben's, with (206)'s
+      consequences spelled out. Decision: the levers are parked; the derived
       statement is no worse than the plain rung now but saves nothing
       measurable in output ((223)), and the merged residual's saving is
       the residual calls, to be taken when the unsplit-section path is
