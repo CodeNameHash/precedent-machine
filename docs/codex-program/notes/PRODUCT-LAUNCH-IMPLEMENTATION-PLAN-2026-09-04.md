@@ -9728,6 +9728,35 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       answer the manager's read describes. npm run test:active: 858
       tests, 857 pass, the one known failure.
 
+      (199a) 2026-10-22 02:40 to 03:20 UTC (implementer E), the
+      manager's question on the (198) re-fire's one remaining shape
+      loss (pm-ablation-20261022T013924Z: 4.1 on MODEL_RESPONSE_SHAPE
+      proposal.client_ref; the evidence_quotes[].source_span_id
+      failures gone), answered with code: yes, the same repair covers
+      the refs. The compiler requires proposal.client_ref,
+      group.client_ref and (for the group lookup) proposal.group_ref as
+      strings and fails the section on the first proposal without one.
+      The lean normaliser now reads each by any name the model gave
+      (client_ref, ref, id, proposal_ref; group_ref, group, group_id; a
+      number as its string), names a proposal without one p<n>, gives a
+      proposal without a group one of its own family and subtype, writes
+      a group the proposal names but no group line carries (the cut, or
+      the slip), and drops a group with no ref at all (refs_repaired,
+      groups_synthesised, groups_dropped in the note); links follow the
+      repaired refs through (197)'s endpoint reading. The recorded 4.1
+      answer is the sandbox's to read; the shapes pinned are the ones
+      the message admits: a proposal under ref with no group, a numeric
+      client_ref with a group named and not written, a group under id,
+      a group with none, the section compiling with both facts VALID
+      and the link kept. Not covered, named for the record: a group
+      whose family is outside the routed set still fails the section
+      (GROUP_FAMILY), since the normaliser does not know the routing;
+      the (189) replay fitness check catches it on replays, a live
+      answer would need the routed families handed to the normaliser.
+      Tests: tests/product-lean-answer-repairs.test.js (5),
+      tests/product-lean-request-profile.test.js (the stats' keys). npm
+      run test:active: see the push.
+
 ### Phase 6. Internal cutover and live use, 2 days plus one live deal
 
 - [x] Take a database backup and restore it to a separate environment.

@@ -75,6 +75,15 @@ function answerFor(request, shape) {
       coverage,
     };
   }
+  if (shape === 'refs') {
+    // p1 under ref with no group_ref; p2 with a numeric client_ref and a group named but not written; the one written group under id.
+    const second = operative.exact_text.split(/(?<=\.)\s+/)[1] || sentence;
+    const one = proposal('p1', [{ ref: 'c1', kind: 'OPERATION', label: 'the covenant', quote: sentence, source_span_id: operative.span_id, occurrence: 0, origin: 'OWN', gap_before: false, children: [] }], { statement: sentence });
+    delete one.client_ref; delete one.group_ref; one.ref = 'p1';
+    const two = proposal('p2', [{ ref: 'c1', kind: 'EXCEPTION', label: 'the carve-out', quote_from: firstWordsOf(second, 4), quote_to: lastWordsOf(second, 4), source_span_id: operative.span_id, occurrence: 0, origin: 'OWN', gap_before: false, children: [] }], { statement: second });
+    two.client_ref = 2; two.group_ref = 'g-missing';
+    return { proposals: [one, two], groups: [{ id: 'gp1', family_key: 'NO_SHOP', subtype_key: subtype.subtype_key }, { family_key: 'NO_SHOP', subtype_key: subtype.subtype_key }], links: [{ from_ref: '2', to_ref: 'p1', relationship_type: 'EXCEPTS', source_span_ids: [] }], coverage };
+  }
   throw new Error(`shape ${shape}`);
 }
 
@@ -181,4 +190,20 @@ test('a component naming its span as span_id, a child naming none, a proposal ci
   assert.equal(unit.stats.component_spans_repaired, 1);
   assert.equal(unit.stats.component_spans_inherited, 2);
   assert.equal(unit.stats.proposals_dropped, 0);
+});
+
+test('refs by any name: a proposal under ref with no group, a numeric client_ref with a group named but not written, a group under id and one with none: repaired, synthesised, dropped; the section compiles with both facts', async () => {
+  const { result } = await runConcho63(REQUEST_PROFILES.DEFAULT, 'refs');
+  assert.equal(result.proposals.length, 2, 'no MODEL_RESPONSE_SHAPE proposal.client_ref or group.client_ref');
+  assert.ok(result.proposals.every((proposal) => proposal.validation_status === 'VALID'), JSON.stringify(result.issues.map((issue) => [issue.code, issue.message]).slice(0, 6)));
+  assert.equal(result.links.length, 1, 'the link from "2" reaches the repaired p2');
+  const note = leanNote(result);
+  assert.equal(note.refs_repaired, 4, 'group id, p1 client_ref, p1 group_ref, p2 client_ref');
+  assert.equal(note.groups_synthesised, 2, 'p1\'s own group and p2\'s named one');
+  assert.equal(note.groups_dropped, 1);
+  const unit = normaliseLeanResponse({ proposals: [{ family_key: 'NO_SHOP', subtype_key: 'S', statement: 's', components: [] }, { id: 7, group: 3, family_key: 'NO_SHOP', subtype_key: 'S', statement: 's', components: [] }], groups: [{ client_ref: 3, family_key: 'NO_SHOP', subtype_key: 'S' }] }, { sourceDocument: { canonical_text: '' }, spansById: new Map() });
+  assert.deepEqual(unit.response.proposals.map((proposal) => [proposal.client_ref, proposal.group_ref]), [['p1', 'g:p1'], ['7', '3']]);
+  assert.deepEqual(unit.response.groups.map((group) => group.client_ref), ['3', 'g:p1']);
+  assert.equal(unit.stats.groups_synthesised, 1);
+  assert.equal(unit.stats.groups_dropped, 0);
 });
