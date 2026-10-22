@@ -5786,6 +5786,34 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       fact shapes and the qualifier placement are put to Ben again in
       plain terms (the manager's reply of this time); no rule changes
       until he answers.
+      (232) 2026-10-22 17:00 UTC, Ben, on the three shapes put in
+      (231), verbatim: "Yep, don't think you even need to say parent
+      consent as that is up too in intro no?" (shape 1, the list under
+      one verb: option A, one fact with list elements; and the consent
+      standard is not restated in it, since the limb's opening words
+      state it once); "A on dividend point" (shape 2: the proviso is
+      the restriction's exception, one fact); "Option a on placement"
+      (the article's qualifiers once, on the introduction; the review
+      page shows them above each representation section by code).
+      Rules, to be written in code across the corpus (work package 26,
+      A): (1) a list of objects under one operative verb inside one
+      lettered or numbered limb is one proposal with LIST elements;
+      separate limbs stay separate proposals. (2) A proviso that only
+      carves out from its covenant is an EXCEPTION component of that
+      covenant, not a proposal; a proviso that creates an obligation or
+      right of its own is a proposal, linked. (3) The opening words'
+      consent standard, time window and sources of exception are the
+      opening words' own proposals, stated once; a limb's proposal
+      states its own action and cites the governing opening words as
+      evidence without restating them. (4) Placement A stands as
+      built ((207)); the provisions page shows the article's
+      qualification facts above each representation section's table,
+      joined by code from the introduction node. The stored Opus run
+      repeats the qualifiers per section and splits the Tax covenant's
+      list, so against it the new rules read as two unmatched per
+      representation section and one bundled Tax fact: expected, not
+      losses. Order: work package 26 lands; the eight-section check
+      and the 5.1 jobs run once on it; then Olaplex resumes ((231)).
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
