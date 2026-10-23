@@ -6062,10 +6062,14 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       facts beside a 6.2 one, and No Material Adverse Effect is 6.3 alone —
       so the page cannot say which side a condition binds, and the title
       names one side over both.
-      (c) one valid fact carries the headline summary "None" (7.3's
-      REMEDY_LIMITATION, "Other than as specified in Section 7.2(a) and
-      7.3(b) ... shall have no further liability"), so the page will show a
-      row called None.
+      (c) 19 valid facts carry no headline summary at all, each with its
+      matching HEADLINE_SUMMARY_DROPPED issue (3.3's four capitalisation
+      absence facts, three in 5.7's indemnification, two in 3.1, and one
+      each in 3.4, 3.6, 3.13, 4.3, 5.11, 6.3, 7.3, 8.4, 8.7), so those
+      facts reach the page with no one-line reading. The check drops a
+      summary over 18 words rather than shortening it; the correction of
+      the manager's first reading (a fact whose summary was "None") is that
+      the page has no summary, not a bad one.
       (d) the fee amounts are proposed as their own facts beside the fee
       triggers that already carry them: FEE_TRIGGER and FEE_AMOUNT in 7.3
       quote the same $381,273,716 from the same span, and the Termination
@@ -6090,6 +6094,25 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       fact shapes Ben chose in (232) hold on the words (a six-item access
       list is one fact; the dividend and MAE provisos sit inside their
       covenants as EXCEPTION components).
+      (243) 2026-10-23 19:40 UTC, Ben, on (242)(b): "two tables - what are
+      the other conditions?", then "ok" to the shape put to him. Decision:
+      the closing conditions are two tables, "Conditions to the Company's
+      Obligations" (the facts whose opening words are "The obligation of
+      the Company ... waiver by the Company", 6.2 here) and "Conditions to
+      Parent's Obligations" (the facts whose words are "... or waiver by
+      Parent", 6.3 here), the side read from the fact's own words and never
+      from a section number. The "Other conditions" row is a catch-all and
+      holds one fact today, from 5.9, which is the negative "Making any such
+      filing, giving any such notice or obtaining any such Consent is not a
+      condition precedent to any of Parent's or Merger Sub's obligations to
+      consummate the Closing": it goes in the Parent table as its own row,
+      "Filing, notice or consent - expressly not a condition precedent",
+      because a negative hidden under a catch-all is how a reader misses
+      it. Work package 30 (A, now): the two sections and their titles in
+      the table shapes with the side rule and its tests on 6.2's and 6.3's
+      real words, the negative row, one browser check of the page. Not
+      changed: the extraction instruction and the fact model; the facts
+      already name the side.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
