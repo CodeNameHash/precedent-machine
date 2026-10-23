@@ -331,6 +331,114 @@ test('an MAE-coded pill carries a link to the MAE definition section', () => {
   assert.equal(table.rows[0].cells.find((cell) => cell.column_id === 'standard').link_section, 'mae-definitions');
 });
 
+// Work package 30 (plan finding (243), Ben 2026-10-23): the closing
+// conditions are two tables by the side whose obligation is conditioned.
+// The side comes from the fact's own words -- "The obligation of the
+// Company ... (or waiver by the Company ..." and "... waiver by Parent, on
+// its own behalf and on behalf of Merger Sub ..." -- never from its section
+// number and never from its actor (a 6.2 fact's actor is Parent, the party
+// whose representations are tested, while the Company's obligation is the
+// one conditioned).
+const conditionsFact = ({ id, section = '6.2', conditionWords, actor = 'Parent', tableKey = 'conditions-b-table', rowLabel = 'Accuracy of Representations', statement = 'A condition to Closing.' }) => ({
+  fact_id: id, proposal_id: id, family_key: 'CLOSING_CONDITIONS', subtype_key: 'BRINGDOWN', section_reference: section, structure_node_id: `n-${section}`,
+  statement,
+  headline: { label: 'Bring-down', distinguishing_component_ids: [`${id}-std`] },
+  components: [
+    { component_id: `${id}-condition`, kind: 'CONDITION', label: 'condition', text: conditionWords, origin: 'CHAPEAU', source_span_id: 's', start_byte: 0, end_byte: 5, gap_before: false, children: [] },
+    { component_id: `${id}-actor`, kind: 'ACTOR', label: 'actor', text: actor, origin: 'OWN', source_span_id: 's', start_byte: 10, end_byte: 15, gap_before: false, children: [] },
+    { component_id: `${id}-std`, kind: 'STANDARD', label: 'standard', text: 'true and correct', origin: 'OWN', source_span_id: 's', start_byte: 20, end_byte: 25, gap_before: false, children: [] },
+  ],
+  conclusions: { table_key: tableKey, row_label: rowLabel, cells: [{ column_id: 'standard', code: 'TRUE_IN_ALL_MATERIAL_RESPECTS', component_ids: [`${id}-std`] }] },
+});
+
+const backedFactIds = (section) => section.tables.flatMap((table) => table.rows.flatMap((row) => row.backing_facts.map((entry) => entry.fact_id)));
+
+test('a closing condition is routed by the side its own words name, not by its actor or section number', () => {
+  const companyObligation = conditionsFact({
+    id: 'cc-company',
+    section: '6.2',
+    conditionWords: 'The obligation of the Company to effect the Closing is further subject to the satisfaction (or waiver by the Company to the extent permitted by applicable Law',
+    // The 6.2 condition's actor is Parent: the tested representations are
+    // Parent's, but the conditioned obligation is the Company's.
+    actor: 'Parent',
+  });
+  const parentObligation = conditionsFact({
+    id: 'cc-parent',
+    section: '6.3',
+    conditionWords: 'further subject to the satisfaction (or waiver by Parent, on its own behalf and on behalf of Merger Sub, to the extent permitted by applicable Law',
+    actor: 'The Company',
+    rowLabel: 'Performance of Covenants',
+  });
+  const view = buildTableView({ facts: [companyObligation, parentObligation], tableShapes, legalSchema });
+  const parent = view.sections.find((section) => section.section_key === 'conditions-b');
+  const company = view.sections.find((section) => section.section_key === 'conditions-s');
+  assert.equal(parent.title, "Conditions to Parent's Obligations");
+  assert.equal(company.title, "Conditions to the Company's Obligations");
+  assert.deepEqual(backedFactIds(parent), ['cc-parent']);
+  assert.deepEqual(backedFactIds(company), ['cc-company']);
+});
+
+test('a condition with no CONDITION component reads its chapeau/qualifier words for the side', () => {
+  const fallback = conditionsFact({
+    id: 'cc-fallback',
+    section: '6.2',
+    conditionWords: 'the satisfaction (or waiver by the Company to the extent permitted by applicable Law',
+  });
+  fallback.components[0] = { ...fallback.components[0], kind: 'QUALIFIER', origin: 'CHAPEAU' };
+  const view = buildTableView({ facts: [fallback], tableShapes, legalSchema });
+  const company = view.sections.find((section) => section.section_key === 'conditions-s');
+  assert.deepEqual(backedFactIds(company), ['cc-fallback']);
+});
+
+test('a closing condition whose words name neither side keeps the table its readout names', () => {
+  const neutral = conditionsFact({
+    id: 'cc-neutral',
+    conditionWords: 'subject to the satisfaction of the conditions set forth in this Agreement at or prior to the Closing',
+  });
+  const view = buildTableView({ facts: [neutral], tableShapes, legalSchema });
+  const parent = view.sections.find((section) => section.section_key === 'conditions-b');
+  assert.deepEqual(backedFactIds(parent), ['cc-neutral']);
+  assert.equal(view.sections.find((section) => section.section_key === 'conditions-s'), undefined, 'no side named: the fact is not guessed into the other table');
+});
+
+test('a mutual condition whose chapeau names both parties in a joint waiver stays on the mutual table', () => {
+  const mutual = conditionsFact({
+    id: 'cc-mutual',
+    section: '6.1',
+    conditionWords: 'or waiver by Parent, on its own behalf and on behalf of Merger Sub, and the Company, in each case, to the extent permitted by applicable Law',
+    actor: 'Each Party',
+    tableKey: 'conditions-table',
+    rowLabel: 'Antitrust / Regulatory Clearance',
+  });
+  mutual.components[0] = { ...mutual.components[0], kind: 'QUALIFIER', origin: 'CHAPEAU' };
+  const view = buildTableView({ facts: [mutual], tableShapes, legalSchema });
+  const table = view.sections.find((section) => section.section_key === 'conditions');
+  assert.deepEqual(backedFactIds(table), ['cc-mutual']);
+  assert.equal(view.sections.find((section) => section.section_key === 'conditions-b'), undefined, 'a mutual condition is not moved to a party table');
+  assert.equal(view.sections.find((section) => section.section_key === 'conditions-s'), undefined);
+});
+
+test('the 5.9 negative is Parent\'s own row, never a catch-all', () => {
+  const negative = {
+    fact_id: 'cc-negative', proposal_id: 'cc-negative', family_key: 'CLOSING_CONDITIONS', subtype_key: 'GENERAL_CLOSING_CONDITION', section_reference: '5.9', structure_node_id: 'n-5-9',
+    statement: 'Making any such filing, giving any such notice or obtaining any such Consent is not a condition precedent to any of Parent’s or Merger Sub’s obligations to consummate the Closing.',
+    headline: { label: 'Filings, notices and Consents', summary: 'Filings, notices and Consents are not conditions precedent to Parent’s and Merger Sub’s Closing obligations', distinguishing_component_ids: [] },
+    components: [
+      { component_id: 'neg-list', kind: 'LIST', label: 'filing, notice or consent', text: 'making any such filing, giving any such notice or obtaining any such Consent', origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 5, gap_before: false, children: [] },
+      { component_id: 'neg-op', kind: 'OPERATION', label: 'not a condition', text: 'is not a condition precedent to', origin: 'OWN', source_span_id: 's', start_byte: 10, end_byte: 15, gap_before: false, children: [] },
+      { component_id: 'neg-actor', kind: 'ACTOR', label: 'party', text: 'any of Parent’s or Merger Sub’s', origin: 'OWN', source_span_id: 's', start_byte: 20, end_byte: 25, gap_before: false, children: [] },
+      { component_id: 'neg-object', kind: 'OBJECT', label: 'obligations', text: 'obligations to consummate the Closing', origin: 'OWN', source_span_id: 's', start_byte: 30, end_byte: 35, gap_before: false, children: [] },
+    ],
+    conclusions: { table_key: 'conditions-b-table', row_label: 'Other conditions', cells: [{ column_id: 'asDrafted', text: 'is not a condition precedent to', component_ids: ['neg-op'] }] },
+  };
+  const view = buildTableView({ facts: [negative], tableShapes, legalSchema });
+  const parent = view.sections.find((section) => section.section_key === 'conditions-b');
+  assert.equal(parent.title, "Conditions to Parent's Obligations");
+  assert.deepEqual(parent.tables[0].rows.map((row) => row.subject), ['Filing, notice or consent — expressly not a condition precedent']);
+  assert.deepEqual(backedFactIds(parent), ['cc-negative']);
+  assert.equal(view.sections.find((section) => section.section_key === 'conditions-s'), undefined);
+});
+
 // Decision 25 (Ben, 2026-09-13, on the MAE section).
 const maeFact = (id, subtype, subject, conclusions, text = 'any change in GAAP') => ({
   fact_id: id, proposal_id: id, family_key: 'MAE_DEFINITION', subtype_key: subtype, section_reference: '1.01', structure_node_id: 'n-1-01',
@@ -2302,7 +2410,7 @@ test('NCS generation 5\'s facts without a readout each take a row: the mutual an
     '4df07313': ['termination-rights-buyer-may-terminate', 'Written consent not delivered'],
     '7358e051': ['misc-boilerplate-table', 'Cumulative remedies'],
     a7fd4aca: ['conditions-s-table', 'Tax opinion'],
-    d5e41bd3: ['conditions-s-table', 'Other conditions'],
+    d5e41bd3: ['conditions-s-table', 'Other conditions (not otherwise classified)'],
     e9bd4f85: ['conditions-s-table', 'No Material Adverse Effect'],
     ee3f3736: ['termination-rights-effect', 'Remedies preserved'],
     f54d1f70: ['conditions-table', 'Other mutual conditions'],

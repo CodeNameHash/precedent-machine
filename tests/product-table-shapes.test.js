@@ -1111,19 +1111,31 @@ test('the registration-rights table sits last under Consideration, takes general
 
 
 // Work package 19 (d) (manager finding (165); NCS generation 5): the eight
-// VALID facts without a readout each have a row.
+// VALID facts without a readout each have a row. Work package 30 (plan
+// finding (243)): the two party tables are titled for the side whose
+// obligation is conditioned, the catch-all says what it is, and the 5.9
+// negative has its own row on Parent's table.
 test('the conditions, termination and boilerplate tables name rows for the NCS generation 5 facts that had none', () => {
   const mutual = findTableV3(findSectionV3('conditions'), 'conditions-table');
   assert.ok(mutual.fixed_row_labels.includes('Other mutual conditions'));
   assert.equal(mutual.fact_type_rows.GENERAL_CLOSING_CONDITION, 'Other mutual conditions');
+  const parentSection = findSectionV3('conditions-b');
+  const companySection = findSectionV3('conditions-s');
+  assert.equal(parentSection.title, "Conditions to Parent's Obligations");
+  assert.equal(companySection.title, "Conditions to the Company's Obligations");
   for (const [sectionKey, tableKey] of [['conditions-b', 'conditions-b-table'], ['conditions-s', 'conditions-s-table']]) {
     const table = findTableV3(findSectionV3(sectionKey), tableKey);
-    for (const label of ['No Material Adverse Effect', 'Tax opinion', 'Other conditions']) assert.ok(table.fixed_row_labels.includes(label), `${tableKey}: ${label}`);
+    for (const label of ['No Material Adverse Effect', 'Tax opinion', 'Other conditions (not otherwise classified)']) assert.ok(table.fixed_row_labels.includes(label), `${tableKey}: ${label}`);
     assert.equal(table.fact_type_rows['GENERAL_CLOSING_CONDITION:TAX_OPINION'], 'Tax opinion');
-    assert.equal(table.fact_type_rows.GENERAL_CLOSING_CONDITION, 'Other conditions');
+    assert.equal(table.fact_type_rows.GENERAL_CLOSING_CONDITION, 'Other conditions (not otherwise classified)');
     assert.equal(table.fact_type_rows['GENERAL_CLOSING_CONDITION:BRINGDOWN'], 'Accuracy of Representations');
   }
-  assert.ok(new RegExp(findTableV3(findSectionV3('conditions-s'), 'conditions-s-table').statement_words, 'i').test("As a condition to the Company's obligation to effect the Merger"));
+  const parent = findTableV3(parentSection, 'conditions-b-table');
+  assert.ok(parent.fixed_row_labels.includes('Filing, notice or consent — expressly not a condition precedent'));
+  assert.ok(!findTableV3(companySection, 'conditions-s-table').fixed_row_labels.includes('Filing, notice or consent — expressly not a condition precedent'));
+  assert.ok(new RegExp(findTableV3(companySection, 'conditions-s-table').statement_words, 'i').test("As a condition to the Company's obligation to effect the Merger"));
+  assert.ok(new RegExp(findTableV3(companySection, 'conditions-s-table').statement_words, 'i').test('further subject to the satisfaction (or waiver by the Company to the extent permitted by applicable Law'));
+  assert.ok(new RegExp(parent.statement_words, 'i').test('further subject to the satisfaction (or waiver by Parent, on its own behalf and on behalf of Merger Sub, to the extent permitted by applicable Law'));
   const buyer = findTableV3(findSectionV3('termination-rights'), 'termination-rights-buyer-may-terminate');
   assert.deepEqual(buyer.fixed_row_labels.slice(-2), ['Written consent not delivered', 'Support agreement not delivered']);
   assert.equal(buyer.fact_type_rows['TERMINATION_RIGHT:WRITTEN_CONSENT_NOT_DELIVERED'], 'Written consent not delivered');
