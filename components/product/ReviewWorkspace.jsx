@@ -497,7 +497,7 @@ export default function ReviewWorkspace({ runId, focus = [], allSectionsHref = n
     <style jsx global>{`
       .pw-review { margin: -16px; background: #fff; color: #03203D; font-family: 'Inter Tight', Arial, sans-serif; }
       @media (min-width: 768px) { .pw-review { margin: -32px; } }
-      .pw-review-top { position: sticky; top: 0; z-index: 20; display: flex; align-items: flex-end; gap: 24px; padding: 18px 32px 16px; border-bottom: 10px solid #B9C8DA; background: #fff; }
+      .pw-review-top { position: sticky; top: 76px; z-index: 20; display: flex; align-items: flex-end; gap: 24px; padding: 18px 32px 16px; border-bottom: 10px solid #B9C8DA; background: #fff; }
       .pw-review-kicker { margin: 0 0 6px; font: 700 9px 'Inter Tight', Arial, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #6B7785; }
       .pw-review-top h1 { margin: 0; font: 700 32px/.98 'Inter Tight', Arial, sans-serif; letter-spacing: -.045em; color: #03203D; }
       .pw-review-sub { margin: 7px 0 0; font: 400 11px 'Source Serif 4', Georgia, serif; color: #6B7785; }
@@ -508,7 +508,7 @@ export default function ReviewWorkspace({ runId, focus = [], allSectionsHref = n
       .pw-btn.danger { background: #fff; color: #03203D; border-color: #03203D; }
       .pw-btn:disabled { opacity: .4; cursor: default; }
       .pw-review-grid { display: grid; grid-template-columns: 232px minmax(0, 1fr) 340px; gap: 0; align-items: start; }
-      .pw-review-rail { position: sticky; top: 132px; max-height: calc(100vh - 150px); overflow: auto; padding: 22px 18px 26px 24px; border-right: 1px solid #DCE3E1; }
+      .pw-review-rail { position: sticky; top: 192px; max-height: calc(100vh - 210px); overflow: auto; padding: 22px 18px 26px 24px; border-right: 1px solid #DCE3E1; }
       .pw-rail-kicker { margin: 0 0 10px; font: 700 8.5px 'Inter Tight', Arial, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #6B7785; }
       .pw-review-rail nav { display: flex; flex-direction: column; gap: 2px; }
       .pw-rail-link { display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; gap: 7px; align-items: baseline; padding: 7px 8px; border-left: 3px solid transparent; text-decoration: none; color: #33475E; }
@@ -523,7 +523,7 @@ export default function ReviewWorkspace({ runId, focus = [], allSectionsHref = n
       .pw-rail-big span { font: 500 9px 'Inter Tight', Arial, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: #6B7785; }
       .pw-rail-meta { margin: 7px 0 0; font: 400 10.5px 'Source Serif 4', Georgia, serif; color: #6B7785; }
       .pw-review-main { min-width: 0; padding: 26px 30px 60px; }
-      .pw-review-source { position: sticky; top: 132px; max-height: calc(100vh - 150px); overflow: auto; padding: 22px 24px 30px; border-left: 1px solid #DCE3E1; }
+      .pw-review-source { position: sticky; top: 192px; max-height: calc(100vh - 210px); overflow: auto; padding: 22px 24px 30px; border-left: 1px solid #DCE3E1; }
       .pw-source-head { display: flex; align-items: center; gap: 10px; }
       .pw-source-head .pw-rail-kicker { margin: 0; }
       .pw-source-open { margin-left: auto; border: 0; background: none; padding: 0; color: #0B3D71; font: 700 8.5px 'Inter Tight', Arial, sans-serif; letter-spacing: .07em; text-transform: uppercase; cursor: pointer; }
@@ -551,7 +551,7 @@ export default function ReviewWorkspace({ runId, focus = [], allSectionsHref = n
       .pw-review-main .rounded-xl, .pw-review-main .rounded-lg { border-radius: 0; }
       .pw-review-main .rounded-xl { box-shadow: none; }
       @media (max-width: 1200px) { .pw-review-grid { grid-template-columns: 210px minmax(0, 1fr) 300px; } .pw-review-main { padding: 22px 20px 50px; } }
-      @media (max-width: 1023px) { .pw-review-grid { grid-template-columns: minmax(0, 1fr); } .pw-review-source { display: none; } .pw-review-main { padding: 18px 16px 90px; } .pw-review-top { align-items: flex-start; flex-direction: column; padding: 14px 16px 12px; } .pw-review-top h1 { font-size: 27px; } .pw-review-head-actions { margin-left: 0; } }
+      @media (max-width: 1023px) { .pw-review-grid { grid-template-columns: minmax(0, 1fr); } .pw-review-source { display: none; } .pw-review-main { padding: 18px 16px 90px; } .pw-review-top { position: static; align-items: flex-start; flex-direction: column; padding: 14px 16px 12px; } .pw-review-top h1 { font-size: 27px; } .pw-review-head-actions { margin-left: 0; } }
     `}</style>
   </div>;
 }
