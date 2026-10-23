@@ -5958,6 +5958,28 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       affected files here, held for merge until the run finalises, so that
       Olaplex is the first deal to run with it. Not changed: no other deal
       woken; no sandbox update while a run holds the worker.
+      (239) 2026-10-23 14:52 UTC, Ben, on the monetary cap held at 5.2:
+      "I think the word \"in the aggregate\" is missing from this snip. IT
+      should show the two facts - the individual and aggregate gaps", then
+      "*caps". The observation is right at the component: the settlement
+      exception's own words keep both caps ("not more than $1,000,000
+      individually and $5,000,000 in the aggregate", twice, at clauses (1)
+      and (2) of 5.2(b)(xvi)(C)), but the AMOUNT component the model wrote
+      is "$1,000,000 individually and $5,000,000" — it ends before "in the
+      aggregate" — so the value parser reads no single number and holds the
+      fact ("no parsable value", fact e1c898c0). Decision: an individual cap
+      and an aggregate cap are TWO facts, one per cap, each with its own
+      amount words and its own qualifier ("individually" / "in the
+      aggregate"). Rule to write into the instruction (work package 28, A):
+      where one sentence states the same limit individually and in the
+      aggregate, propose one fact per cap; never one fact carrying two
+      amounts, and never an amount quote that stops short of its own cap's
+      qualifier. The corpus is inconsistent on this shape today: the same
+      5.2's capital-expenditure cap reads as one fact with THRESHOLD
+      $2,500,000 and AMOUNT $250,000, and its new-Material-Contract
+      exception carries both amounts inside one EXCEPTION. Not changed
+      until the instruction change lands: no rule from one roll and no
+      mid-run edit; the held fact stays held, listed under 5.2.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
