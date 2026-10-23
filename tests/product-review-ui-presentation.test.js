@@ -113,7 +113,7 @@ test('proposal card uses plain review labels while preserving the legal statemen
     onDecision() {}, onSource() {},
   }));
 
-  assert.match(markup, /No-shop · Prohibited action/);
+  assert.match(markup, /Model proposal · 1 source span/);
   assert.match(markup, />Needs review</);
   assert.match(markup, /The Company shall not solicit\./);
   assert.doesNotMatch(markup, /NO_SHOP|PROHIBITED_ACTION|>PENDING</);

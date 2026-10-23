@@ -237,7 +237,6 @@ export function ReviewSectionHeading({ section }) {
 export function DraftReview({ workspace, view, busy, command, openSource, focus = [], allSectionsHref = null, brief = null }) {
   const state = workspace.review.state;
   const analysis = workspace.analysis;
-  const firstFactSection = view.sections.find((section) => section.proposals.length > 0);
   function jumpToSection(event) {
     const sectionId = event.target.value;
     if (!sectionId || typeof document === 'undefined') return;
@@ -254,11 +253,15 @@ export function DraftReview({ workspace, view, busy, command, openSource, focus 
   const focused = focus.length > 0;
   return <>
     {focused ? <FocusedReview view={view} analysis={analysis} focus={focus} busy={busy} command={command} openSource={openSource} cardPropsFor={cardPropsFor} allSectionsHref={allSectionsHref} brief={brief} /> : null}
-    {focused ? null : <nav aria-label="Review navigation" className="rounded-xl border border-border bg-paper p-4">
-      <div className="flex flex-wrap items-end gap-3">
-        <div className="min-w-64 flex-1"><p className="text-xs font-bold uppercase tracking-wide text-accent">Review by section</p><label className="mt-1 block text-sm font-semibold text-ink">Jump to agreement section<select aria-label="Jump to agreement section" defaultValue="" onChange={jumpToSection} className="mt-1 block w-full rounded border border-border bg-white p-2 font-normal"><option value="">Choose a section</option>{view.sections.map((section) => <option key={section.node.node_id} value={section.node.node_id}>{displaySectionReference(section.routing.section_reference)}: {section.heading || 'Agreement section'}</option>)}</select></label></div>
-        {firstFactSection ? <a href={`#section-${firstFactSection.node.node_id}`} className="rounded bg-ink px-4 py-2 text-xs font-semibold text-white">Start with first proposed fact</a> : null}
-        <a href="#review-checks" className="rounded border border-border bg-white px-4 py-2 text-xs font-semibold text-ink">Go to review checks</a>
+    {focused ? null : <nav aria-label="Review navigation" className="pw-review-jump">
+      <div className="pw-review-jump-row">
+        <label className="pw-review-jump-label">
+          <span>Sections</span>
+          <select aria-label="Jump to agreement section" defaultValue="" onChange={jumpToSection}>
+            <option value="">Choose a section</option>
+            {view.sections.map((section) => <option key={section.node.node_id} value={section.node.node_id}>{displaySectionReference(section.routing.section_reference)}: {section.heading || 'Agreement section'}</option>)}
+          </select>
+        </label>
       </div>
     </nav>}
     {focused ? null : <section aria-labelledby="proposed-facts-heading" className="space-y-6">
@@ -493,7 +496,7 @@ export default function ReviewWorkspace({ runId, focus = [], allSectionsHref = n
       <div className="pw-review-main">
     {state.status === 'PUBLISHED' ? <><AcceptedSummary summary={state.summary} metrics={state.metrics} onSource={openSource} active={candidateActive} /><ReleaseEvaluation state={state} analysis={workspace.analysis} referenceSources={workspace.reference_sources || []} busy={busy} onEvaluate={command} onSource={openSource} /></> : <DraftReview workspace={workspace} view={view} busy={busy} command={command} openSource={openSource} focus={focus} allSectionsHref={allSectionsHref} brief={brief} />}
       </div>
-      <ReviewSourcePanel selection={sourceSelection} source={source} loading={Boolean(sourceSelection) && !source} onOpenFull={() => setSourceModal(true)} />
+      <ReviewSourcePanel selection={sourceSelection} source={source} loading={Boolean(sourceSelection) && !source} onOpenFull={() => setSourceModal(true)} pendingCount={view.pending_count} unresolvedCount={view.unresolved_count} revision={workspace.review.version} />
     </div>
     <SourceContextPanel open={sourceModal} onClose={() => setSourceModal(false)} source={source} span={sourceSelection?.span} reviewContext={sourceSelection?.reviewContext} closureSpans={workspace.analysis.spans.filter((item) => item.source_closure_ids?.includes(sourceSelection?.closureId))} loading={!source} />
     <style jsx global>{`
@@ -537,6 +540,9 @@ export default function ReviewWorkspace({ runId, focus = [], allSectionsHref = n
       .pw-source-empty { margin: 0; font: 400 13px/1.5 'Source Serif 4', Georgia, serif; color: #6B7785; }
       .pw-source-note { margin: 0; font: 400 10.5px/1.5 'Source Serif 4', Georgia, serif; color: #6B7785; }
       .pw-source-note b { color: #33475E; }
+      .pw-source-progress { margin-top: 4px; }
+      .pw-source-progress-row { display: flex; align-items: baseline; justify-content: space-between; border-bottom: 1px solid #DCE3E1; padding: 6px 0; font: 400 10.5px 'Source Serif 4', Georgia, serif; color: #6B7785; }
+      .pw-source-progress-row b { font: 600 11px 'Inter Tight', Arial, sans-serif; color: #03203D; }
       .pw-review-main [data-testid="proposal-card"] { margin: 0 0 12px; padding: 18px 18px 14px; border: 0; border-top: 10px solid #DCE3E1; border-radius: 0; box-shadow: none; background: #fff; }
       .pw-review-main [data-testid="proposal-card"] > div:first-child p:first-child { font: 700 8.5px 'Inter Tight', Arial, sans-serif; letter-spacing: .12em; text-transform: uppercase; color: #5D7DA3; }
       .pw-review-main [data-testid="proposal-card"] > div:first-child > span { display: inline-flex; align-items: center; border: 1px solid #B9C8DA !important; background: #F1F4F8 !important; color: #03203D !important; border-radius: 999px !important; padding: 2px 7px !important; font: 700 8.5px 'Inter Tight', Arial, sans-serif !important; letter-spacing: .06em; text-transform: uppercase; }
@@ -552,6 +558,24 @@ export default function ReviewWorkspace({ runId, focus = [], allSectionsHref = n
       .pw-review-main .pw-card-details summary { cursor: pointer; font: 700 8.5px 'Inter Tight', Arial, sans-serif; letter-spacing: .1em; text-transform: uppercase; color: #6B7785; }
       .pw-review-main h2.font-display, .pw-review-main h3.font-display { font-family: 'Inter Tight', Arial, sans-serif; letter-spacing: -.03em; color: #03203D; }
       .pw-review-main section[id^="section-"] { scroll-margin-top: 200px; }
+      .pw-review-main > nav[aria-label="Review navigation"] { display: none; }
+      .pw-review-main > section[aria-labelledby="proposed-facts-heading"] > div:first-child { display: none; }
+      .pw-review-jump { margin: 0 0 18px; padding: 0 0 12px; border-bottom: 1px solid #DCE3E1; }
+      .pw-review-jump-row { display: flex; align-items: center; gap: 14px; }
+      .pw-review-jump-label { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+      .pw-review-jump-label span { font: 700 9px 'Inter Tight', Arial, sans-serif; letter-spacing: .12em; text-transform: uppercase; color: #6B7785; flex: none; }
+      .pw-review-jump-label select { flex: 1; min-width: 0; border: 1px solid #DCE3E1; background: #fff; padding: 8px 10px; font: 500 12px 'Inter Tight', Arial, sans-serif; color: #03203D; }
+      .pw-review-jump-link { font: 700 9px 'Inter Tight', Arial, sans-serif; letter-spacing: .07em; text-transform: uppercase; color: #0B3D71; text-decoration: none; flex: none; }
+      .pw-review-main [data-testid="proposal-card"] dl { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+      .pw-review-main [data-testid="proposal-card"] dl button { display: none; }
+      .pw-review-main [data-testid="proposal-card"] .pw-card-citations { display: none; }
+      .pw-review-main [data-testid="proposal-card"] > div:first-child button span { display: none; }
+      .pw-review-main [data-testid="proposal-card"] > button.mt-2 { display: none; }
+      @media (max-width: 1400px) { .pw-review-main [data-testid="proposal-card"] dl { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 1023px) {
+        .pw-review-main > nav[aria-label="Review navigation"] { display: block; }
+        .pw-review-main [data-testid="proposal-card"] dl { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      }
       .pw-review-main section > div:first-child { border-bottom-color: #03203D !important; }
       .pw-review-main .rounded-xl, .pw-review-main .rounded-lg { border-radius: 0; }
       .pw-review-main .rounded-xl { box-shadow: none; }
