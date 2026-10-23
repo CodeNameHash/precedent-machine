@@ -14,7 +14,6 @@ export default function TopBar() {
   const active = (href) => (href === '/' ? path === '/' : path === href || path.startsWith(`${href}/`));
   const links = [
     ['/', 'Index'],
-    ['/compare', 'Compare'],
     ['/review', 'Review'],
     ['/library', 'Library'],
   ];
