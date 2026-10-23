@@ -6011,6 +6011,85 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       first run that produces an unplaced held fact. Put to Ben: a GitHub
       fine-grained token with contents: write on CodeNameHash/
       precedent-machine, or the push from a terminal that has one.
+      (241) 2026-10-23 17:14 to 19:20 UTC (the manager): Apogee run
+      88d4032a-d92c-407d-8c2f-9656a85f3916 finished. 97 of 97 sections,
+      no failed section, 869 proposals of which 858 VALID and 11 held;
+      14,117,456 input and 2,220,784 output tokens, zero marginal cost on
+      the subscription; about 110 minutes from the wake to the finalised
+      draft, in the range (234) projected. The finalisation then failed
+      twice before it held. At 19:03 the worker finalised the draft and the
+      run reached READY; a DATABASE_ERROR ("upstream request timeout") was
+      written against the run immediately afterwards and it fell to FAILED
+      though no section had failed. product_phase3_retry_run's
+      resume_finalization branch (status FAILED, stage DRAFT_FINALIZATION,
+      every section COMPLETE) was spent once with the key
+      apogee-finalisation-retry-1; the route answered 500 because it
+      assembles the run's full read to build its reply and that read timed
+      out, while the retry itself had worked: the run was READY with no
+      error at 19:20 and no section was re-extracted. Read as a defect: a
+      run that has finalised cannot be allowed to fall to FAILED on a
+      write after the draft exists, and a route must not report failure for
+      a retry it has already applied. The database was slow while this
+      happened and is still slow on big reads: the published read 2.4 s,
+      the run status 15 to 25 s, the 38.9 MB preview read 40 s after a 60 s
+      timeout on an earlier attempt. Both pool sandboxes were updated to
+      4ecc7be (worker-1 from 014ac07) and Olaplex was woken on worker-1 at
+      19:15: run ab1cf03b, 87 sections, 3 done at 19:18, so it is the first
+      deal extracted with the held-fact repair of (240).
+      (242) 2026-10-23 19:25 UTC (the manager): Apogee read. The four live
+      documents' bar is a lawyer-reviewable set of facts, so the read is
+      the page a lawyer gets: buildTableView over the finalised draft gives
+      24 sections, 38 tables, 236 rows, 19 of the rows with no coded cell.
+      What is right, first, because it is most of it: the termination
+      tables carry mutual consent, the End Date, legal restraint and the
+      stockholder vote, the buyer's three rights including the no-shop
+      breach with its pre-approval expiry, and the fee table with both
+      fees, payer and trigger; 6.1's four conditions, the four no-shop core
+      mechanics and the notice limbs, the 33-row Company representations
+      table and the 20-row Material Contracts table are populated and read
+      correctly on the words. What is wrong:
+      (a) the Company's mirror breach termination right (7.1, fact 7.1(e))
+      is HELD on "Section 6.1, Section 6.2(a), or Section 6.2(b): a
+      cross-reference that resolves to nothing", so the company table shows
+      only the Superior Proposal right while the buyer's side shows its
+      breach right: an asymmetry a lawyer would read as the deal's balance.
+      The same reference form resolves on the buyer's side (Section
+      6.3(a)/(b) in the Parent fact), so the resolver's failure is specific,
+      not general.
+      (b) the two closing-condition sets are merged: "Closing Conditions —
+      Buyer" holds rows backed by 6.2 (the Company's conditions) and 6.3
+      (Parent's) together — Accuracy of Representations carries five 6.3
+      facts beside a 6.2 one, and No Material Adverse Effect is 6.3 alone —
+      so the page cannot say which side a condition binds, and the title
+      names one side over both.
+      (c) one valid fact carries the headline summary "None" (7.3's
+      REMEDY_LIMITATION, "Other than as specified in Section 7.2(a) and
+      7.3(b) ... shall have no further liability"), so the page will show a
+      row called None.
+      (d) the fee amounts are proposed as their own facts beside the fee
+      triggers that already carry them: FEE_TRIGGER and FEE_AMOUNT in 7.3
+      quote the same $381,273,716 from the same span, and the Termination
+      Fee's amount likewise; the table renders one row per fee, so the
+      duplication is in the evidence list and the count, not in the table.
+      No rule from one deal: recorded, not changed.
+      (e) 119 CONCLUSIONS_MISSING and 134 CONCLUSIONS_CELLS_DROPPED issues:
+      about 14 per cent of the facts carry no readout, so they are evidence
+      under their section and never a row. Also open: 11 held facts, of
+      which 8 are the classes the merged repair fixes (two duplicate
+      footprints at 3.3, six wordless lists at 3.13, 3.17 and 3.20) and
+      therefore only on a fresh extraction, and 3 are decisions: 5.2's
+      individual-and-aggregate caps ((239), instruction change pending);
+      5.3's "value multiple period literals" (one period component holding
+      more than one period, open); and (a)'s cross-reference.
+      Work packages from this read: 28 the caps (already (239)); 29 a
+      cross-reference to a limb ("Section 6.2(a)") resolving to its section
+      or its limb node, so a whole fact is never lost to one reference;
+      30 closing conditions split by side, which is Ben's page-shape
+      decision and is put to him; 31 the empty-or-"None" headline summary
+      on a valid fact. Nothing else in the read is proposed for change: the
+      fact shapes Ben chose in (232) hold on the words (a six-item access
+      list is one fact; the dividend and MAE provisos sit inside their
+      covenants as EXCEPTION components).
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
