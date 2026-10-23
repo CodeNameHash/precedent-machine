@@ -548,7 +548,10 @@ export default function ReviewWorkspace({ runId, focus = [], allSectionsHref = n
       .pw-review-main [data-testid="proposal-card"] .border-slate-500 { border-color: #B9C8DA !important; color: #33475E !important; border-radius: 999px; padding: 6px 14px; font-size: 9px; letter-spacing: .06em; text-transform: uppercase; }
       .pw-review-main [data-testid="proposal-card"] .border-red-600 { border-color: #B9C8DA !important; color: #6B7785 !important; border-radius: 999px; padding: 6px 14px; font-size: 9px; letter-spacing: .06em; text-transform: uppercase; }
       .pw-review-main [data-testid="proposal-card"] > div:last-child > button:last-child { border-radius: 999px; background: #F1F4F8; color: #0B3D71; padding: 6px 12px; font-size: 9px; }
+      .pw-review-main .pw-card-details { border-top: 1px solid #DCE3E1; padding-top: 8px; }
+      .pw-review-main .pw-card-details summary { cursor: pointer; font: 700 8.5px 'Inter Tight', Arial, sans-serif; letter-spacing: .1em; text-transform: uppercase; color: #6B7785; }
       .pw-review-main h2.font-display, .pw-review-main h3.font-display { font-family: 'Inter Tight', Arial, sans-serif; letter-spacing: -.03em; color: #03203D; }
+      .pw-review-main section[id^="section-"] { scroll-margin-top: 200px; }
       .pw-review-main section > div:first-child { border-bottom-color: #03203D !important; }
       .pw-review-main .rounded-xl, .pw-review-main .rounded-lg { border-radius: 0; }
       .pw-review-main .rounded-xl { box-shadow: none; }
