@@ -36,7 +36,7 @@
 // Claude CLI needs no login in the sandbox, its OAuth token arrives per wake).
 
 const { KNOWN_SANDBOX_NAMES, SANDBOX_NAME, SANDBOX_POOL, SANDBOX_WORKDIR, MINIMUM_SESSION_MS, isKnownSandboxName, isSandboxGone, sandboxCredentials } = require('../../lib/product/sandbox-wake');
-const { ANTHROPIC_API_PROVIDER_ID, CLAUDE_CLI_PROVIDER_ID, CODEX_PROVIDER_ID, isHostedProvider } = require('../../lib/product/product-model-config');
+const { ANTHROPIC_API_PROVIDER_ID, CLAUDE_CLI_PROVIDER_ID, CODEX_PROVIDER_ID, DEEPSEEK_API_PROVIDER_ID, isHostedProvider } = require('../../lib/product/product-model-config');
 
 const REPO = 'https://github.com/CodeNameHash/precedent-machine.git';
 const CLI_PREFIX = '/vercel/sandbox/pm-cli';
@@ -45,6 +45,8 @@ const DEFAULT_BRANCH = 'codex/product-implementation-plan-20260904';
 // What each hosted provider needs in the sandbox beyond the product checkout.
 const PROVIDER_SETUP = Object.freeze({
   [ANTHROPIC_API_PROVIDER_ID]: Object.freeze({ clis: [], binaries: [], login: false, modelModule: './lib/product/anthropic-api-model' }),
+  // DeepSeek's endpoint is Anthropic-shaped: no CLI, the same adapter.
+  [DEEPSEEK_API_PROVIDER_ID]: Object.freeze({ clis: [], binaries: [], login: false, modelModule: './lib/product/anthropic-api-model' }),
   [CLAUDE_CLI_PROVIDER_ID]: Object.freeze({ clis: ['@anthropic-ai/claude-code'], binaries: ['claude'], login: false, modelModule: './lib/product/claude-cli-model' }),
   [CODEX_PROVIDER_ID]: Object.freeze({ clis: ['@openai/codex'], binaries: ['codex'], login: true, modelModule: './lib/product/codex-cli-model' }),
 });

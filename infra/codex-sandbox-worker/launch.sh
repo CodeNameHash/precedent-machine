@@ -45,18 +45,29 @@ case "${PRODUCT_MODEL_PROVIDER:-OPENAI_CODEX_CLI_SUBSCRIPTION}" in
       exit 78
     fi
     ;;
+  DEEPSEEK_API)
+    # 2026-10-23: DeepSeek's Anthropic-compatible endpoint, key passed by the
+    # wake from the deployment.
+    if [[ -z "${DEEPSEEK_API_KEY:-}" ]]; then
+      printf '%s\n' 'PRODUCT_HOSTED_DEEPSEEK_API_KEY_REQUIRED' >&2
+      exit 78
+    fi
+    ;;
   *)
     printf '%s\n' 'PRODUCT_HOSTED_PROVIDER_UNSUPPORTED' >&2
     exit 78
     ;;
 esac
 
-# No path sees another path's credential: the API key, and the optional
-# workspace id beside it (work package 11; never required, never printed),
-# stay only for the API provider.
+# No path sees another path's credential: the API keys, and the optional
+# workspace id beside the Anthropic key (work package 11; never required,
+# never printed), stay only for their own provider.
 unset OPENAI_API_KEY CODEX_API_KEY CODEX_ACCESS_TOKEN
 if [[ "${PRODUCT_MODEL_PROVIDER:-}" != 'ANTHROPIC_API' ]]; then
   unset ANTHROPIC_API_KEY ANTHROPIC_WORKSPACE_ID
+fi
+if [[ "${PRODUCT_MODEL_PROVIDER:-}" != 'DEEPSEEK_API' ]]; then
+  unset DEEPSEEK_API_KEY
 fi
 cd /vercel/sandbox/pm-product
 
