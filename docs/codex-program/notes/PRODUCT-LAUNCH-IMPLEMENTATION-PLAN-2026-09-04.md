@@ -5980,6 +5980,37 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       exception carries both amounts inside one EXCEPTION. Not changed
       until the instruction change lands: no rule from one roll and no
       mid-run edit; the held fact stays held, listed under 5.2.
+      (240) 2026-10-23 14:40 to 15:00 UTC (the manager): the manager's own
+      verification basis on Ben's machine, and the two merged branches. The
+      test estate probed file by file, one `node --test` process each,
+      without node_modules (an agent's run; the manager read it): 80 files,
+      55 fully passing, 19 dying on a missing module (react, react-dom,
+      next, @supabase/supabase-js, @anthropic-ai/sdk), 2 needing `node` on
+      PATH, none needing a database or the network, 4 hanging (phase-2, from
+      the heartbeat drain; phase-3-calibration; phase-4; run-replay, which
+      loads phase-2's file). So a lib change can be verified here and a
+      component change cannot: every react test is dependency-missing, and
+      the passing review tests exercise lib logic only. The widest trusted
+      command, run on the merged tree: 126 of 126 over the fact-components
+      and agreement-draft lists (fact-components contract, conclusions,
+      extraction, store, v8 replay, schema extension, termination-effect
+      schema, no-shop period value, proposal identity, fact lines, thin
+      answer, lean answer repairs, default request profile). Merged on the
+      codex branch: 98f85a07 (the held-fact repair, six wordless-LIST span
+      resolutions and two duplicate footprints) and 5935fa52 (work package
+      27, every held fact's rule reason and the page-bottom list for a fact
+      with no section); the branch head is local only because this machine
+      holds no git credential (`could not read Username for
+      https://github.com`; no ssh key, no gh, an empty osxkeychain helper),
+      so nothing is pushed, the preview deployment has not rebuilt, and a
+      sandbox update would clone the old head. The UI half of 27 is
+      verified by running the patched builder over the run's real 25MB
+      payload (538 valid, 9 held, 0 unplaced, 3.3's two reasons now
+      "duplicate fact occurrence") and by a server render of that payload,
+      not by a test this machine can run; a browser check waits on the
+      first run that produces an unplaced held fact. Put to Ben: a GitHub
+      fine-grained token with contents: write on CodeNameHash/
+      precedent-machine, or the push from a terminal that has one.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
