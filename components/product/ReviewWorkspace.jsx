@@ -545,6 +545,9 @@ export default function ReviewWorkspace({ runId, focus = [], allSectionsHref = n
       .pw-source-progress-row b { font: 600 11px 'Inter Tight', Arial, sans-serif; color: #03203D; }
       .pw-review-main [data-testid="proposal-card"] { margin: 0 0 12px; padding: 18px 18px 14px; border: 0; border-top: 10px solid #DCE3E1; border-radius: 0; box-shadow: none; background: #fff; }
       .pw-review-main [data-testid="proposal-card"] > div:first-child p:first-child { font: 700 8.5px 'Inter Tight', Arial, sans-serif; letter-spacing: .12em; text-transform: uppercase; color: #5D7DA3; }
+      .pw-review-main [data-testid="proposal-card"] > div:first-child { flex-wrap: nowrap; align-items: flex-start; gap: 16px; }
+      .pw-review-main [data-testid="proposal-card"] > div:first-child > div { min-width: 0; flex: 1; }
+      .pw-review-main [data-testid="proposal-card"] > div:first-child > span { flex: none; margin-top: 2px; }
       .pw-review-main [data-testid="proposal-card"] > div:first-child > span { display: inline-flex; align-items: center; border: 1px solid #B9C8DA !important; background: #F1F4F8 !important; color: #03203D !important; border-radius: 999px !important; padding: 2px 7px !important; font: 700 8.5px 'Inter Tight', Arial, sans-serif !important; letter-spacing: .06em; text-transform: uppercase; }
       .pw-review-main [data-testid="proposal-card"] > div:first-child button { font: 700 21px/1.12 'Inter Tight', Arial, sans-serif; letter-spacing: -.035em; color: #03203D; }
       .pw-review-main [data-testid="proposal-card"] dl dt { font: 700 8px 'Inter Tight', Arial, sans-serif; letter-spacing: .1em; text-transform: uppercase; color: #6B7785; }
@@ -575,6 +578,7 @@ export default function ReviewWorkspace({ runId, focus = [], allSectionsHref = n
       @media (max-width: 1023px) {
         .pw-review-main > nav[aria-label="Review navigation"] { display: block; }
         .pw-review-main [data-testid="proposal-card"] dl { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .pw-review-main [data-testid="proposal-card"] > div:first-child { flex-wrap: wrap; }
       }
       .pw-review-main section > div:first-child { border-bottom-color: #03203D !important; }
       .pw-review-main .rounded-xl, .pw-review-main .rounded-lg { border-radius: 0; }
