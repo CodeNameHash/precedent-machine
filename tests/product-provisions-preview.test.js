@@ -60,15 +60,15 @@ function proposalFrom(fact, index, overrides = {}) {
   };
 }
 
-function workspace({ items = [], issues = [], nodes = [{ node_id: NODE, reference: '3.14', authored_order: 1 }] } = {}) {
+function workspace({ items = [], issues = [], nodes = [{ node_id: NODE, reference: '3.14', authored_order: 1 }], sectionReference = '3.14' } = {}) {
   const proposals = fixture.facts.map((fact, index) => proposalFrom(fact, index));
   proposals.push(proposalFrom(fixture.facts[0], 99, { validation_status: 'INVALID' }));
   return {
     analysis: {
       source_document: { parties: ['Parent Inc.', 'Target Corp.'], agreement_date: '2025-09-18', exhibit_type: 'EX-2.1', filing_accession: '0001193125-25-000001', retrieval_url: 'https://www.sec.gov/Archives/edgar/data/1/000119312525000001/ex21.htm' },
       agreement_structure: { nodes },
-      sections: [{ structure_node_id: NODE, section_reference: '3.14' }],
-      source_closures: [{ source_closure_id: 'c-3-14', structure_node_id: NODE, section_reference: '3.14', full_section_span_id: 's-full' }],
+      sections: [{ structure_node_id: NODE, section_reference: sectionReference }],
+      source_closures: [{ source_closure_id: 'c-3-14', structure_node_id: NODE, section_reference: sectionReference, full_section_span_id: 's-full' }],
       spans: [{ span_id: 's-full', kind: 'FULL_SECTION', structure_node_id: NODE, start_byte: 0, end_byte: SECTION_TEXT.length, exact_text: SECTION_TEXT }],
       proposals,
       proposition_groups: [],
@@ -250,6 +250,122 @@ test('previewFactsFromWorkspace attaches held_reason to each held fact from the 
   ] }));
   assert.equal(preview.held_facts.length, 1);
   assert.match(preview.held_facts[0].held_reason, /could not be placed in the source text/);
+});
+
+// Work package 27 (plan finding (237), 2026-10-23): the 3.3 collision. A
+// DUPLICATE_FACT_OCCURRENCE is written on the node (proposal_id null) and
+// names both candidates in its message, so heldReason had no issue to read
+// and both held facts said "held by validation". Each proposal the node
+// issue named now carries it, and the reason is the rule's own words.
+test('a node-level DUPLICATE_FACT_OCCURRENCE gives each proposal it held the rule\'s own reason', () => {
+  const ws = workspace({
+    nodes: [{ node_id: NODE, reference: '3.3', authored_order: 1 }],
+    sectionReference: '3.3',
+  });
+  const first = ws.analysis.proposals.find((candidate) => candidate.validation_status === 'INVALID');
+  const second = { ...first, proposal_id: `${first.proposal_id}-second`, fact_occurrence_id: 'occurrence-second' };
+  ws.analysis.proposals.push(second);
+  ws.analysis.issues.push({
+    schema_version: 'PRODUCT_ISSUE/V1',
+    issue_id: 'i-duplicate',
+    kind: 'VALIDATION',
+    code: 'DUPLICATE_FACT_OCCURRENCE',
+    family_key: first.family_key,
+    subtype_key: first.subtype_key,
+    structure_node_id: NODE,
+    proposal_id: null,
+    source_closure_id: null,
+    source_span_ids: [],
+    message: JSON.stringify({
+      candidates: [
+        { client_ref: 'part1:p17', fact_occurrence_id: first.fact_occurrence_id || 'occurrence-first', proposal_id: first.proposal_id },
+        { client_ref: 'part1:p18', fact_occurrence_id: 'occurrence-second', proposal_id: second.proposal_id },
+      ],
+      shared_fact_occurrence_id: 'shared-occurrence',
+    }),
+    state: 'OPEN',
+  });
+  const preview = previewFactsFromWorkspace(ws);
+  assert.equal(preview.held_facts.length, 2);
+  assert.deepEqual(
+    preview.held_facts.map((fact) => fact.held_reason),
+    ['duplicate fact occurrence', 'duplicate fact occurrence'],
+    'the rule\'s own words, never the "held by validation" last resort',
+  );
+  assert.ok(preview.held_facts.every((fact) => fact.section_reference === '3.3'));
+});
+
+// Work package 27 (plan finding (237), 2026-10-23). Ben, on where a held
+// fact goes when it has no home: "I think a section at the bottom of the
+// page (if not section understood for the facts) or a at the bottom of the
+// relevant section (e.g. termination) for those without a home". A held
+// fact with no structure node reaches no section block; it lands in
+// unplaced_held, not held_facts, and the page lists it at the bottom.
+test('a held fact with a null structure node lands in unplaced_held, not held_facts, and the page lists it at the bottom', () => {
+  const ws = workspace();
+  const template = ws.analysis.proposals[0];
+  const unplaced = {
+    ...template,
+    proposal_id: 'p-unplaced-held',
+    structure_node_id: null,
+    validation_status: 'INVALID',
+    statement: 'The Company grants the right.',
+    headline: { ...template.headline, summary: 'A right with no section' },
+    components: [{ ...template.components[0], text: 'the right that could not be placed' }],
+  };
+  ws.analysis.proposals.push(unplaced);
+  ws.analysis.issues.push({
+    schema_version: 'PRODUCT_ISSUE/V1', issue_id: 'i-unplaced', kind: 'VALIDATION', code: 'INVALID_FACT_COMPONENTS',
+    family_key: template.family_key, subtype_key: template.subtype_key, structure_node_id: null, proposal_id: 'p-unplaced-held',
+    source_closure_id: null, source_span_ids: [], message: JSON.stringify(['0: byte range missing']), state: 'OPEN',
+  });
+  const preview = previewFactsFromWorkspace(ws);
+  assert.equal(preview.held_facts.length, 1, 'the sectioned held fact is unchanged');
+  assert.deepEqual(preview.held_facts.map((fact) => fact.section_reference), ['3.14']);
+  assert.deepEqual(
+    preview.unplaced_held.map((entry) => [entry.fact_id, entry.section_reference, entry.structure_node_id, entry.summary, entry.statement, entry.components_summary]),
+    [['p-unplaced-held', null, null, 'A right with no section', 'The Company grants the right.', 'the right that could not be placed']],
+  );
+  assert.match(preview.unplaced_held[0].reason, /could not be placed in the source text/);
+  assert.notEqual(preview.unplaced_held[0].reason, 'held by validation', 'a held fact with no section still carries its reason');
+  assert.equal(preview.held_count, 2, 'the held count covers both lists');
+
+  const html = renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: ws, runId: 'run-1' }));
+  assert.match(html, /data-testid="unplaced-held"/);
+  assert.match(html, /Facts the model proposed that could not be placed in a table/);
+  assert.match(html, /data-testid="unplaced-held-fact"[^>]*>.*?A right with no section.*?could not be placed in the source text/s);
+  assert.ok(html.indexOf('data-testid="published-summary"') < html.indexOf('data-testid="unplaced-held"'), 'the block is after PublishedSummary');
+  const block = html.match(/<section[^>]*data-testid="unplaced-held"[^>]*>/);
+  assert.ok(block, 'the block renders');
+  assert.match(block[0], /text-\[9\.5px\]/);
+  assert.match(block[0], /font-ui/);
+  assert.match(block[0], /text-\[#6b6b6b\]/);
+  assert.doesNotMatch(block[0], /amber|yellow|red/, 'quiet, not a warning banner');
+  assert.doesNotMatch(renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: workspace(), runId: 'run-1' })), /unplaced-held/);
+});
+
+// Work package 27: a section that never loaded leaves its held facts with
+// no block too; the page-bottom line still names the section the structure
+// knows (the agreement_structure node's reference), not the fact id alone.
+test('a held fact whose section never loaded is unplaced and names the section the structure knows', () => {
+  const node = { node_id: 'node-9-9', reference: '9.9', authored_order: 2 };
+  const ws = workspace({ nodes: [{ node_id: NODE, reference: '3.14', authored_order: 1 }, node] });
+  const extra = proposalFrom(fixture.facts[0], 100, { structure_node_id: node.node_id, validation_status: 'INVALID' });
+  ws.analysis.proposals.push(extra);
+  ws.analysis.issues.push({
+    schema_version: 'PRODUCT_ISSUE/V1', issue_id: 'i-never-loaded', kind: 'VALIDATION', code: 'INVALID_FACT_COMPONENTS',
+    family_key: extra.family_key, subtype_key: extra.subtype_key, structure_node_id: node.node_id, proposal_id: extra.proposal_id,
+    source_closure_id: null, source_span_ids: [], message: JSON.stringify(['0: byte range missing']), state: 'OPEN',
+  });
+  const preview = previewFactsFromWorkspace(ws);
+  assert.deepEqual(preview.held_facts.map((fact) => fact.section_reference), ['3.14'], 'the loaded section\'s list is unchanged');
+  assert.deepEqual(preview.unplaced_held.map((entry) => [entry.fact_id, entry.section_reference, entry.structure_node_id]), [
+    [extra.proposal_id, '9.9', node.node_id],
+  ]);
+  assert.match(preview.unplaced_held[0].reason, /could not be placed in the source text/);
+  assert.equal(preview.unplaced_held[0].statement, extra.statement);
+  const html = renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: ws, runId: 'run-1' }));
+  assert.match(html, /§ 9\.9 ·/);
 });
 
 // Work package 18 (e) as revised (2026-10-18): an out-of-scope exhibit (a

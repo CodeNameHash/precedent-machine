@@ -78,6 +78,35 @@ function stateBadge(progress, published) {
   return { label: 'Draft', className: 'bg-[#f3f3f3] text-[#555]' };
 }
 
+// Work package 27 (plan finding (237), 2026-10-23). Ben, on where a held
+// fact goes when it has no home: "I think a section at the bottom of the
+// page (if not section understood for the facts) or a at the bottom of the
+// relevant section (e.g. termination) for those without a home". The
+// section-bottom half is HeldFacts in ProvisionTables (work package 17);
+// this is the page-bottom half for a held fact whose structure node is null
+// or whose section did not load (Apogee 88d4032a: 9 held, none of them
+// unplaced; the block stays out until one is). It is quiet, in the same
+// 9.5px font-ui / #6b6b6b registry as the held line under a section, names
+// the section where the structure knows it, and shows the fact's own
+// summary so a lawyer can identify it. Nothing when the list is empty.
+function UnplacedHeldFacts({ entries }) {
+  if (!entries || entries.length === 0) return null;
+  return (
+    <section className="mt-[18.5px] border-t border-[#ececec] pt-[9.5px] font-ui text-[9.5px] text-[#6b6b6b]" aria-labelledby="unplaced-held-heading" data-testid="unplaced-held">
+      <h2 id="unplaced-held-heading" className="font-ui text-[9.5px] font-medium uppercase tracking-[0.08em] text-[#6b6b6b]">Facts the model proposed that could not be placed in a table</h2>
+      <ul className="mt-[2.5px] space-y-[1px]">
+        {entries.map((entry, index) => (
+          <li key={`${entry.fact_id}-${index}`} data-testid="unplaced-held-fact">
+            {entry.section_reference ? <span>{`§ ${entry.section_reference} · `}</span> : null}
+            <span className="text-[#1f1f1f]">{entry.summary || entry.statement || entry.components_summary || entry.fact_id}</span>
+            <span data-testid="unplaced-held-reason">{` — ${entry.reason}`}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 export function ProvisionsPreviewBody({ workspace, runId }) {
   const preview = useMemo(() => previewFactsFromWorkspace(workspace), [workspace]);
   const source = workspace.analysis.source_document || {};
@@ -105,7 +134,10 @@ export function ProvisionsPreviewBody({ workspace, runId }) {
     <div className="flex min-h-screen bg-white text-[#1f1f1f]" style={PAGE_STYLE} data-testid="provisions-page">
       <Head><title>{`Corpus - ${title}`}</title></Head>
       {preview.facts.length === 0 ? (
-        <div className="p-[9.5px] md:p-[18.5px]"><EmptyState icon="" title={live ? 'No sections in yet' : 'No layered facts'} description={live ? 'The first completed section appears here within a few minutes.' : 'This run has no valid layered (V2) facts to show.'} /></div>
+        <div className="p-[9.5px] md:p-[18.5px]">
+          <EmptyState icon="" title={live ? 'No sections in yet' : 'No layered facts'} description={live ? 'The first completed section appears here within a few minutes.' : 'This run has no valid layered (V2) facts to show.'} />
+          <UnplacedHeldFacts entries={preview.unplaced_held} />
+        </div>
       ) : (
         <>
           <ProvisionRail sections={tableShapesV3.sections} title={title} />
@@ -167,6 +199,7 @@ export function ProvisionsPreviewBody({ workspace, runId }) {
               reviewItemsByFactId={preview.reviewItemsByFactId}
               heldFacts={preview.held_facts || []}
             />
+            <UnplacedHeldFacts entries={preview.unplaced_held} />
           </div>
         </>
       )}
