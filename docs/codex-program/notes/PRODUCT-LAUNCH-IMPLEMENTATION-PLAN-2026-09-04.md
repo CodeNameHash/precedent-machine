@@ -1298,6 +1298,9 @@ it is not an attestation or a completed independent inventory.
       found the shared failure to be the fact model itself; the fix is
       Phase 5B, not a V1 correction.
 - [ ] Test the stable final extraction approach on an untouched agreement.
+      (Status 2026-10-23: the approach is stable, findings (227) to (234);
+      the untouched agreement is Apogee on the Sonnet default, waiting on
+      Ben's A or B of (235).)
       This now means the V2 approach after Phase 5B. Use known agreements to
       verify mechanical fixes. Require a new untouched agreement after a
       material change to legal extraction decisions, not automatically after
@@ -5885,6 +5888,18 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       the Sonnet default (the whole agreement on one cut; the old run
       kept as evidence), recommended; B, the retry on the old stack.
       No run woken, no intake, until he answers.
+      (236) 2026-10-23 14:40 UTC, Ben: "Draft a handoff document to a new
+      agent and make sure human facing checklist etc is up to date." Done:
+      docs/codex-program/notes/MANAGER-HANDOFF-2026-10-23.md, a dated note
+      (evidence and orientation; the plan stays the one checklist) with
+      the state, the open decisions, the loop mechanics, the
+      infrastructure without any secret value, the next steps in order
+      and the pitfalls. Section 12's manager prompt rewritten for the
+      current loop (the 2026-09-04 Sol wording marked superseded);
+      section 10 carries a one-paragraph note to the same effect; the
+      Phase 5 untouched-agreement item and Q5 carry their 2026-10-23
+      status; Phase 6 is untouched and still open. Nothing closed
+      without evidence; no run woken; Ben's A or B of (235) still open.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
@@ -9048,7 +9063,8 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       Supersedes the old-app rail styling of decision 27 (its order and
       groups stay).
 - [ ] Q5 Canonical limb names for the other eighteen representations
-      (Ben, 2026-09-13 21:25 UTC). After a few agreements have run (Metsera,
+      (Ben, 2026-09-13 21:25 UTC). (Status 2026-10-23: waits for three
+      deals on the Sonnet default; none has run yet, (235).) After a few agreements have run (Metsera,
       Olaplex, Apogee at least), harvest the row_detail values the extractor
       produced per representation across those runs, cluster them, and put a
       proposed canonical list per representation to Ben in one note for his
@@ -11262,6 +11278,10 @@ Codex tasks.
 
 ### Set-up
 
+(2026-10-23: the loop runs on Claude Code Remote sessions, the manager
+with hourly self check-ins and the implementers woken by triggers; see the
+handoff note named in section 12. The steps below are the original design.)
+
 1. Start a Sol task called the manager.
 2. Put the manager in `/goal` mode with the whole internal-launch outcome.
 3. The manager adopts this checklist, updates it in place and owns it for the
@@ -11332,19 +11352,27 @@ Complete all mechanical work before asking the smallest exact question.
 
 ## 12. Manager `/goal` prompt
 
+The prompt below is the current one (2026-10-23). The 2026-09-04 wording
+(a GPT-5.6 Sol implementer started at Phase 0) is superseded; the loop now
+runs on Claude Code Remote sessions, and the state to start from is in
+`docs/codex-program/notes/MANAGER-HANDOFF-2026-10-23.md` and findings (210)
+onward.
+
 ```text
 /goal Own the Precedent Machine internal product launch through completion.
-Start from docs/codex-program/notes/PRODUCT-LAUNCH-IMPLEMENTATION-PLAN-2026-09-04.md.
-Phase 0 promotes it to docs/core/PLAN.md. Adopt its checklist and update that
-single checklist in place. Immediately start a separate GPT-5.6 Sol implementer
-task and put it in /goal mode for Phase 0 with this exact instruction:
-"Complete Phase 0 completely, extremely well." When it finishes, verify the
-actual diff, product behaviour, tests and exit condition, then send Phase 1.
-Repeat through every phase. Keep safe, non-conflicting work moving. Let the
-implementer propose plan changes
-when repository evidence proves the plan wrong, and decide whether to accept
-them. Judge progress by the working SEC-URL-to-reviewed-summary product, not
-documents, receipts or test counts. Do not stop for a completed phase, passing
-test or completed subagent. Stop only for a genuine legal ambiguity, a proposed
-weakening of the blind release bars, or the final production cutover approval.
+Read docs/core, then docs/codex-program/notes/MANAGER-HANDOFF-2026-10-23.md,
+then findings (210) onward in
+docs/codex-program/notes/PRODUCT-LAUNCH-IMPLEMENTATION-PLAN-2026-09-04.md.
+Adopt that single checklist and update it in place with numbered findings;
+no second planning or status document. Drive the implementer sessions named
+in the handoff with one concrete work package per trigger; verify every push
+(diff, changed tests, product behaviour) before merging; push both branches.
+Judge progress by the working SEC-URL-to-reviewed-summary product on a real
+deal, not documents, receipts or test counts. Keep Ben's standing rules:
+everything driven by code and repeatable across the corpus; read the output
+yourself and iterate; no lawyer decisions on his behalf; no force-push; no
+secrets in the repository; no model identifiers in commits; section 9 checks
+only. Stop only for a genuine legal ambiguity, a fact-shape decision, a
+proposed weakening of the release bars, or the production cutover approval,
+and put each to Ben in plain options with a recommendation.
 ```
