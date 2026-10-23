@@ -5900,6 +5900,64 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       Phase 5 untouched-agreement item and Q5 carry their 2026-10-23
       status; Phase 6 is untouched and still open. Nothing closed
       without evidence; no run woken; Ben's A or B of (235) still open.
+      (237) 2026-10-23 14:36 UTC, Ben, on where a held fact goes when it
+      has no home: "I think a section at the bottom of the page (if not
+      section understood for the facts) or a at the bottom of the relevant
+      section (e.g. termination) for those without a home". Read against the
+      provisions page as it stands, by running the page's own builder over
+      the run's payload (previewFactsFromWorkspace on the preview read of
+      Apogee 88d4032a at 62 of 97): 538 valid facts, 9 held, and HeldFacts
+      (components/product/ProvisionTables.jsx, work packages 16 and 17)
+      already lists each held fact under its own section with its reason.
+      So the section-bottom half of Ben's rule is built; what is missing is
+      (a) the page-bottom half: a held fact whose structure node is null, or
+      whose section did not load, is in no list and reaches no block; and (b)
+      a reason on every held fact: 3.3's two read "held by validation"
+      because DUPLICATE_FACT_OCCURRENCE is written on the node, so
+      heldReason has no per-proposal issue to read. The nine, with their
+      reasons: 3.13 one and 3.17 three ("its quote was not found in the
+      source; text missing"), 3.20 two, 3.3 two (no reason), 5.2 one
+      ("$1,000,000 individually and $5,000,000": no number could be read
+      from its words, one component carrying two tiered amounts; open, no
+      rule from one roll). Work package 27 (A, now): attach a node-level
+      held issue to each proposal it held; carry a held fact with no section
+      to a page-bottom block naming its section where the structure knows it
+      and its own words so a lawyer can identify it; extend the preview and
+      UI tests; one browser check of the page after it lands. Not changed:
+      the extraction instruction; the held rules themselves. Correction to
+      the manager's reading of the minute before: the held facts are not
+      invisible; two of the nine are unreadable, and one class (no section)
+      is unshown.
+      (238) 2026-10-23 13:13 to 14:40 UTC (the manager): Ben's A of (235)
+      ("1. A") and the Claude subscription ("3. use the claude
+      subscription"). Apogee run 88d4032a-d92c-407d-8c2f-9656a85f3916,
+      source generation 3, 97 sections, a fresh intake with the new
+      idempotency key apogee-fresh-sonnet-cli-1 and provider
+      ANTHROPIC_CLAUDE_CLI_SUBSCRIPTION, so a run under
+      PRODUCT_CLAUDE_CLI_CALL_KIND_MAP/V3 (Haiku 5.5 routing and residual,
+      Sonnet 5.5 extraction at high effort, the DEFAULT_CLI profile). Woken
+      on pm-codex-preview-worker at 17:14 UTC; 62 of 97 at 18:36 UTC, no
+      failed section, zero marginal cost (the subscription), 1.69M output
+      tokens. The identity gate passed without review (Andor LLC, Andor
+      Merger Co., Apogee Therapeutics, Inc.; 2026-06-18, original). Olaplex
+      queued and not woken, per Ben's "sequential - I agree": run
+      ab1cf03b-1acc-489d-b915-7d7a534c9a20, https://www.sec.gov/Archives/
+      edgar/data/1868726/000119312526126362/d119132dex21.htm, 87 sections,
+      identity CONFIRMED (OLAPLEX HOLDINGS, INC.; HENKEL US OPERATIONS
+      CORPORATION; MARGOT ACQUISITION MERGER SUB, INC.; 2026-03-26,
+      original) by the pre-intake check on the intake route's own path,
+      before any run existed. Correction to (235): run f1e2493f (34 of 85)
+      is not Olaplex but Gilead Sciences / Arcellx (EX-2.1 dated
+      2026-02-22), 85 sections; its stored identity reads "Inc., Inc.,
+      Inc." while the same check of the same URL now confirms Gilead
+      Sciences, Ravens Sub and Arcellx, so the parked identity gate is
+      fixed in code and that run's stored identity is stale. The held-fact
+      repair (six wordless-LIST span resolutions, two duplicate-footprint
+      collisions, seen here on 3.13, 3.17, 3.20 and 3.3) is verified on
+      branch fix/held-empty-component at 08c17af0, 61 of 61 on the eight
+      affected files here, held for merge until the run finalises, so that
+      Olaplex is the first deal to run with it. Not changed: no other deal
+      woken; no sandbox update while a run holds the worker.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
