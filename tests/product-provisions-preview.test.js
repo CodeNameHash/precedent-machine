@@ -122,18 +122,18 @@ test('ProvisionsPreviewBody renders the rail, the tables and no decision control
 // font sizes raised by 1.3, the title and rail width unchanged.
 test('the page header is the Storylines header with the agreement date, SEC source and generation', () => {
   const html = renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: workspace(), runId: 'run-1' }));
-  assert.match(html, /<div class="flex min-h-screen bg-white text-\[#1f1f1f\]" style="--font-sans:&#x27;Inter&#x27;[^"]*--font-serif:&#x27;Inter&#x27;[^"]*" data-testid="provisions-page"/);
+  assert.match(html, /<div class="pw-provisions flex min-h-screen bg-white text-\[#03203D\]" style="--font-sans:&#x27;Inter Tight&#x27;[^"]*--font-serif:&#x27;Source Serif 4&#x27;[^"]*" data-testid="provisions-page"/);
   assert.match(html, /<header class="mb-\[16px\]" data-testid="preview-header"/);
-  assert.match(html, /<p class="font-ui text-\[10px\] uppercase tracking-\[0\.12em\] text-\[#6b6b6b\]">Lawyer preview<\/p>/);
-  assert.match(html, /<h1 class="mt-\[7px\] font-sans text-\[23px\] font-semibold leading-\[1\.05\] tracking-tight text-\[#1f1f1f\] md:text-\[30px\]">Parent Inc\. \/ Target Corp\.<\/h1>/);
+  assert.match(html, /<p class="font-ui text-\[9\.5px\] uppercase tracking-\[0\.14em\] text-\[#6B7785\]">Lawyer preview<\/p>/);
+  assert.match(html, /<h1 class="mt-\[8px\] font-sans text-\[30px\] font-bold leading-\[\.98\] tracking-\[-.05em\] text-\[#03203D\] md:text-\[38px\]">Parent Inc\. \/ Target Corp\.<\/h1>/);
   assert.match(html, /data-testid="preview-badge"[^>]*>Draft</);
   // Ben, 2026-09-14: the metadata line and the facts count are gone.
   assert.doesNotMatch(html, /Date: <span/);
   assert.doesNotMatch(html, /data-testid="preview-source-link"/);
   assert.doesNotMatch(html, /Generation: <span/);
   assert.doesNotMatch(html, /data-testid="preview-counts"/);
-  assert.match(html, /<div class="mt-\[16px\] h-\[2px\] w-full bg-black" data-testid="preview-rule"/);
-  assert.match(html, /<nav[^>]*class="[^"]*bg-black[^"]*" style="width:197px;padding:16px" data-testid="provision-rail"/);
+  assert.match(html, /<div class="mt-\[16px\] h-\[10px\] w-full bg-\[#B9C8DA\]" data-testid="preview-rule"/);
+  assert.match(html, /<nav[^>]*class="[^"]*border-\[#DCE3E1\][^"]*bg-white[^"]*" style="width:264px;padding:22px" data-testid="provision-rail"/);
   assert.doesNotMatch(html, /shadow/);
   assert.doesNotMatch(html, /font-display/);
 });

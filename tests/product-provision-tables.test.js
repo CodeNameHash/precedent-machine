@@ -273,12 +273,10 @@ test('an absent fixed row renders its label and a table footer renders the carve
 test('the provision rail groups sections the old app\'s way, one anchor per section', () => {
   const ProvisionRail = require('../components/product/ProvisionRail.jsx').default;
   const html = renderToStaticMarkup(React.createElement(ProvisionRail, { sections: tableShapes.sections }));
-  // The rail is a deal-page card (Ben, 2026-09-14: "completely copy the visual style").
-  // The rail keeps the black Deal Storylines column Ben asked for on
-  // 2026-09-13 ("shift the page design to match this ... mainly thinking of
-  // the left hand side bar"); the 2026-09-14 parity pass with the deal page
-  // covers the header, headings, tables and sidebar.
-  assert.match(html, /<nav[^>]*class="[^"]*bg-black[^"]*"[^>]*data-testid="provision-rail"/);
+  // PW redesign: the rail is a light column with a navy rule and the
+  // Paul, Weiss / Corpus brand line. The grouping and anchors are unchanged.
+  assert.match(html, /<nav[^>]*class="[^"]*border-\[#DCE3E1\][^"]*bg-white[^"]*"[^>]*data-testid="provision-rail"/);
+  assert.doesNotMatch(html, /bg-black/);
   const groups = html.match(/data-testid="provision-rail-group"/g) || [];
   // 17 old-app groups plus Tax Matters and Financing (work package 5, plan
   // finding (52): three families had no page).
@@ -441,12 +439,12 @@ test('a one-per-agreement table renders its other provisions as a collapsed Term
 // font size not good": font sizes raised by 1.3, layout unchanged.
 test('sections are Storylines cards with a tinted header band, pills are tinted chips, nothing casts a shadow', () => {
   const html = renderToStaticMarkup(React.createElement(ProvisionTables, { initialShowCodes: true, tableView, facts }));
-  assert.match(html, /<section class="bg-white border border-\[#dcdcdc\] rounded-\[2px\] overflow-hidden" data-testid="provision-section"/);
+  assert.match(html, /<section class="bg-white border-0 border-t-\[10px\] border-\[#DCE3E1\] overflow-hidden" data-testid="provision-section"/);
   assert.match(html, /data-testid="section-heading"[^>]*>/);
-  assert.match(html, /<button[^>]*class="[^"]*bg-\[#e8f3ee\][^"]*text-\[#2f7a5b\][^"]*"[^>]*data-testid="section-heading"/);
-  assert.match(html, /<h3 class="flex-1 font-sans text-\[14px\] font-medium leading-snug">/);
-  assert.match(html, /data-testid="table-pill"[^>]*class="inline-flex items-center rounded-full px-\[6px\] py-\[1px\] text-\[9px\] font-ui font-medium uppercase tracking-wide/);
-  assert.match(html, /<th class="border-b border-\[#ececec\] px-\[7px\] py-\[4.5px\] text-left text-\[9.5px\] font-ui font-medium uppercase tracking-\[0\.08em\] text-\[#6b6b6b\]">/);
+  assert.match(html, /<button[^>]*class="[^"]*bg-\[#F1F4F8\][^"]*text-\[#03203D\][^"]*"[^>]*data-testid="section-heading"/);
+  assert.match(html, /<h3 class="flex-1 font-sans text-\[15px\] font-semibold leading-snug tracking-\[-.02em\]">/);
+  assert.match(html, /data-testid="table-pill"[^>]*class="inline-flex items-center rounded-full border border-\[#B9C8DA\] px-\[6px\] py-\[1px\] text-\[9px\] font-ui font-medium uppercase tracking-wide/);
+  assert.match(html, /<th class="border-b border-\[#03203D\] px-\[10px\] py-\[8px\] text-left text-\[9px\] font-ui font-medium uppercase tracking-\[0\.12em\] text-\[#6B7785\]">/);
   assert.match(html, /data-testid="section-toggles"><button[^>]*class="rounded-\[2px\] border px-\[12px\] py-\[7px\] text-\[13px\] font-ui/);
   assert.doesNotMatch(html, /shadow/);
   assert.doesNotMatch(html, /font-mono/);
@@ -464,7 +462,7 @@ test('"See provision" and the § links are quiet controls: small, faint, no capi
   for (const control of controls) {
     assert.match(control, /text-\[8.5px\]/);
     assert.match(control, /font-ui/);
-    assert.match(control, /text-inkFaint/);
+    assert.match(control, /text-\[#6B7785\]/);
     assert.match(control, /hover:underline/);
     assert.doesNotMatch(control, /text-accent|uppercase|font-(semi)?bold|font-medium/);
   }

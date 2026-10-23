@@ -55,8 +55,9 @@ function dealTitle(parties, fallback) {
 // other pages), a white page with no page-level cards or shadows, and the
 // Storylines blue as the one accent (--accent-rgb overridden on the root so
 // the Tailwind accent tokens under the page resolve to it).
-const INTER = "'Inter', ui-sans-serif, -apple-system, 'Segoe UI', Roboto, sans-serif";
-const PAGE_STYLE = { '--font-sans': INTER, '--font-serif': INTER, '--accent-rgb': '47 86 184', '--accent-soft': '#e9effa', fontFamily: INTER };
+const INTER = "'Inter Tight', 'Inter', ui-sans-serif, -apple-system, 'Segoe UI', Roboto, sans-serif";
+const SERIF = "'Source Serif 4', Georgia, 'Times New Roman', serif";
+const PAGE_STYLE = { '--font-sans': INTER, '--font-serif': SERIF, '--accent-rgb': '3 32 61', '--accent-soft': '#F1F4F8', fontFamily: INTER, color: '#03203D' };
 // The state badge as a small rounded-[2px] chip in a soft tint, no border.
 // The run's provider, in the eyebrow row beside the state chip (work package
 // 3: the run page shows which account paid).
@@ -74,8 +75,8 @@ function sandboxLabel(progress) {
 function stateBadge(progress, published) {
   if (progress && progress.status === 'FAILED') return { label: 'Run failed', className: 'bg-amber-50 text-amber-700' };
   if (progress && progress.status !== 'READY') return { label: 'In progress', className: 'bg-amber-50 text-amber-700' };
-  if (published) return { label: 'Finalised review', className: 'bg-[#e9effa] text-[#2f56b8]' };
-  return { label: 'Draft', className: 'bg-[#f3f3f3] text-[#555]' };
+  if (published) return { label: 'Finalised review', className: 'bg-[#03203D] text-white' };
+  return { label: 'Draft', className: 'bg-[#F1F4F8] text-[#0B3D71] border border-[#B9C8DA]' };
 }
 
 // Work package 27 (plan finding (237), 2026-10-23). Ben, on where a held
@@ -131,7 +132,7 @@ export function ProvisionsPreviewBody({ workspace, runId }) {
   // browser to Corpus - Pfizer / Metsera": "Corpus - " then the deal
   // title, the parent's and the company's names.
   return (
-    <div className="flex min-h-screen bg-white text-[#1f1f1f]" style={PAGE_STYLE} data-testid="provisions-page">
+    <div className="pw-provisions flex min-h-screen bg-white text-[#03203D]" style={PAGE_STYLE} data-testid="provisions-page">
       <Head><title>{`Corpus - ${title}`}</title></Head>
       {preview.facts.length === 0 ? (
         <div className="p-[9.5px] md:p-[18.5px]">
@@ -144,12 +145,12 @@ export function ProvisionsPreviewBody({ workspace, runId }) {
           <div className="min-w-0 flex-1 px-[9px] py-[18.5px] md:px-[18.5px] lg:pb-[56px] lg:pl-[37px] lg:pr-[56px] lg:pt-[37px]">
             <header className="mb-[16px]" data-testid="preview-header">
               <div className="flex flex-wrap items-center gap-[7px]">
-                <p className="font-ui text-[10px] uppercase tracking-[0.12em] text-[#6b6b6b]">Lawyer preview</p>
+                <p className="font-ui text-[9.5px] uppercase tracking-[0.14em] text-[#6B7785]">Lawyer preview</p>
                 <span className={`inline-flex items-center rounded-full px-[6px] py-[1px] text-[9px] font-ui font-medium uppercase tracking-wide ${badge.className}`} data-testid="preview-badge">{badge.label}</span>
                 {providerLabel(progress) ? <span className="font-ui text-[9px] uppercase tracking-[0.12em] text-[#6b6b6b]" data-testid="preview-provider">{providerLabel(progress)}</span> : null}
                 {sandboxLabel(progress) ? <span className="font-ui text-[9px] tracking-[0.08em] text-[#6b6b6b]" data-testid="preview-sandbox">{sandboxLabel(progress)}</span> : null}
               </div>
-              <h1 className="mt-[7px] font-sans text-[23px] font-semibold leading-[1.05] tracking-tight text-[#1f1f1f] md:text-[30px]">{title}</h1>
+              <h1 className="mt-[8px] font-sans text-[30px] font-bold leading-[.98] tracking-[-.05em] text-[#03203D] md:text-[38px]">{title}</h1>
               {/* Ben, 2026-09-14: "please remove 'State: draft, not published /
                   Date / Source / Generation' and the facts count line". The
                   header is the eyebrow, the state badge, the title and the
@@ -187,7 +188,7 @@ export function ProvisionsPreviewBody({ workspace, runId }) {
                 </div>
               ) : null}
               {live && progress.status !== 'FAILED' ? <p className="mt-[7px] rounded-[2px] bg-amber-50 px-[7px] py-[4.5px] text-[9.5px] font-ui text-amber-700" data-testid="preview-live">Filling in as sections complete. This page refreshes itself every minute.</p> : null}
-              <div className="mt-[16px] h-[2px] w-full bg-black" data-testid="preview-rule" aria-hidden="true" />
+              <div className="mt-[16px] h-[10px] w-full bg-[#B9C8DA]" data-testid="preview-rule" aria-hidden="true" />
             </header>
             <PublishedSummary
               groups={[{ family_key: 'ALL', collapsed: false, facts: preview.facts }]}

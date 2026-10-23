@@ -39,8 +39,8 @@ export function railGroups(sections) {
 }
 
 export default function ProvisionRail({ sections, title = null }) {
-  const [active, setActive] = useState(null);
   const groups = railGroups(sections);
+  const [active, setActive] = useState(groups[0]?.sections?.[0]?.section_key || null);
   if (!groups.length) return null;
   const item = (sectionKey, label, { sub = false } = {}) => {
     const isActive = active === sectionKey;
@@ -51,8 +51,8 @@ export default function ProvisionRail({ sections, title = null }) {
         onClick={() => setActive(sectionKey)}
         data-testid="provision-rail-item"
         data-active={isActive || undefined}
-        className={`block rounded-[2px] font-sans leading-snug ${sub ? 'text-[11.5px]' : 'text-[13.5px]'} ${isActive ? 'bg-white font-bold text-black' : 'font-normal text-white/90 hover:bg-white/10 hover:text-white'}`}
-        style={{ padding: sub ? '4.5px 10px' : '8px 10px', marginLeft: sub ? 8 : 0 }}
+        className={`block font-serif leading-snug text-[#33475E] ${sub ? 'text-[11.5px]' : 'text-[13.5px]'} ${isActive ? 'bg-[#F1F4F8] font-semibold text-[#03203D]' : 'font-normal hover:bg-[#F1F4F8] hover:text-[#03203D]'}`}
+        style={{ padding: sub ? '4.5px 10px' : '8px 10px', marginLeft: sub ? 8 : 0, borderLeft: isActive ? '3px solid #03203D' : '3px solid transparent' }}
       >
         {label}
       </a>
@@ -61,12 +61,16 @@ export default function ProvisionRail({ sections, title = null }) {
   return (
     <nav
       aria-label="Provision sections"
-      className="sticky top-0 hidden h-screen max-h-screen shrink-0 self-start overflow-y-auto bg-black lg:block [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      style={{ width: 197, padding: 16 }}
+      className="sticky top-0 hidden h-screen max-h-screen shrink-0 self-start overflow-y-auto border-r border-[#DCE3E1] bg-white lg:block [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      style={{ width: 264, padding: 22 }}
       data-testid="provision-rail"
     >
+      <div className="mb-[18px] flex items-center gap-[10px]" data-testid="provision-rail-brand">
+        <span className="flex h-[34px] w-[34px] shrink-0 flex-col justify-center gap-[1px] bg-[#03203D] pl-[5px] font-sans text-[9.5px] font-extrabold leading-[.88] tracking-[-.03em] text-white" aria-hidden="true"><span>Paul,</span><span>Weiss</span></span>
+        <span className="font-sans text-[16px] font-semibold tracking-[-.03em] text-[#03203D]">Corpus</span>
+      </div>
       {title ? (
-        <p className="mb-[18.5px] font-sans text-[26px] font-bold leading-[1.1] tracking-tight text-white" data-testid="provision-rail-title">{title}</p>
+        <p className="mb-[18px] font-sans text-[21px] font-bold leading-[1.05] tracking-[-.035em] text-[#03203D]" data-testid="provision-rail-title">{title}</p>
       ) : null}
       <div className="flex flex-col" style={{ gap: 6 }}>
         {groups.map((group) => (
