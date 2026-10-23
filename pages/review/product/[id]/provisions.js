@@ -219,7 +219,10 @@ export default function ProvisionsPreviewPage() {
     if (!id) return undefined;
     let cancelled = false;
     let timer = null;
-    const load = () => fetch(`/api/product/analysis/${id}/preview`, { cache: 'no-store' })
+    // The server decides freshness: `no-store` while the run is analysing,
+    // a minute of private cache once it is READY or FAILED (preview-handler),
+    // so a reload of a finished page does not pay the 16-second read again.
+    const load = () => fetch(`/api/product/analysis/${id}/preview`)
       .then(async (response) => {
         const value = await response.json();
         if (!response.ok) throw new Error(value.error || 'Preview could not load');
