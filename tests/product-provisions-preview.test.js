@@ -538,3 +538,45 @@ test('a proposal\'s run-level fields do not change the rendered page', () => {
   const render = (value) => renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: value, runId: 'run-1' }));
   assert.equal(render(heavy), render(lean));
 });
+
+// The live finalised run carries 2,398 review items and 7.05 MB of
+// review.state, almost all of it each proposal item's duplicate `original`.
+// The page's fact gets its edited words from the item, and the sidebar's
+// review trail reads the decision, comment, date, item id and whether the
+// fact was edited; nothing else on the item is rendered.
+test('the review trail map carries only the trail fields, and an edited fact shows the lawyer\'s words', () => {
+  const value = workspace();
+  const proposal = value.analysis.proposals[0];
+  const editedComponent = { ...proposal.components[0], text: 'Lawyer-edited category' };
+  value.review.state.items = [{
+    kind: 'PROPOSAL',
+    item_id: 'ri-1',
+    source_id: proposal.proposal_id,
+    decision: 'EDITED',
+    structure_node_id: NODE,
+    family_key: 'MATERIAL_CONTRACTS',
+    schema_version: 'PRODUCT_REVIEW_ITEM/V1',
+    source_closure_id: 'c-3-14',
+    source_span_ids: ['s-full'],
+    reviewed_at: '2026-10-23T19:00:00.000Z',
+    comment: 'Checked against the filing.',
+    edited_statement: 'Lawyer-edited statement',
+    edited_headline: { label: 'Lawyer-edited headline' },
+    edited_components: [editedComponent],
+    edited_roles: { COMPANY: ['Parent Inc.'] },
+    edited_value: { canonical: 1 },
+    original: { ...proposal, components: [{ ...proposal.components[0], text: 'ORIGINAL'.repeat(20000) }] },
+  }];
+  const preview = previewFactsFromWorkspace(value);
+  const fact = preview.facts.find((entry) => entry.fact_id === proposal.proposal_id);
+  assert.equal(fact.statement, 'Lawyer-edited statement');
+  assert.equal(fact.headline.label, 'Lawyer-edited headline');
+  assert.equal(fact.components[0].text, 'Lawyer-edited category');
+  assert.deepEqual(preview.reviewItemsByFactId.get(proposal.proposal_id), {
+    item_id: 'ri-1', decision: 'EDITED', comment: 'Checked against the filing.',
+    reviewed_at: '2026-10-23T19:00:00.000Z', edited_headline: { label: 'Lawyer-edited headline' },
+  });
+  const trail = JSON.stringify([...preview.reviewItemsByFactId.values()]);
+  assert.ok(!trail.includes('ORIGINAL'), 'the duplicate original never reaches the trail map');
+  assert.ok(!trail.includes('source_span_ids'));
+});
