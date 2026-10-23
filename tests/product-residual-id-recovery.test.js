@@ -39,3 +39,19 @@ test('valid siblings remain unchanged and malformed known rows fail closed', () 
   assert.throws(() => compileResidualPass({ response: { paragraphs: [row('actual-b'), row('actual-a')] }, call, node, closure, paragraphs }), /RESIDUAL_PARAGRAPH_ORDER/);
   assert.throws(() => compileResidualPass({ response: { paragraphs: [{ ...row('actual-a'), family_keys: ['UNKNOWN'] }] }, call, node, closure, paragraphs }), /RESIDUAL_FAMILY/);
 });
+
+// The residual response contract prints the allowed dispositions as a JSON
+// list, meaning one of them. A model that reads it literally answers with a
+// one-element list: the DeepSeek run of 2026-10-23 (34847358, 3.1) did, and
+// every section failed as "RESIDUAL_DISPOSITION: KNOWN_FAMILY" with the value
+// plainly in the allowed set. One element is the disposition; two stay
+// ambiguous and are refused.
+test('a one-element disposition list is read as its element; two elements still fail', () => {
+  const response = { paragraphs: [{ source_span_id: 'actual-a', disposition: ['KNOWN_FAMILY'], family_keys: ['TAX_MATTERS'], rationale: 'reason' }, row('actual-b')] };
+  const result = compileResidualPass({ response, call, node, closure, paragraphs });
+  assert.equal(result.residualPass.dispositions.find((x) => x.source_span_id === 'actual-a').disposition, 'KNOWN_FAMILY');
+  assert.throws(() => compileResidualPass({
+    response: { paragraphs: [{ source_span_id: 'actual-a', disposition: ['KNOWN_FAMILY', 'IMMATERIAL'], family_keys: ['TAX_MATTERS'], rationale: 'reason' }] },
+    call, node, closure, paragraphs,
+  }), /RESIDUAL_DISPOSITION/);
+});
