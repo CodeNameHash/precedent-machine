@@ -487,7 +487,7 @@ export default function HomePage({ initialData, processPilotUiEnabled = false })
                   <h1>The deal index.</h1>
                   <form className="search pw-search" onSubmit={submitSearch} onClick={(e) => e.stopPropagation()}>
                     <svg className="pw-searchicon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7"><circle cx="7" cy="7" r="5"/><path d="M11 11l3.5 3.5"/></svg>
-                    <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search a deal, a party or a provision" />
+                    <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search a deal, a party or a provision" aria-label="Search deals, parties and provisions" />
                     <button type="submit" className="pw-searchbtn">Search</button>
                     {(showAllMatch || suggestions.length > 0) && (
                       <div className="suggestions">
@@ -569,7 +569,7 @@ export default function HomePage({ initialData, processPilotUiEnabled = false })
                     {pwFirmCount > 0 && (
                       <button type="button" className={`pw-fbtn${pwFirmActive ? ' on' : ''}`} onClick={togglePwFirmPreset}>Paul, Weiss <span>{pwFirmCount}</span></button>
                     )}
-                    <button type="button" className="pw-fbtn pw-more" onClick={() => setFiltersOpen(true)}>More filters</button>
+                    <button type="button" className="pw-fbtn pw-more" aria-haspopup="dialog" aria-expanded={filtersOpen} onClick={() => setFiltersOpen(true)}>More filters</button>
                     {activeFilterCount > 0 && <span className="pw-fcount">{activeFilterCount} active</span>}
                   </div>
 
