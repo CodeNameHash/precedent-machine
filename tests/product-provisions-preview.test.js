@@ -486,3 +486,55 @@ test('the article\'s qualification facts sit above each representation section\'
   assert.doesNotMatch(renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: workspace(), runId: 'run-1' })), /article-qualification/);
   assert.equal(articleQualifications(previewFactsFromWorkspace(workspace()).facts, tableShapes).size, 0);
 });
+
+// The preview page reads facts through table-view.js and the evidence
+// sidebar, never the run-level fields a stored proposal also carries. The
+// fact is built from a fixed field list (lib/product/provisions-preview.js)
+// so a heavier run payload cannot change what the page renders.
+const FACT_DECOYS = {
+  roles: { COMPANY: ['Parent Inc.'] },
+  source_span_ids: ['s-full'],
+  model_call_id: 'm'.repeat(64),
+  schema_version: 'PRODUCT_PROPOSAL/V1',
+  proposition_group_id: 'g-decoy',
+  fact_type: 'DECOY_FACT_TYPE',
+  canonical_value: 3,
+  state: 'PROPOSED',
+  source_closure_id: 'c-3-14',
+  facts_span_text: 'DECOY'.repeat(20000),
+};
+
+test('preview facts and section text carry only the fields the page reads', () => {
+  const withDecoys = workspace();
+  Object.assign(withDecoys.analysis.proposals[0], FACT_DECOYS);
+  withDecoys.analysis.source_document.raw_bytes_base64 = 'RAWBYTES'.repeat(20000);
+  withDecoys.analysis.source_closures[0].spans = [{ span_id: 's-full', exact_text: 'CLOSURESPAN'.repeat(20000) }];
+  withDecoys.analysis.coverage_assertions = [{ coverage_assertion_id: 'cov', text: 'COVERAGE'.repeat(20000) }];
+  const preview = previewFactsFromWorkspace(withDecoys);
+  const fact = preview.facts[0];
+  for (const decoy of Object.keys(FACT_DECOYS)) {
+    assert.ok(!Object.hasOwn(fact, decoy), `${decoy} is not on the fact`);
+  }
+  assert.deepEqual(Object.keys(fact).sort(), [
+    'components', 'fact_id', 'family_key', 'headline', 'proposal_id',
+    'section_reference', 'statement', 'structure_node_id', 'subtype_key', 'validation_status',
+  ]);
+  const component = fact.components[0];
+  assert.ok(!Object.hasOwn(component, 'gap_before'), 'gap_before false is read as absent');
+  assert.ok(!Object.hasOwn(component, 'children'), 'an empty child list is read as absent');
+  assert.deepEqual(Object.keys(preview.sectionTextByFactId.get(fact.fact_id)).sort(), ['exact_text', 'span_id', 'start_byte']);
+  const text = JSON.stringify(preview.facts);
+  assert.ok(text.length < 32 * 1024, `preview facts are ${text.length} bytes (guard: 32768)`);
+  assert.ok(!text.includes('DECOY'), 'the decoy never reaches the facts');
+});
+
+test('a proposal\'s run-level fields do not change the rendered page', () => {
+  const lean = workspace();
+  const heavy = workspace();
+  Object.assign(heavy.analysis.proposals[0], FACT_DECOYS);
+  heavy.analysis.source_document.raw_bytes_base64 = 'RAWBYTES'.repeat(20000);
+  heavy.analysis.source_document.source_map_payload_base64 = 'SOURCEMAP'.repeat(20000);
+  heavy.analysis.source_closures[0].spans = [{ span_id: 's-full', exact_text: 'CLOSURESPAN'.repeat(20000) }];
+  const render = (value) => renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: value, runId: 'run-1' }));
+  assert.equal(render(heavy), render(lean));
+});
