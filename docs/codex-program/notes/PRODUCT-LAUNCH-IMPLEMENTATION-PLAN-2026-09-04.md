@@ -6113,6 +6113,63 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       real words, the negative row, one browser check of the page. Not
       changed: the extraction instruction and the fact model; the facts
       already name the side.
+      (244) 2026-10-23 19:40 to 20:55 UTC (the manager): three work
+      packages landed and the DeepSeek tier was measured. Work package 30
+      (the closing conditions split by the side in the facts' own words)
+      merged at d6c4125a; on the Apogee payload the two tables read
+      Parent's (4 rows, all 6.3, plus the 5.9 filing negative) and the
+      Company's (3 rows, all 6.2) with the mutual table unchanged, 58+86+46
+      tests green. Work package 31 (the DeepSeek provider) merged at
+      2a361963: provider DEEPSEEK_API, base URL
+      https://api.deepseek.com/anthropic (an Anthropic Messages endpoint,
+      verified live), ROUTING and RESIDUAL on deepseek-flash at effort low,
+      EXTRACTION on deepseek-v4-pro at effort high, key DEEPSEEK_API_KEY
+      plumbed through the wake, prices from the published table with peak
+      and off-peak. Work package 32 (the lawyer preview read) merged at
+      ce1def4b then c31c9a7f: Ben, "the preview page opened very slowly";
+      the read now projects to what the page renders, 45.7 MB and 45 to 59
+      s before, 3.9 MB and 16 s after on the live deployment, with the
+      rendered HTML byte-identical (sha256 1ef72de0…) and a size guard in
+      the tests; a finished run's read is now reusable for a minute
+      (dd44090b). The remaining 16 s is the database scanning a 97-section
+      run's rows, not the bytes: 31 sections take 8 s and a light query
+      0.7 s. Two parser defects were found by the DeepSeek run and fixed:
+      the response contract offers residual dispositions and coverage
+      states as JSON lists meaning one of them, and DeepSeek returns a
+      one-element list, which failed as "RESIDUAL_DISPOSITION:
+      KNOWN_FAMILY" and "COVERAGE_STATE: 1.6:MERGER_STRUCTURE_CLOSING" with
+      the value plainly allowed; both now read a one-element list as its
+      element and still refuse two (1e950348, d8b6bab7).
+      (245) 2026-10-23 20:05 to 20:55 UTC (the manager): the DeepSeek
+      comparison, run 34847358 (generation 4, 97 sections, provider
+      DEEPSEEK_API). All 97 sections extracted, no failed section, 22,441,073
+      input and 3,862,542 output tokens, $18.02 at DeepSeek's own prices, in
+      about 45 minutes. Against the Claude run of the same agreement on the
+      same instruction (88d4032a): Claude proposes 869 facts, 858 VALID and
+      11 held (1.3 per cent); DeepSeek proposes 874, 758 VALID and 116 held
+      (13.3 per cent). The held reasons are the classes the validator
+      already names for Claude, only far more frequent: text missing, no
+      supporting span, quote not found in the source, duplicate fact
+      occurrence, a relationship not allowed. Read: DeepSeek proposes a
+      comparable number of facts and its citation discipline is an order of
+      magnitude weaker, and citation discipline is this product's guarantee
+      — a held fact is invisible to the lawyer. Cost is real but not
+      decisive at 97 sections: $18 against roughly $35 to $50 at Anthropic
+      list for the same volume (the Claude run cost $0 marginal on the
+      subscription), and DeepSeek pays full input price because its cache
+      does not behave as Anthropic's (22.4M input tokens here against 14.1M
+      on Claude for the same agreement). Recommendation to Ben: do not
+      switch the default on this evidence; the tier is worth another trial
+      only with the quoting instruction hardened first (quote only an exact
+      substring of a listed span, never a paraphrase), and the flash tier is
+      not yet tested end to end at all. Also found by both runs, and not a
+      DeepSeek matter: draft finalisation is now failing on the preview
+      database — 88d4032a reached READY then fell to FAILED on a write after
+      the draft existed and needed one retry, and 34847358 has failed
+      finalisation three times ("canceling statement due to statement
+      timeout") though every section is committed. A run that has finalised
+      must not be able to fall to FAILED, and finalisation must be batched
+      or resumable: it is Phase 6's blocker, not a tuning matter.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
