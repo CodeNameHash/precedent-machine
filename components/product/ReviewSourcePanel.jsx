@@ -21,7 +21,7 @@ export default function ReviewSourcePanel({ selection, source, loading, onOpenFu
         <p className="pw-rail-kicker">Source · {displayReviewLabel(span.kind)}</p>
         <button type="button" onClick={onOpenFull} className="pw-source-open">Full source</button>
       </div>
-      <h2 className="pw-source-title">{selection.reviewContext?.section_reference || span.section_reference || 'Selected passage'}</h2>
+      <h2 className="pw-source-title">{selection.sectionReference || selection.reviewContext?.section_reference || span.section_reference || 'Selected passage'}</h2>
       <p className="pw-source-sub">The exact words behind the selected proposal.</p>
       {loading ? <p className="pw-source-empty">Loading source…</p> : (
         <blockquote className="pw-source-quote" data-testid="review-source-quote">{span.exact_text}</blockquote>

@@ -465,7 +465,9 @@ export default function ReviewWorkspace({ runId, focus = [], allSectionsHref = n
   async function openSource(closureId, spanId, reviewContext = null) {
     const span = workspace.analysis.spans.find((item) => item.span_id === spanId);
     const resolvedClosureId = closureId || span?.source_closure_ids?.[0] || null;
-    setSourceSelection({ closureId: resolvedClosureId, span, reviewContext });
+    const sectionNode = workspace.analysis.agreement_structure?.nodes?.find((node) => node.node_id === span?.structure_node_id);
+    const sectionReference = reviewContext?.section_reference || sectionNode?.reference || null;
+    setSourceSelection({ closureId: resolvedClosureId, span, reviewContext, sectionReference });
     if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(max-width: 1023px)').matches) setSourceModal(true);
     if (!source) await loadSource().catch((failure) => setError(failure.message));
   }
