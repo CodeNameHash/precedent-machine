@@ -70,10 +70,12 @@ const driftIssue = {
   message: JSON.stringify({ fact_type: 'OTHER_DEFINED_TERM_RECORDED', section_reference: '3.14', structure_node_id: NODE }), state: 'OPEN',
 };
 
-test('buildPreviewWorkspace carries draft-level issues beside the sections\' own, and none when the store has none', () => {
+test('buildPreviewWorkspace carries the draft-level issues the page reads, and none when the store has none', () => {
+  // A conclusions note on a valid fact is never read on the preview; the
+  // drift line is read by code and must survive.
   const sectionIssue = { issue_id: 'i-section', kind: 'VALIDATION', code: 'CONCLUSIONS_DROPPED', structure_node_id: NODE, message: 'x', state: 'OPEN' };
   const withDrift = buildPreviewWorkspace({ ...context, sections: [{ ...section(), issues: [sectionIssue] }], draftIssues: [driftIssue] });
-  assert.deepEqual(withDrift.analysis.issues.map((issue) => issue.issue_id), ['i-section', 'i-drift']);
+  assert.deepEqual(withDrift.analysis.issues.map((issue) => issue.issue_id), ['i-drift']);
   assert.deepEqual(previewFactsFromWorkspace(withDrift).schema_drift.map((entry) => [entry.section_reference, entry.fact_type]), [['3.14', 'OTHER_DEFINED_TERM_RECORDED']]);
   const without = buildPreviewWorkspace({ ...context, sections: [section()] });
   assert.deepEqual(without.analysis.issues, []);
@@ -183,12 +185,25 @@ function heavySection() {
       source_span_ids: ['s-full', 's-supporting'],
       state: 'PROPOSED',
       conclusions: { table_key: 'material-contracts-table', row_label: 'Real estate leases', cells: {} },
+    }, {
+      ...base.proposals[0], proposal_id: 'p-held', fact_id: 'p-held', statement: 'Held fact',
+      validation_status: 'INVALID', fact_occurrence_id: 'occ-held',
     }],
     groups: [{ proposition_group_id: 'g-1', statement: BIG }],
     links: [{ fact_link_id: 'l-1', from_proposal_id: 'p-1', to_proposal_id: 'p-2', statement: BIG }],
+    // i-valid is on a valid fact and is never read; i-held and i-node are
+    // the held fact's own issue and its node's unknown-span note.
     issues: [{
-      issue_id: 'i-1', kind: 'VALIDATION', code: 'INVALID_FACT_COMPONENTS', proposal_id: 'p-1',
-      structure_node_id: NODE, family_key: 'MATERIAL_CONTRACTS', message: '1: byte range missing',
+      issue_id: 'i-valid', kind: 'VALIDATION', code: 'CONCLUSIONS_DROPPED', proposal_id: 'p-1',
+      structure_node_id: NODE, family_key: 'MATERIAL_CONTRACTS', message: 'x',
+      schema_version: 'PRODUCT_ISSUE/V1', source_closure_id: 'c-1', source_span_ids: ['s-full', 's-supporting'], state: 'OPEN', subtype_key: 'CATEGORY_WITH_THRESHOLD',
+    }, {
+      issue_id: 'i-held', kind: 'VALIDATION', code: 'INVALID_FACT_COMPONENTS', proposal_id: 'p-held',
+      structure_node_id: NODE, family_key: 'MATERIAL_CONTRACTS', message: '0: byte range missing',
+      schema_version: 'PRODUCT_ISSUE/V1', source_closure_id: 'c-1', source_span_ids: ['s-full', 's-supporting'], state: 'OPEN', subtype_key: 'CATEGORY_WITH_THRESHOLD',
+    }, {
+      issue_id: 'i-node', kind: 'VALIDATION', code: 'INVALID_FACT_COMPONENTS', proposal_id: null,
+      structure_node_id: NODE, family_key: 'MATERIAL_CONTRACTS', message: '0: quote not found in source (UNKNOWN_SOURCE_COMPONENT)',
       schema_version: 'PRODUCT_ISSUE/V1', source_closure_id: 'c-1', source_span_ids: ['s-full', 's-supporting'], state: 'OPEN', subtype_key: 'CATEGORY_WITH_THRESHOLD',
     }],
     coverage: [{ coverage_assertion_id: 'cov-1', structure_node_id: NODE, text: BIG }],
@@ -230,6 +245,7 @@ test('the preview workspace is projected to the fields the page reads', () => {
   assert.deepEqual(Object.keys(workspace.analysis.proposals[0].components[0]).sort(), [
     'component_id', 'end_byte', 'kind', 'label', 'origin', 'source_span_id', 'start_byte', 'text',
   ]);
+  assert.deepEqual(workspace.analysis.issues.map((issue) => issue.issue_id).sort(), ['i-held', 'i-node']);
   assert.deepEqual(Object.keys(workspace.analysis.issues[0]).sort(), [
     'code', 'family_key', 'issue_id', 'kind', 'message', 'proposal_id', 'structure_node_id',
   ]);
@@ -242,6 +258,8 @@ test('the preview workspace is projected to the fields the page reads', () => {
   assert.equal(preview.facts.length, 1);
   assert.equal(preview.facts[0].section_reference, '3.14');
   assert.equal(preview.sectionTextByFactId.get('p-1').exact_text, SECTION_TEXT);
+  assert.equal(preview.held_facts.length, 1, 'the held fact keeps its reason from the held issues');
+  assert.match(preview.held_facts[0].held_reason, /cites a span the section does not have/);
   assert.ok(!JSON.stringify(workspace).includes('x'.repeat(1000)), 'a heavy unread field never reaches the payload');
 });
 
@@ -361,4 +379,138 @@ test('the handler reads the preview store projection when the store has one', as
   assert.equal(res.statusCode, 200);
   assert.equal(res.body.analysis.proposals.length, 1);
   assert.deepEqual(calls, [['preview', context.run.run_id]], 'the full completed-section read is not used');
+});
+
+// The live finalised run's review.state is 7.05 MB, almost all of it each
+// proposal item's `original` (a second copy of the proposal). The preview
+// pages render the fact items only: the proposal's edit and review trail,
+// and a user fact's own words. These tests pin that projection.
+function reviewWithEdits() {
+  const editedComponents = [{ ...section().proposals[0].components[0], text: 'Edited category' }];
+  return {
+    version: 9,
+    state: {
+      status: 'READY',
+      metrics: { note: BIG },
+      summary: { note: BIG },
+      review_timing: { note: BIG },
+      schema_version: 'PRODUCT_REVIEW_STATE/V1',
+      analysis_run_id: context.run.run_id,
+      draft_analysis_id: 'a'.repeat(64),
+      started_at: '2026-10-23T18:00:00.000Z',
+      updated_at: '2026-10-23T19:00:00.000Z',
+      published_at: null,
+      release_evaluation: { note: BIG },
+      release_evaluation_input: { note: BIG },
+      agreement_coverage: { decision: 'PENDING', note: BIG },
+      items: [{
+        kind: 'PROPOSAL', item_id: 'ri-1', source_id: 'p-1', decision: 'EDITED',
+        family_key: 'MATERIAL_CONTRACTS', schema_version: 'PRODUCT_REVIEW_ITEM/V1',
+        structure_node_id: NODE, source_closure_id: 'c-1', source_span_ids: ['s-full', 's-other'],
+        reviewed_at: '2026-10-23T19:00:00.000Z', comment: 'Checked the category.',
+        edited_statement: 'Edited statement',
+        edited_headline: { label: 'Edited headline', distinguishing_component_ids: ['c-a'] },
+        edited_components: editedComponents,
+        edited_roles: { COMPANY: ['Parent Inc.'] },
+        edited_value: { canonical: 1 },
+        edited_relationship: { from_proposal_id: 'p-1' },
+        edited_proposition_group_id: 'g-1',
+        template_id: 'template-1',
+        original: {
+          ...section().proposals[0],
+          roles: { COMPANY: ['Parent Inc.'] },
+          source_span_ids: ['s-full', 's-other'],
+          model_call_id: 'm'.repeat(64),
+          state: 'PROPOSED',
+          schema_version: 'PRODUCT_PROPOSAL/V1',
+          fact_type: 'MATERIAL_CONTRACT_CATEGORY_CRITERION',
+          canonical_value: 3,
+          facts_span_text: BIG,
+        },
+      }, {
+        kind: 'ISSUE', item_id: 'ri-2', source_id: 'i-1', decision: 'ACCEPTED',
+        structure_node_id: NODE, source_closure_id: 'c-1', source_span_ids: ['s-full'],
+        family_key: 'MATERIAL_CONTRACTS', schema_version: 'PRODUCT_REVIEW_ITEM/V1',
+        original: { code: 'X', family_key: 'X', subtype_key: 'Y', message: BIG, state: 'OPEN' },
+      }, {
+        kind: 'COVERAGE', item_id: 'ri-3', source_id: 'cov-1', decision: 'ACCEPTED',
+        structure_node_id: NODE, original: { coverage_assertion_id: 'cov-1', reason: BIG },
+      }, {
+        kind: 'RELATIONSHIP', item_id: 'ri-4', source_id: 'l-1', decision: 'ACCEPTED',
+        structure_node_id: NODE, original: { fact_link_id: 'l-1', from_proposal_id: 'p-1', to_proposal_id: 'p-1', relationship_type: 'X', message: BIG },
+      }],
+    },
+  };
+}
+
+test('the preview review state keeps the fact items and the trail fields, not the fat originals', () => {
+  const workspace = buildPreviewWorkspace({ ...context, sections: [section()], review: reviewWithEdits() });
+  assert.deepEqual(Object.keys(workspace.review.state).sort(), ['agreement_coverage', 'items', 'status']);
+  assert.deepEqual(workspace.review.state.items.map((item) => item.kind), ['PROPOSAL'], 'issue, coverage and relationship items are not rendered');
+  const item = workspace.review.state.items[0];
+  assert.deepEqual(item.original, {}, 'the duplicate proposal is not sent');
+  assert.equal(item.edited_statement, 'Edited statement');
+  assert.equal(item.edited_headline.label, 'Edited headline');
+  assert.equal(item.edited_components[0].text, 'Edited category');
+  assert.equal(item.comment, 'Checked the category.');
+  assert.equal(item.reviewed_at, '2026-10-23T19:00:00.000Z');
+  assert.equal(item.decision, 'EDITED');
+  assert.equal(item.item_id, 'ri-1');
+  for (const absent of ['source_span_ids', 'source_closure_id', 'family_key', 'schema_version', 'edited_roles', 'edited_value', 'edited_relationship', 'template_id', 'structure_node_id']) {
+    assert.ok(!Object.hasOwn(item, absent), `${absent} is not read for a proposal item`);
+  }
+  // The lawyer's edit is what the page renders.
+  const preview = previewFactsFromWorkspace(workspace);
+  assert.equal(preview.facts.length, 1);
+  assert.equal(preview.facts[0].statement, 'Edited statement');
+  assert.equal(preview.facts[0].headline.label, 'Edited headline');
+  assert.equal(preview.facts[0].components[0].text, 'Edited category');
+  assert.deepEqual(preview.reviewItemsByFactId.get('p-1'), {
+    item_id: 'ri-1', decision: 'EDITED', comment: 'Checked the category.',
+    reviewed_at: '2026-10-23T19:00:00.000Z', edited_headline: { label: 'Edited headline', distinguishing_component_ids: ['c-a'] },
+  });
+  // A fat original, fat state blocks and non-fact items cannot come back.
+  const bytes = JSON.stringify(workspace).length;
+  assert.ok(bytes < 32 * 1024, `preview payload is ${bytes} bytes (guard: 32768)`);
+  assert.ok(!JSON.stringify(workspace).includes('x'.repeat(1000)));
+});
+
+test('a user fact keeps its own words and edit, and an edited fact still shows the lawyer\'s words', () => {
+  const userFact = {
+    kind: 'USER_FACT', item_id: 'ri-user', source_id: 'u-1', decision: 'EDITED',
+    structure_node_id: NODE, reviewed_at: '2026-10-23T19:05:00.000Z', comment: 'Our own fact.',
+    edited_statement: 'User-edited statement',
+    edited_components: [{ ...section().proposals[0].components[0], text: 'User-edited category' }],
+    original: {
+      family_key: 'MATERIAL_CONTRACTS', subtype_key: 'CATEGORY_WITH_THRESHOLD',
+      statement: 'User statement', validation_status: 'VALID',
+      headline: { label: 'User headline', distinguishing_component_ids: ['c-a'] },
+      components: section().proposals[0].components,
+      roles: { COMPANY: ['Parent Inc.'] },
+      source_span_ids: ['s-full'],
+      model_call_id: 'm'.repeat(64),
+      facts_span_text: BIG,
+    },
+  };
+  const workspace = buildPreviewWorkspace({
+    ...context, sections: [section()],
+    review: { version: 1, state: { status: 'DRAFT', items: [userFact], agreement_coverage: { decision: 'PENDING' } } },
+  });
+  const projected = workspace.review.state.items[0];
+  assert.equal(projected.kind, 'USER_FACT');
+  assert.equal(projected.structure_node_id, NODE, 'the section it belongs to is kept');
+  assert.equal(projected.original.statement, 'User statement');
+  assert.equal(projected.original.components[0].text, 'Material Contracts');
+  assert.equal(projected.original.family_key, 'MATERIAL_CONTRACTS');
+  for (const absent of ['roles', 'source_span_ids', 'model_call_id', 'facts_span_text']) {
+    assert.ok(!Object.hasOwn(projected.original, absent), `${absent} is not read for a user fact`);
+  }
+  const preview = previewFactsFromWorkspace(workspace);
+  const fact = preview.facts.find((entry) => entry.fact_id === 'u-1');
+  assert.equal(fact.statement, 'User-edited statement');
+  assert.equal(fact.components[0].text, 'User-edited category');
+  assert.deepEqual(preview.reviewItemsByFactId.get('u-1'), {
+    item_id: 'ri-user', decision: 'EDITED', comment: 'Our own fact.',
+    reviewed_at: '2026-10-23T19:05:00.000Z',
+  });
 });
