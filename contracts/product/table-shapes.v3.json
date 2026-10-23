@@ -6082,7 +6082,7 @@
     },
     {
       "section_key": "conditions-b",
-      "title": "Closing Conditions — Buyer",
+      "title": "Conditions to Parent's Obligations",
       "legacy_config": "components/review/table-configs/conditions-m.config.js",
       "v2_family_keys": [
         {
@@ -6168,23 +6168,24 @@
             "No Material Adverse Effect",
             "Officer's Certificate",
             "Tax opinion",
-            "Other conditions"
+            "Filing, notice or consent — expressly not a condition precedent",
+            "Other conditions (not otherwise classified)"
           ],
           "additional_row_reasons": {
             "Performance of Covenants": "Ben's decision 2026-09-13 #24: \"where is cov compliance\" -- the covenant performance condition is a row of its own."
           },
           "sub_row_from_column": "standard",
-          "guidance": "One line per bring-down tier under Accuracy of Representations (each tier is a fact with its standard, the representations it covers as resolved CROSS_REFERENCE components, and whether materiality qualifiers are disregarded); the covenant performance condition, the no-MAE condition and the officer's certificate are rows of their own.",
+          "guidance": "One line per bring-down tier under Accuracy of Representations (each tier is a fact with its standard, the representations it covers as resolved CROSS_REFERENCE components, and whether materiality qualifiers are disregarded); the covenant performance condition, the no-MAE condition and the officer's certificate are rows of their own. Work package 30 (plan finding (243)): this is the Parent's obligations table; a condition fact whose own words name the other side belongs on the other table, and the page routes it there by those words, never by the section number or the fact's actor.",
           "fact_type_rows": {
             "GENERAL_CLOSING_CONDITION:BRINGDOWN": "Accuracy of Representations",
             "GENERAL_CLOSING_CONDITION:TAX_OPINION": "Tax opinion",
-            "GENERAL_CLOSING_CONDITION": "Other conditions",
+            "GENERAL_CLOSING_CONDITION": "Other conditions (not otherwise classified)",
             "COVENANT_COMPLIANCE_STANDARD": "Performance of Covenants",
             "NO_MAE_CONDITION": "No Material Adverse Effect",
             "NO_MAE_CONDITION_CONTINUING": "No Material Adverse Effect",
             "OFFICER_CERTIFICATE_REQUIRED": "Officer's Certificate"
           },
-          "statement_words": "obligations? of (each of )?Parent|Parent'?s obligations?"
+          "statement_words": "obligations? of (each of )?Parent|Parent'?s obligations?|waiver by Parent"
         }
       ],
       "print_pages": [
@@ -6192,13 +6193,13 @@
       ],
       "rail": {
         "group": "Conditions to Closing",
-        "label": "Buyer",
+        "label": "Parent",
         "hex": "#5660B0"
       }
     },
     {
       "section_key": "conditions-s",
-      "title": "Closing Conditions — Seller",
+      "title": "Conditions to the Company's Obligations",
       "legacy_config": "components/review/table-configs/conditions-m.config.js",
       "v2_family_keys": [
         {
@@ -6284,23 +6285,23 @@
             "Officer's Certificate",
             "No Material Adverse Effect",
             "Tax opinion",
-            "Other conditions"
+            "Other conditions (not otherwise classified)"
           ],
           "additional_row_reasons": {
             "Performance of Covenants": "Ben's decision 2026-09-13 #24: \"where is cov compliance\" -- the covenant performance condition is a row of its own."
           },
           "sub_row_from_column": "standard",
-          "guidance": "One line per bring-down tier under Accuracy of Representations (each tier is a fact with its standard, the representations it covers as resolved CROSS_REFERENCE components, and whether materiality qualifiers are disregarded); the covenant performance condition, the no-MAE condition and the officer's certificate are rows of their own.",
+          "guidance": "One line per bring-down tier under Accuracy of Representations (each tier is a fact with its standard, the representations it covers as resolved CROSS_REFERENCE components, and whether materiality qualifiers are disregarded); the covenant performance condition, the no-MAE condition and the officer's certificate are rows of their own. Work package 30 (plan finding (243)): this is the Company's obligations table; a condition fact whose own words name the other side belongs on the other table, and the page routes it there by those words, never by the section number or the fact's actor.",
           "fact_type_rows": {
             "GENERAL_CLOSING_CONDITION:BRINGDOWN": "Accuracy of Representations",
             "GENERAL_CLOSING_CONDITION:TAX_OPINION": "Tax opinion",
-            "GENERAL_CLOSING_CONDITION": "Other conditions",
+            "GENERAL_CLOSING_CONDITION": "Other conditions (not otherwise classified)",
             "COVENANT_COMPLIANCE_STANDARD": "Performance of Covenants",
             "NO_MAE_CONDITION": "No Material Adverse Effect",
             "NO_MAE_CONDITION_CONTINUING": "No Material Adverse Effect",
             "OFFICER_CERTIFICATE_REQUIRED": "Officer's Certificate"
           },
-          "statement_words": "obligations? of the Company|Company'?s obligations?"
+          "statement_words": "obligations? of the Company|Company'?s obligations?|waiver by the Company"
         }
       ],
       "print_pages": [
@@ -6308,7 +6309,7 @@
       ],
       "rail": {
         "group": "Conditions to Closing",
-        "label": "Seller",
+        "label": "Company",
         "hex": "#5660B0"
       }
     },

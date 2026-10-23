@@ -865,7 +865,7 @@ const RAIL_GROUPS = [
   { group: 'No-Solicitation / No-Shop', hex: '#A8538C', sections: [['nosol-noshop', 'No-Shop Core Mechanics'], ['nosol-fiduciary', 'Fiduciary-Out / Engagement'], ['nosol-intervening', 'Intervening Event'], ['nosol-superior', 'Superior Proposal']] },
   { group: 'Antitrust / Regulatory', hex: '#2F8FA8', sections: [['antitrust-regulatory', 'Antitrust / Regulatory']] },
   { group: 'SEC Filing / Meeting Requirements', hex: '#6E8AA8', sections: [['votes-approvals-meeting', 'Votes / Approvals / SEC Filing / Meeting']] },
-  { group: 'Conditions to Closing', hex: '#5660B0', sections: [['conditions', 'Mutual'], ['conditions-b', 'Buyer'], ['conditions-s', 'Seller']] },
+  { group: 'Conditions to Closing', hex: '#5660B0', sections: [['conditions', 'Mutual'], ['conditions-b', 'Parent'], ['conditions-s', 'Company']] },
   { group: 'Termination Rights', hex: '#C0673A', sections: [['termination-rights', 'Termination Rights']] },
   { group: 'Termination Fees', hex: '#B14E63', sections: [['termination-fees', 'Termination Fees'], ['tail-fee', 'Tail Fee Mechanics']] },
   { group: 'Employee Benefits', hex: '#6E8AA8', sections: [['employee-benefits', 'Employee Benefits']] },

@@ -742,8 +742,30 @@ function applyInterimCovenants(doc) {
 // buyer's and seller's tables show each condition as drafted.
 // ==========================================================================
 
+// Work package 30 (plan finding (243), Ben 2026-10-23): the closing
+// conditions are two tables by the side whose obligation is conditioned.
+// The Company's table takes the facts whose own words are "The obligation of
+// the Company ... (or waiver by the Company ..."; Parent's table takes
+// "... waiver by Parent, on its own behalf and on behalf of Merger Sub ...".
+// The side is read from the fact's words in lib/product/table-view.js, never
+// from the section number. Ben's decision on the catch-all: "Do not leave a
+// catch-all row that can silently absorb unrelated facts; if the shape needs
+// a genuine catch-all for future facts, name it so a reader knows what it
+// is." The 5.9 negative is its own row on Parent's table rather than hidden
+// under "Other conditions".
+const CONDITIONS_CATCH_ALL_ROW = 'Other conditions (not otherwise classified)';
+const CONDITIONS_NEGATIVE_ROW = 'Filing, notice or consent — expressly not a condition precedent';
+
 function applyConditions(doc) {
   const why = `${BEN}: every condition shows as drafted beside its coded tier.`;
+  // The two titles name the side whose obligation is conditioned: the
+  // existing conditions-b table (the buyer / Parent side) and conditions-s
+  // table (the seller / Company side), each keeping its key so stored
+  // readouts and the page's anchors stay stable.
+  const parentSection = findSection(doc, 'conditions-b');
+  const companySection = findSection(doc, 'conditions-s');
+  parentSection.title = "Conditions to Parent's Obligations";
+  companySection.title = "Conditions to the Company's Obligations";
   const mutual = findTable(findSection(doc, 'conditions'), 'conditions-table');
   if (!mutual.fixed_row_labels.includes('Frustration of conditions')) mutual.fixed_row_labels.push('Frustration of conditions');
   mutual.guidance = 'One row per mutual condition as the precedent names it (Stockholder Approval with its vote standard; No Legal Restraint; Antitrust / Regulatory Clearance, each regime a sub-item; S-4 / Proxy Effective; Stock Exchange Listing) and the frustration rule (a FRUSTRATION fact: no party may rely on a failed condition its own breach caused) as a row, each as drafted.';
@@ -770,32 +792,41 @@ function applyConditions(doc) {
   };
   if (!mutual.fixed_row_labels.includes('Other mutual conditions')) mutual.fixed_row_labels.push('Other mutual conditions');
   // The party's table follows from the statement's words, written either
-  // way round ("the obligations of the Company"; "the Company's obligation").
+  // way round ("the obligations of the Company"; "the Company's obligation"),
+  // including the waiver the condition's own chapeau names (finding (243):
+  // "waiver by Parent", "waiver by the Company").
   mutual.statement_words = "obligations? of each (party|of the parties)|each (party|of the parties)'?s obligations?";
-  for (const [sectionKey, tableKey, words] of [
-    ['conditions-b', 'conditions-b-table', "obligations? of (each of )?Parent|Parent'?s obligations?"],
-    ['conditions-s', 'conditions-s-table', "obligations? of the Company|Company'?s obligations?"],
-  ]) {
+  const parentSide = { sectionKey: 'conditions-b', tableKey: 'conditions-b-table', words: "obligations? of (each of )?Parent|Parent'?s obligations?|waiver by Parent" };
+  const companySide = { sectionKey: 'conditions-s', tableKey: 'conditions-s-table', words: "obligations? of the Company|Company'?s obligations?|waiver by the Company" };
+  for (const { sectionKey, tableKey, words } of [parentSide, companySide]) {
     const table = findTable(findSection(doc, sectionKey), tableKey);
     if (!table.columns.some((column) => column.column_id === 'asDrafted')) table.columns.push(asDrafted(why));
     // Work package 19 (d) (NCS generation 5, 6.3: the Closing Tax Opinion,
     // the Canadian tax-deposit condition and the no-Parent-MAE condition of
-    // a stock deal had no row on the Company's table): a tax opinion row,
-    // an other-conditions row, and the No Material Adverse Effect row the
-    // mapping already named on both party tables.
-    for (const label of ['No Material Adverse Effect', 'Tax opinion', 'Other conditions']) {
+    // a stock deal had no row on the Company's table): a tax opinion row and
+    // the No Material Adverse Effect row the mapping already named on both
+    // party tables. Work package 30 (finding (243)) names the catch-all.
+    for (const label of ['No Material Adverse Effect', 'Tax opinion']) {
       if (!table.fixed_row_labels.includes(label)) table.fixed_row_labels.push(label);
     }
+    // Work package 30 (finding (243)): the catch-all says what it is, and
+    // the 5.9 negative has its own named row on Parent's table. The row
+    // order keeps the specific negative before the general catch-all.
+    table.fixed_row_labels = table.fixed_row_labels.filter((label) => label !== 'Other conditions'
+      && label !== CONDITIONS_CATCH_ALL_ROW && label !== CONDITIONS_NEGATIVE_ROW);
+    if (sectionKey === 'conditions-b') table.fixed_row_labels.push(CONDITIONS_NEGATIVE_ROW);
+    table.fixed_row_labels.push(CONDITIONS_CATCH_ALL_ROW);
     table.fact_type_rows = {
       'GENERAL_CLOSING_CONDITION:BRINGDOWN': 'Accuracy of Representations',
       'GENERAL_CLOSING_CONDITION:TAX_OPINION': 'Tax opinion',
-      GENERAL_CLOSING_CONDITION: 'Other conditions',
+      GENERAL_CLOSING_CONDITION: CONDITIONS_CATCH_ALL_ROW,
       COVENANT_COMPLIANCE_STANDARD: 'Performance of Covenants',
       NO_MAE_CONDITION: 'No Material Adverse Effect',
       NO_MAE_CONDITION_CONTINUING: 'No Material Adverse Effect',
       OFFICER_CERTIFICATE_REQUIRED: "Officer's Certificate",
     };
     table.statement_words = words;
+    table.guidance = `${table.guidance || ''} Work package 30 (plan finding (243)): this is the ${sectionKey === 'conditions-b' ? "Parent's" : "Company's"} obligations table; a condition fact whose own words name the other side belongs on the other table, and the page routes it there by those words, never by the section number or the fact's actor.`.trim();
   }
 }
 
