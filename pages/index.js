@@ -873,6 +873,7 @@ export default function HomePage({ initialData, processPilotUiEnabled = false })
           .pw-index .pw-search .suggestions { top: 50px; }
           .pw-index .listTitleMain { font-size: 22px; }
           .pw-index .listTitleSub { display: none; }
+          .pw-index .opsActions { display: none; }
           .pw-index .pw-filters { flex-wrap: wrap; overflow: visible; }
           .pw-index .pw-fbtn { height: 32px; font-size: 9px; padding: 0 10px; }
           .pw-index .tableShell { overflow-x: visible; }
