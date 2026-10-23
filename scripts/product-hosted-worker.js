@@ -6,7 +6,7 @@ const { advanceAgreementDraftAnalysis } = require('../lib/product/analysis-runne
 const { createHostedProductModel } = require('../lib/product/claude-cli-model');
 const { ProductPhase3Store } = require('../lib/product/phase-3-store');
 const {
-  ANTHROPIC_API_PROVIDER_ID, CLAUDE_CLI_PROVIDER_ID, assertConfiguredRunModelConfig, hostedModelConfigFor, isHostedProvider,
+  ANTHROPIC_API_PROVIDER_ID, CLAUDE_CLI_PROVIDER_ID, DEEPSEEK_API_PROVIDER_ID, assertConfiguredRunModelConfig, hostedModelConfigFor, isHostedProvider,
 } = require('../lib/product/product-model-config');
 const { assertDisposableDatabaseUrl } = require('../lib/product/sandbox-wake');
 const { workerStopReason } = require('../lib/product/worker-stop');
@@ -102,6 +102,10 @@ async function runHostedWorkerLoops(options, output, dependencies, stop) {
   // model reads it from the environment itself.
   if (providerId === ANTHROPIC_API_PROVIDER_ID && !process.env.ANTHROPIC_API_KEY) {
     throw new Error('PRODUCT_HOSTED_ANTHROPIC_API_KEY_REQUIRED');
+  }
+  // DeepSeek's key reaches the worker the same way (2026-10-23).
+  if (providerId === DEEPSEEK_API_PROVIDER_ID && !process.env.DEEPSEEK_API_KEY) {
+    throw new Error('PRODUCT_HOSTED_DEEPSEEK_API_KEY_REQUIRED');
   }
   await store.assertAccess({ runId: options.runId, actor: options.actor });
   if (run.stage === 'DOCUMENT_IDENTITY_REVIEW') throw new Error('PRODUCT_HOSTED_IDENTITY_REVIEW_REQUIRED');

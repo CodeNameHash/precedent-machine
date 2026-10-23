@@ -12,7 +12,7 @@ const test = require('node:test');
 
 const { isSandboxGone, keepSandboxAlive, wakeSandboxProductRun, MINIMUM_SESSION_MS, SANDBOX_NAME } = require('../lib/product/sandbox-wake');
 const { createProductRunHandler } = require('../lib/product/run-handler');
-const { ANTHROPIC_API_MODEL_CONFIG, ANTHROPIC_API_PROVIDER_ID, CLAUDE_CLI_PROVIDER_ID, CODEX_PROVIDER_ID } = require('../lib/product/product-model-config');
+const { ANTHROPIC_API_MODEL_CONFIG, ANTHROPIC_API_PROVIDER_ID, CLAUDE_CLI_PROVIDER_ID, CODEX_PROVIDER_ID, DEEPSEEK_API_PROVIDER_ID } = require('../lib/product/product-model-config');
 const { PROVIDER_SETUP, createSandboxWorker, parseArguments } = require('../scripts/product/create-sandbox-worker');
 const { resumeFailureMessage } = require('../scripts/product/update-sandbox-worker');
 
@@ -80,7 +80,7 @@ test('the create script takes the provider from --provider, else PRODUCT_MODEL_P
   assert.throws(() => parseArguments(['--provider', 'ANTHROPIC'], {}), /hosted provider id/);
   assert.throws(() => parseArguments(['--other'], {}), /unknown option/);
   assert.throws(() => parseArguments(['--branch', 'bad branch'], {}), /unexpected branch name/);
-  assert.deepEqual(Object.keys(PROVIDER_SETUP).sort(), [ANTHROPIC_API_PROVIDER_ID, CLAUDE_CLI_PROVIDER_ID, CODEX_PROVIDER_ID].sort());
+  assert.deepEqual(Object.keys(PROVIDER_SETUP).sort(), [ANTHROPIC_API_PROVIDER_ID, CLAUDE_CLI_PROVIDER_ID, CODEX_PROVIDER_ID, DEEPSEEK_API_PROVIDER_ID].sort());
 });
 
 // A fake @vercel/sandbox: `get` behaves per the scenario; `create` records
