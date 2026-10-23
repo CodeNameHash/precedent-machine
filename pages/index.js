@@ -55,6 +55,13 @@ function fmtFullDate(date) {
   return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
+function fmtShortDate(date) {
+  if (!date) return null;
+  const d = new Date(`${date}T00:00:00`);
+  if (Number.isNaN(d.getTime())) return null;
+  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
 function queryHref(kind, payload) {
   return `/query/${kind}/adhoc?payload=${encodePayload(payload)}`;
 }
@@ -109,7 +116,8 @@ function renderCell(col, deal) {
   }
   if (col.key === 'signed') {
     const full = fmtFullDate(deal.signing_date);
-    return <span>{full || '-'}</span>;
+    const short = fmtShortDate(deal.signing_date);
+    return <span title={full || ''}><span className="dateLong">{full || '-'}</span><span className="dateShort">{short || '-'}</span></span>;
   }
   if (col.key === 'value') {
     const money = fmtMoney(deal.value);
@@ -183,6 +191,7 @@ export default function HomePage({ initialData, processPilotUiEnabled = false })
   const [visibleCols, setVisibleCols] = useState(() => defaultVisibleKeys());
   const [openHeader, setOpenHeader] = useState(null);
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   // Deal-filter state, lifted out of QueryLaunchBox so a DEAL_TO_MARKET row
   // pick (handled here, via the table) can build the same deal_filter the
@@ -219,6 +228,18 @@ export default function HomePage({ initialData, processPilotUiEnabled = false })
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [pickMode]);
+
+  useEffect(() => {
+    if (!filtersOpen) return undefined;
+    const onKeyDown = (e) => { if (e.key === 'Escape') setFiltersOpen(false); };
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [filtersOpen]);
 
   useEffect(() => {
     fetch('/api/home')
@@ -406,36 +427,53 @@ export default function HomePage({ initialData, processPilotUiEnabled = false })
 
   const activeColumns = COLUMNS.filter((col) => visibleCols.includes(col.key));
 
+  // PW index: the presets the comp draws, wired to the existing filter state.
+  // They are shortcuts over the same column filters, not a second filter model.
+  const activeFilterCount = Object.values(filters).reduce((n, values) => n + (Array.isArray(values) ? values.length : 0), 0);
+  const sectorActive = (filters.sector || []).includes('Biopharma');
+  const valueActive = (filters.value || []).includes('$1B-$10B') && (filters.value || []).includes('>$10B');
+  const pwFirmActive = (filters.law_firm || []).includes('Paul, Weiss');
+  const countDeals = (predicate) => deals.filter(predicate);
+  const biopharmaCount = countDeals((d) => d.sector === 'Biopharma').length;
+  const billionCount = countDeals((d) => Number(d.value) >= 1e9).length;
+  const pwFirmCount = countDeals((d) => [...(d.advisors?.buyer_firms || []), ...(d.advisors?.seller_firms || [])].includes('Paul, Weiss')).length;
+  const filterPanelColumns = COLUMNS.filter((col) => col.filterable && (columnOptions[col.key] || []).length > 0);
+
+  function clearAllFilters() {
+    setFilters({});
+  }
+
+  function toggleSectorPreset() {
+    setFilters((prev) => ({ ...prev, sector: sectorActive ? [] : ['Biopharma'] }));
+  }
+
+  function toggleValuePreset() {
+    setFilters((prev) => ({ ...prev, value: valueActive ? [] : ['$1B-$10B', '>$10B'] }));
+  }
+
+  function togglePwFirmPreset() {
+    setFilters((prev) => ({ ...prev, law_firm: pwFirmActive ? [] : ['Paul, Weiss'] }));
+  }
+
   return (
     <>
       <Head>
         <title>Corpus</title>
       </Head>
       <MergertraceStyles />
-      <div className="mtx nh" onClick={() => { setOpenHeader(null); setPickerOpen(false); }}>
+      <div className="mtx pw-index nh" onClick={() => { setOpenHeader(null); setPickerOpen(false); setFiltersOpen(false); }}>
         <header className="top">
-          <Link href="/" className="brand"><span />Corpus</Link>
-          <form className="search" onSubmit={submitSearch} onClick={(e) => e.stopPropagation()}>
-            <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search deals, provisions, defined terms" />
-            {(showAllMatch || suggestions.length > 0) && (
-              <div className="suggestions">
-                {showAllMatch && (
-                  <button type="button" className="crossCutHit" onClick={() => runShowAll(showAllMatch)}>
-                    <b>{showAllMatch.label} across all deals →</b>
-                    <small>every deal, has / hasn&rsquo;t &middot; with the term as written</small>
-                  </button>
-                )}
-                {suggestions.map((hit, index) => (
-                  <button key={`${hit.type}-${hit.href}-${index}`} type="button" onClick={() => router.push(hit.href)}>
-                    <b>{hit.label}</b>
-                    <small>{hit.type} &middot; {hit.detail}</small>
-                  </button>
-                ))}
-              </div>
-            )}
-          </form>
-          <Link href="/library" className="nav">Library</Link>
-          <span className="login">Login</span>
+          <Link href="/" className="brand pw-brand" aria-label="Corpus. Paul, Weiss.">
+            <span className="pw-tile" aria-hidden="true"><span>Paul,</span><span>Weiss</span></span>
+            <span className="pw-wordmark">Corpus<small>Precedent intelligence</small></span>
+          </Link>
+          <nav className="pw-nav" aria-label="Sections">
+            <Link href="/" className="on">Index</Link>
+            <Link href="/library">Library</Link>
+          </nav>
+          <div className="pw-tools">
+            <span className="login">Login</span>
+          </div>
         </header>
 
         {/* F3: a failed client refresh should never blank a table that
@@ -445,6 +483,30 @@ export default function HomePage({ initialData, processPilotUiEnabled = false })
           <main>
             <section className="operational">
               <div className="wrap">
+                <header className="pw-head">
+                  <h1>The deal index.</h1>
+                  <form className="search pw-search" onSubmit={submitSearch} onClick={(e) => e.stopPropagation()}>
+                    <svg className="pw-searchicon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7"><circle cx="7" cy="7" r="5"/><path d="M11 11l3.5 3.5"/></svg>
+                    <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search a deal, a party or a provision" />
+                    <button type="submit" className="pw-searchbtn">Search</button>
+                    {(showAllMatch || suggestions.length > 0) && (
+                      <div className="suggestions">
+                        {showAllMatch && (
+                          <button type="button" className="crossCutHit" onClick={() => runShowAll(showAllMatch)}>
+                            <b>{showAllMatch.label} across all deals →</b>
+                            <small>every deal, has / hasn&rsquo;t &middot; with the term as written</small>
+                          </button>
+                        )}
+                        {suggestions.map((hit, index) => (
+                          <button key={`${hit.type}-${hit.href}-${index}`} type="button" onClick={() => router.push(hit.href)}>
+                            <b>{hit.label}</b>
+                            <small>{hit.type} &middot; {hit.detail}</small>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </form>
+                </header>
                 {/* Query surface — its own bordered panel, clearly separate
                     from the deal list below (Ben r15, item 6). */}
                 {!QUERY_UI_CONTAINED && <div className="querySurface">
@@ -479,9 +541,9 @@ export default function HomePage({ initialData, processPilotUiEnabled = false })
                     the same voice as the review page's grey title bars. */}
                 <div className="listSurface">
                   <div className="listTitleBar">
-                    <span className="listTitleMain">Deal list</span>
+                    <span className="listTitleMain">All agreements.</span>
                     <span className="listTitleSub">
-                      {data ? `${visibleDeals.length === deals.length ? deals.length : `${visibleDeals.length} of ${deals.length}`} deals — click a row to open its agreement` : 'Loading…'}
+                      {data ? `${visibleDeals.length === deals.length ? deals.length : `${visibleDeals.length} of ${deals.length}`} deals · click a row to open its agreement` : 'Loading…'}
                     </span>
                     <div className="opsActions" onClick={(e) => e.stopPropagation()}>
                       <button type="button" className="gearBtn" onClick={() => setPickerOpen((v) => !v)} title="Choose columns">
@@ -498,6 +560,17 @@ export default function HomePage({ initialData, processPilotUiEnabled = false })
                         </div>
                       )}
                     </div>
+                  </div>
+
+                  <div className="pw-filters" onClick={(e) => e.stopPropagation()}>
+                    <button type="button" className={`pw-fbtn${activeFilterCount === 0 ? ' on' : ''}`} onClick={clearAllFilters}>All <span>{deals.length}</span></button>
+                    <button type="button" className={`pw-fbtn${sectorActive ? ' on' : ''}`} onClick={toggleSectorPreset}>Biopharma <span>{biopharmaCount}</span></button>
+                    <button type="button" className={`pw-fbtn${valueActive ? ' on' : ''}`} onClick={toggleValuePreset}>$1bn+ <span>{billionCount}</span></button>
+                    {pwFirmCount > 0 && (
+                      <button type="button" className={`pw-fbtn${pwFirmActive ? ' on' : ''}`} onClick={togglePwFirmPreset}>Paul, Weiss <span>{pwFirmCount}</span></button>
+                    )}
+                    <button type="button" className="pw-fbtn pw-more" onClick={() => setFiltersOpen(true)}>More filters</button>
+                    {activeFilterCount > 0 && <span className="pw-fcount">{activeFilterCount} active</span>}
                   </div>
 
                   <div className="tableShell">
@@ -588,6 +661,40 @@ export default function HomePage({ initialData, processPilotUiEnabled = false })
             </section>
           </main>
         )}
+
+        {filtersOpen && (
+          <>
+            <div className="pw-scrim" onClick={() => setFiltersOpen(false)} />
+            <aside className="pw-panel" role="dialog" aria-modal="true" aria-label="Index filters" onClick={(e) => e.stopPropagation()}>
+              <div className="pw-panel-top">
+                <div><p className="pw-panel-k">Index filters</p><h2>Refine the list.</h2></div>
+                <button type="button" className="pw-panel-close" onClick={() => setFiltersOpen(false)} aria-label="Close filters">×</button>
+              </div>
+              <p className="pw-panel-sub">The same filters as the column menus, in one place. They apply to the table immediately.</p>
+              <div className="pw-panel-body">
+                {filterPanelColumns.map((col) => (
+                  <section key={col.key} className="pw-filter-group">
+                    <h3>{col.label}</h3>
+                    {(columnOptions[col.key] || []).map((option) => {
+                      const label = String(option);
+                      const checked = (filters[col.key] || []).includes(option);
+                      return (
+                        <label key={label} className="pw-check">
+                          <input type="checkbox" checked={checked} onChange={() => handleToggleFilter(col.key, option)} />
+                          <span>{label}</span>
+                        </label>
+                      );
+                    })}
+                  </section>
+                ))}
+              </div>
+              <div className="pw-panel-foot">
+                <button type="button" className="pw-clear" onClick={clearAllFilters}>Clear all</button>
+                <button type="button" className="pw-done" onClick={() => setFiltersOpen(false)}>Done</button>
+              </div>
+            </aside>
+          </>
+        )}
       </div>
       <style jsx global>{`
         .nh { min-height: 100vh; background: var(--paper); color: var(--ink); font-family: var(--mtx-sans); }
@@ -668,6 +775,118 @@ export default function HomePage({ initialData, processPilotUiEnabled = false })
           .top { grid-template-columns: 1fr; height: auto; padding: 14px; }
           .listTitleBar { flex-wrap: wrap; }
           .wrap { padding: 0 16px; }
+        }
+
+        @font-face { font-family: 'Inter Tight'; src: url('/fonts/pw/inter-tight.woff2') format('woff2'); font-weight: 400 800; font-style: normal; font-display: swap; }
+        @font-face { font-family: 'Source Serif 4'; src: url('/fonts/pw/source-serif-4.woff2') format('woff2'); font-weight: 400 600; font-style: normal; font-display: swap; }
+
+        .mtx.pw-index {
+          --paper: #FFFFFF; --paper-2: #F1F4F8; --surface: #FFFFFF;
+          --ink: #03203D; --ink-mid: #33475E; --ink-light: #6B7785; --ink-faint: #6B7785;
+          --line: #DCE3E1; --line-soft: #EEF2F6;
+          --accent: #03203D; --accent-deep: #0B3D71; --accent-soft: #F1F4F8;
+          --paper-rgb: 255 255 255; --paper-2-rgb: 241 244 248; --surface-rgb: 255 255 255;
+          --ink-rgb: 3 32 61; --ink-mid-rgb: 51 71 94; --ink-light-rgb: 107 119 133; --ink-faint-rgb: 107 119 133;
+          --line-rgb: 220 227 225; --line-soft-rgb: 238 242 246;
+          --accent-rgb: 3 32 61; --accent-deep-rgb: 11 61 113;
+          --mtx-serif: 'Source Serif 4', Georgia, serif;
+          --mtx-sans: 'Inter Tight', 'Inter', Arial, sans-serif;
+          --mtx-mono: 'IBM Plex Mono', ui-monospace, monospace;
+          --font-serif: var(--mtx-serif); --font-sans: var(--mtx-sans); --font-mono: var(--mtx-mono);
+          background: #fff; color: var(--ink); font-family: var(--mtx-sans);
+        }
+        .pw-index .top { height: 76px; display: flex; align-items: center; gap: 28px; padding: 0 40px; border-bottom: 1px solid var(--line); background: #fff; position: sticky; top: 0; z-index: 40; }
+        .pw-index .pw-brand { display: flex; align-items: center; gap: 12px; flex: none; text-decoration: none; }
+                .pw-index .pw-tile { width: 40px; height: 40px; background: var(--ink); color: #fff; display: flex; flex-direction: column; justify-content: center; gap: 1px; padding-left: 7px; font: 800 12.5px/.88 var(--mtx-sans); letter-spacing: -.03em; flex: none; }
+        .pw-index .pw-tile span { width: auto; height: auto; background: none; border-radius: 0; display: inline; }
+        .pw-index .pw-wordmark { display: flex; flex-direction: column; line-height: 1; font: 600 20px var(--mtx-sans); letter-spacing: -.03em; color: var(--ink); width: auto; height: auto; background: none; }
+        .pw-index .pw-wordmark small { font: 600 8.5px var(--mtx-sans); letter-spacing: .14em; text-transform: uppercase; color: var(--ink-light); margin-top: 4px; }
+        .pw-index .pw-nav { display: flex; align-items: center; gap: 26px; margin-left: 16px; }
+        .pw-index .pw-nav a { font: 400 14.5px/1 var(--mtx-serif); color: var(--ink); text-decoration: none; padding: 8px 0; border-bottom: 1px solid transparent; }
+        .pw-index .pw-nav a:hover { color: var(--accent-deep); }
+        .pw-index .pw-nav a.on { border-bottom-color: var(--ink); font-weight: 600; }
+        .pw-index .pw-tools { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+        .pw-index .pw-tools .login { font: 600 10px var(--mtx-sans); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-light); }
+        .pw-index .wrap { max-width: 1600px; margin: 0 auto; padding: 0 40px; }
+        .pw-index .operational { padding: 0 0 70px; }
+        .pw-index .pw-head { padding: 26px 0 18px; }
+        .pw-index .pw-head h1 { font: 700 clamp(38px, 3.6vw, 54px)/.98 var(--mtx-sans); letter-spacing: -.05em; color: var(--ink); margin: 0; }
+        .pw-index .pw-search { position: relative; display: flex; align-items: center; gap: 9px; height: 52px; margin-top: 16px; border: 1px solid var(--ink); background: #fff; padding: 0 8px 0 14px; }
+        .pw-index .pw-search input { flex: 1; min-width: 0; height: auto; border: 0; outline: 0; background: #fff; color: var(--ink); font: 500 15px var(--mtx-sans); padding: 0; }
+        .pw-index .pw-search input::placeholder { color: var(--ink-light); }
+        .pw-index .pw-searchicon { color: var(--ink-light); flex: none; }
+        .pw-index .pw-searchbtn { height: 36px; border: 1px solid var(--ink); border-radius: 999px; background: var(--ink); color: #fff; padding: 0 18px; font: 700 9.5px var(--mtx-sans); letter-spacing: .07em; text-transform: uppercase; cursor: pointer; flex: none; }
+        .pw-index .pw-search .suggestions { top: 56px; border: 1px solid var(--line); box-shadow: none; }
+        .pw-index .listSurface { border: 0; border-top: 10px solid var(--line); background: #fff; margin-top: 8px; }
+        .pw-index .listTitleBar { display: flex; align-items: flex-end; gap: 12px; padding: 12px 0 8px; border-bottom: 0; background: #fff; font-size: 10px; text-transform: none; letter-spacing: 0; }
+        .pw-index .listTitleMain { font: 700 30px/.98 var(--mtx-sans); letter-spacing: -.04em; color: var(--ink); flex: 0 0 auto; }
+        .pw-index .listTitleSub { flex: 1; font: 400 11.5px/1.4 var(--mtx-serif); color: var(--ink-light); letter-spacing: 0; text-transform: none; }
+        .pw-index .opsActions { margin-left: auto; }
+        .pw-index .gearBtn { height: 34px; border: 1px solid var(--line); background: #fff; color: var(--ink); font: 700 9px var(--mtx-sans); letter-spacing: .07em; text-transform: uppercase; padding: 0 13px; border-radius: 999px; cursor: pointer; }
+        .pw-index .gearBtn:hover { border-color: var(--ink); }
+        .pw-index .picker { border: 1px solid var(--line); box-shadow: none; }
+        .pw-index .tableShell { border-top: 2px solid var(--ink); overflow: auto; background: #fff; }
+        .pw-index table { width: 100%; border-collapse: collapse; font: 12.5px/1.4 var(--mtx-sans); }
+        .pw-index th { position: static; background: #fff; color: var(--ink-light); text-align: left; font: 700 9px var(--mtx-sans); letter-spacing: .11em; text-transform: uppercase; padding: 11px 10px; border-bottom: 1px solid var(--ink); white-space: nowrap; }
+        .pw-index td { padding: 11px 10px; border-bottom: 1px solid var(--line); color: var(--ink-mid); vertical-align: top; white-space: nowrap; }
+        .pw-index tbody tr:hover { background: var(--paper-2); }
+        .pw-index tbody tr:focus-visible { outline: 3px solid var(--ink-light); outline-offset: -3px; }
+        .pw-index .numCell, .pw-index .numCell { font-variant-numeric: tabular-nums; }
+        .pw-index .dateShort { display: none; }
+        .pw-index .muted { color: var(--ink-light); }
+        .pw-index .popover { border: 1px solid var(--line); box-shadow: none; }
+        .pw-index .pw-filters { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; padding: 9px 0 10px; border-top: 1px solid var(--line); }
+        .pw-index .pw-fbtn { height: 34px; display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--line); border-radius: 999px; padding: 0 13px; background: #fff; color: var(--ink); font: 700 10.5px var(--mtx-sans); cursor: pointer; white-space: nowrap; }
+        .pw-index .pw-fbtn span { color: var(--ink-light); font-weight: 500; }
+        .pw-index .pw-fbtn.on { background: var(--ink); border-color: var(--ink); color: #fff; }
+        .pw-index .pw-fbtn.on span { color: #B9C8DA; }
+        .pw-index .pw-fbtn.pw-more { border-color: var(--ink); color: var(--accent-deep); }
+        .pw-index .pw-fcount { margin-left: 4px; font: 500 9.5px var(--mtx-sans); color: var(--ink-light); }
+        .pw-index .pw-scrim { position: fixed; inset: 0; background: rgba(3,32,61,.38); z-index: 90; }
+        .pw-index .pw-panel { position: fixed; top: 0; right: 0; bottom: 0; width: 430px; max-width: 100vw; background: #fff; z-index: 100; border-top: 10px solid #B9C8DA; border-left: 1px solid var(--line); padding: 22px 24px 18px; display: flex; flex-direction: column; }
+        .pw-index .pw-panel-top { display: flex; align-items: flex-start; gap: 12px; }
+        .pw-index .pw-panel-k { font: 700 8.5px var(--mtx-sans); letter-spacing: .15em; text-transform: uppercase; color: var(--ink-light); margin: 0 0 6px; }
+        .pw-index .pw-panel h2 { font: 700 30px/.98 var(--mtx-sans); letter-spacing: -.05em; color: var(--ink); margin: 0; }
+        .pw-index .pw-panel-close { margin-left: auto; width: 28px; height: 28px; border: 1px solid var(--line); border-radius: 50%; background: #fff; color: var(--ink); font: 500 16px var(--mtx-sans); cursor: pointer; }
+        .pw-index .pw-panel-sub { font: 400 12.5px/1.4 var(--mtx-serif); color: var(--ink-mid); margin: 9px 0 12px; max-width: 38ch; }
+        .pw-index .pw-panel-body { flex: 1; overflow: auto; min-height: 0; }
+        .pw-index .pw-filter-group { border-top: 1px solid var(--line); padding: 11px 0 9px; }
+        .pw-index .pw-filter-group h3 { font: 700 9px var(--mtx-sans); letter-spacing: .11em; text-transform: uppercase; color: var(--ink); margin: 0 0 6px; }
+        .pw-index .pw-check { display: flex; align-items: center; gap: 8px; padding: 4px 0; font: 500 11px var(--mtx-sans); color: var(--ink-mid); cursor: pointer; }
+        .pw-index .pw-check input { accent-color: var(--ink); }
+        .pw-index .pw-panel-foot { border-top: 1px solid var(--ink); padding-top: 12px; display: flex; align-items: center; gap: 9px; }
+        .pw-index .pw-clear { border: 0; background: none; color: var(--ink-light); font: 700 9px var(--mtx-sans); letter-spacing: .07em; text-transform: uppercase; cursor: pointer; padding: 10px 0; }
+        .pw-index .pw-done { margin-left: auto; height: 38px; border: 1px solid var(--ink); border-radius: 999px; background: var(--ink); color: #fff; padding: 0 22px; font: 700 9.5px var(--mtx-sans); letter-spacing: .07em; text-transform: uppercase; cursor: pointer; }
+        @media (max-width: 820px) {
+          .pw-index .top { height: 64px; padding: 0 16px; gap: 12px; }
+          .pw-index .pw-tile { width: 34px; height: 34px; font-size: 10.5px; padding-left: 6px; }
+          .pw-index .pw-wordmark { font-size: 16px; }
+          .pw-index .pw-wordmark small { display: none; }
+          .pw-index .pw-nav { display: none; }
+          .pw-index .pw-tools { margin-left: auto; }
+          .pw-index .wrap { padding: 0 16px; }
+          .pw-index .pw-head { padding: 18px 0 12px; }
+          .pw-index .pw-head h1 { font-size: 32px; }
+          .pw-index .pw-search { height: 46px; margin-top: 0; padding-left: 11px; }
+          .pw-index .pw-search input { font-size: 12px; }
+          .pw-index .pw-searchbtn { height: 32px; padding: 0 12px; font-size: 8px; }
+          .pw-index .pw-search .suggestions { top: 50px; }
+          .pw-index .listTitleMain { font-size: 22px; }
+          .pw-index .listTitleSub { display: none; }
+          .pw-index .pw-filters { flex-wrap: wrap; overflow: visible; }
+          .pw-index .pw-fbtn { height: 32px; font-size: 9px; padding: 0 10px; }
+          .pw-index .tableShell { overflow-x: visible; }
+          .pw-index table { min-width: 0; }
+          .pw-index th:nth-child(n+4), .pw-index td:nth-child(n+4) { display: none; }
+          .pw-index table { table-layout: fixed; width: 100%; }
+          .pw-index th:nth-child(1), .pw-index td:nth-child(1) { width: 48%; }
+          .pw-index th:nth-child(2), .pw-index td:nth-child(2) { width: 30%; }
+          .pw-index th:nth-child(3), .pw-index td:nth-child(3) { width: 22%; }
+          .pw-index td:nth-child(1) { white-space: normal; }
+          .pw-index .dateLong { display: none; }
+          .pw-index .dateShort { display: inline; }
+          .pw-index td:nth-child(2), .pw-index td:nth-child(3) { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+          .pw-index .pw-panel { width: 100%; }
         }
       `}</style>
     </>
