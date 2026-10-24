@@ -38,50 +38,50 @@ import { walk } from '../../lib/product/fact-components';
 // are near-black with an underline under the pointer; the blue is the one
 // accent, for buttons and the active tab.
 
-const CARD = 'bg-white border border-[#dcdcdc] rounded-[2px] overflow-hidden';
+const CARD = 'bg-white border-0 border-t-[10px] border-[#DCE3E1] overflow-hidden';
 const CARD_BODY = 'p-[14px]';
 // The header band's tints: green for provision sections, blue for the
 // definitions section.
 const TINTS = {
-  green: { band: 'bg-[#e8f3ee] border-b border-[#cfe3d8] text-[#2f7a5b]', box: 'bg-[#e8f3ee] text-[#2f7a5b]' },
-  blue: { band: 'bg-[#e9effa] border-b border-[#d0dbf3] text-[#2f56b8]', box: 'bg-[#e9effa] text-[#2f56b8]' },
+  green: { band: 'bg-[#F1F4F8] border-b border-[#DCE3E1] text-[#03203D]', box: 'bg-[#F1F4F8] text-[#03203D]' },
+  blue: { band: 'bg-[#EAF0F6] border-b border-[#DCE3E1] text-[#0B3D71]', box: 'bg-[#EAF0F6] text-[#0B3D71]' },
 };
-const TH = 'border-b border-[#ececec] px-[7px] py-[4.5px] text-left text-[9.5px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b]';
-const TD = 'px-[7px] py-[7px] align-top';
-const ROW = 'border-b border-[#ececec] last:border-0';
-const TEXT = 'text-[12.5px] leading-relaxed text-[#1f1f1f]';
-const SUBJECT = 'font-ui text-[12.5px] font-medium text-[#1f1f1f]';
-const LINK = 'text-[9.5px] font-ui text-[#1f1f1f] underline-offset-2 hover:underline';
-const FOOT = 'border-t border-[#ececec] bg-[#fafafa] px-[7px] py-[7px] align-top';
-const FOOT_LABEL = 'text-[9.5px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b]';
+const TH = 'border-b border-[#03203D] px-[10px] py-[8px] text-left text-[9px] font-ui font-medium uppercase tracking-[0.12em] text-[#6B7785]';
+const TD = 'px-[10px] py-[10px] align-top';
+const ROW = 'border-b border-[#DCE3E1] last:border-0';
+const TEXT = 'text-[12.5px] leading-relaxed text-[#33475E]';
+const SUBJECT = 'font-ui text-[12.5px] font-semibold text-[#03203D]';
+const LINK = 'text-[9.5px] font-ui text-[#0B3D71] underline-offset-2 hover:underline';
+const FOOT = 'border-t border-[#DCE3E1] bg-[#F1F4F8] px-[10px] py-[8px] align-top';
+const FOOT_LABEL = 'text-[9px] font-ui font-medium uppercase tracking-[0.12em] text-[#6B7785]';
 // Ben, 2026-09-14: "UI point, 'see provision' has too much visual hierarchy
 // and color which distracts readability." Every "See provision" control and
 // the § reference links used the same way (backing-fact lists, Other
 // provisions, footers, the combined definition) are quiet: small, faint,
 // no capitals, no weight, an underline only under the pointer, placed after
 // the subject so they never compete with it.
-const QUIET = 'text-[8.5px] font-ui font-normal normal-case tracking-normal text-inkFaint hover:underline hover:text-inkLight';
+const QUIET = 'text-[8.5px] font-ui font-normal normal-case tracking-normal text-[#6B7785] hover:underline hover:text-[#0B3D71]';
 // Ben, 2026-09-14: "make the elements below the top level reps (e.g.
 // Organization) collapsable and hide them initially but have a clear 'more
 // detail' button or similar". The control under a row's subject.
-const DETAIL = 'mt-[2.5px] block text-[9.5px] font-ui font-medium text-accent hover:underline';
+const DETAIL = 'mt-[2.5px] block text-[9.5px] font-ui font-medium text-[#0B3D71] hover:underline';
 // A pill: a small rounded-[2px] tinted chip, 12px uppercase text, no border.
-const BADGE = 'inline-flex items-center rounded-full px-[6px] py-[1px] text-[9px] font-ui font-medium uppercase tracking-wide';
+const BADGE = 'inline-flex items-center rounded-full border border-[#B9C8DA] px-[6px] py-[1px] text-[9px] font-ui font-medium uppercase tracking-wide';
 
 // Tones as soft tints with the tint's darker colour for the text (the
 // Storylines green and blue, grey for the neutral readings).
 const TONE_CLASSES = {
-  neutral: 'bg-[#f3f3f3] text-[#555555]',
-  standard: 'bg-[#e9effa] text-[#2f56b8]',
-  value: 'bg-[#f3f3f3] text-[#333333]',
-  term: 'bg-[#f3f3f3] text-[#555555]',
-  condition: 'bg-[#e8f3ee] text-[#2f7a5b]',
-  present: 'bg-[#e8f3ee] text-[#2f7a5b]',
-  missing: 'bg-[#f3f3f3] text-inkFaint border border-dashed border-inkFaint/40',
-  warning: 'bg-amber-50 text-amber-700',
-  info: 'bg-[#e9effa] text-[#2f56b8]',
-  buyer: 'bg-buyer/10 text-buyer',
-  seller: 'bg-seller/10 text-seller',
+  neutral: 'bg-[#F1F4F8] text-[#33475E]',
+  standard: 'bg-[#EAF0F6] text-[#0B3D71]',
+  value: 'bg-[#F1F4F8] text-[#33475E]',
+  term: 'bg-[#F1F4F8] text-[#33475E]',
+  condition: 'bg-[#F1F4F8] text-[#03203D]',
+  present: 'bg-[#F1F4F8] text-[#03203D]',
+  missing: 'bg-white text-[#6B7785] border border-dashed border-[#B9C8DA]',
+  warning: 'bg-[#FBF3E2] text-[#6B4A12]',
+  info: 'bg-[#EAF0F6] text-[#0B3D71]',
+  buyer: 'bg-[#03203D] text-white',
+  seller: 'bg-[#EAF0F6] text-[#0B3D71]',
 };
 
 function toneClass(tone) {
@@ -473,9 +473,9 @@ function SectionIcon({ tint }) {
 
 function SectionHeading({ title, collapsed, onToggle, tint = 'green' }) {
   return (
-    <button type="button" onClick={onToggle} aria-expanded={!collapsed} className={`flex min-h-[30px] w-full items-center gap-[7px] px-[14px] text-left ${TINTS[tint].band}`} data-testid="section-heading">
+    <button type="button" onClick={onToggle} aria-expanded={!collapsed} className={`flex min-h-[38px] w-full items-center gap-[7px] px-[14px] py-[8px] text-left ${TINTS[tint].band}`} data-testid="section-heading">
       <SectionIcon tint={tint} />
-      <h3 className="flex-1 font-sans text-[14px] font-medium leading-snug">{title}</h3>
+      <h3 className="flex-1 font-sans text-[15px] font-semibold leading-snug tracking-[-.02em]">{title}</h3>
       <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={`shrink-0 transition-transform ${collapsed ? '-rotate-90' : ''}`}>
         <path d="M6 9l6 6 6-6" />
       </svg>

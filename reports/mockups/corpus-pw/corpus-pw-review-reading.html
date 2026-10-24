@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Corpus · review workflow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#03203d; --blue:#0b3d71; --steel:#5d7da3; --mist:#b9c8da; --mist2:#d5dfea;
+    --wash:#f1f4f8; --rule:#dce3e1; --ink:#33475e; --grey:#6b7785; --paper:#fff;
+    --sans:'Inter Tight',Arial,Helvetica,sans-serif;
+    --serif:'Source Serif 4',Georgia,serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#e9edf2}
+  body{font-family:var(--sans);color:var(--navy);-webkit-font-smoothing:antialiased}
+  .artboard{width:1600px;height:1200px;background:var(--paper);overflow:hidden;position:relative;margin:0 auto}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit}
+
+  /* ───────── top bar ───────── */
+  .top{height:72px;display:flex;align-items:center;gap:26px;padding:0 40px;border-bottom:1px solid var(--rule);background:var(--paper)}
+  .brand{display:flex;align-items:center;gap:13px;flex:none}
+  .tile{width:42px;height:42px;background:var(--navy);color:#fff;display:flex;flex-direction:column;justify-content:center;gap:1px;padding-left:7px;font:800 12.5px/.88 var(--sans);letter-spacing:-.03em}
+  .bname{display:flex;flex-direction:column;line-height:1}
+  .bname b{font:600 21px var(--sans);letter-spacing:-.03em;color:var(--navy)}
+  .bname small{font:600 8.5px var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--grey);margin-top:4px}
+  .nav{display:flex;align-items:center;gap:26px;margin-left:14px}
+  .nav a{font:400 14px/1 var(--serif);color:var(--navy);padding:8px 0;border-bottom:1px solid transparent}
+  .nav a.on{border-bottom-color:var(--navy);font-weight:600}
+  .nav a:hover{color:var(--blue)}
+  .topright{margin-left:auto;display:flex;align-items:center;gap:14px}
+  .search{display:flex;align-items:center;gap:8px;width:236px;height:34px;border:1px solid var(--mist);padding:0 10px;color:var(--grey);font:500 11.5px var(--sans)}
+  .search svg{flex:none}
+  .search span{color:var(--grey)}
+  .who{width:30px;height:30px;border:1px solid var(--navy);border-radius:50%;display:grid;place-items:center;font:700 10px var(--sans);letter-spacing:.04em;color:var(--navy)}
+  .help{font:600 10px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--grey)}
+
+  /* ───────── context ───────── */
+  .context{padding:24px 40px 22px;display:flex;align-items:flex-end;gap:30px}
+  .ctxleft{min-width:0}
+  .crumb{display:flex;align-items:center;gap:9px;font:700 9px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--grey);margin:0 0 9px}
+  .crumb b{color:var(--navy);font-weight:800}
+  .crumb i{width:22px;height:1px;background:var(--mist);display:inline-block}
+  h1{font:700 44px/.98 var(--sans);letter-spacing:-.05em;margin:0;color:var(--navy);white-space:nowrap}
+  .sub{margin:9px 0 0;font:400 15px/1.35 var(--serif);color:var(--ink)}
+  .sub b{font-family:var(--sans);font-weight:600;color:var(--navy)}
+  .meta{display:flex;gap:18px;flex-wrap:wrap;margin-top:11px;font:600 10px var(--sans);letter-spacing:.02em;color:var(--grey)}
+  .meta span{display:flex;align-items:center;gap:6px}
+  .meta span+span:before{content:"";width:1px;height:10px;background:var(--mist);display:inline-block}
+  .actions{margin-left:auto;display:flex;align-items:center;gap:9px;flex:none;padding-bottom:2px}
+  .btn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--navy);background:#fff;color:var(--navy);border-radius:999px;padding:10px 16px;font:700 9.5px var(--sans);letter-spacing:.08em;text-transform:uppercase;cursor:pointer;white-space:nowrap}
+  .btn.solid{background:var(--navy);color:#fff}
+  .btn.ghost{border-color:var(--mist)}
+  .linkarrow{font:700 9.5px var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--navy);display:inline-flex;gap:6px;align-items:center;padding:10px 4px}
+  .toprule{height:10px;background:var(--mist)}
+
+  /* ───────── body ───────── */
+  .body{display:grid;grid-template-columns:220px minmax(0,1fr) 380px;gap:28px;padding:26px 40px 18px;height:966px}
+
+  /* rail */
+  .rail{border-right:1px solid var(--rule);padding-right:20px;min-height:0;display:flex;flex-direction:column}
+  .raillabel{font:700 8.5px var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--grey);margin:2px 0 8px}
+  .rail nav{display:flex;flex-direction:column}
+  .rail nav a{font:400 13px/1.2 var(--serif);color:var(--ink);padding:6px 8px;border-left:3px solid transparent;margin:1px 0}
+  .rail nav a.on{background:var(--wash);border-left-color:var(--navy);color:var(--navy);font-weight:600}
+  .rail nav a:hover{color:var(--blue)}
+  .railref{margin-top:18px;border-top:10px solid var(--mist);padding-top:12px}
+  .railref .k{font:700 8.5px var(--sans);letter-spacing:.15em;text-transform:uppercase;color:var(--grey)}
+  .railref .n{font:500 40px/.9 var(--sans);letter-spacing:-.06em;color:var(--navy);margin-top:8px}
+  .railref .cap{font:400 12.5px/1.4 var(--serif);color:var(--ink);margin-top:3px}
+  .railref .comp{font:500 10.5px/1.55 var(--sans);color:var(--grey);margin-top:9px}
+  .railref .set{display:flex;align-items:center;gap:6px;margin-top:10px;font:700 9px var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--navy)}
+  .railref .set i{width:18px;height:1px;background:var(--navy);display:inline-block}
+  .railnote{margin-top:auto;border-top:1px solid var(--rule);padding-top:12px;font:400 11.5px/1.45 var(--serif);color:var(--grey)}
+  .railnote b{display:block;font:700 8.5px var(--sans);letter-spacing:.13em;text-transform:uppercase;color:var(--navy);margin-bottom:4px}
+
+  /* main */
+  .main{min-width:0;display:flex;flex-direction:column}
+  .modes{display:flex;align-items:center;gap:8px;margin:-1px 0 12px}
+  .mode{border:1px solid var(--mist);background:#fff;color:var(--navy);border-radius:999px;padding:7px 13px;font:700 10px var(--sans);letter-spacing:.02em}
+  .mode.on{background:var(--navy);border-color:var(--navy);color:#fff}
+  .modes .right{margin-left:auto;display:flex;align-items:center;gap:16px}
+  .check{display:flex;align-items:center;gap:6px;font:600 9.5px var(--sans);color:var(--grey)}
+  .check i{width:11px;height:11px;border:1px solid var(--steel);display:inline-block;position:relative}
+  .check.on i{background:var(--navy);border-color:var(--navy)}
+  .check.on i:after{content:"";position:absolute;left:2px;top:1px;width:5px;height:3px;border-left:1.5px solid #fff;border-bottom:1.5px solid #fff;transform:rotate(-45deg)}
+  .setbar{background:var(--wash);border-top:6px solid var(--mist);padding:9px 12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0}
+  .setbar .setname{font:600 11px var(--sans);color:var(--navy);letter-spacing:-.01em}
+  .setbar .setcount{font:700 9px var(--sans);color:var(--navy);border-left:1px solid var(--mist);padding-left:10px}
+  .setbar .setcomp{font:400 10px var(--serif);color:var(--ink)}
+  .setactions{margin-left:auto;display:flex;align-items:center;gap:6px}
+  .setbtn,.filterbtn{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--navy);background:#fff;color:var(--navy);border-radius:999px;padding:6px 11px;font:700 8.5px var(--sans);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;white-space:nowrap}
+  .setbtn:hover,.filterbtn:hover{background:var(--navy);color:#fff}
+  .filterbtn{border-color:var(--mist);color:var(--blue)}
+  .filterbtn .fcount{display:inline-grid;place-items:center;min-width:14px;height:14px;padding:0 3px;background:var(--navy);color:#fff;border-radius:999px;font:700 8px var(--sans);margin-left:1px}
+  .setbtn svg,.filterbtn svg{flex:none}
+  .flabel{font:700 8px var(--sans);letter-spacing:.13em;text-transform:uppercase;color:var(--grey);margin-right:2px}
+  .fpill{border:1px solid var(--mist);background:#fff;color:var(--navy);border-radius:999px;padding:5px 9px;font:700 9px var(--sans);white-space:nowrap}
+  .fpill.on{background:var(--navy);border-color:var(--navy);color:#fff}
+  .fpill .n{font-weight:500;opacity:.65;margin-left:3px}
+  .filters .sep{width:1px;height:18px;background:var(--mist);margin:0 2px}
+  .fselect{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--mist);background:#fff;padding:5px 8px;font:600 9px var(--sans);color:var(--navy);white-space:nowrap}
+  .fselect small{font:700 7.5px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--grey)}
+  .save{margin-left:auto;font:700 9px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--blue);border-bottom:1px solid var(--mist);padding-bottom:2px}
+  .status{display:flex;align-items:baseline;gap:10px;margin:10px 0 12px;font:400 12px/1.4 var(--serif);color:var(--ink)}
+  .status b{font-family:var(--sans);font-weight:600;color:var(--navy)}
+  .status .asof{margin-left:auto;font:500 9px var(--sans);color:var(--grey)}
+
+  /* table */
+  .table{border-top:2px solid var(--navy);display:flex;flex-direction:column}
+  .thead{display:grid;grid-template-columns:210px 350px 1fr;border-bottom:1px solid var(--navy);background:#fff}
+  .thead div{padding:10px 12px;font:700 9px var(--sans);letter-spacing:.13em;text-transform:uppercase;color:var(--grey);line-height:1.3}
+  .thead div+div{border-left:1px solid var(--rule)}
+  .thead .yours{color:var(--navy)}
+  .thead .market{color:var(--blue)}
+  .trow{display:grid;grid-template-columns:210px 350px 1fr;border-bottom:1px solid var(--rule);min-height:82px}
+  .trow.sel{background:var(--wash);box-shadow:inset 3px 0 0 var(--navy)}
+  .trow:hover{background:#f8fafc}
+  .cell{padding:12px 12px 11px;min-width:0}
+  .cell+.cell{border-left:1px solid var(--rule)}
+  .provname{font:600 13.5px/1.25 var(--sans);letter-spacing:-.01em;color:var(--navy)}
+  .sec{font:500 10px/1.3 var(--sans);color:var(--grey);margin-top:3px}
+  .diff{display:inline-flex;align-items:center;gap:4px;margin-top:6px;font:700 7.5px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--navy)}
+  .diff i{width:5px;height:5px;background:var(--navy);display:inline-block}
+  .dealv{font:600 17px/1.15 var(--sans);letter-spacing:-.025em;color:var(--navy);font-variant-numeric:tabular-nums}
+  .dealv small{font:500 10px var(--sans);letter-spacing:0;color:var(--grey);margin-left:3px}
+  .dealsum{font:400 12.5px/1.4 var(--serif);color:var(--ink);margin-top:4px;max-width:46ch}
+  .words{display:inline-flex;align-items:center;gap:5px;font:700 8.5px var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--blue);margin-top:6px}
+  .words:after{content:"→";font-size:10px}
+  .pill{display:inline-flex;align-items:center;border:1px solid var(--navy);border-radius:999px;padding:2px 8px;font:700 8.5px var(--sans);letter-spacing:.07em;text-transform:uppercase;line-height:1.5;white-space:nowrap}
+  .pill.solid{background:var(--navy);color:#fff}
+  .pill.line{background:#fff;color:var(--navy)}
+  .pill.mut{border-color:var(--mist);color:var(--blue)}
+  .mhead{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+  .mhead .v{font:600 10.5px var(--sans);color:var(--navy);letter-spacing:-.005em}
+  .mhead .n{font:500 8.5px var(--sans);color:var(--grey);white-space:nowrap}
+  .bar{height:6px;background:var(--wash);margin:7px 0 5px;position:relative;overflow:hidden}
+  .bar i{position:absolute;inset:0 auto 0 0;background:var(--navy)}
+  .bar.m i{background:var(--steel)}
+  .bar .rest{position:absolute;inset:0 0 0 auto;background:var(--wash)}
+  .mnote{font:500 9.5px/1.35 var(--sans);color:var(--grey)}
+  .mnote b{font-weight:600;color:var(--ink)}
+  .showall{margin-top:10px;display:flex;align-items:center;justify-content:space-between;font:700 9px var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--navy);border-top:1px solid var(--rule);padding-top:10px}
+  .showall span:last-child{color:var(--grey);font-weight:500;letter-spacing:.02em;text-transform:none;font-size:10px}
+
+  /* right panel */
+  .panel{border-left:1px solid var(--rule);padding-left:26px;min-width:0;display:flex;flex-direction:column}
+  .ptop{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .pk{font:700 8.5px var(--sans);letter-spacing:.15em;text-transform:uppercase;color:var(--grey)}
+  .ptitle{font:700 27px/.98 var(--sans);letter-spacing:-.045em;color:var(--navy);margin:8px 0 4px;text-wrap:balance}
+  .psub{font:400 12.5px/1.35 var(--serif);color:var(--ink)}
+  .psec{font:600 9px var(--sans);color:var(--grey);margin-top:7px;letter-spacing:.02em}
+  .stat{margin-top:22px;display:flex;align-items:flex-end;gap:14px}
+  .stat b{font:500 82px/.78 var(--sans);letter-spacing:-.07em;color:var(--navy);font-variant-numeric:tabular-nums}
+  .stat .cap{font:400 14px/1.3 var(--serif);color:var(--ink);max-width:15ch;padding-bottom:5px}
+  .marketline{display:flex;align-items:baseline;gap:8px;margin-top:12px;border-top:1px solid var(--rule);padding-top:9px;font:500 10px var(--sans);color:var(--grey)}
+  .marketline b{font:600 11px var(--sans);color:var(--navy)}
+  .marketline .n{margin-left:auto;font-size:9px}
+  .dist{margin-top:10px}
+  .dist svg{display:block;width:100%;height:86px;overflow:visible}
+  .distlegend{display:flex;gap:14px;font:500 8.5px var(--sans);color:var(--grey);margin-top:2px}
+  .distlegend i{display:inline-block;width:6px;height:6px;margin-right:5px;vertical-align:0}
+  .block{margin-top:19px}
+  .bh{display:flex;align-items:baseline;justify-content:space-between;gap:8px;border-bottom:1px solid var(--navy);padding-bottom:5px;font:700 8.5px var(--sans);letter-spacing:.13em;text-transform:uppercase;color:var(--grey)}
+  .bh span:last-child{font-weight:500;font-size:8px;letter-spacing:.02em;text-transform:none;color:var(--grey)}
+  .opt{display:grid;grid-template-columns:42px 1fr 22px;gap:8px;align-items:center;margin-top:7px;font:500 10.5px var(--sans);color:var(--ink)}
+  .opt .ob{height:6px;background:var(--wash);overflow:hidden}
+  .opt .ob i{display:block;height:100%;background:var(--mist)}
+  .opt.you{font-weight:700;color:var(--navy)}
+  .opt.you .ob i{background:var(--navy)}
+  .opt .oc{text-align:right;font-size:9px;color:var(--grey)}
+  .quote{margin-top:19px;background:var(--wash);border-left:6px solid var(--navy);padding:13px 15px 12px}
+  .quote p{font:400 13.5px/1.45 var(--serif);color:var(--navy);margin:0}
+  .quote .src{font:500 8.5px/1.4 var(--sans);color:var(--grey);margin-top:9px;display:flex;justify-content:space-between;gap:8px}
+  .quote .src b{font-weight:600;color:var(--ink)}
+  .pactions{display:flex;align-items:center;gap:8px;margin-top:13px}
+  .method{margin-top:22px;padding-top:16px;font:500 8.5px/1.5 var(--sans);color:var(--grey)}
+  .method b{color:var(--ink);font-weight:600}
+  .legal{border-top:1px solid var(--rule);margin-top:10px;padding-top:7px;font:500 8px/1.4 var(--sans);color:#8b97a4}
+
+
+  /* review */
+  .revmain{min-width:0}
+  .revhead{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;border-bottom:1px solid var(--rule);padding-bottom:10px;margin-bottom:12px}
+  .revhead .eyebrow{margin-bottom:6px}
+  .revhead h2{font-size:34px;letter-spacing:-.04em;margin:0}
+  .revmeta{display:flex;align-items:baseline;gap:10px;font:500 9.5px var(--sans);color:var(--grey);white-space:nowrap}
+  .revmeta b{font:500 22px var(--sans);letter-spacing:-.04em;color:var(--navy)}
+  .revmeta span{border-left:1px solid var(--mist);padding-left:10px}
+  .factcard{border-top:1px solid var(--rule);padding:14px 0 12px}
+  .factcard.sel{border-top:10px solid var(--mist);background:var(--wash);margin:0 -14px 12px;padding:14px 14px 12px}
+  .factcard.compact{padding-bottom:10px}
+  .ftop{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+  .fkind{font:700 8px var(--sans);letter-spacing:.13em;text-transform:uppercase;color:var(--grey);margin:0 0 4px}
+  .factcard h3{font-size:20px;letter-spacing:-.025em;margin:0}
+  .fsec{font:500 9px var(--sans);color:var(--grey);margin:3px 0 0}
+  .stmt{font:400 17px/1.45 var(--serif);color:var(--navy);max-width:64ch;margin:10px 0 0}
+  .stmt.small{font-size:14px;color:var(--ink);margin-top:7px;max-width:70ch}
+  .roles{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);margin-top:11px}
+  .roles div{padding:8px 10px;border-left:1px solid var(--rule)}
+  .roles div:first-child{border-left:0;padding-left:0}
+  .roles span{display:block;font:700 7.5px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--grey)}
+  .roles b{display:block;font:600 11px var(--sans);color:var(--navy);margin-top:3px}
+  .fcite{margin-top:11px;border-left:3px solid var(--mist);padding-left:11px;max-width:70ch}
+  .fcite p{font:400 12px/1.45 var(--serif);color:var(--ink);margin:0}
+  .fcite span{display:block;font:500 8px var(--sans);color:var(--grey);margin-top:4px}
+  .decision{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-top:11px}
+  .dlab{font:700 7.5px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--grey);margin-right:3px}
+  .dbtn{border:1px solid var(--navy);background:#fff;color:var(--navy);border-radius:999px;padding:6px 12px;font:700 9px var(--sans);letter-spacing:.05em;text-transform:uppercase}
+  .dbtn.solid{background:var(--navy);color:#fff}
+  .dbtn.quiet{border-color:var(--mist);color:var(--grey)}
+  .dlink{margin-left:auto;font:700 8px var(--sans);letter-spacing:.07em;text-transform:uppercase;color:var(--blue);border-bottom:1px solid var(--mist);padding-bottom:2px}
+  .accepted{font:500 9.5px var(--sans);color:var(--grey)}
+  .held{background:#fbf3e2;border-left:6px solid #c9a45c;padding:10px 13px;margin:10px 0 12px}
+  .heldtop{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .hpill{background:#f3e3bf;color:var(--warn);font:700 7.5px var(--sans);letter-spacing:.08em;text-transform:uppercase;padding:2px 6px;border-radius:999px}
+  .heldtop b{font:600 11px var(--sans);color:var(--warn)}
+  .held p{font:400 11px/1.45 var(--serif);color:var(--warn);margin:5px 0 4px;max-width:76ch}
+  .held .dlink{color:var(--warn);border-bottom-color:#dcc79b}
+  .trail{display:grid;grid-template-columns:42px 1fr;gap:2px 8px;border-top:1px solid var(--rule);padding:8px 0}
+  .trail span{font:700 7.5px var(--sans);color:var(--grey);grid-row:span 2;padding-top:2px}
+  .trail b{font:600 10px var(--sans);color:var(--navy)}
+  .trail p{font:400 10px/1.35 var(--serif);color:var(--ink);margin:0;grid-column:2}
+  .cov{display:flex;align-items:baseline;justify-content:space-between;border-top:1px solid var(--rule);padding:6px 0;font:500 10px var(--sans);color:var(--grey)}
+  .cov b{font:600 10px var(--sans);color:var(--navy)}
+
+/* Reading workflow: clause -> interpretation chain -> checks. */
+.readmain { padding: 0; }
+.readhead { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; padding: 24px 26px 14px; border-bottom: 1px solid var(--rule); }
+.readhead .kicker { margin: 0 0 6px; font: 700 8.5px 'Inter Tight', Arial, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--grey); }
+.readhead h2 { margin: 0; font: 700 34px/.98 'Inter Tight', Arial, sans-serif; letter-spacing: -.05em; color: var(--navy); }
+.readmeta { font: 500 10px 'Inter Tight', Arial, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--grey); }
+.clausecard { margin: 18px 26px 0; padding: 20px 22px 16px; border-top: 10px solid var(--mist); background: #fff; }
+.clausemeta { display: flex; justify-content: space-between; gap: 12px; font: 700 8.5px 'Inter Tight', Arial, sans-serif; letter-spacing: .13em; text-transform: uppercase; color: var(--grey); }
+.clause { margin: 14px 0 0; max-width: 70ch; font: 400 20px/1.55 'Source Serif 4', Georgia, serif; color: var(--navy); }
+.hl { padding: 0 2px; border-bottom: 2px solid transparent; }
+.hl.actor { border-bottom-color: var(--navy); }
+.hl.action { border-bottom-color: var(--blue); background: #F1F4F8; }
+.hl.object { border-bottom-color: var(--steel); }
+.hl.effect { background: #EAF0F6; border-bottom-color: var(--mist); }
+.hl.qual { border-bottom: 2px dashed #A9843F; }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px; padding-top: 10px; border-top: 1px solid var(--rule); font: 500 9px 'Inter Tight', Arial, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--grey); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 16px; height: 2px; display: inline-block; }
+.legend .a { background: var(--navy); } .legend .b { background: var(--blue); } .legend .c { background: var(--steel); } .legend .d { background: #A9843F; }
+.context { margin-top: 14px; border-top: 1px solid var(--rule); padding-top: 9px; }
+.context summary { cursor: pointer; font: 700 8.5px 'Inter Tight', Arial, sans-serif; letter-spacing: .1em; text-transform: uppercase; color: var(--grey); }
+.context p { margin: 8px 0 0; font: 400 12.5px/1.5 'Source Serif 4', Georgia, serif; color: var(--ink); }
+.context b { color: var(--navy); }
+.chain { margin: 22px 26px 40px; }
+.chainhead { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--navy); }
+.chainhead .kicker { margin: 0 0 5px; font: 700 8.5px 'Inter Tight', Arial, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--grey); }
+.chainhead h2 { margin: 0; font: 700 26px/.98 'Inter Tight', Arial, sans-serif; letter-spacing: -.045em; color: var(--navy); }
+.chainhead p { margin: 5px 0 0; font: 400 11.5px 'Source Serif 4', Georgia, serif; color: var(--grey); }
+.chainstate { font: 700 8.5px 'Inter Tight', Arial, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--grey); text-align: right; }
+.chainstate b { display: block; font: 700 22px/.9 'Inter Tight', Arial, sans-serif; letter-spacing: -.04em; color: var(--navy); }
+.chainstep { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; gap: 12px; padding: 15px 0; border-bottom: 1px solid var(--rule); }
+.stepnum { font: 500 10px 'IBM Plex Mono', monospace; color: var(--steel); padding-top: 2px; }
+.steptitle { margin: 0; font: 700 11px 'Inter Tight', Arial, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: var(--navy); }
+.stepbody { margin: 5px 0 0; font: 400 13.5px/1.5 'Source Serif 4', Georgia, serif; color: var(--ink); }
+.stepbody b { color: var(--navy); }
+.stepstatus { font: 700 8px 'Inter Tight', Arial, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--blue); white-space: nowrap; padding-top: 3px; }
+.comprows { margin-top: 8px; border-top: 1px solid var(--rule); }
+.comprow { display: grid; grid-template-columns: minmax(0, 1fr) 120px 90px; gap: 10px; align-items: baseline; padding: 7px 0; border-bottom: 1px solid var(--rule); }
+.compwords { font: 400 13px 'Source Serif 4', Georgia, serif; color: var(--navy); }
+.comprole { font: 700 8.5px 'Inter Tight', Arial, sans-serif; letter-spacing: .09em; text-transform: uppercase; color: var(--grey); }
+.compstatus { font: 500 9px 'Inter Tight', Arial, sans-serif; color: var(--blue); }
+.coverage { margin-top: 14px; padding: 12px 14px; background: #FBF3E2; border-left: 3px solid #A9843F; font: 400 12px/1.45 'Source Serif 4', Georgia, serif; color: #5A461E; }
+.coverage b { color: #3D2F13; }
+.coverage a { color: #5A461E; font-weight: 600; }
+.decision { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 18px; padding-top: 14px; border-top: 2px solid var(--navy); }
+.dlab { font: 700 8.5px 'Inter Tight', Arial, sans-serif; letter-spacing: .12em; text-transform: uppercase; color: var(--grey); margin-right: 4px; }
+.dhint { margin-left: auto; font: 400 10.5px 'Source Serif 4', Georgia, serif; color: var(--grey); }
+.checks { margin-top: 18px; }
+.checkrow { display: flex; justify-content: space-between; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--rule); font: 400 11px 'Source Serif 4', Georgia, serif; color: var(--ink); }
+.checkrow b { font: 600 10px 'Inter Tight', Arial, sans-serif; color: var(--navy); }
+.checkrow .warn { color: #6B4A12; }
+.why { margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--rule); font: 400 11px/1.5 'Source Serif 4', Georgia, serif; color: var(--ink); }
+.why b { color: var(--navy); }
+.factlist { margin-top: 8px; border-top: 1px solid var(--rule); }
+.factrow { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 7px 8px; border-left: 3px solid transparent; text-decoration: none; color: var(--ink); font: 400 12px/1.25 'Source Serif 4', Georgia, serif; }
+.factrow:hover { background: var(--wash); }
+.factrow.on { background: var(--wash); border-left-color: var(--navy); font-weight: 600; color: var(--navy); }
+.factrow em { font: 700 7.5px 'Inter Tight', Arial, sans-serif; letter-spacing: .06em; text-transform: uppercase; font-style: normal; color: var(--grey); }
+.readfoot { display: flex; align-items: center; gap: 10px; margin: 0 26px 32px; padding-top: 12px; border-top: 1px solid var(--rule); font: 500 9px 'Inter Tight', Arial, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: var(--grey); }
+.readfoot a { color: var(--blue); text-decoration: none; }
+
+.readaction { position: fixed; left: 232px; right: 340px; bottom: 0; z-index: 20; display: flex; align-items: center; gap: 8px; height: 64px; padding: 0 26px; background: #fff; border-top: 1px solid var(--navy); }
+.readaction .dhint { margin-left: auto; }
+.readmain { padding-bottom: 76px; }
+@media (max-width: 1100px) { .readaction { left: 0; right: 0; } }
+
+.gapbtn { display: inline-flex; align-items: center; height: 30px; padding: 0 11px; border: 1px solid #A9843F; background: #FBF3E2; color: #5A461E; font: 700 8.5px 'Inter Tight', Arial, sans-serif; letter-spacing: .06em; text-transform: uppercase; text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="artboard">
+  <header class="top">
+    <div class="brand">
+      <div class="tile" aria-hidden="true"><span>Paul,</span><span>Weiss</span></div>
+      <div class="bname"><b>Corpus</b><small>Precedent intelligence</small></div>
+    </div>
+    <nav class="nav">
+      <a href="#">Index</a><a href="#">Compare</a><a href="#" class="on">Review</a><a href="#">Library</a>
+    </nav>
+    <div class="topright">
+      <div class="search"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="7" cy="7" r="5"/><path d="M11 11l3.5 3.5"/></svg><span>Find a deal, clause or party</span></div>
+      <div class="who">BG</div>
+      <span class="help">Help</span>
+    </div>
+  </header>
+
+  <section class="context">
+    <div class="ctxleft">
+      <h1>Andor LLC / Apogee Therapeutics, Inc.</h1>
+      <p class="sub"><b>Structure and mechanics.</b> Section 2.1 of the agreement. Read the clause, check the chain, decide.</p>
+    </div>
+    <div class="actions">
+      <a class="linkarrow" href="#">Lawyer preview <span>→</span></a>
+      <button class="btn ghost">Save progress</button>
+      <button class="btn solid">Finalise candidate</button>
+    </div>
+  </section>
+  <div class="toprule"></div>
+
+  <div class="body">
+    <aside class="rail">
+      <p class="raillabel">The deal</p>
+      <nav>
+        <a href="#" class="on">Structure &amp; mechanics</a>
+        <a href="#">Consideration</a>
+        <a href="#">Equity awards</a>
+        <a href="#">Representations</a>
+        <a href="#">Material contracts</a>
+        <a href="#">Material adverse effect</a>
+        <a href="#">Interim operating covenants</a>
+        <a href="#">No-solicitation / No-shop</a>
+        <a href="#">Antitrust / regulatory</a>
+        <a href="#">SEC filing / meeting</a>
+        <a href="#">Conditions to closing</a>
+        <a href="#">Termination rights</a>
+        <a href="#">Termination fees</a>
+        <a href="#">Employee benefits</a>
+        <a href="#">Other covenants</a>
+        <a href="#">Tax</a>
+      </nav>
+      <p class="raillabel" style="margin-top:18px">In this section</p>
+      <div class="factlist">
+        <a class="factrow on" href="#"><span>Deal structure</span><em>Pending</em></a>
+        <a class="factrow" href="#"><span>Merger form</span><em>Accepted</em></a>
+        <a class="factrow" href="#"><span>Surviving entity</span><em>Pending</em></a>
+        <a class="factrow" href="#"><span>Effective time</span><em>Accepted</em></a>
+        <a class="factrow" href="#"><span>Closing location</span><em>Pending</em></a>
+        <a class="factrow" href="#"><span>Effects of merger</span><em>Held</em></a>
+      </div>
+      <div class="railref">
+        <div class="k">Review progress</div>
+        <div class="n">9<span style="font-size:18px;letter-spacing:0;color:var(--grey)">/18</span></div>
+        <div class="cap">provisions reviewed in this run</div>
+        <div class="comp">2 unresolved · 1 held<br>Revision 4 · 23 Oct 2026</div>
+        <a class="set" href="#">Review guide <i></i></a>
+      </div>
+    </aside>
+
+    <main class="main readmain">
+      <div class="readhead">
+        <div><p class="kicker">Section 2.1</p><h2>Structure and mechanics</h2></div>
+        <div class="readmeta">Draft · 6 provisions</div>
+      </div>
+
+      <article class="clausecard">
+        <div class="clausemeta"><span>Exact clause</span><span>Page 12 · 238 bytes</span></div>
+        <p class="clause"><span class="hl actor">Merger Sub</span> shall <span class="hl action">merge with and into</span> <span class="hl object">the Company</span>, and <span class="hl effect">the Company shall survive the merger as the surviving corporation</span>, in accordance with <span class="hl qual">the DGCL</span>.</p>
+        <div class="legend"><span><i class="a"></i>Party</span><span><i class="b"></i>Action</span><span><i class="c"></i>Object</span><span><i class="d"></i>Unclaimed qualifier</span></div>
+        <details class="context"><summary>Context used: 2 defined terms, 1 cross-reference</summary><p><b>Merger Sub:</b> Apogee Merger Sub, Inc., a Delaware corporation and a wholly owned subsidiary of Parent. <b>DGCL:</b> the General Corporation Law of the State of Delaware. <b>Article VI:</b> the closing conditions, incorporated by the chapeau.</p></details>
+      </article>
+
+      <section class="chain">
+        <div class="chainhead">
+          <div><p class="kicker">Interpretation</p><h2>How this clause becomes a fact.</h2><p>Every step is checked against the words above.</p></div>
+          <div class="chainstate"><b>3 / 5</b>components confirmed</div>
+        </div>
+
+        <div class="chainstep">
+          <div class="stepnum">01</div>
+          <div><p class="steptitle">Operative sentence</p><p class="stepbody">Merger Sub merges into the Company; the Company survives.</p></div>
+          <div class="stepstatus">Source verified</div>
+        </div>
+
+        <div class="chainstep">
+          <div class="stepnum">02</div>
+          <div><p class="steptitle">Components and roles</p>
+            <div class="comprows">
+              <div class="comprow"><span class="compwords">“Merger Sub”</span><span class="comprole">Party</span><span class="compstatus">Confirmed</span></div>
+              <div class="comprow"><span class="compwords">“shall merge with and into”</span><span class="comprole">Action</span><span class="compstatus">Confirmed</span></div>
+              <div class="comprow"><span class="compwords">“the Company”</span><span class="comprole">Object</span><span class="compstatus">Confirmed</span></div>
+              <div class="comprow"><span class="compwords">“the Company shall survive …”</span><span class="comprole">Effect</span><span class="compstatus">Needs review</span></div>
+              <div class="comprow"><span class="compwords">“in accordance with the DGCL”</span><span class="comprole">Qualifier</span><span class="compstatus" style="color:#6B4A12">Not claimed</span></div>
+            </div>
+          </div>
+          <div class="stepstatus">3 of 5</div>
+        </div>
+
+        <div class="chainstep">
+          <div class="stepnum">03</div>
+          <div><p class="steptitle">Normalized values</p><p class="stepbody">No amount, date, threshold or time period in this fact.</p></div>
+          <div class="stepstatus">Nothing to parse</div>
+        </div>
+
+        <div class="coverage" id="coverage"><b>One qualifier is unclaimed.</b> “in accordance with the DGCL” is not in the fact. Add it as a governing-law qualifier or record why it is immaterial. <a href="#">Review the gap →</a></div>
+
+        <div class="chainstep">
+          <div class="stepnum">04</div>
+          <div><p class="steptitle">Conclusion</p><p class="stepbody"><b>Reverse triangular merger.</b> Merger Sub merges into the Company; the Company survives as the surviving corporation.</p></div>
+          <div class="stepstatus">Pending</div>
+        </div>
+
+        
+
+
+      </section>
+
+      <div class="readaction">
+        <span class="dlab">Decision</span>
+        <a class="gapbtn" href="#coverage">1 gap · DGCL qualifier</a>
+        <button class="dbtn solid" disabled style="opacity:.4;cursor:not-allowed">Confirm interpretation</button>
+        <button class="dbtn">Edit</button>
+        <button class="dbtn quiet">Mark unresolved</button>
+        <button class="dbtn quiet">Add comment</button>
+        <span class="dhint">Resolve the gap to confirm</span>
+      </div>
+      <div class="readfoot"><a href="#">← Previous fact</a><span>·</span><a href="#">Next unreviewed fact →</a><span style="margin-left:auto">Nine of eighteen provisions reviewed</span></div>
+    </main>
+
+    <aside class="panel">
+      <div class="ptop"><div><div class="pk">Review checks</div><div class="ptitle">What this fact rests on</div><div class="psub">The chain is the review. A green statement alone is not.</div></div></div>
+      <div class="checks">
+        <div class="checkrow"><span>Source words</span><b>Verified</b></div>
+        <div class="checkrow"><span>Roles and components</span><b>3 of 5</b></div>
+        <div class="checkrow"><span>Conditions and exceptions</span><b>None stated</b></div>
+        <div class="checkrow"><span>Linked facts</span><b>None</b></div>
+        <div class="checkrow"><span>Legal characterization</span><b>Structure / Merger</b></div>
+        <div class="checkrow"><span>Word coverage</span><b class="warn">1 gap</b></div>
+      </div>
+      <div class="why"><b>Why one fact.</b> The sentence states one operative effect: the merger and the surviving entity. The DGCL reference is a governing-law qualifier, not a separate fact. If the qualifier matters to the reading, add it to this fact rather than creating a second one.</div>
+      <div class="block">
+        <div class="bh"><span>Review trail</span><span>Revision 4</span></div>
+        <div class="trail"><span>23 Oct</span><b>Extraction run 9</b><p>2 source spans; structure parsed from the merger clause.</p></div>
+        <div class="trail"><span>22 Oct</span><b>Comment resolved</b><p>Confirm the surviving entity is the Company, not Merger Sub.</p></div>
+        <div class="trail"><span>21 Oct</span><b>Coverage checked</b><p>Section 2.1 classified as Structure &amp; mechanics.</p></div>
+      </div>
+      <div class="block">
+        <div class="bh"><span>Run progress</span><span>18 provisions</span></div>
+        <div class="cov"><span>Reviewed</span><b>9 of 18</b></div>
+        <div class="cov"><span>Unresolved</span><b>2</b></div>
+        <div class="cov"><span>Held</span><b>1</b></div>
+      </div>
+      <p class="method"><b>Descriptive, not advice.</b> A decision records the reviewer's reading against the source. The chain is not a substitute for the clause.</p>
+    </aside>
+  </div>
+</div>
+</body>
+</html>
