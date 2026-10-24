@@ -11634,27 +11634,57 @@ Complete all mechanical work before asking the smallest exact question.
 
 ## 12. Manager `/goal` prompt
 
-The prompt below is the current one (2026-10-23). The 2026-09-04 wording
-(a GPT-5.6 Sol implementer started at Phase 0) is superseded; the loop now
-runs on Claude Code Remote sessions, and the state to start from is in
-`docs/codex-program/notes/MANAGER-HANDOFF-2026-10-23.md` and findings (210)
-onward.
+Current wording, 2026-10-24. Superseded: the 2026-09-04 wording (a Sol
+implementer at Phase 0) and the 2026-10-23 wording (a manager on Claude Code
+Remote sessions with MCP triggers). The `git` state, the runs and the open
+defects are in `docs/codex-program/notes/MANAGER-HANDOFF-2026-10-23.md`,
+whose section 0 is the 2026-10-24 update; findings (237) to (245) carry the
+evidence.
 
 ```text
 /goal Own the Precedent Machine internal product launch through completion.
-Read docs/core, then docs/codex-program/notes/MANAGER-HANDOFF-2026-10-23.md,
-then findings (210) onward in
-docs/codex-program/notes/PRODUCT-LAUNCH-IMPLEMENTATION-PLAN-2026-09-04.md.
-Adopt that single checklist and update it in place with numbered findings;
-no second planning or status document. Drive the implementer sessions named
-in the handoff with one concrete work package per trigger; verify every push
-(diff, changed tests, product behaviour) before merging; push both branches.
+Read docs/core, then section 0 of
+docs/codex-program/notes/MANAGER-HANDOFF-2026-10-23.md, then findings (237) to
+(245) in docs/codex-program/notes/PRODUCT-LAUNCH-IMPLEMENTATION-PLAN-2026-09-04.md.
+Adopt that single checklist and update it in place with numbered findings; no
+second planning or status document.
+
+You run on a DeepSeek-backed agent with no Vercel or Supabase MCP tools. You
+drive the product with plain curl against the preview deployment and with
+subagents in their own git worktrees. To reach a protected preview you need,
+from Ben: the Deployment Protection bypass secret (send it as
+x-vercel-protection-bypass) and PRODUCT_INTERNAL_TOKEN (send it as
+Authorization: Bearer). A Vercel API token is needed only to update the worker
+sandboxes or read deployment state; ask Ben for one if a sandbox must move to a
+new commit. Never write a secret into the repository or a commit.
+
+Where things stand: two deals have run end to end. Apogee on Claude
+(88d4032a, READY, 858 valid facts, 11 held) and Apogee on DeepSeek
+(34847358, READY, 758 valid, 116 held, $18.02). Olaplex (ab1cf03b) is paused
+at 27 of 87 and resumable. The PW design branches are merged into the codex
+line at 092a6239. The main path is: trust the facts on one deal; the lawyer
+loop end to end (review, publish, release, rollback drill); the second deal;
+surfaces on released facts; the structured review-feedback backend after the
+first published review; production cutover on Ben's explicit approval.
+
+Work the plan's next steps in the order section 0 gives them, beginning with
+the silent-absence guard (a section that returns no facts must never read as
+"this agreement has no such provision") and the Company's breach termination
+right lost to a cross-reference. Verify every push before merging: run the
+tests the machine can run (lib tests need no install; component tests need the
+ad-hoc-signed node at /tmp/dsh-node-unsigned; anything database-shaped must be
+checked on the preview deployment), read the facts yourself, and push both
+codex/product-implementation-plan-20260904 and
+claude/festive-albattani-70cwn5. Give every parallel agent its own git
+worktree with a symlinked node_modules; never let two agents share a checkout.
+
 Judge progress by the working SEC-URL-to-reviewed-summary product on a real
 deal, not documents, receipts or test counts. Keep Ben's standing rules:
 everything driven by code and repeatable across the corpus; read the output
 yourself and iterate; no lawyer decisions on his behalf; no force-push; no
 secrets in the repository; no model identifiers in commits; section 9 checks
-only. Stop only for a genuine legal ambiguity, a fact-shape decision, a
-proposed weakening of the release bars, or the production cutover approval,
-and put each to Ben in plain options with a recommendation.
+only; do not switch the default provider without evidence and Ben's decision.
+Stop only for a genuine legal ambiguity, a fact-shape decision, a proposed
+weakening of the release bars, the database-cost choice, or the production
+cutover approval, and put each to Ben in plain options with a recommendation.
 ```
