@@ -6224,6 +6224,41 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       Nothing else changes: no coverage state, no review item, no
       extraction instruction; the browser check of the changed page waits
       on the deployment rebuild.
+      (247) 2026-10-24 23:10 UTC (the manager), work package 34: a
+      cross-reference that names several provisions resolves, and the
+      Company's mirror breach termination right is no longer lost to it.
+      Apogee 88d4032a held 7.1(e) on "Section 6.1, Section 6.2(a), or
+      Section 6.2(b): CROSS_REFERENCE must resolve" (draft issue against
+      client_ref part2:p_e, component 3.1), so the termination table showed
+      the Superior Proposal right alone while the buyer's side showed its
+      breach right. The buyer's fact was VALID only because its reference
+      sits inside its CONDITION's own words and never became a component;
+      the resolver's single forms ("Section 6.2(a)", "this Section 7.1(e)",
+      "Article VI", "this Agreement") were never the problem — a reference
+      naming more than one provision had no form at all. That narrows the
+      plan's work package 29 (put as "a cross-reference to a limb resolving
+      to its section or its limb node"): the limb form already resolves.
+      The resolver now reads a reference as its parts — "Section 6.1,
+      Section 6.2(a), or Section 6.2(b)", "Section 6.3(a), Section 6.3(b)
+      and Section 6.3(c)", "Section 6.1(b) or Section 6.1(c)", "Sections
+      3.3(b), (c) and (e)", "Section 6.2(a) or (b)", a section with its
+      title in parentheses between the parts, and Article with Section — and
+      points resolves_to at the nearest node every named part is under (the
+      article that holds them, the agreement when they span articles), with
+      each named provision's heading in the resolves_to text the sidebar
+      shows. One part the agreement lacks leaves the whole reference
+      unresolved, as "Section 9.9" was. On the Apogee words 7.1(e)'s
+      condition resolves to ARTICLE VI with 6.1's and 6.2's headings, and
+      its own terminator-breach bar (6.1, 6.3(a), 6.3(b)) the same way, so
+      the fact compiles VALID with the rest of the tree unchanged. Files:
+      lib/product/agreement-draft.js (referenceListParts,
+      singleReferenceNode, nearestCommonNode, structureReferenceTarget).
+      Test: tests/product-fact-components-extraction.test.js — the
+      agreement's own 6.1, 6.2, 6.3 and 7.1(e) words through
+      compileExtraction, the resolved node and text, the other forms, and
+      the unresolved part; 33 of 33 in that file. Nothing else is
+      re-extracted: a stored held fact stays held and the next run of a
+      deal carries the fix.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is

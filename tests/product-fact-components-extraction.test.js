@@ -1897,3 +1897,99 @@ test('5.1: the Tax covenant is one fact with five LIST elements, the dividend pr
   for (const fact of [consent, period, exceptions]) assert.ok(fact.source_span_ids.length === 1 && within(fact.source_span_ids[0], chapeauA), `${fact.client_ref} cites the lead alone`);
   assert.deepEqual([consent, period, exceptions].map((fact) => fact.subtype_key), ['CONSENT_STANDARD', 'RESTRICTIVE_COVENANT', 'EXCEPTION']);
 });
+
+// Work package 34 (plan finding (247), 2026-10-24): the Company's mirror
+// breach termination right, held on Apogee run 88d4032a (7.1(e)) because its
+// condition cites several provisions at once: "Section 6.1, Section 6.2(a),
+// or Section 6.2(b)" resolved to nothing, so the whole fact was lost and the
+// termination table showed the Superior Proposal right alone while the
+// buyer's side showed its breach right. The words below are the agreement's
+// own (the exhibit's sections 6.1, 6.2, 6.3 and 7.1(e)), and the reference
+// forms are the ones it writes.
+test('a reference that names several sections resolves to the article that holds them, so the Company\'s breach termination right is not lost', () => {
+  const { buildSourceClosure } = require('../lib/product/source-context');
+  const { structureReferenceTarget } = require('../lib/product/agreement-draft');
+  const agreement = [
+    'AGREEMENT AND PLAN OF MERGER',
+    'ARTICLE VI',
+    'CONDITIONS PRECEDENT TO THE CLOSING',
+    'Section 6.1 Conditions to Obligation of Each Party to Effect the Closing. The respective obligations of each Party to effect the Closing shall be subject to the satisfaction (or waiver by Parent, on its own behalf and on behalf of Merger Sub, and the Company, in each case, to the extent permitted by applicable Law) at or prior to the Effective Time of the following conditions:',
+    '(a) Stockholder Approval. The Required Company Stockholder Approval shall have been obtained.',
+    'Section 6.2 Conditions to Obligation of the Company to Effect the Closing. The obligation of the Company to effect the Closing is further subject to the satisfaction (or waiver by the Company to the extent permitted by applicable Law) of the following conditions:',
+    '(a) The representations and warranties of Parent and Merger Sub set forth in Article IV shall be true and correct both when made and at and as of the Closing Date.',
+    '(b) Parent and Merger Sub shall have complied with, or performed, in all material respects all of the covenants and agreements they are required to comply with or perform under this Agreement at or prior to the Effective Time.',
+    'Section 6.3 Conditions to Obligations of Parent and Merger Sub to Effect the Closing. The obligations of Parent and Merger Sub to effect the Closing are further subject to the satisfaction (or waiver by Parent, on its own behalf and on behalf of Merger Sub, to the extent permitted by applicable Law) of the following conditions:',
+    '(a) The representations and warranties of the Company set forth in Article III shall be true and correct.',
+    '(b) The Company shall have complied with, or performed, in all material respects all of the covenants and agreements it is required to comply with or perform under this Agreement at or prior to the Effective Time.',
+    'ARTICLE VII',
+    'TERMINATION',
+    'Section 7.1 Termination and Abandonment. This Agreement may be terminated and abandoned at any time prior to the Effective Time, whether before or after the Required Company Stockholder Approvals:',
+    '(e) by the Company, if Parent or Merger Sub has breached any representation, warranty, covenant, or agreement in this Agreement, in each case, which breach (i) would result in a failure of a condition set forth in Section 6.1, Section 6.2(a), or Section 6.2(b) and (ii) cannot be cured by the End Date or, if curable, is not cured within thirty (30) days following the Company\u2019s delivery of written notice to Parent stating the Company\u2019s intention to terminate this Agreement pursuant to this Section 7.1(e) and the basis for such termination; provided that the Company is not then in breach of any representation, warranty, agreement, or covenant in this Agreement that would result in a failure of a condition set forth in Section 6.1, Section 6.3(a), or Section 6.3(b);',
+  ].join('\n');
+  const digest = sha(agreement);
+  const doc = {
+    schema_version: 'SOURCE_DOCUMENT/V1', source_document_id: digest, agreement_id: digest,
+    retrieval_url: 'https://www.sec.gov/Archives/edgar/data/1974640/000114036126025844/ef20076505_ex2-1.htm',
+    final_url: 'https://www.sec.gov/Archives/edgar/data/1974640/000114036126025844/ef20076505_ex2-1.htm',
+    filing_accession: '0001140361-26-025844', exhibit_filename: 'ef20076505_ex2-1.htm', source_map_id: digest, canonical_text: agreement, canonical_text_sha256: digest,
+  };
+  const agreementStructure = buildAgreementStructure(doc);
+  const article = agreementStructure.nodes.find((candidate) => candidate.kind === 'ARTICLE' && String(candidate.reference).includes('VI'));
+  const sixOne = agreementStructure.nodes.find((candidate) => candidate.reference === '6.1');
+  const sixTwo = agreementStructure.nodes.find((candidate) => candidate.reference === '6.2');
+  const termination = agreementStructure.nodes.find((candidate) => candidate.reference === '7.1');
+  assert.ok(article && sixOne && sixTwo && termination);
+  const closure = buildSourceClosure({ sourceDocument: doc, agreementStructure, nodeId: termination.node_id });
+  const span = closure.spans.find((candidate) => candidate.span_id === closure.full_section_span_id);
+  const own = (ref, kind, label, quote, extra = {}) => ({ ref, kind, label, quote, source_span_id: span.span_id, occurrence: 0, origin: 'OWN', children: [], ...extra });
+  const condition = 'which breach (i) would result in a failure of a condition set forth in Section 6.1, Section 6.2(a), or Section 6.2(b)';
+  const barWords = 'provided that the Company is not then in breach of any representation, warranty, agreement, or covenant in this Agreement that would result in a failure of a condition set forth in Section 6.1, Section 6.3(a), or Section 6.3(b)';
+  const compiled = compileExtraction({
+    sourceDocument: doc, legalSchema: legalSchemaV2, node: { node_id: termination.node_id, reference: '7.1', kind: 'SECTION' }, closure, call, agreementStructure,
+    routedFamilies: ['TERMINATION'], ownedNodeIds: new Set([termination.node_id]),
+    response: {
+      proposals: [{
+        client_ref: 'p1', group_ref: 'g1', family_key: 'TERMINATION', subtype_key: 'BREACH', fact_type: 'TERMINATION_RIGHT',
+        statement: 'The Company may terminate if Parent or Merger Sub has breached this Agreement and the breach would fail a condition in Section 6.1, Section 6.2(a), or Section 6.2(b) and is not cured.',
+        roles: {
+          terminating_party: 'the Company', breaching_party: 'Parent or Merger Sub', action: 'may terminate',
+          breach_subject: 'any representation, warranty, covenant, or agreement in this Agreement',
+          closing_condition_failure_standard: 'would result in a failure of a condition set forth in Section 6.1, Section 6.2(a), or Section 6.2(b)',
+          curability: 'cannot be cured by the End Date or, if curable, is not cured within thirty (30) days',
+          terminator_breach_bar: 'provided that the Company is not then in breach of any representation, warranty, agreement, or covenant in this Agreement',
+        },
+        value: null,
+        evidence_quotes: [{ quote: 'by the Company, if Parent or Merger Sub has breached any representation, warranty, covenant, or agreement in this Agreement', source_span_id: span.span_id, occurrence: 0 }],
+        headline: { label: 'Termination for breach', distinguishing_refs: ['cond', 'bar'], summary: 'Company may terminate for an uncured Parent or Merger Sub breach that would fail a closing condition' },
+        components: [
+          own('actor', 'ACTOR', 'terminating party', 'by the Company'),
+          own('trigger', 'TRIGGER', 'Parent or Merger Sub breach', 'if Parent or Merger Sub has breached any representation, warranty, covenant, or agreement in this Agreement'),
+          own('cond', 'CONDITION', 'breach would fail a closing condition', condition, { children: [own('cond-ref', 'CROSS_REFERENCE', 'closing conditions that must fail', 'Section 6.1, Section 6.2(a), or Section 6.2(b)')] }),
+          own('bar', 'EXCEPTION', 'bar where the Company is itself in breach', barWords, { children: [own('bar-ref', 'CROSS_REFERENCE', 'conditions the Company\u2019s own breach must fail', 'Section 6.1, Section 6.3(a), or Section 6.3(b)')] }),
+        ],
+      }],
+      groups: [{ client_ref: 'g1', family_key: 'TERMINATION', subtype_key: 'BREACH' }],
+      links: [],
+    },
+  });
+  const [right] = compiled.proposals;
+  assert.equal(right.validation_status, 'VALID', issueLines(compiled));
+  assert.equal(compiled.issues.some((issue) => /CROSS_REFERENCE must resolve/.test(issue.message)), false, issueLines(compiled));
+  const conditionRef = right.components[2].children[0];
+  assert.equal(conditionRef.resolves_to.structure_node_id, article.node_id, 'the article that holds every section named');
+  assert.match(conditionRef.resolves_to.text, /Section 6\.1 Conditions to Obligation of Each Party/);
+  assert.match(conditionRef.resolves_to.text, /Section 6\.2 Conditions to Obligation of the Company/);
+  // The bar's own list is the other way round: 6.1 and the buyer's conditions (6.3).
+  const barRef = right.components[3].children[0];
+  assert.equal(barRef.resolves_to.structure_node_id, article.node_id);
+  assert.match(barRef.resolves_to.text, /Section 6\.3 Conditions to Obligations of Parent and Merger Sub/);
+  // The forms the agreement writes elsewhere resolve the same way, and a
+  // reference to a provision it does not have stays unresolved.
+  const context = { sourceDocument: doc, closure, agreementStructure };
+  assert.equal(structureReferenceTarget('Section 6.1, Section 6.2(a), or Section 6.2(b)', context).structure_node_id, article.node_id);
+  assert.equal(structureReferenceTarget('Section 6.1(b) or Section 6.1(c)', context).structure_node_id, sixOne.node_id);
+  assert.equal(structureReferenceTarget('Section 6.2(a)', context).structure_node_id, sixTwo.node_id);
+  assert.equal(structureReferenceTarget('Article VI and Section 6.1', context).structure_node_id, article.node_id);
+  assert.equal(structureReferenceTarget('Section 9.9, or Section 6.1', context), null, 'one part the agreement lacks leaves the reference unresolved');
+  assert.equal(structureReferenceTarget('Section 259 of the DGCL', context), null);
+});
