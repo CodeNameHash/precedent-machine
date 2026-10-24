@@ -6300,6 +6300,38 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       and tests/product-fact-components-extraction.test.js (the note on a
       fact that stays VALID, the trailing period, the locator in a
       sentence kept and a locator alone dropped).
+      (249) 2026-10-24 24:20 UTC (the manager), work package 36: the
+      individual-and-aggregate caps rule Ben decided in (239) is in the
+      extractor instruction, so the contract is
+      PRODUCT_ALL_FAMILY_EXTRACTOR/V11. His words: "I think the word \"in
+      the aggregate\" is missing from this snip. IT should show the two
+      facts - the individual and aggregate gaps", then "*caps". The rule,
+      added after the proviso sentence in the six fact-shape rules of
+      (232): "Where one sentence states the same limit both individually
+      and in the aggregate (\"not more than $1,000,000 individually and
+      $5,000,000 in the aggregate\"), propose one proposal per cap, each
+      quoting its own amount words with its own qualifier
+      (\"individually\", \"in the aggregate\"); never one proposal carrying
+      two amounts, and never amount words that stop short of their own
+      cap's qualifier." What it answers: 5.2's settlement exception
+      states "not more than $1,000,000 individually and $5,000,000 in the
+      aggregate" twice (clauses (1) and (2) of 5.2(b)(xvi)(C)), the model
+      wrote one AMOUNT ending before "in the aggregate", the value parser
+      read no single number and the fact was held (e1c898c0). Not
+      changed by this: the stored held fact stays held and no mid-run
+      re-extraction happens; the next run of a deal carries the rule. The
+      version bump's cost is recorded rather than hidden: a stored V10
+      call no longer matches a request rebuilt from this code, so run
+      replay reports the drift and attempt resume re-runs an interrupted
+      section (Olaplex ab1cf03b, paused at 27 of 87, would re-extract the
+      section it was released on; its 27 completed sections are stored and
+      are not re-extracted). Files: lib/product/agreement-draft.js
+      (the instruction text and LEAN_PROMPT_VERSION). Tests:
+      tests/product-thin-answer.test.js (the instruction states the rule
+      and the version is V11) and the prompt-version strings of
+      tests/product-ablation-wake.test.js,
+      tests/product-lean-request-profile.test.js and
+      tests/product-deepseek-api-provider.test.js.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is

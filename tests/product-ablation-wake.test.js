@@ -83,7 +83,7 @@ function answerFor(kind, request) {
     return { paragraphs: request.paragraphs.map((paragraph) => ({ source_span_id: paragraph.source_span_id, disposition: families.length ? 'KNOWN_FAMILY' : 'IMMATERIAL', family_keys: families, rationale: families.length ? 'Covered by the routed family.' : 'Nothing residual.' })) };
   }
   const routed = request.family_contracts.map((family) => family.family_key);
-  const lean = request.prompt_version === 'PRODUCT_ALL_FAMILY_EXTRACTOR/V10';
+  const lean = request.prompt_version === 'PRODUCT_ALL_FAMILY_EXTRACTOR/V11';
   const coverage = Object.fromEntries((request.routed_families || routed).map((key) => [key, key === 'TERMINATION' ? 'FOUND' : 'NOT_FOUND']));
   if (!families.length || !routed.includes('TERMINATION')) return { proposals: [], groups: [], links: [], coverage };
   const operative = request.source_closure.operative[0];
@@ -265,7 +265,7 @@ test('the CLI path of the cost ablation runs the expressible variants through th
   assert.equal(haiku.extraction.routing_live_calls, 2, 'routing and residual went live');
   assert.ok(creations.some((creation) => creation.model === 'claude-haiku-5-5' && creation.effort === 'low'));
   assert.deepEqual(calls.filter((call) => call.model === 'claude-haiku-5-5').map((call) => call.call_kind).sort(), ['RESIDUAL', 'ROUTING']);
-  assert.ok(calls.some((call) => call.call_kind === 'EXTRACTION' && call.prompt_version === 'PRODUCT_ALL_FAMILY_EXTRACTOR/V10'));
+  assert.ok(calls.some((call) => call.call_kind === 'EXTRACTION' && call.prompt_version === 'PRODUCT_ALL_FAMILY_EXTRACTOR/V11'));
   const table = renderAblationTable(ablations);
   assert.match(table, /\| lean \| all \| not run \|.*API-only rung/);
   assert.match(table, /\| format \| 3\.1 \| 1 \(0\) \| 1 \/ 0 \/ 0 of 1 \| 0 \|.*\$0\.00 at list \$0\.01 \| \$0\.0\d \| \$0\.0\d \| 1 live \(claude-opus-5;effort=high\) thinking \d+ of \d+ output \(\d+%, reported\)/);

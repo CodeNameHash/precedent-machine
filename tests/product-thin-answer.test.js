@@ -191,6 +191,21 @@ async function runLayout(reference, { shortfall = () => 0, longSectionSplit, pro
   }
 }
 const extractionRequests = (seen) => seen.filter((input) => input.call_kind === 'EXTRACTION').map((input) => input.request);
+
+// Work package 36 (plan finding (249)): Ben's fact shape for a sentence that
+// states the same limit individually and in the aggregate, decided in
+// finding (239), rides in the extractor instruction, so the contract is
+// PRODUCT_ALL_FAMILY_EXTRACTOR/V11.
+test('the extractor instruction states Ben\'s individual-and-aggregate caps rule, under prompt V11', async () => {
+  const { seen } = await runLayout('5.3', { longSectionSplit: null });
+  const inputs = seen.filter((input) => input.call_kind === 'EXTRACTION');
+  assert.ok(inputs.length > 0);
+  assert.equal(inputs[0].prompt_version, 'PRODUCT_ALL_FAMILY_EXTRACTOR/V11');
+  const { instruction } = inputs[0].request;
+  assert.match(instruction, /propose one proposal per cap/);
+  assert.match(instruction, /never one proposal carrying two amounts/);
+  assert.match(instruction, /never amount words that stop short of their own cap/);
+});
 const partOf = (request) => request.source_closure.extraction_part;
 
 test('under part_counts a chapeau that states covenants is a part of its own (5.3); a heading chapeau never is (5.1), under the flag or not: it goes with limb (a), and the opening-words count is the limb\'s', async () => {

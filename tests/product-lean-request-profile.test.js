@@ -57,7 +57,7 @@ test('the lean config is a known API config by identity, with its own profile, a
 
 test('under the lean profile the provider lays the agreement block, two stable blocks and the section out, and stores the agreement as a marker', () => {
   const input = {
-    call_kind: 'EXTRACTION', prompt_version: 'PRODUCT_ALL_FAMILY_EXTRACTOR/V10',
+    call_kind: 'EXTRACTION', prompt_version: 'PRODUCT_ALL_FAMILY_EXTRACTOR/V11',
     request: { instruction: 'read', response_contract: { a: 1 }, cross_section_target_contracts: { x: 1 }, family_contracts: [{ family_key: 'NO_SHOP' }], table_shapes: { NO_SHOP: [] }, source_closure: { operative: [] }, agreement_context: { source_document_id: 'doc', bytes: 352 } },
     context: { agreement_text: TEXT },
   };

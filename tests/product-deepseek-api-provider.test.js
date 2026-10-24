@@ -114,7 +114,7 @@ test('the adapter sends each call kind to DeepSeek\'s endpoint with its own key,
   const seen = [];
   const factory = (options) => { built.push(options); return fakeClient(message('{"proposals":[]}'), seen); };
   const model = createAnthropicApiProductModel({ apiKey: KEY, clientFactory: factory, modelConfig: DEEPSEEK_API_MODEL_CONFIG });
-  const extraction = await model.complete({ call_kind: 'EXTRACTION', prompt_version: 'PRODUCT_ALL_FAMILY_EXTRACTOR/V10', request: { instruction: 'Review', source_closure: { full_section: '5.02' } } });
+  const extraction = await model.complete({ call_kind: 'EXTRACTION', prompt_version: 'PRODUCT_ALL_FAMILY_EXTRACTOR/V11', request: { instruction: 'Review', source_closure: { full_section: '5.02' } } });
   const routing = await model.complete({ call_kind: 'ROUTING', prompt_version: 'R1', request: { instruction: 'Route', section: { exact_text: 'x' } } });
   const residual = await model.complete({ call_kind: 'RESIDUAL', prompt_version: 'P1', request: { instruction: 'Residual', paragraphs: [] } });
   // One client, the Anthropic-compatible base URL and DeepSeek's key, and
