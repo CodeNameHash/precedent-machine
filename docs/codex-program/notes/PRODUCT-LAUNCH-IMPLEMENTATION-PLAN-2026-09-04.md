@@ -6162,14 +6162,26 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       switch the default on this evidence; the tier is worth another trial
       only with the quoting instruction hardened first (quote only an exact
       substring of a listed span, never a paraphrase), and the flash tier is
-      not yet tested end to end at all. Also found by both runs, and not a
-      DeepSeek matter: draft finalisation is now failing on the preview
-      database — 88d4032a reached READY then fell to FAILED on a write after
-      the draft existed and needed one retry, and 34847358 has failed
-      finalisation three times ("canceling statement due to statement
-      timeout") though every section is committed. A run that has finalised
-      must not be able to fall to FAILED, and finalisation must be batched
-      or resumable: it is Phase 6's blocker, not a tuning matter.
+      not yet tested end to end at all. The loss is not evenly spread: 41 of
+      92 sections produced fewer valid facts, the largest 5.3 the no-shop
+      (54 to 42), 5.5 antitrust (33 to 24), 3.13 material contracts (40 to
+      32), 7.3 fees (20 to 13), 5.9 (12 to 7); and 5.16, the regulator
+      cooperation and notice covenants, produced NOTHING at all against
+      Claude's six — not a validation loss but an empty answer the thin-answer
+      guard did not catch on a 2.8 KB section. Several DeepSeek facts also
+      arrive with no headline summary (5.1's eight all empty).
+      Also found here, and not a DeepSeek matter: draft finalisation fails
+      intermittently on the preview database — 88d4032a reached READY then
+      fell to FAILED on a write after the draft existed and needed one
+      retry, and 34847358 failed three times ("canceling statement due to
+      statement timeout") before a later attempt succeeded with every
+      section committed. So it is load-dependent timing, not a broken
+      finalise: the same deal finalises on a retry. Still a defect — a run
+      that has finalised must not be able to fall to FAILED, and a
+      finalisation that needs three retries will strand a lawyer waiting —
+      but it is a retry-and-batch problem, not a redesign, and it does not
+      block the read: the preview returns every committed section whether or
+      not the draft finalised.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
