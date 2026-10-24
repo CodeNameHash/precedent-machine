@@ -4,9 +4,86 @@ Written by the manager session (session_014yr9q51NS76fiRGycShhxz) at Ben's
 request for the next manager agent. This is a dated note: evidence and
 orientation, not an instruction set. The single executable checklist is
 `docs/codex-program/notes/PRODUCT-LAUNCH-IMPLEMENTATION-PLAN-2026-09-04.md`
-("the plan"); its findings (1) to (236) are the record, and section 12 is the
+("the plan"); its findings (1) to (245) are the record, and section 12 is the
 manager prompt. Read `docs/core` first (PLAN, OPERATING-RULES, LEGAL-RULES,
 CODEBASE-GUIDE), then the plan's findings from (210) on.
+
+## 0. Update, 2026-10-24 08:30 EDT (read this first; sections 2 and 6 below are superseded where they disagree)
+
+Two deals have now run end to end. Findings (237) to (245) carry the evidence.
+
+- **Apogee, Claude (subscription), run 88d4032a**: 97 of 97 sections, 869
+  facts, 858 valid, 11 held, ~110 minutes, $0 marginal. READY. This is the
+  run to read; it is the first complete deal on the current stack.
+- **Apogee, DeepSeek, run 34847358**: 97 of 97 sections, 874 facts, **758
+  valid, 116 held (13.3 per cent against Claude's 1.3)**, $18.02, ~45
+  minutes, READY after four finalisation attempts. Losses are uneven: 41 of
+  92 sections produced fewer valid facts (5.3 no-shop 54 to 42, 5.5
+  antitrust 33 to 24, 3.13 40 to 32, 7.3 20 to 13), and **5.16 produced
+  nothing at all** where Claude found six regulator-notice covenants — an
+  empty answer the thin-answer guard did not catch. Verdict (finding (245)):
+  do not switch the default; DeepSeek is ~2x cheaper at list, not 4x (its
+  cache does not behave as Anthropic's; 22.4M input tokens against Claude's
+  14.1M), and its citation discipline is an order of magnitude weaker. The
+  tier stays available as provider `DEEPSEEK_API` for further trials, the
+  flash tier untested end to end.
+- **Olaplex run ab1cf03b** is paused at 27 of 87: its worker was stopped
+  cleanly to protect the last of the Claude weekly allowance, the section
+  was released with its calls recorded, and it resumes on a wake. Its status
+  still reads RUNNING with no worker — stale, harmless, and the same stale
+  state as the old Apogee run 686c3bf2. Run f1e2493f is NOT Olaplex; it is
+  Gilead Sciences / Arcellx (finding (238)).
+- **The DeepSeek provider exists** (work package 31, merged 2a361963):
+  provider id `DEEPSEEK_API`, base URL `https://api.deepseek.com/anthropic`
+  (an Anthropic Messages endpoint, verified live), ROUTING and RESIDUAL on
+  `deepseek-flash` at effort low, EXTRACTION on `deepseek-v4-pro` at effort
+  high, key `DEEPSEEK_API_KEY` on the deployment and passed through the wake,
+  prices from the published table. Two parser defects it found are fixed: the
+  response contract offers residual dispositions and coverage states as JSON
+  lists meaning "one of", and DeepSeek returns a one-element list, which
+  failed as `RESIDUAL_DISPOSITION: KNOWN_FAMILY` and `COVERAGE_STATE:
+  1.6:MERGER_STRUCTURE_CLOSING` (1e950348, d8b6bab7). Any future provider
+  that reads the contract literally meets the same wall; the durable fix is
+  to render those contracts as "one of: A | B | C" strings rather than arrays.
+- **The lawyer preview page is fast** (work package 32, ce1def4b, c31c9a7f,
+  dd44090b): 45.7 MB and 45 to 59 s before, 3.9 MB and 16 s after, reloads
+  instant, rendered HTML byte-identical. What remains is the database
+  scanning a 97-section run's rows (31 sections take 8 s; a light query 0.7
+  s), so the next cure is a server-side read model or a bigger instance, a
+  cost decision for Ben.
+- **Closing conditions are two tables by side** (work package 30, d6c4125a),
+  per Ben's finding (243): "Conditions to the Company's Obligations" and
+  "Conditions to Parent's Obligations", the side read from each fact's own
+  words, and the 5.9 filing negative its own row.
+- **Now open, in order**: (a) the thin-answer guard does not catch a section
+  that returns no facts at all — a silent absence a lawyer would read as
+  "this agreement has no such provision", and it affects Claude too; (b)
+  draft finalisation fails intermittently on the preview database (four
+  attempts for DeepSeek, two for Apogee, both eventually READY, and neither
+  blocks the read) — a run that has finalised must not fall back to FAILED,
+  and the finalise should be batched or resumable; (c) 19 valid facts carry
+  no headline summary because a summary over 18 words is dropped rather than
+  shortened; (d) the work packages from the Apogee read: 28 the caps
+  (finding (239)), 29 a cross-reference to a limb resolving so a whole fact
+  is never lost to one reference (the Company's breach termination right),
+  31 the empty-summary fix; (e) the 5.3 "multiple period literals" held fact.
+- **Operational lessons from this session**: two agents must not share one
+  git working tree — a subagent's `git checkout` landed the manager's commits
+  on the other branch and a reported "pushed" was false until it was caught;
+  use `git worktree add` with a symlinked `node_modules` (the pattern used
+  for wp31 and wp32). A codex-branch push did not always trigger a Vercel
+  build while the festive-branch one did; an empty commit forces it. The
+  preview database is slow enough that concurrent heavy reads cause
+  `canceling statement due to lock timeout` on run writes.
+- The manager session that wrote this update ran on a DeepSeek-backed agent
+  with DSH subagents, not the Claude Code Remote implementer sessions A to E
+  described in section 4, and drove the deployment with plain curl and a
+  Vercel token. The A/E sessions were left idle deliberately: Claude
+  allowance is the scarce resource (it reached about 5 per cent of the weekly
+  limit on 2026-10-23, which is why Olaplex was paused and why work package
+  31 was built at all). Section 4's mechanics still describe the Claude Code
+  Remote loop and remain valid for a session that has those tools; this one
+  did not, and used `git worktree` plus subagents instead.
 
 ## 1. What the product is, in one line
 
@@ -55,25 +132,30 @@ Evidence of it working:
   unmatched are the expected per-section qualifier copies; one real loss on
   3.1 (the MAE proviso on missed projections), to watch on the next deal.
 
-Not done:
+Superseded by section 0 (2026-10-24): a deal HAS now run end to end, twice.
 
-- No deal has run end to end on the new stack. The two paused runs (Apogee
-  686c3bf2-6d6a-4f53-8c54-c9c2cdcf4225 at 38 of 97; Olaplex
-  f1e2493f-8640-42b9-96ef-e4bf9693c967 at 34 of 85) are pinned to the V1
-  config (Opus 5, V9 profile) and cannot take the new stack ((235)).
-- Ben has not published a first review. Production project
-  `tzulhdasmioeechxapdy` has never been written to.
-- Four intakes stay QUEUED ((172)); Verve re-intake and the identity gate
-  for Crinetics, Centessa and Akero are parked.
-- Opus 5.5 medium comparison dropped ((231)); Batch API package to D held
-  ((213)) until a deal has run.
+- Apogee ran fresh on the Sonnet default (88d4032a, READY) and again on
+  DeepSeek (34847358, READY) — see section 0 and findings (241) and (245).
+- The two old paused runs are history: 686c3bf2 (Apogee, 38 of 97) and
+  f1e2493f (Gilead/Arcellx, 34 of 85 — mislabelled Olaplex in (235)).
+- Still true: Ben has not published a first review; production project
+  `tzulhdasmioeechxapdy` has never been written to; four intakes stay QUEUED
+  ((172)); Verve re-intake and the identity gate for Crinetics, Centessa and
+  Akero are parked; the Opus 5.5 medium comparison is dropped ((231)); the
+  Batch API package to D is held ((213)).
 
 ## 3. Open decisions, Ben's
 
-1. Apogee: A, a fresh intake on the Sonnet default (recommended), or B, retry
-   the old run on the old stack ((235)). Put 2026-10-22 18:10 UTC, no answer
-   yet. Steps for A are in section 6.
-2. After Apogee is read: Olaplex the same way; then lift the intake pause.
+Answered since this note was written:
+
+1. Apogee: Ben chose A on 2026-10-23 ("1. A"), on the Claude subscription
+   ("3. use the claude subscription"), and agreed the deals run sequentially
+   ("sequential - I agree"). Both are done: Apogee ran on Claude and on
+   DeepSeek (findings (238), (241), (245)).
+2. Still open, now narrower: whether to spend on a bigger preview database
+   or build the preview read model (section 0); whether to harden the
+   quoting instruction and retry DeepSeek, and at which tier; whether to
+   batch or make resumable the draft finalise.
 3. Q4 (legacy Query and Compare: retire or keep unrouted) and Q5 (canonical
    limb names for the other eighteen representations, after a few deals).
 
@@ -135,6 +217,20 @@ Not done:
   `tzulhdasmioeechxapdy`, never written.
 - Secrets rule: tokens live in shell exports and Vercel env only. Never
   print, log or commit them; never pass the Vercel token as an API key.
+- Added 2026-10-24: provider `DEEPSEEK_API` on the deployment (key
+  `DEEPSEEK_API_KEY`, set in the Vercel project environment), base URL
+  `https://api.deepseek.com/anthropic`. It is chosen per run with the
+  intake's `provider` field; it is not the default.
+- How this session reached the preview without the Vercel MCP: the project's
+  Deployment Protection bypass secret, sent as
+  `x-vercel-protection-bypass`, plus `Authorization: Bearer
+  <PRODUCT_INTERNAL_TOKEN>` on the internal routes. Plain curl is enough;
+  no MCP tools were available. The manager held, in 600 files under `/tmp`
+  and never in the repository, the bypass secret, the internal token, a
+  Vercel API token (sandbox updates and deployment state) and the DeepSeek
+  key. Those files do not survive a reboot: a new session must ask Ben for
+  the bypass secret and the internal token again. GitHub pushes worked from
+  the already-cached osxkeychain credential once Ben had pushed once.
 
 ## 6. Next steps, in order
 
@@ -155,6 +251,22 @@ Not done:
 
 - A run advances under the config it was created with. Changing the default
   does not reach a run in flight; a fresh intake does.
+- Two agents must not share one git working tree. On 2026-10-23 a subagent's
+  `git checkout` moved HEAD while the manager committed, so two plan commits
+  landed on the other branch and a "pushed" the manager reported was false
+  until it was noticed. Give an agent its own `git worktree` with a symlinked
+  `node_modules` (the pattern used for work packages 31 and 32), and check
+  `git branch --show-current` before committing.
+- A codex-branch push did not always start a Vercel build while the
+  festive-branch push did. An empty commit forces one.
+- DeepSeek (and any model that reads a contract literally) returns a
+  one-element JSON list where the contract prints a list of allowed values
+  meaning "one of". Parser fixes bought it, but the durable fix is to render
+  those contracts as strings ("one of: A | B | C").
+- The preview database is slow: a light query 0.7 s, a 97-section preview
+  read 16 s, and concurrent heavy reads cause `canceling statement due to
+  lock timeout` on a run's writes. Do not poll a big read while a run is
+  finalising.
 - Never `pkill -f` with a pattern that appears in your own command line.
 - The ablation's recorded "new" count differs from a rebuilt one by a few;
   decisions never rest on it (E's (199h)).
