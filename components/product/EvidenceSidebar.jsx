@@ -40,8 +40,8 @@ const NOTE = 'text-[9.5px] font-ui text-[#6b6b6b]';
 const BUTTON = 'rounded-[2px] border border-accent px-[7px] py-[3.5px] text-[9.5px] font-ui font-medium text-accent hover:bg-accent/10 disabled:opacity-40 transition-colors';
 const TEXT_LINK = 'text-[9.5px] font-ui text-[#1f1f1f] underline-offset-2 hover:underline';
 const DECISION_BADGE = {
-  PENDING: 'bg-amber-50 text-amber-700', ACCEPTED: 'bg-[#e8f3ee] text-[#2f7a5b]',
-  EDITED: 'bg-[#e9effa] text-[#2f56b8]', REJECTED: 'bg-[#f3f3f3] text-[#555555]', UNRESOLVED: 'bg-seller/10 text-seller',
+  PENDING: 'bg-[#FBF3E2] text-[#6B4A12]', ACCEPTED: 'bg-[#F1F4F8] text-[#03203D]',
+  EDITED: 'bg-[#EAF0F6] text-[#0B3D71]', REJECTED: 'bg-[#F1F4F8] text-[#6B7785]', UNRESOLVED: 'bg-[#EAF0F6] text-[#5D7DA3]',
 };
 
 const DECISION_WORD = {
@@ -316,7 +316,7 @@ function RecordDetailBlocks({ checks, provenance }) {
     <section data-testid="evidence-checks">
       <p className={LABEL}>Checks the code ran</p>
       {checks.length === 0
-        ? <p className="mt-[2.5px] text-[10.5px] font-ui text-[#2f7a5b]">All structural checks passed.</p>
+        ? <p className="mt-[2.5px] text-[10.5px] font-ui text-[#0B3D71]">All structural checks passed.</p>
         : <ul className="mt-[2.5px] list-disc space-y-[1px] pl-[9.5px] text-[10.5px] font-ui text-seller">{checks.map((problem, index) => <li key={index}>{problem}</li>)}</ul>}
     </section>
 
