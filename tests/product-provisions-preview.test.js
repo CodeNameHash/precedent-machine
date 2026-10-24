@@ -396,6 +396,97 @@ test('an out-of-scope exhibit is one quiet line under the title, and absent when
   assert.deepEqual(previewFactsFromWorkspace(workspace()).out_of_scope, []);
 });
 
+// Work package 33 (plan finding (246), 2026-10-24): the silent absence. The
+// DeepSeek run of Apogee (34847358) produced no fact at 5.16 (Regulatory
+// Matters, 3,413 bytes, six facts on the Claude run 88d4032a) and none at
+// 3.30 (No Other Representation); neither left a line on the page, so the
+// silence read as "this agreement has no such provision". Ben's bar: a
+// section that returns no facts must never read that way. The words below
+// are the agreement's own, from the run's full-section spans.
+const REGULATORY_MATTERS_WORDS = 'Section 5.16 Regulatory Matters.\n(a) The Company shall, to the extent permitted by applicable Law, promptly provide Parent with a copy of all written or details of any oral correspondence received after the date hereof from the FDA or any other Regulatory Authority regarding any approval, withdrawal, delay, suspension, termination, placement on inactive status (including any clinical hold) or revocation of any approval for such Product.';
+const NO_OTHER_REPRESENTATION_WORDS = 'Section 3.30 No Other Representation. Except for the express written representations and warranties made by the Company in this Agreement and in any instrument or other document delivered pursuant to this Agreement, no Company Party makes any express or implied representation or warranty with respect to the Company or any Company Affiliate.';
+const VOTE_REQUIRED_WORDS = 'Section 3.6 Vote Required. The affirmative vote or written consent of the holders of a majority of the shares of Company Voting Common Stock outstanding on the record date are the only votes or approvals necessary to adopt this Agreement.';
+
+function noFactsWorkspace() {
+  const nodes = [
+    { node_id: NODE, reference: '3.14', authored_order: 1, kind: 'SECTION' },
+    { node_id: 'node-3-30', reference: '3.30', authored_order: 30, kind: 'SECTION' },
+    { node_id: 'node-3-6', reference: '3.6', authored_order: 6, kind: 'SECTION' },
+    { node_id: 'node-5-16', reference: '5.16', authored_order: 60, kind: 'SECTION' },
+    { node_id: 'node-exhibit-a', reference: 'Exhibit-A::3.27', authored_order: 300, kind: 'SECTION' },
+    { node_id: 'node-exhibit-b', reference: 'Exhibit-B', authored_order: 301, kind: 'SECTION' },
+  ];
+  const words = { [NODE]: SECTION_TEXT, 'node-3-30': NO_OTHER_REPRESENTATION_WORDS, 'node-3-6': VOTE_REQUIRED_WORDS, 'node-5-16': REGULATORY_MATTERS_WORDS, 'node-exhibit-a': 'Section 3.27 Major Suppliers. Section 3.27 of the Company Disclosure Schedule sets forth a list.', 'node-exhibit-b': 'FORM OF CVR AGREEMENT. This Agreement is made and entered into as of January 1, 2026.' };
+  const sections = [
+    { structure_node_id: NODE, section_reference: '3.14', families: ['REPRESENTATIONS'], disposition: 'FAMILY_ASSIGNED' },
+    { structure_node_id: 'node-3-30', section_reference: '3.30', families: ['REPRESENTATIONS'], disposition: 'FAMILY_ASSIGNED' },
+    { structure_node_id: 'node-3-6', section_reference: '3.6', families: ['REPRESENTATIONS'], disposition: 'FAMILY_ASSIGNED' },
+    { structure_node_id: 'node-5-16', section_reference: '5.16', families: [], disposition: 'IMMATERIAL' },
+    { structure_node_id: 'node-exhibit-a', section_reference: 'Exhibit-A::3.27', families: [], disposition: 'IMMATERIAL' },
+    { structure_node_id: 'node-exhibit-b', section_reference: 'Exhibit-B', families: [], disposition: 'IMMATERIAL' },
+  ];
+  const source_closures = sections.map((routing) => ({ source_closure_id: `c-${routing.structure_node_id}`, structure_node_id: routing.structure_node_id, section_reference: routing.section_reference, full_section_span_id: `s-${routing.structure_node_id}` }));
+  const spans = sections.map((routing) => ({ span_id: `s-${routing.structure_node_id}`, kind: 'FULL_SECTION', structure_node_id: routing.structure_node_id, start_byte: 0, end_byte: Buffer.byteLength(words[routing.structure_node_id], 'utf8'), exact_text: words[routing.structure_node_id], source_closure_ids: [`c-${routing.structure_node_id}`] }));
+  const proposals = [
+    proposalFrom(fixture.facts[0], 1),
+    // A held fact is not a silent section: the held list already names it.
+    proposalFrom(fixture.facts[1], 2, { structure_node_id: 'node-3-6', validation_status: 'INVALID' }),
+  ];
+  const issues = [{
+    issue_id: 'i-oos', kind: 'NOTE', code: 'OUT_OF_SCOPE_EXHIBIT', proposal_id: null, structure_node_id: 'node-exhibit-b', family_key: null,
+    message: JSON.stringify({ section_reference: 'Exhibit-B', title: 'Form of CVR Agreement' }),
+  }];
+  return {
+    analysis: {
+      source_document: { parties: ['Apogee Therapeutics, Inc.', 'Andor Merger Co.'] },
+      agreement_structure: { nodes },
+      sections,
+      source_closures,
+      spans,
+      proposals,
+      proposition_groups: [],
+      fact_links: [],
+      issues,
+      coverage_assertions: [],
+    },
+    review: { version: 3, state: { status: 'DRAFT', items: [], agreement_coverage: { decision: 'PENDING' } } },
+    progress: { status: 'READY', stage: 'READY', completed: sections.length, total: sections.length, generation: 4 },
+  };
+}
+
+test('a section that returned no facts is named under the title with its reason, and never reads as an absence', () => {
+  const ws = noFactsWorkspace();
+  const preview = previewFactsFromWorkspace(ws);
+  assert.deepEqual(preview.sections_without_facts.map((entry) => entry.section_reference), ['3.30', '5.16'],
+    'the section with a valid fact, the one with a held fact, the disclosure-schedule section and the out-of-scope exhibit are not listed');
+  assert.deepEqual(preview.sections_without_facts.map((entry) => entry.heading), ['No Other Representation', 'Regulatory Matters']);
+  assert.deepEqual(preview.sections_without_facts.map((entry) => entry.reason), ['RETURNED_NOTHING', 'READ_AS_IMMATERIAL']);
+  assert.deepEqual(preview.sections_without_facts.map((entry) => entry.families), [['REPRESENTATIONS'], []]);
+  // The fact and the held fact are still what the tables show: the lines take nothing off them.
+  assert.equal(preview.facts.length, 1);
+  assert.equal(preview.held_count, 1);
+  const html = renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: ws, runId: 'run-1' }));
+  const lines = [...html.matchAll(/data-testid="section-without-facts"><span[^>]*>([^<]*)<\/span>([^<]*)</g)].map((match) => `${match[1]}${match[2]}`);
+  assert.equal(lines.length, 2);
+  assert.match(lines[0], /§ 3\.30 No Other Representation — no facts were extracted: the families routed to this section produced no fact\. This is not a finding that the agreement has no such provision\./);
+  assert.match(lines[1], /§ 5\.16 Regulatory Matters — no facts were extracted: the analysis read this section as having no provision of the catalogued families\. This is not a finding that the agreement has no such provision\./);
+  // Under the title, above the rule: the reader meets the hole before the tables.
+  assert.ok(html.indexOf('</h1>') < html.indexOf('data-testid="sections-without-facts"'));
+  assert.ok(html.indexOf('data-testid="sections-without-facts"') < html.indexOf('data-testid="preview-rule"'));
+  // A routing the payload does not carry still lists the section: the hole
+  // is known even when its reason is not.
+  const unrecorded = noFactsWorkspace();
+  for (const routing of unrecorded.analysis.sections) { delete routing.families; delete routing.disposition; }
+  assert.deepEqual(previewFactsFromWorkspace(unrecorded).sections_without_facts.map((entry) => entry.reason), ['NOT_RECORDED', 'NOT_RECORDED']);
+});
+
+test('the page has no no-facts lines when every section produced a fact', () => {
+  const preview = previewFactsFromWorkspace(workspace());
+  assert.deepEqual(preview.sections_without_facts, []);
+  const html = renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: workspace(), runId: 'run-1' }));
+  assert.doesNotMatch(html, /sections-without-facts/);
+});
+
 // Work package 26 (plan finding (232), 2026-10-22). Ben, on the three
 // placements of the representation qualifiers put to him: "Option a on
 // placement": the article's REPRESENTATION_QUALIFICATION facts are

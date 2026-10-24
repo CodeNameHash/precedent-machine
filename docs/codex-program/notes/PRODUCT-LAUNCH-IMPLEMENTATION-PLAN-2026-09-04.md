@@ -6182,6 +6182,48 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       but it is a retry-and-batch problem, not a redesign, and it does not
       block the read: the preview returns every committed section whether or
       not the draft finalised.
+      (246) 2026-10-24 23:00 UTC (the manager), work package 33: the
+      silent absence is answered on the lawyer preview page. Ben's bar,
+      from the new-chat prompt of (2026-10-24): "a section that returns no
+      facts must never read as 'this agreement has no such provision'".
+      What the two runs of Apogee show: DeepSeek 34847358 produced no fact
+      at 5.16 (Regulatory Matters, 3,413 bytes, six facts on Claude's
+      88d4032a) and none at 3.30 (No Other Representation), and Claude's
+      own run produced none at 3.30's class wherever the router reads a
+      section as immaterial; in every case the draft already carries the
+      absence claim as something the review must decide (an
+      IMMATERIAL_ROUTING item for a section the router read as immaterial,
+      a COVERAGE item for a family the extraction answered NOT_FOUND, and
+      the review's own "AI identified this subject but proposed no facts"
+      warning on an UNRESOLVED routed family, tests/product-empty-
+      extraction-ui.test.js), but the preview page a lawyer reads showed
+      nothing at all, so the silence read as an absence. The page now
+      names, under the title and in the quiet drift/out-of-scope style,
+      every substantive section that produced no fact at all, in section
+      order, with its authored heading and its reason (read as immaterial,
+      routed families that returned nothing, or words flagged as
+      unclassified) and one sentence: "This is not a finding that the
+      agreement has no such provision." Exhibits and annexes, a section
+      inside one, and an out-of-scope exhibit already named by its own
+      line are not listed; a section with a valid, held or rejected fact
+      is not listed either (a held fact is listed with its reason, a
+      rejected one is the lawyer's decision). Read over the stored
+      payloads: DeepSeek 34847358 lists 3.30 No Other Representation and
+      5.16 Regulatory Matters, Claude 88d4032a lists none, and the five
+      empty sections of the Claude run (Exhibits B and D and the
+      disclosure schedule's 3.6, 3.24, 3.27) stay out. The preview read
+      now carries each routing's families and its known disposition, and
+      never the router's rationale (the projection's size guard stays at
+      32 KB). Files: lib/product/provisions-preview.js
+      (sectionsWithoutFacts), lib/product/preview-handler.js
+      (projectRouting), pages/review/product/[id]/provisions.js
+      (SectionsWithoutFacts). Tests: tests/product-provisions-preview.test.js
+      (the list and its reasons on the agreement's own words, the render,
+      no lines when every section has a fact) and
+      tests/product-preview-handler.test.js (the routing projection).
+      Nothing else changes: no coverage state, no review item, no
+      extraction instruction; the browser check of the changed page waits
+      on the deployment rebuild.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is

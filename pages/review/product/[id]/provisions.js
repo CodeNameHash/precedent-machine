@@ -108,6 +108,38 @@ function UnplacedHeldFacts({ entries }) {
   );
 }
 
+// Plan finding (246), work package 33: the silent absence. A section that
+// returned no facts used to leave no trace on the page, so its absence read
+// as "this agreement has no such provision". Ben's bar: a section that
+// returns no facts must never read that way. The page names every
+// substantive section that produced no fact at all, in section order, with
+// the reason and one sentence that says what the absence does and does not
+// mean. Quiet, in the same 9.5px registry as the drift and out-of-scope
+// lines. Nothing when every section produced a fact.
+const NO_FACTS_REASONS = {
+  READ_AS_IMMATERIAL: 'the analysis read this section as having no provision of the catalogued families',
+  RETURNED_NOTHING: 'the families routed to this section produced no fact',
+  UNCLASSIFIED_PROVISION: 'the analysis flagged words here it could not classify',
+  NOT_RECORDED: 'no analysis result was recorded for this section',
+};
+
+function SectionsWithoutFacts({ entries }) {
+  if (!entries || entries.length === 0) return null;
+  return (
+    <section className="mt-[7px]" aria-labelledby="no-facts-heading" data-testid="sections-without-facts">
+      <h2 id="no-facts-heading" className="text-[9.5px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b]">Sections with no facts extracted</h2>
+      <ul className="mt-[2.5px] space-y-[2px]">
+        {entries.map((entry) => (
+          <li key={entry.structure_node_id || entry.section_reference} className="text-[9.5px] font-ui text-[#6b6b6b]" data-testid="section-without-facts">
+            <span className="text-[#1f1f1f]">{`§ ${entry.section_reference}${entry.heading ? ` ${entry.heading}` : ''}`}</span>
+            {` — no facts were extracted: ${NO_FACTS_REASONS[entry.reason] || NO_FACTS_REASONS.NOT_RECORDED}. This is not a finding that the agreement has no such provision.`}
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 export function ProvisionsPreviewBody({ workspace, runId }) {
   const preview = useMemo(() => previewFactsFromWorkspace(workspace), [workspace]);
   const source = workspace.analysis.source_document || {};
@@ -187,6 +219,7 @@ export function ProvisionsPreviewBody({ workspace, runId }) {
                   ))}
                 </div>
               ) : null}
+              <SectionsWithoutFacts entries={preview.sections_without_facts} />
               {live && progress.status !== 'FAILED' ? <p className="mt-[7px] rounded-[2px] bg-amber-50 px-[7px] py-[4.5px] text-[9.5px] font-ui text-amber-700" data-testid="preview-live">Filling in as sections complete. This page refreshes itself every minute.</p> : null}
               <div className="mt-[16px] h-[10px] w-full bg-[#B9C8DA]" data-testid="preview-rule" aria-hidden="true" />
             </header>

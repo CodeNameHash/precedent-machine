@@ -252,7 +252,12 @@ test('the preview workspace is projected to the fields the page reads', () => {
   assert.deepEqual(Object.keys(workspace.analysis.agreement_structure.nodes[0]).sort(), [
     'authored_order', 'node_id', 'reference',
   ]);
-  assert.deepEqual(Object.keys(workspace.analysis.sections[0]).sort(), ['section_reference', 'structure_node_id']);
+  // A routing carries the reasons a section that produced no facts is listed
+  // for (work package 33): the families it was asked for and, when the row
+  // holds one of the three known dispositions, the disposition it was read
+  // as. The router's rationale and any other value never ride along.
+  assert.deepEqual(Object.keys(workspace.analysis.sections[0]).sort(), ['families', 'section_reference', 'structure_node_id']);
+  assert.deepEqual(workspace.analysis.sections[0].families, ['MATERIAL_CONTRACTS']);
   // The page still builds its facts and section text from the projection.
   const preview = previewFactsFromWorkspace(workspace);
   assert.equal(preview.facts.length, 1);
