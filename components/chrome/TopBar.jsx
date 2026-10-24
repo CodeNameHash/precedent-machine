@@ -14,10 +14,11 @@ export default function TopBar() {
   const active = (href) => (href === '/' ? path === '/' : path === href || path.startsWith(`${href}/`));
   const links = [
     ['/', 'Index'],
+    ['/review', 'Review'],
     ['/library', 'Library'],
   ];
   return (
-    <header className="pw-topbar sticky top-0 z-50 flex items-center gap-7 border-b border-[#DCE3E1] bg-white" style={{ height: 76, padding: '0 40px', fontFamily: "'Inter Tight', Arial, sans-serif" }}>
+    <header className="pw-topbar sticky top-0 z-50 flex items-center gap-4 border-b border-[#DCE3E1] bg-white px-4 md:gap-7 md:px-10" style={{ height: 76, fontFamily: "'Inter Tight', Arial, sans-serif" }}>
       <Link href="/" className="flex shrink-0 items-center gap-3 no-underline" aria-label="Corpus. Paul, Weiss.">
         <span className="flex h-[40px] w-[40px] shrink-0 flex-col justify-center gap-[1px] bg-[#03203D] pl-[7px] text-[12.5px] font-extrabold leading-[.88] tracking-[-.03em] text-white" aria-hidden="true">
           <span>Paul,</span><span>Weiss</span>
@@ -42,7 +43,7 @@ export default function TopBar() {
             <span className="grid h-[26px] w-[26px] place-items-center rounded-full bg-[#F1F4F8] text-[11px] font-bold tracking-[.02em] text-[#0B3D71]">
               {(user.name || 'U').split(/\s+/).map((s) => s[0]).slice(0, 2).join('').toUpperCase()}
             </span>
-            <button onClick={logout} className="text-xs text-[#6B7785] transition-colors hover:text-[#03203D]">Sign out</button>
+            <button onClick={logout} className="whitespace-nowrap text-xs text-[#6B7785] transition-colors hover:text-[#03203D]">Sign out</button>
           </>
         )}
       </div>

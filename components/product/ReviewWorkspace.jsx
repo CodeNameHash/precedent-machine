@@ -14,6 +14,8 @@ function selectLegalSchema(version) {
 }
 import ProposalCard from './ProposalCard';
 import SourceContextPanel from './SourceContextPanel';
+import ReviewSectionRail from './ReviewSectionRail';
+import ReviewSourcePanel from './ReviewSourcePanel';
 import FocusedReview from './FocusedReview';
 import PublishedSummary from './PublishedSummary';
 import { groupPublishedFacts } from '../../lib/product/published-layers';
@@ -235,7 +237,6 @@ export function ReviewSectionHeading({ section }) {
 export function DraftReview({ workspace, view, busy, command, openSource, focus = [], allSectionsHref = null, brief = null }) {
   const state = workspace.review.state;
   const analysis = workspace.analysis;
-  const firstFactSection = view.sections.find((section) => section.proposals.length > 0);
   function jumpToSection(event) {
     const sectionId = event.target.value;
     if (!sectionId || typeof document === 'undefined') return;
@@ -252,11 +253,15 @@ export function DraftReview({ workspace, view, busy, command, openSource, focus 
   const focused = focus.length > 0;
   return <>
     {focused ? <FocusedReview view={view} analysis={analysis} focus={focus} busy={busy} command={command} openSource={openSource} cardPropsFor={cardPropsFor} allSectionsHref={allSectionsHref} brief={brief} /> : null}
-    {focused ? null : <nav aria-label="Review navigation" className="rounded-xl border border-border bg-paper p-4">
-      <div className="flex flex-wrap items-end gap-3">
-        <div className="min-w-64 flex-1"><p className="text-xs font-bold uppercase tracking-wide text-accent">Review by section</p><label className="mt-1 block text-sm font-semibold text-ink">Jump to agreement section<select aria-label="Jump to agreement section" defaultValue="" onChange={jumpToSection} className="mt-1 block w-full rounded border border-border bg-white p-2 font-normal"><option value="">Choose a section</option>{view.sections.map((section) => <option key={section.node.node_id} value={section.node.node_id}>{displaySectionReference(section.routing.section_reference)}: {section.heading || 'Agreement section'}</option>)}</select></label></div>
-        {firstFactSection ? <a href={`#section-${firstFactSection.node.node_id}`} className="rounded bg-ink px-4 py-2 text-xs font-semibold text-white">Start with first proposed fact</a> : null}
-        <a href="#review-checks" className="rounded border border-border bg-white px-4 py-2 text-xs font-semibold text-ink">Go to review checks</a>
+    {focused ? null : <nav aria-label="Review navigation" className="pw-review-jump">
+      <div className="pw-review-jump-row">
+        <label className="pw-review-jump-label">
+          <span>Sections</span>
+          <select aria-label="Jump to agreement section" defaultValue="" onChange={jumpToSection}>
+            <option value="">Choose a section</option>
+            {view.sections.map((section) => <option key={section.node.node_id} value={section.node.node_id}>{displaySectionReference(section.routing.section_reference)}: {section.heading || 'Agreement section'}</option>)}
+          </select>
+        </label>
       </div>
     </nav>}
     {focused ? null : <section aria-labelledby="proposed-facts-heading" className="space-y-6">
@@ -425,6 +430,8 @@ export default function ReviewWorkspace({ runId, focus = [], allSectionsHref = n
   const [workspace, setWorkspace] = useState(null);
   const [source, setSource] = useState(null);
   const [sourceSelection, setSourceSelection] = useState(null);
+  const [sourceModal, setSourceModal] = useState(false);
+  const [activeSection, setActiveSection] = useState(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const pendingAction = useRef(null);
@@ -461,17 +468,123 @@ export default function ReviewWorkspace({ runId, focus = [], allSectionsHref = n
   async function openSource(closureId, spanId, reviewContext = null) {
     const span = workspace.analysis.spans.find((item) => item.span_id === spanId);
     const resolvedClosureId = closureId || span?.source_closure_ids?.[0] || null;
-    setSourceSelection({ closureId: resolvedClosureId, span, reviewContext });
+    const sectionNode = workspace.analysis.agreement_structure?.nodes?.find((node) => node.node_id === span?.structure_node_id);
+    const sectionReference = reviewContext?.section_reference || sectionNode?.reference || null;
+    setSourceSelection({ closureId: resolvedClosureId, span, reviewContext, sectionReference });
+    if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(max-width: 1023px)').matches) setSourceModal(true);
     if (!source) await loadSource().catch((failure) => setError(failure.message));
   }
   if (!workspace) return <div className="p-8">{error ? <><p role="alert">{error}</p><button type="button" onClick={() => load().catch((failure) => setError(failure.message))} className="mt-3 rounded border border-border px-3 py-2 text-sm">Retry review load</button></> : 'Loading Review…'}</div>;
   const state = workspace.review.state;
   const candidate = workspace.review.release_history?.[0] || null;
   const candidateActive = Boolean(candidate && workspace.review.active_release_id === candidate.release_id);
-  return <div className="mx-auto max-w-6xl space-y-6 pb-20">
-    <header className="sticky top-0 z-20 -mx-4 flex flex-wrap items-center gap-3 border-b border-border bg-white/95 px-4 py-3 backdrop-blur"><div><p className="text-xs uppercase tracking-wide text-inkLight">25-family lawyer review</p><h1 className="font-display text-xl text-ink">{displayIdentityParties(workspace.analysis.source_document.display_parties || workspace.analysis.source_document.parties, 'Agreement analysis')}</h1></div><div className="ml-auto text-right text-xs text-inkMid"><p>Awaiting review: {view.pending_count} · Marked unresolved: {view.unresolved_count}</p><p>{view.residual_paragraph_count} residual paragraphs · {view.unusual_provision_count} unusual</p><p>Revision {workspace.review.version}</p><p><a href={`/review/product/${runId}/provisions`} className="font-semibold text-accent" data-testid="lawyer-preview-link">Lawyer preview</a></p></div>{state.status === 'DRAFT' ? <><button disabled={busy} type="button" onClick={() => command({ type: 'SAVE_PROGRESS' })} className="rounded border border-border px-3 py-2 text-xs font-semibold">Save progress</button><button disabled={busy || !view.can_publish} type="button" onClick={() => command({ type: 'PUBLISH' })} className="rounded bg-ink px-4 py-2 text-xs font-semibold text-white disabled:opacity-40">Finalise inactive candidate</button></> : <><button disabled={busy} type="button" onClick={() => command({ type: 'REOPEN' })} className="rounded border border-border px-3 py-2 text-xs font-semibold">Revise candidate</button>{candidate && state.release_evaluation?.passed === true && !candidateActive ? <button disabled={busy} type="button" onClick={() => command({ type: 'ACTIVATE_RELEASE', release_id: candidate.release_id })} className="rounded bg-green-800 px-4 py-2 text-xs font-semibold text-white">Activate evaluated release</button> : null}{candidateActive && candidate.supersedes_release_id ? <button disabled={busy} type="button" onClick={() => command({ type: 'ROLLBACK_RELEASE' })} className="rounded bg-red-800 px-4 py-2 text-xs font-semibold text-white">Roll back active release</button> : null}</>}</header>
+  return <div className="pw-review">
+    <header className="pw-review-top">
+      <div className="pw-review-head-left">
+        <p className="pw-review-kicker">Review workflow · {state.status === 'PUBLISHED' ? 'Published' : 'Draft candidate'}</p>
+        <h1>{displayIdentityParties(workspace.analysis.source_document.display_parties || workspace.analysis.source_document.parties, 'Agreement analysis')}</h1>
+        <p className="pw-review-sub">{view.sections.length} agreement sections · {view.pending_count} pending · {view.unresolved_count} unresolved · revision {workspace.review.version}</p>
+      </div>
+      <div className="pw-review-head-actions">
+        <a href={`/review/product/${runId}/provisions`} className="pw-review-preview" data-testid="lawyer-preview-link">Lawyer preview</a>
+        {state.status === 'DRAFT' ? <><button disabled={busy} type="button" onClick={() => command({ type: 'SAVE_PROGRESS' })} className="pw-btn ghost">Save progress</button><button disabled={busy || !view.can_publish} type="button" onClick={() => command({ type: 'PUBLISH' })} className="pw-btn solid">Finalise candidate</button></> : <><button disabled={busy} type="button" onClick={() => command({ type: 'REOPEN' })} className="pw-btn ghost">Revise candidate</button>{candidate && state.release_evaluation?.passed === true && !candidateActive ? <button disabled={busy} type="button" onClick={() => command({ type: 'ACTIVATE_RELEASE', release_id: candidate.release_id })} className="pw-btn solid">Activate evaluated release</button> : null}{candidateActive && candidate.supersedes_release_id ? <button disabled={busy} type="button" onClick={() => command({ type: 'ROLLBACK_RELEASE' })} className="pw-btn danger">Roll back active release</button> : null}</>}
+      </div>
+    </header>
     {error ? <p role="alert" className="rounded bg-red-50 p-3 text-sm text-red-800">{error}<button type="button" onClick={() => (sourceSelection && !source ? loadSource() : load()).catch((failure) => setError(failure.message))} className="ml-3 underline">Retry load</button></p> : null}
+    <div className="pw-review-grid">
+      <ReviewSectionRail sections={view.sections} activeId={activeSection || view.sections[0]?.node.node_id} onSelect={setActiveSection} pendingCount={view.pending_count} unresolvedCount={view.unresolved_count} />
+      <div className="pw-review-main">
     {state.status === 'PUBLISHED' ? <><AcceptedSummary summary={state.summary} metrics={state.metrics} onSource={openSource} active={candidateActive} /><ReleaseEvaluation state={state} analysis={workspace.analysis} referenceSources={workspace.reference_sources || []} busy={busy} onEvaluate={command} onSource={openSource} /></> : <DraftReview workspace={workspace} view={view} busy={busy} command={command} openSource={openSource} focus={focus} allSectionsHref={allSectionsHref} brief={brief} />}
-    <SourceContextPanel open={Boolean(sourceSelection)} onClose={() => setSourceSelection(null)} source={source} span={sourceSelection?.span} reviewContext={sourceSelection?.reviewContext} closureSpans={workspace.analysis.spans.filter((item) => item.source_closure_ids?.includes(sourceSelection?.closureId))} loading={!source} />
+      </div>
+      <ReviewSourcePanel selection={sourceSelection} source={source} loading={Boolean(sourceSelection) && !source} onOpenFull={() => setSourceModal(true)} pendingCount={view.pending_count} unresolvedCount={view.unresolved_count} revision={workspace.review.version} />
+    </div>
+    <SourceContextPanel open={sourceModal} onClose={() => setSourceModal(false)} source={source} span={sourceSelection?.span} reviewContext={sourceSelection?.reviewContext} closureSpans={workspace.analysis.spans.filter((item) => item.source_closure_ids?.includes(sourceSelection?.closureId))} loading={!source} />
+    <style jsx global>{`
+      .pw-review { margin: -16px; background: #fff; color: #03203D; font-family: 'Inter Tight', Arial, sans-serif; }
+      @media (min-width: 768px) { .pw-review { margin: -32px; } }
+      .pw-review-top { position: sticky; top: 76px; z-index: 20; display: flex; align-items: flex-end; gap: 24px; padding: 18px 32px 16px; border-bottom: 10px solid #B9C8DA; background: #fff; }
+      .pw-review-kicker { margin: 0 0 6px; font: 700 9px 'Inter Tight', Arial, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #6B7785; }
+      .pw-review-top h1 { margin: 0; font: 700 32px/.98 'Inter Tight', Arial, sans-serif; letter-spacing: -.045em; color: #03203D; }
+      .pw-review-sub { margin: 7px 0 0; font: 400 11px 'Source Serif 4', Georgia, serif; color: #6B7785; }
+      .pw-review-head-actions { margin-left: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+      .pw-review-preview { margin-right: 8px; font: 700 9px 'Inter Tight', Arial, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: #0B3D71; text-decoration: none; }
+      .pw-btn { height: 34px; border: 1px solid #03203D; border-radius: 999px; padding: 0 15px; font: 700 9px 'Inter Tight', Arial, sans-serif; letter-spacing: .07em; text-transform: uppercase; cursor: pointer; background: #fff; color: #03203D; }
+      .pw-btn.solid { background: #03203D; color: #fff; }
+      .pw-btn.danger { background: #fff; color: #03203D; border-color: #03203D; }
+      .pw-btn:disabled { opacity: .4; cursor: default; }
+      .pw-review-grid { display: grid; grid-template-columns: 232px minmax(0, 1fr) 340px; gap: 0; align-items: start; }
+      .pw-review-rail { position: sticky; top: 192px; max-height: calc(100vh - 210px); overflow: auto; padding: 22px 18px 26px 24px; border-right: 1px solid #DCE3E1; }
+      .pw-rail-kicker { margin: 0 0 10px; font: 700 8.5px 'Inter Tight', Arial, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #6B7785; }
+      .pw-review-rail nav { display: flex; flex-direction: column; gap: 2px; }
+      .pw-rail-link { display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; gap: 7px; align-items: baseline; padding: 7px 8px; border-left: 3px solid transparent; text-decoration: none; color: #33475E; }
+      .pw-rail-link:hover { background: #F1F4F8; }
+      .pw-rail-link.is-on { background: #F1F4F8; border-left-color: #03203D; color: #03203D; }
+      .pw-rail-ref { font: 500 8.5px 'Inter Tight', Arial, sans-serif; color: #6B7785; }
+      .pw-rail-name { font: 400 12.5px/1.25 'Source Serif 4', Georgia, serif; }
+      .pw-rail-link.is-on .pw-rail-name { font-weight: 600; }
+      .pw-rail-count { font: 500 8.5px 'Inter Tight', Arial, sans-serif; color: #6B7785; }
+      .pw-rail-progress { margin-top: 26px; padding-top: 14px; border-top: 1px solid #DCE3E1; }
+      .pw-rail-big { margin: 0; font: 700 32px/.9 'Inter Tight', Arial, sans-serif; letter-spacing: -.05em; }
+      .pw-rail-big span { font: 500 9px 'Inter Tight', Arial, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: #6B7785; }
+      .pw-rail-meta { margin: 7px 0 0; font: 400 10.5px 'Source Serif 4', Georgia, serif; color: #6B7785; }
+      .pw-review-main { min-width: 0; padding: 26px 30px 60px; }
+      .pw-review-source { position: sticky; top: 192px; max-height: calc(100vh - 210px); overflow: auto; padding: 22px 24px 30px; border-left: 1px solid #DCE3E1; }
+      .pw-source-head { display: flex; align-items: center; gap: 10px; }
+      .pw-source-head .pw-rail-kicker { margin: 0; }
+      .pw-source-open { margin-left: auto; border: 0; background: none; padding: 0; color: #0B3D71; font: 700 8.5px 'Inter Tight', Arial, sans-serif; letter-spacing: .07em; text-transform: uppercase; cursor: pointer; }
+      .pw-source-title { margin: 8px 0 0; font: 700 25px/.98 'Inter Tight', Arial, sans-serif; letter-spacing: -.045em; color: #03203D; }
+      .pw-source-sub { margin: 6px 0 12px; font: 400 11px 'Source Serif 4', Georgia, serif; color: #6B7785; }
+      .pw-source-quote { margin: 0; border-left: 3px solid #03203D; padding: 10px 0 10px 12px; font: 400 13px/1.5 'Source Serif 4', Georgia, serif; color: #03203D; white-space: pre-wrap; }
+      .pw-source-meta { margin: 8px 0 0; font: 500 8px 'Inter Tight', Arial, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: #6B7785; }
+      .pw-source-rule { height: 1px; background: #DCE3E1; margin: 16px 0; }
+      .pw-source-empty { margin: 0; font: 400 13px/1.5 'Source Serif 4', Georgia, serif; color: #6B7785; }
+      .pw-source-note { margin: 0; font: 400 10.5px/1.5 'Source Serif 4', Georgia, serif; color: #6B7785; }
+      .pw-source-note b { color: #33475E; }
+      .pw-source-progress { margin-top: 4px; }
+      .pw-source-progress-row { display: flex; align-items: baseline; justify-content: space-between; border-bottom: 1px solid #DCE3E1; padding: 6px 0; font: 400 10.5px 'Source Serif 4', Georgia, serif; color: #6B7785; }
+      .pw-source-progress-row b { font: 600 11px 'Inter Tight', Arial, sans-serif; color: #03203D; }
+      .pw-review-main [data-testid="proposal-card"] { margin: 0 0 12px; padding: 18px 18px 14px; border: 0; border-top: 10px solid #DCE3E1; border-radius: 0; box-shadow: none; background: #fff; }
+      .pw-review-main [data-testid="proposal-card"] > div:first-child p:first-child { font: 700 8.5px 'Inter Tight', Arial, sans-serif; letter-spacing: .12em; text-transform: uppercase; color: #5D7DA3; }
+      .pw-review-main [data-testid="proposal-card"] > div:first-child { flex-wrap: nowrap; align-items: flex-start; gap: 16px; }
+      .pw-review-main [data-testid="proposal-card"] > div:first-child > div { min-width: 0; flex: 1; }
+      .pw-review-main [data-testid="proposal-card"] > div:first-child > span { flex: none; margin-top: 2px; }
+      .pw-review-main [data-testid="proposal-card"] > div:first-child > span { display: inline-flex; align-items: center; border: 1px solid #B9C8DA !important; background: #F1F4F8 !important; color: #03203D !important; border-radius: 999px !important; padding: 2px 7px !important; font: 700 8.5px 'Inter Tight', Arial, sans-serif !important; letter-spacing: .06em; text-transform: uppercase; }
+      .pw-review-main [data-testid="proposal-card"] > div:first-child button { font: 700 21px/1.12 'Inter Tight', Arial, sans-serif; letter-spacing: -.035em; color: #03203D; }
+      .pw-review-main [data-testid="proposal-card"] dl dt { font: 700 8px 'Inter Tight', Arial, sans-serif; letter-spacing: .1em; text-transform: uppercase; color: #6B7785; }
+      .pw-review-main [data-testid="proposal-card"] dl dd { font: 500 12px/1.4 'Inter Tight', Arial, sans-serif; color: #33475E; }
+      .pw-review-main [data-testid="proposal-card"] .border-green-700 { border-color: #03203D !important; background: #03203D !important; color: #fff !important; border-radius: 999px; padding: 6px 14px; font-size: 9px; letter-spacing: .06em; text-transform: uppercase; }
+      .pw-review-main [data-testid="proposal-card"] .border-blue-700 { border-color: #B9C8DA !important; color: #0B3D71 !important; border-radius: 999px; padding: 6px 14px; font-size: 9px; letter-spacing: .06em; text-transform: uppercase; }
+      .pw-review-main [data-testid="proposal-card"] .border-slate-500 { border-color: #B9C8DA !important; color: #33475E !important; border-radius: 999px; padding: 6px 14px; font-size: 9px; letter-spacing: .06em; text-transform: uppercase; }
+      .pw-review-main [data-testid="proposal-card"] .border-red-600 { border-color: #B9C8DA !important; color: #6B7785 !important; border-radius: 999px; padding: 6px 14px; font-size: 9px; letter-spacing: .06em; text-transform: uppercase; }
+      .pw-review-main [data-testid="proposal-card"] > div:last-child > button:last-child { border-radius: 999px; background: #F1F4F8; color: #0B3D71; padding: 6px 12px; font-size: 9px; }
+      .pw-review-main .pw-card-details { border-top: 1px solid #DCE3E1; padding-top: 8px; }
+      .pw-review-main .pw-card-details summary { cursor: pointer; font: 700 8.5px 'Inter Tight', Arial, sans-serif; letter-spacing: .1em; text-transform: uppercase; color: #6B7785; }
+      .pw-review-main h2.font-display, .pw-review-main h3.font-display { font-family: 'Inter Tight', Arial, sans-serif; letter-spacing: -.03em; color: #03203D; }
+      .pw-review-main section[id^="section-"] { scroll-margin-top: 200px; }
+      .pw-review-main > nav[aria-label="Review navigation"] { display: none; }
+      .pw-review-main > section[aria-labelledby="proposed-facts-heading"] > div:first-child { display: none; }
+      .pw-review-jump { margin: 0 0 18px; padding: 0 0 12px; border-bottom: 1px solid #DCE3E1; }
+      .pw-review-jump-row { display: flex; align-items: center; gap: 14px; }
+      .pw-review-jump-label { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+      .pw-review-jump-label span { font: 700 9px 'Inter Tight', Arial, sans-serif; letter-spacing: .12em; text-transform: uppercase; color: #6B7785; flex: none; }
+      .pw-review-jump-label select { flex: 1; min-width: 0; border: 1px solid #DCE3E1; background: #fff; padding: 8px 10px; font: 500 12px 'Inter Tight', Arial, sans-serif; color: #03203D; }
+      .pw-review-jump-link { font: 700 9px 'Inter Tight', Arial, sans-serif; letter-spacing: .07em; text-transform: uppercase; color: #0B3D71; text-decoration: none; flex: none; }
+      .pw-review-main [data-testid="proposal-card"] dl { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+      .pw-review-main [data-testid="proposal-card"] dl button { display: none; }
+      .pw-review-main [data-testid="proposal-card"] .pw-card-citations { display: none; }
+      .pw-review-main [data-testid="proposal-card"] > div:first-child button span { display: none; }
+      .pw-review-main [data-testid="proposal-card"] > button.mt-2 { display: none; }
+      @media (max-width: 1400px) { .pw-review-main [data-testid="proposal-card"] dl { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 1023px) {
+        .pw-review-main > nav[aria-label="Review navigation"] { display: block; }
+        .pw-review-main [data-testid="proposal-card"] dl { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .pw-review-main [data-testid="proposal-card"] > div:first-child { flex-wrap: wrap; }
+      }
+      .pw-review-main section > div:first-child { border-bottom-color: #03203D !important; }
+      .pw-review-main .rounded-xl, .pw-review-main .rounded-lg { border-radius: 0; }
+      .pw-review-main .rounded-xl { box-shadow: none; }
+      @media (max-width: 1200px) { .pw-review-grid { grid-template-columns: 210px minmax(0, 1fr) 300px; } .pw-review-main { padding: 22px 20px 50px; } }
+      @media (max-width: 1023px) { .pw-review-grid { grid-template-columns: minmax(0, 1fr); } .pw-review-source { display: none; } .pw-review-main { padding: 18px 16px 90px; } .pw-review-top { position: static; align-items: flex-start; flex-direction: column; padding: 14px 16px 12px; } .pw-review-top h1 { font-size: 27px; } .pw-review-head-actions { margin-left: 0; } }
+    `}</style>
   </div>;
 }
