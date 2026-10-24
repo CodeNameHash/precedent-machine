@@ -103,24 +103,55 @@ test('headline.summary is optional; headlineSummaryProblems checks it without ho
   assert.ok(headlineSummaryProblems(12).some((problem) => problem.includes('headline summary must be a string')));
   assert.ok(headlineSummaryProblems(' Parent pays the fee ').some((problem) => problem.includes('leading or trailing whitespace')));
   // Work package 5 (plan finding (52)): three fair generation 8 summaries
-  // dropped at 16 words, so the check allows 18 while the extractor is
-  // still asked for 15 (the rule text).
-  assert.deepEqual(headlineSummaryProblems('one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen'), []);
-  assert.deepEqual(headlineSummaryProblems('one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen'), []);
-  assert.ok(headlineSummaryProblems('one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen').some((problem) => problem.includes('over 18 words (19; 15 asked for)')));
+  // dropped at 16 words. Work package 35 (finding (248)): the cap is the
+  // point at which a line stops being one line, not the point at which it
+  // missed the 15 words asked for — at 18 the checker dropped all 19
+  // summaries of 11 to 24 words on Apogee 88d4032a — so it is 24, and a
+  // line over it is shortened by repairHeadlineSummary, never dropped.
+  const counted = (words) => Array.from({ length: words }, (_, index) => `w${index + 1}`).join(' ');
+  assert.deepEqual(headlineSummaryProblems(counted(16)), []);
+  assert.deepEqual(headlineSummaryProblems(counted(18)), []);
+  assert.deepEqual(headlineSummaryProblems(counted(24)), []);
+  assert.ok(headlineSummaryProblems(counted(25)).some((problem) => problem.includes('over 24 words (25; 15 asked for)')));
   assert.match(HEADLINE_SUMMARY_RULE, /at most 15/);
   assert.equal(HEADLINE_SUMMARY_ASKED_WORDS, 15);
-  assert.equal(HEADLINE_SUMMARY_MAX_WORDS, 18);
-  assert.ok(headlineSummaryProblems('Parent pays the fee under Section 8.3').some((problem) => problem.includes('section reference')));
+  assert.equal(HEADLINE_SUMMARY_MAX_WORDS, 24);
+  // A locator inside a real sentence is a line a lawyer can read; a summary
+  // that is nothing but the locator is the thing the rule refuses.
+  assert.deepEqual(headlineSummaryProblems('Parent pays the fee under Section 8.3'), []);
+  assert.ok(headlineSummaryProblems('Section 8.3').some((problem) => problem.includes('section reference')));
+  assert.ok(headlineSummaryProblems('Section 8.3(a)').some((problem) => problem.includes('section reference')));
+  // A statutory citation is content, section symbol or not.
+  assert.deepEqual(headlineSummaryProblems('Parties acknowledge 6 Del. C. § 2708 is satisfied and mandates Delaware Law'), []);
+  assert.deepEqual(headlineSummaryProblems('The Merger has the effects set forth in § 259 of the DGCL'), []);
   // A statutory section or an Article of the agreement is content (generation 7, 1.02 and 1.04).
   assert.deepEqual(headlineSummaryProblems('The Merger has the effects set forth in Section 259 of the DGCL'), []);
   assert.deepEqual(headlineSummaryProblems('Company exempts dispositions under Section 16 of the Exchange Act'), []);
   assert.deepEqual(headlineSummaryProblems('Closing occurs third business day after Article VII conditions satisfied or waived'), []);
   assert.deepEqual(headlineSummaryProblems('Shares of properly demanding Section 262 holders are cancelled Appraisal Shares'), []);
   assert.ok(headlineSummaryProblems('Company terminates under Section 8.01(f)').some((problem) => problem.includes('section reference')));
+  // Work package 35: repairHeadlineSummary shortens an over-long line at its
+  // last clause boundary and strips a trailing period; it refuses what a
+  // cut cannot repair (a quotation, a foreign-script character).
+  const { repairHeadlineSummary } = require('../lib/product/fact-components');
+  const long = 'Parent, Merger Sub and the Company shall use reasonable best efforts to make all filings and obtain all approvals, and to take every other action necessary so that the Transactions close as promptly as practicable';
+  const shortened = repairHeadlineSummary(long);
+  assert.equal(shortened, 'Parent, Merger Sub and the Company shall use reasonable best efforts to make all filings and obtain all approvals');
+  assert.deepEqual(headlineSummaryProblems(shortened), []);
+  assert.equal(repairHeadlineSummary('Notices to Guarantor, Parent and Merger Sub go to AbbVie Inc.'), 'Notices to Guarantor, Parent and Merger Sub go to AbbVie Inc');
+  // A 19-word line the old cap dropped is now kept whole (Apogee 3.1).
+  assert.equal(repairHeadlineSummary('Each Company Subsidiary is duly organized, validly existing and in good standing, subject to a Material Adverse Effect exception'), null);
+  assert.deepEqual(headlineSummaryProblems('Each Company Subsidiary is duly organized, validly existing and in good standing, subject to a Material Adverse Effect exception'), []);
+  // Inside the cap and well formed: nothing to repair.
+  assert.equal(repairHeadlineSummary('Company files the Certificate of Merger with the Delaware Secretary of State'), null);
+  // A quotation is not a formatting slip a cut repairs.
+  assert.equal(repairHeadlineSummary('Company pays the "Termination Fee" within two business days and in any event before the earlier of the Closing and the termination of this Agreement by any Party for any reason'), null);
   // A section of the Disclosure Letter names a schedule, not a section of the agreement (generation 7, 9.03).
   assert.deepEqual(headlineSummaryProblems('Matters listed on Section 9.03(a) of the Company Disclosure Letter are excluded'), []);
-  assert.ok(headlineSummaryProblems('Matters on Section 9.03(a) of the Company Disclosure Letter are excluded under Section 9.03').some((problem) => problem.includes('section reference')));
+  // A disclosure-letter section, like the agreement's own, is a locator: a
+  // sentence around it keeps its line, a locator alone does not.
+  assert.deepEqual(headlineSummaryProblems('Matters on Section 9.03(a) of the Company Disclosure Letter are excluded under Section 9.03'), []);
+  assert.ok(headlineSummaryProblems('Section 9.03(a) of the Company Disclosure Letter').some((problem) => problem.includes('section reference')));
   assert.deepEqual(headlineSummaryProblems('Company Disclosure Letter Section 3.21 lists all material insurance policies'), []);
   assert.deepEqual(headlineSummaryProblems('Company Disclosure Letter Section 3.11(a) lists each material Company Benefit Plan'), []);
   assert.ok(headlineSummaryProblems('Parent pays the "Termination Fee"').some((problem) => problem.includes('quotation mark')));

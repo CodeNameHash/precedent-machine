@@ -529,10 +529,13 @@ test('a proposal\'s headline.summary reaches the fact; a missing one is a VALIDA
   assert.equal(note.kind, 'VALIDATION');
   assert.equal(note.family_key, 'MAE_DEFINITION');
 
-  // A summary that breaks the rule (a section reference) never holds the
-  // fact: it is dropped with a HEADLINE_SUMMARY_DROPPED note carrying the
-  // problem, the way CONCLUSIONS_DROPPED works, and the fact stays VALID.
-  const bad = compile(response(components, { label: 'MAE carve-out', distinguishing_refs: ['war'], summary: 'Parent pays the fee under Section 8.3' }));
+  // A summary that breaks the rule (nothing but a section locator) never
+  // holds the fact: it is dropped with a HEADLINE_SUMMARY_DROPPED note
+  // carrying the problem, the way CONCLUSIONS_DROPPED works, and the fact
+  // stays VALID. Work package 35 (finding (248)): a locator inside a real
+  // sentence keeps its line, because a lawyer can read it and a blank line
+  // is worse.
+  const bad = compile(response(components, { label: 'MAE carve-out', distinguishing_refs: ['war'], summary: 'Section 8.3' }));
   assert.equal(bad.proposals[0].validation_status, 'VALID', JSON.stringify(bad.issues.map((issue) => issue.message)));
   assert.equal(Object.hasOwn(bad.proposals[0].headline, 'summary'), false);
   assert.equal(bad.issues.some((issue) => issue.code === 'INVALID_FACT_COMPONENTS'), false);
@@ -540,8 +543,23 @@ test('a proposal\'s headline.summary reaches the fact; a missing one is a VALIDA
   assert.ok(dropped, 'a malformed summary is noted');
   assert.equal(dropped.kind, 'VALIDATION');
   assert.match(dropped.message, /headline summary contains a section reference/);
-  assert.match(dropped.message, /Section 8\.3/);
   assert.equal(bad.issues.some((issue) => issue.code === 'HEADLINE_SUMMARY_MISSING'), false);
+  const locatorInSentence = compile(response(components, { label: 'MAE carve-out', distinguishing_refs: ['war'], summary: 'Parent pays the fee under Section 8.3' }));
+  assert.equal(locatorInSentence.proposals[0].headline.summary, 'Parent pays the fee under Section 8.3');
+  // A line over the check's cap, or one with a trailing period, is
+  // shortened in code rather than dropped: the fact keeps its one-line
+  // reading and the change is a note naming both forms.
+  const tooLong = compile(response(components, { label: 'MAE carve-out', distinguishing_refs: ['war'], summary: 'Parent, Merger Sub and the Company shall use reasonable best efforts to make all filings and obtain all approvals, and to take every other action necessary so that the Transactions close as promptly as practicable. ' }));
+  assert.equal(tooLong.proposals[0].validation_status, 'VALID', JSON.stringify(tooLong.issues.map((issue) => issue.message)));
+  assert.equal(tooLong.proposals[0].headline.summary, 'Parent, Merger Sub and the Company shall use reasonable best efforts to make all filings and obtain all approvals');
+  const shortened = tooLong.issues.find((issue) => issue.code === 'HEADLINE_SUMMARY_SHORTENED');
+  assert.ok(shortened, 'the shortening is noted');
+  assert.equal(shortened.kind, 'NOTE');
+  assert.match(shortened.message, /headline summary over 24 words/);
+  assert.equal(tooLong.issues.some((issue) => issue.code === 'HEADLINE_SUMMARY_DROPPED'), false);
+  const trailingPeriod = compile(response(components, { label: 'MAE carve-out', distinguishing_refs: ['war'], summary: 'Notices to Guarantor, Parent and Merger Sub go to AbbVie Inc.' }));
+  assert.equal(trailingPeriod.proposals[0].headline.summary, 'Notices to Guarantor, Parent and Merger Sub go to AbbVie Inc');
+  assert.ok(trailingPeriod.issues.some((issue) => issue.code === 'HEADLINE_SUMMARY_SHORTENED'));
 });
 
 // Metsera generation 6, 3.09 (Taxes): a no-representation statement limited

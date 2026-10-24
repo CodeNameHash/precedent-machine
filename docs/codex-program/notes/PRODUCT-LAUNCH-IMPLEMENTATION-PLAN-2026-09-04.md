@@ -6259,6 +6259,47 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       the unresolved part; 33 of 33 in that file. Nothing else is
       re-extracted: a stored held fact stays held and the next run of a
       deal carries the fix.
+      (248) 2026-10-24 23:50 UTC (the manager), work package 35: the 19
+      facts without a headline summary on Apogee 88d4032a keep their line.
+      The plan's (242)(c) read them as one class, "a summary over 18 words
+      is dropped rather than shortened"; the 19 HEADLINE_SUMMARY_DROPPED
+      issues of the stored draft have four causes: 8 over the checker's
+      18-word cap (19, 19, 19, 19, 19, 20, 21 and 24 words), 9 naming one
+      of the agreement's own sections inside a real sentence (5.7's four,
+      3.3's four, 7.3's one), 1 a statutory citation refused by a check
+      that the rule it enforces does not support ("Parties acknowledge 6
+      Del. C. § 2708 is satisfied and mandates Delaware Law": the rule
+      text says a statutory section may be named, and the check refused
+      any "§"), and 1 a trailing full stop. Changed, in
+      lib/product/fact-components.js: the cap is 24 words, the point at
+      which a line stops being one line rather than the point at which it
+      slightly missed the 15 the extractor is asked for (16 to 24 words
+      are one line at the page's 9.5px; the eight over-length lines are
+      all 19 to 24); a line over the cap, or one ending with a period, is
+      shortened by repairHeadlineSummary — at the last clause boundary at
+      or before the cap, a dangling connective removed, the words kept —
+      and the original and the line are reported as a
+      HEADLINE_SUMMARY_SHORTENED note instead of the drop; the section
+      check refuses only a summary that is nothing but a locator (fewer
+      than four words of substance once the references are out), because
+      "Section 5.7 provisions survive consummation of the Transactions" is
+      a line a lawyer reads and a blank line is worse (Ben's "it needs to
+      be a summary of the provision on the right etc - like in the normal
+      course. Not just a sec ref...!" is about a summary that IS a sec
+      ref); a "§" is a statute's citation and is content. Read over the
+      stored 19: 18 keep their line as written, 1 (the trailing period) is
+      repaired, none is dropped. Not changed: a summary that quotes the
+      agreement, carries a foreign-script character or is only a locator is
+      still dropped with its problems (a cut cannot repair those), and a
+      summary the model left out altogether is still the review's
+      HEADLINE_SUMMARY_MISSING note — DeepSeek's 5.1 arrived with eight
+      empty summaries, a provider behaviour on the tier that is not the
+      default (245), not a formatting slip the code should invent words
+      for. Tests: tests/product-fact-components-contract.test.js (the cap,
+      the locator rule, the statute, the shortening and what it refuses)
+      and tests/product-fact-components-extraction.test.js (the note on a
+      fact that stays VALID, the trailing period, the locator in a
+      sentence kept and a locator alone dropped).
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
