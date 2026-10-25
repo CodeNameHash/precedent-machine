@@ -6332,6 +6332,48 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       tests/product-ablation-wake.test.js,
       tests/product-lean-request-profile.test.js and
       tests/product-deepseek-api-provider.test.js.
+      (250) 2026-10-25 00:15 UTC (the manager), work package 37: the draft
+      finalisation retries itself and an applied retry is never reported as
+      a failure. The evidence is (241) and (245): 88d4032a finalised, a
+      DATABASE_ERROR ("upstream request timeout") was written against the
+      run immediately afterwards, the run read FAILED with no failed
+      section, and the retry route answered 500 for a retry it had already
+      applied because it assembles the run's full read to build its reply
+      while the retry itself had worked; 34847358 failed three times
+      ("canceling statement due to statement timeout") before a later
+      attempt held. Two changes, neither a redesign (the plan's reading:
+      "a retry-and-batch problem"). (a) lib/product/analysis-runner.js:
+      finalizeCompletedAnalysis runs its load, assembly, validation and
+      write through finalizeWithRetries — three attempts, 2 and then 4
+      seconds apart, each logged as FINALIZATION_RETRY — and only a
+      failure that survives them reaches failRun. Retried are the
+      transient shapes the two runs recorded and their class (timeouts,
+      "canceling statement", connection resets and refusals, socket hang
+      up, fetch failed, 502/503/504); not retried are the deterministic
+      refusals (identity, component, totals and hash mismatches, a section
+      incomplete, an invalid finalization). The retry is safe because the
+      database finalise is already idempotent: product_phase2_finalize_
+      saved_run returns the stored draft on a second call with the same
+      draft_analysis_id and payload hash, so a retry after a client-side
+      timeout that committed writes nothing. Not changed: the database
+      function, the batched-write question (a finalise of a 97-section run
+      is one transaction; making it resumable in the database is the
+      larger cure the plan leaves open) and the route's success body.
+      (b) lib/product/run-handler.js: a request that has applied an
+      operator retry records that it did, and a failure after it —
+      including the heavy analysis read that builds the reply — answers
+      202 with retry_applied, the run's status and stage from a single-row
+      read and warning RETRY_APPLIED_READ_INCOMPLETE, instead of 500.
+      Tests: tests/product-finalization-retry.test.js (the retry rule on
+      the three recorded messages and the deterministic refusals; two
+      timeouts then a write that holds; attempts spent; the applied retry
+      answered 202 when the read after it throws; an ordinary route
+      failure still 500). The database-shaped suites
+      (product-failed-model-call-durability, the -db files) cannot run on
+      this machine (TEST_DATABASE_URL or TEST_PGLITE_MODULE is required);
+      the route and runner suites that can (product-hosted-worker-pool 14,
+      product-attempt-resume 7, product-phase-3 26 with its one
+      pre-existing source-regex failure) are green.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
