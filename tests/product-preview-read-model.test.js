@@ -156,3 +156,22 @@ test('buildPreviewWorkspace is what the model stores: the same payload for the s
   assert.equal(workspace.schema_version, PREVIEW_WORKSPACE_VERSION);
   assert.deepEqual(Object.keys(workspace).sort(), ['analysis', 'progress', 'review', 'schema_version']);
 });
+
+test('a review save, and a restore of an earlier review, mark the stored projection stale', async () => {
+  const { ProductPhase3Store } = require('../lib/product/phase-3-store');
+  const staleCalls = [];
+  const client = {
+    rpc: async (name) => ({ data: { schema_version: 'PRODUCT_REVIEW_STATE/V1', name }, error: null }),
+    from: () => ({
+      update: (values) => ({ eq: async (column, value) => { staleCalls.push([values.stale, column, value]); return { error: null }; } }),
+    }),
+  };
+  const store = new ProductPhase3Store({ client });
+  await store.saveReview({ runId: RUN_ID, expectedVersion: 1, state: {}, actor: 'lawyer@example.test', eventType: 'SAVE', idempotencyKey: 'one', command: { type: 'SAVE' } });
+  await store.restoreReview({ runId: RUN_ID, expectedVersion: 2, restoreVersion: 1, actor: 'lawyer@example.test', idempotencyKey: 'two' });
+  assert.deepEqual(staleCalls, [[true, 'run_id', RUN_ID], [true, 'run_id', RUN_ID]]);
+  // A store without the model (an older deployment) still saves and restores.
+  const plain = new ProductPhase3Store({ client });
+  plain.markPreviewReadModelStale = undefined;
+  await plain.saveReview({ runId: RUN_ID, expectedVersion: 1, state: {}, actor: 'lawyer@example.test', eventType: 'SAVE', idempotencyKey: 'three', command: { type: 'SAVE' } });
+});
