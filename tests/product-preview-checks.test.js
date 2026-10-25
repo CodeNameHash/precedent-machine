@@ -142,6 +142,29 @@ test('a 200 that is not the preview workspace is refused, not reported as a run 
   assert.equal(calls[0].options.redirect, 'manual', 'a redirect is not followed into a login page');
 });
 
+test('the check reports the review state beside the preview: version, decisions and pending count', async () => {
+  const calls = [];
+  const fetchImpl = async (url) => {
+    calls.push(url);
+    if (url.endsWith('/preview')) return { status: 200, text: async () => JSON.stringify(workspace([])), headers: { get: () => null } };
+    if (url.includes('/api/product/review/')) {
+      return {
+        status: 200,
+        headers: { get: () => null },
+        text: async () => JSON.stringify({ review: { version: 13, status: 'DRAFT', state: {
+          items: [{ decision: 'ACCEPTED' }, { decision: 'ACCEPTED' }, { decision: 'REJECTED' }, { decision: 'PENDING' }],
+          agreement_coverage: { decision: 'ACCEPTED' },
+        } } }),
+      };
+    }
+    return { status: 200, text: async () => '{}', headers: { get: () => null } };
+  };
+  const report = await runPreviewChecks({ baseUrl: DEFAULT_BASE_URL, token: 't'.repeat(40), runs: ['some-run'], fetchImpl });
+  assert.deepEqual(report[0].reviewRead, { status: 200, seconds: report[0].reviewRead.seconds, version: 13, review_status: 'DRAFT', items: 4, accepted: 2, rejected: 1, pending: 1, unresolved: 0, coverage: 'ACCEPTED' });
+  const text = renderPreviewChecks(report);
+  assert.match(text, /review: version 13, DRAFT, 4 items \(2 accepted, 1 rejected, 1 pending, 0 unresolved\), coverage ACCEPTED/);
+});
+
 test('a refusal names what kind of refusal it is, and a flaky second read keeps the first read report', async () => {
   const statuses = { 'run-404': 404, 'run-500': 500 };
   const fetchImpl = async (url) => {
