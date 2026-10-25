@@ -6424,6 +6424,32 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       TEST_PGLITE_MODULE), so the row's own effect is proven by the same
       migration harness in CI and the live preview read is unmeasured
       until the deployment has both the build and the migration.
+      (252) 2026-10-25 00:45 UTC (the manager): the 5.3 held fact of
+      (242)(e), read. (242) recorded it as "5.3's 'value multiple period
+      literals' (one period component holding more than one period)"
+      and left it open. The stored draft says otherwise. The held fact is
+      the subsequent-matching-period right (proposal a8e28bac, fact type
+      SUBSEQUENT_MATCH_PERIOD, INVALID on INVALID_FACT_COMPONENTS at
+      component 3). Its PERIOD component is the model's own "three (3)
+      business day" and parsed to 3 BUSINESS_DAY; what held the fact is a
+      LIST component the model wrote with no words at all (quote "",
+      no bytes) whose two LIST_ELEMENT children did resolve — and did
+      not resolve in order: the first element's words start at byte
+      172087 and end at 176387, the second's at 176107 and end at 176530,
+      so the first contains the second. Work package 25's repair takes a
+      wordless LIST's words from its first element to its last only when
+      every element resolved in order (fact-components.js
+      LIST_WORDS_FROM_ELEMENTS), so this one stayed wordless and the
+      empty component held the whole fact. The VALUE_MULTIPLE_PERIOD_
+      LITERALS issue on the same proposal is a note from the legacy
+      no-shop period parser (lib/product/no-shop-period-value.js, raised
+      only for hour-denominated periods) and is not what held it. Not
+      changed: promoting a wordless LIST's elements to siblings would
+      keep every word but changes the fact's shape (a Ben decision, and
+      "no rule from one deal"); the words show the model mis-anchored the
+      first element to an earlier occurrence of a repeated phrase, which
+      is the class the held-fact repair of (240) took on and this shape
+      did not reach.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
