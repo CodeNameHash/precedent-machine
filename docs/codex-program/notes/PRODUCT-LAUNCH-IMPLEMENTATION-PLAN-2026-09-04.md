@@ -7480,7 +7480,11 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       rewrite the whole state, and keep the publish's validation to what
       changed. Test: tests/product-publish-direct.test.js (the action id, the
       event type, the command, and that a different actor or key is a
-      different action).
+      different action). Verified against the live review in dry run
+      (`--dry-run` needs no database): it reads version 13's 2,398 items and
+      computes "publish would set status PUBLISHED with 858 facts" — the
+      run's own valid-fact count, so the REST half of the script and the
+      command layer agree with the route's.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
