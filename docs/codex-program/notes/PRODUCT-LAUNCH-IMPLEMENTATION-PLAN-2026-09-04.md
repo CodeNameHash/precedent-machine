@@ -7212,6 +7212,24 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       tests/product-fact-conclusions.test.js — the as-drafted cell with no
       text on a real 5.2-shaped row validates clean, and a value column
       without its value still fails.
+      (275) 2026-10-25 16:30 UTC (the manager), work package 49 part 3:
+      the night's state, verified, for the morning. Head 709da5d7 on both
+      branches. The deployment of it is green on both projects, and its
+      client artifact carries tonight's review change — build
+      4E5n624FarL2N6Z1Tp20z, review chunk 409eb71822cf1881, containing
+      "machine note" and "do not hold publication" — so the note rule is
+      live, not only in the repository. Local verification: `check-build.sh`
+      exit 0 and the 88-file sweep 91 of 91 green. Outside-in on the new
+      deployment, Claude 88d4032a: run status READY, provisions read 858
+      layered facts and 11 held, review DRAFT, 0 agreements published, the
+      smoke test passing with --no-pages. The two things waiting on Ben
+      are unchanged and both are his: the read-model migration (every read
+      is still the live 3.9 MB build) and the review itself, for which
+      reports/review/APOGEE-REVIEW-ORDER-2026-10-25.md gives a factual
+      reading order and 1,926 blocking decisions once notes stop counting.
+      Nothing else in section 0's list or section 12's main path is
+      startable without him: the lawyer loop, a fix from that review, a
+      fresh deal, the second agreement and the cutover all follow it.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
