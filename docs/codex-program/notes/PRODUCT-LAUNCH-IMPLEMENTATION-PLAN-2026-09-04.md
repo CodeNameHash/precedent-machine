@@ -6451,6 +6451,33 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       first element to an earlier occurrence of a repeated phrase, which
       is the class the held-fact repair of (240) took on and this shape
       did not reach.
+      (253) 2026-10-25 01:30 UTC (the manager): what CI is actually
+      telling us, and the second Vercel project. (a) Every push of this
+      session runs .github/workflows/ci.yml on both branches and every run
+      fails in one second with no steps: the check-run annotation says
+      "The job was not started because your account is locked due to a
+      billing issue." No run of the last 100 has succeeded (88 failure, 12
+      cancelled, including the two on 89d53f14 at 14:54 UTC on
+      2026-10-24, before this session touched anything). So the database
+      job, the production build and the tracked-secret scan have not run
+      at all, the new migration has not been applied by CI, and the -db
+      suites are unverified beyond the code review; this session's
+      verification is the local suite runs recorded in (246) to (252)
+      (221 tests green across the touched files) plus the real payload
+      reads. Ben's to fix: the GitHub account's billing. (b) A second
+      Vercel project, precedent-machine-restored-20260812, is connected
+      to the same repository: every push of this session created a
+      "Preview - precedent-machine-restored-20260812" deployment beside
+      the deal-corpus one (GitHub deployment records 7306703684,
+      7306708262, 7306713130 at 00:51 to 00:52 UTC), which is the
+      "restored" deployment Ben saw. It is not this session's (a
+      deployment can only be created with a Vercel token, and none was
+      held here) and it has no environment variables; the deal-corpus
+      project's deployments on the same commits completed successfully.
+      The preview alias deal-corpus-preview.vercel.app still answers 302
+      to Vercel SSO for every path, including the per-deployment URLs, so
+      the bypass secret remains the one thing needed to verify the four
+      page and read changes live. Nothing changed in code here.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
