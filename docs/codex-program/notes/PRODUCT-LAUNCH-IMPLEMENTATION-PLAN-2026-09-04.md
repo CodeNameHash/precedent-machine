@@ -7079,6 +7079,42 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       as not operative, and the live audit is clean on Claude again. That
       is what reading the output buys: the rule, not just the code, was
       wrong.
+      (270) 2026-10-25 13:20 UTC (the manager), work package 48 part 4:
+      the live review state of both runs, which turns the silent absence
+      into a queue of decisions and puts a number on the review burden.
+      Read from `/api/product/review/<run>` on the deployment (internal
+      token, bypass; 23,657,306 bytes for DeepSeek, 21,919,939 for
+      Claude). DeepSeek 34847358: 3,147 items, every one PENDING — 1,101
+      COVERAGE (475 NOT_FOUND, 433 UNRESOLVED, 193 FOUND), 874 PROPOSAL,
+      820 ISSUE, 287 RELATIONSHIP, 61 EXCEPTION_LINK, 4
+      IMMATERIAL_ROUTING. Claude 88d4032a: 2,398 items, all PENDING — 869
+      PROPOSAL, 662 COVERAGE (374 NOT_FOUND, 164 FOUND, 124 UNRESOLVED),
+      535 ISSUE, 200 RELATIONSHIP, 127 EXCEPTION_LINK, 5
+      IMMATERIAL_ROUTING. Two readings. First, the silent absence is not
+      silent where decisions are made: the two sections the page names as
+      having no facts carry **23 of the 3,147 items**, all UNRESOLVED and
+      PENDING — on 5.16 a SECTION_FAMILY and twelve FACT_TYPE assertions,
+      most reasoned `THIN_PART_ANSWER:<fact type>` (the thin guard did fire
+      and the retry did not recover); on 3.30 a SECTION_FAMILY for
+      NO_OTHER_REPS_FRAUD and for REPRESENTATIONS reasoned
+      `MODEL_RESPONSE_OMISSION:coverage.<family>` — the model's coverage
+      omitted the key outright, a different failure from 5.16's — plus four
+      FACT_TYPE assertions and one RESIDUAL_PARAGRAPH decided IMMATERIAL.
+      So the page's block and the review's coverage items agree, and the
+      lawyer is asked to decide each family the extractor left empty.
+      Second, the tier difference in review *cost*: Claude asks for 2,398
+      decisions against DeepSeek's 3,147 — 309 fewer UNRESOLVED coverage
+      assertions (124 against 433) and 249 fewer items overall, with more
+      EXCEPTION_LINKs (127 against 61) and a different issue profile
+      (CONCLUSIONS_CELLS_DROPPED 134 on Claude, where DeepSeek's most
+      common are HEADLINE_SUMMARY_DROPPED 159 and INVALID_FACT_COMPONENTS
+      118). That is the practical form of (245): the weaker citation
+      discipline buys the lawyer 749 more decisions, a third of them on
+      provisions no fact was made from. One product observation for Ben,
+      not a change: both totals are large for a single run (2,398 on the
+      better tier), so the item-by-item queue — not extraction — may be
+      the lawyer loop's real bottleneck, and the rail's counts are the
+      first thing to look at when the loop is read.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
