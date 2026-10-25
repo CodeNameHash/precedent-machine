@@ -7063,12 +7063,12 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       send a session for the page path. The sentence audit over the live
       payload (`uncitedOperativeSentences` on the preview body): DeepSeek
       34847358 now shows 7 uncited operative sentences in 3 sections —
-      5.16's 5, 5.4(a)'s compliance covenant (260) and one more the wider
-      verb list found, 5.2's... no: 7.3's "Each Party acknowledges that the
-      agreements in this Section 7.3 are an integral part of this Agreement
-      and that, without these agreements, the Parties would not have
-      entered into this Agreement" — and Claude 88d4032a shows none in 97
-      sections, so (260)'s claim holds. The near miss: the first widened
+      5.16's 5, 5.4(a)'s compliance covenant (260), and one more the wider
+      verb list found in 7.3 — "Each Party acknowledges that the agreements
+      in this Section 7.3 are an integral part of this Agreement and that,
+      without these agreements, the Parties would not have entered into
+      this Agreement" — and Claude 88d4032a shows none in 97 sections, so
+      (260)'s claim holds. The near miss: the first widened
       verb list matched the noun in 5.4's *heading* ("Section 5.4 Written
       Consent; ..."), so both runs were reported with one uncited sentence
       that was a heading — a false positive that would have put a pointless
