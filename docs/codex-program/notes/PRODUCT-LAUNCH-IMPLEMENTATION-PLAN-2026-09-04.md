@@ -6414,6 +6414,11 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       deployment log, so the code is safe to deploy before the migration
       lands. Not changed: the live path's own projection, the browser's
       one-minute private cache, the review read and the analysis read.
+      The database move (work package B3, finding (106)) lists the table
+      among its environment-bound rows that never move beside
+      product_run_sandboxes: the target rebuilds the projection on its
+      first preview read, so the source's copy carries nothing the target
+      cannot make (lib/product/production-move.js SKIPPED_TABLES).
       Tests: tests/product-preview-read-model.test.js (the rule; stored
       once then served without a section read; a review save rebuilds
       once; a live run never uses it; a missing table and a store without
