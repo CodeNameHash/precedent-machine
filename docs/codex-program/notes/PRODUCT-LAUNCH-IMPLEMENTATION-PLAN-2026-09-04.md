@@ -7300,6 +7300,45 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       roll the release back and forward, and only then a fresh deal. The
       read-model migration is still unapplied, so every preview read is
       still the live 3.9 MB build.
+      (279) 2026-10-25 19:45 UTC (the manager), work package 50 part 4:
+      the opaque 500 behind the failed PUBLISH, in two steps, both code.
+      First, a database refusal to publish reached the handler as an
+      unmapped store error and became "Product review could not be updated";
+      a REVIEW_NOT_PUBLISHABLE or an idempotency conflict is now 422 with
+      its code and the RPC's own reason, and a DATABASE_ERROR keeps the
+      Postgres message in the body (finding (279)'s second half), because
+      the operator cannot read a deployment log without a token. Second,
+      with that in place the PUBLISH said what it had been hiding:
+      **`Could not find the table 'public.product_run_access' in the schema
+      cache`**, in 1.2 seconds — before any publication work. That is a
+      PostgREST schema-cache failure, not a review failure, and it is not
+      limited to PUBLISH: every review read and the published-facts read now
+      answer the same 500, which is why (280) records the database side as
+      the blocker. Tests: tests/product-phase-3.test.js — a store refusal
+      to publish is 422 with its reason, and a DATABASE_ERROR keeps the
+      database's words.
+      (280) 2026-10-25 19:55 UTC (the manager), work package 50 part 5,
+      blocker: the preview database's PostgREST schema cache is broken, and
+      it is Ben's to restore. Every review and published-facts request on
+      the deployment now answers 500
+      `DATABASE_ERROR: Could not find the table 'public.product_run_access'
+      in the schema cache` in under a second — a table that has existed
+      since September and that every earlier request in this session read
+      through. The first failure was the PUBLISH at 19:11 UTC (hidden behind
+      the opaque 500 of (279)); my last successful save was version 13 at
+      19:07. Nothing in the code changed between those minutes: the
+      candidates are a Supabase project pause/restart (the free tier pauses
+      on inactivity, and a resumed PostgREST starts with a stale cache) or
+      the migrations Ben said he would run, applied while PostgREST held its
+      cache. The fix is a schema-cache reload (`NOTIFY pgrst, 'reload
+      schema'`) or a project restart from the Supabase dashboard, then
+      `select 1 from public.product_run_access limit 1` to confirm. The
+      review itself is safe in the database: version 13, 2,398 items
+      decided (2,060 ACCEPTED, 338 REJECTED), agreement coverage ACCEPTED,
+      status DRAFT — the loop resumes at PUBLISH. This session cannot
+      restore it: there is no Supabase token, connection string or service
+      key on this machine, and the deployment's own reads are what is
+      failing.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
