@@ -7115,6 +7115,40 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       better tier), so the item-by-item queue — not extraction — may be
       the lawyer loop's real bottleneck, and the rail's counts are the
       first thing to look at when the loop is read.
+      (271) 2026-10-25 13:55 UTC (the manager), work package 48 part 5:
+      the coded-conclusion layer's holes, measured on the live runs. The
+      review state of both runs lists the two ways a fact can reach the
+      lawyer without its table row: CONCLUSIONS_MISSING (the model gave no
+      conclusions for a fact whose family has a table) and
+      CONCLUSIONS_CELLS_DROPPED (it gave a cell the shape rejected). Claude
+      88d4032a: 119 missing, 134 cells dropped, 51 of the drops in 5.2
+      alone, where 18 facts have no conclusions at all (mostly
+      INTERIM_OPERATING RESTRICTIVE_COVENANT). DeepSeek 34847358: 56
+      missing, 21 cells dropped, concentrated in REPRESENTATIONS
+      COMPLIANCE_REPRESENTATION (67) and INTERIM_OPERATING
+      RESTRICTIVE_COVENANT (44). So the tiers fail differently — Claude
+      fills the coded layer more often but its cells are rejected more
+      often, DeepSeek omits it less and is rejected less — and neither
+      leaves the lawyer nothing: every one is an ISSUE item in the review
+      (253 on Claude, 77 on DeepSeek), and the page falls back to
+      rendering the fact without a table row rather than hiding it. What
+      it means for the loop: about one fact in seven on Claude has no
+      coded conclusion, and in 5.2 the table you are most likely to read
+      first is missing a fifth of its rows. The dropped cells' own reasons
+      are shape-level, not legal: "cells[0]: verbatim column needs text"
+      (asDrafted) and "cells[1]: value column needs { canonical, unit }"
+      (lookback) — the extractor returned a cell in the wrong shape and
+      the validator dropped it rather than coerce it, which is the right
+      posture but leaves a hole. Two deterministic repairs are available
+      and not applied, deliberately: fill an as-drafted/fact_text column of
+      a conclusions-less fact from the fact's own cited words (the
+      renderer already shows those words for that column), and derive a
+      value cell by parsing the cited component (the module's own comment
+      says the number is parsed from the words and never taken from the
+      model, so the cell's `value` is a redundant requirement there). Both
+      change what 253 items on the run Ben is about to read would show, and
+      a fact's table row is a shape decision, so they wait for his read
+      rather than land under him (section 12's "a fix from that review").
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
