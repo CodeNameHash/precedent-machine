@@ -678,3 +678,48 @@ test('the review trail map carries only the trail fields, and an edited fact sho
   assert.ok(!trail.includes('ORIGINAL'), 'the duplicate original never reaches the trail map');
   assert.ok(!trail.includes('source_span_ids'));
 });
+
+// Work package 39 (the review of 2026-10-25, findings 10 to 12): a run whose
+// every section returned nothing still names them (the block used to render
+// only beside a non-empty table set); a substantive section the run never
+// reached is named too; and the section-kind guard now has the `kind` the
+// payload carries.
+test('a run with no facts at all still names its empty sections, and a substantive section the run never reached is named', () => {
+  const empty = noFactsWorkspace();
+  empty.analysis.proposals = [];
+  empty.analysis.issues = [];
+  empty.review.state.items = [];
+  empty.progress = { ...empty.progress, status: 'READY', completed: 6, total: 6 };
+  const preview = previewFactsFromWorkspace(empty);
+  assert.equal(preview.facts.length, 0);
+  assert.deepEqual(preview.sections_without_facts.map((entry) => entry.section_reference).sort(), ['3.14', '3.30', '3.6', '5.16'].sort());
+  const html = renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: empty, runId: 'run-1' }));
+  assert.match(html, /This run has no valid layered \(V2\) facts to show/);
+  assert.match(html, /data-testid="sections-without-facts"/, 'the empty state names the sections rather than leaving the page blank');
+  assert.match(html, /§ 5\.16 Regulatory Matters/);
+
+  // A FAILED run: a substantive section with no routing and no section
+  // result was never analysed, and is listed as such.
+  const failed = noFactsWorkspace();
+  failed.analysis.agreement_structure.nodes.push({ node_id: 'node-9-9', reference: '9.9', authored_order: 120, kind: 'SECTION' });
+  failed.progress = { ...failed.progress, status: 'FAILED', stage: 'SECTION_ANALYSIS', completed: 5, total: 6 };
+  const failedPreview = previewFactsFromWorkspace(failed);
+  const neverReached = failedPreview.sections_without_facts.filter((entry) => entry.reason === 'NOT_ANALYSED');
+  assert.deepEqual(neverReached.map((entry) => entry.section_reference), ['9.9']);
+  const failedHtml = renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: failed, runId: 'run-1' }));
+  assert.match(failedHtml, /§ 9\.9<\/span> — no facts were extracted: the run ended before this section was analysed\./);
+
+  // A run still analysing lists only what has completed: its not-yet-reached
+  // sections are not "empty".
+  const live = noFactsWorkspace();
+  live.analysis.agreement_structure.nodes.push({ node_id: 'node-9-9', reference: '9.9', authored_order: 120, kind: 'SECTION' });
+  live.progress = { ...live.progress, status: 'RUNNING', stage: 'SECTION_ANALYSIS', completed: 5, total: 6 };
+  assert.equal(previewFactsFromWorkspace(live).sections_without_facts.some((entry) => entry.reason === 'NOT_ANALYSED'), false);
+
+  // A routing whose node is not a SECTION (an article) is not a section of
+  // the page's list, now that the payload carries the kind.
+  const article = noFactsWorkspace();
+  article.analysis.agreement_structure.nodes.push({ node_id: 'node-article', reference: 'ARTICLE IX', authored_order: 130, kind: 'ARTICLE' });
+  article.analysis.sections.push({ structure_node_id: 'node-article', section_reference: 'ARTICLE IX', families: [], disposition: 'IMMATERIAL' });
+  assert.equal(previewFactsFromWorkspace(article).sections_without_facts.some((entry) => entry.section_reference === 'ARTICLE IX'), false);
+});

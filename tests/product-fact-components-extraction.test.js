@@ -542,7 +542,7 @@ test('a proposal\'s headline.summary reaches the fact; a missing one is a VALIDA
   const dropped = bad.issues.find((issue) => issue.code === 'HEADLINE_SUMMARY_DROPPED');
   assert.ok(dropped, 'a malformed summary is noted');
   assert.equal(dropped.kind, 'VALIDATION');
-  assert.match(dropped.message, /headline summary contains a section reference/);
+  assert.match(dropped.message, /headline summary is only a section reference/);
   assert.equal(bad.issues.some((issue) => issue.code === 'HEADLINE_SUMMARY_MISSING'), false);
   const locatorInSentence = compile(response(components, { label: 'MAE carve-out', distinguishing_refs: ['war'], summary: 'Parent pays the fee under Section 8.3' }));
   assert.equal(locatorInSentence.proposals[0].headline.summary, 'Parent pays the fee under Section 8.3');

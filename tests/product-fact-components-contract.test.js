@@ -119,6 +119,14 @@ test('headline.summary is optional; headlineSummaryProblems checks it without ho
   // A locator inside a real sentence is a line a lawyer can read; a summary
   // that is nothing but the locator is the thing the rule refuses.
   assert.deepEqual(headlineSummaryProblems('Parent pays the fee under Section 8.3'), []);
+  // Work package 39 (the review of 2026-10-25, finding 2): a short summary
+  // that carries no locator is not "only a section reference"; the first
+  // wording refused every summary under four content words.
+  assert.deepEqual(headlineSummaryProblems('Parent may terminate'), []);
+  assert.deepEqual(headlineSummaryProblems('No third-party beneficiaries'), []);
+  assert.deepEqual(headlineSummaryProblems('Parent may terminate at will'), []);
+  // A summary that is only a disclosure-letter section is still a locator.
+  assert.ok(headlineSummaryProblems('Section 9.03(a) of the Company Disclosure Letter').some((problem) => problem.includes('section reference')));
   assert.ok(headlineSummaryProblems('Section 8.3').some((problem) => problem.includes('section reference')));
   assert.ok(headlineSummaryProblems('Section 8.3(a)').some((problem) => problem.includes('section reference')));
   // A statutory citation is content, section symbol or not.
@@ -139,6 +147,16 @@ test('headline.summary is optional; headlineSummaryProblems checks it without ho
   assert.equal(shortened, 'Parent, Merger Sub and the Company shall use reasonable best efforts to make all filings and obtain all approvals');
   assert.deepEqual(headlineSummaryProblems(shortened), []);
   assert.equal(repairHeadlineSummary('Notices to Guarantor, Parent and Merger Sub go to AbbVie Inc.'), 'Notices to Guarantor, Parent and Merger Sub go to AbbVie Inc');
+  // Work package 39 (finding 3): a cut that lands on a word whose own
+  // spelling ends with a period ("U.S.") is cleaned, not dropped.
+  assert.equal(repairHeadlineSummary('Parent, Merger Sub and the Company shall use reasonable best efforts to make all filings and obtain all approvals in the U.S. and elsewhere as promptly as practicable'), 'Parent, Merger Sub and the Company shall use reasonable best efforts to make all filings and obtain all approvals in the U.S');
+  // Work package 39 (finding 4): a cut never ends on a determiner or an
+  // unmatched bracket.
+  const atThe = repairHeadlineSummary('Parent, Merger Sub and the Company shall use reasonable best efforts to make all filings and obtain all approvals and to take every other action necessary so that the Transactions close as promptly as practicable at the');
+  assert.equal(atThe, 'Parent, Merger Sub and the Company shall use reasonable best efforts to make all filings and obtain all approvals');
+  assert.doesNotMatch(atThe, /\s(?:the|a|an|of|to|and|with|for|in|on|from|under|per|if|than)$/);
+  const openBracket = repairHeadlineSummary('Parent, Merger Sub and the Company shall use reasonable best efforts to make all filings and obtain all approvals described in the (the "Approvals") and to take every other action necessary so that the Transactions close promptly');
+  assert.ok(openBracket === null || (openBracket.match(/\(/g) || []).length === (openBracket.match(/\)/g) || []).length);
   // A 19-word line the old cap dropped is now kept whole (Apogee 3.1).
   assert.equal(repairHeadlineSummary('Each Company Subsidiary is duly organized, validly existing and in good standing, subject to a Material Adverse Effect exception'), null);
   assert.deepEqual(headlineSummaryProblems('Each Company Subsidiary is duly organized, validly existing and in good standing, subject to a Material Adverse Effect exception'), []);

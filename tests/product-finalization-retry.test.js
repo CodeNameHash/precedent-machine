@@ -86,33 +86,99 @@ test('a transient finalisation failure is retried by the worker, a deterministic
   assert.equal(once, 1);
 });
 
+const { CODEX_MODEL_CONFIG } = require('../lib/product/product-model-config');
+
+// The route's 202 branch is for the hosted reply read: the retry applied,
+// the wake was sent, and the read that builds the reply failed (Apogee
+// 88d4032a, 2026-10-23: the route answered 500 for a retry it had already
+// applied because that read timed out). The review of 2026-10-25
+// (findings 5 and 6) found two holes: a retry that changed nothing was
+// reported as applied, and a genuine advance failure after an applied
+// retry was hidden as a 202.
 test('a retry the run route has applied is not reported as a failed retry when the read after it times out', async () => {
   const runId = '2f2b6f2e-6d3e-4c2b-9d1c-1a2b3c4d5e6f';
   let retried = null;
+  let status = 'FAILED';
+  let woken = 0;
   const store = {
     assertAccess: async () => 'OWNER',
-    retryRun: async ({ idempotencyKey }) => { retried = idempotencyKey; return { status: 'RUNNING' }; },
-    getRun: async () => ({ run_id: runId, status: 'RUNNING', stage: 'DRAFT_FINALIZATION' }),
-    getRunContext: async () => ({ sourceDocument: { canonical_text: '' }, agreementStructure: { nodes: [] } }),
-    claimNextSection: async () => null,
-    getProgress: async () => ({ total: 1, completed: 1, failed: 0 }),
-    loadCompletedSectionResults: async () => [],
+    retryRun: async ({ idempotencyKey }) => { retried = idempotencyKey; status = 'RUNNING'; return { status: 'RUNNING', stage: 'DRAFT_FINALIZATION' }; },
+    getRun: async () => ({ run_id: runId, status, stage: 'DRAFT_FINALIZATION', model_config: { ...CODEX_MODEL_CONFIG } }),
+    getRunContext: async () => { throw new Error('not read on the hosted path'); },
     // The read the route builds its reply from: this is what timed out on
     // 88d4032a after the retry had already applied.
     getAgreementAnalysis: async () => { throw new Error('upstream request timeout'); },
   };
   const handler = createProductRunHandler({
     getClient: () => ({}), storeFactory: () => store, actorResolver: async () => 'lawyer@example.test',
+    modelConfigResolver: () => CODEX_MODEL_CONFIG,
+    databaseUrlResolver: () => 'postgres://db', serviceRoleKeyResolver: () => 'key',
+    wakeRun: async () => { woken += 1; return { command_id: 'command-1' }; },
     modelFactory: () => ({ complete: async () => { throw new Error('model must not run'); } }),
   });
+  const originalError = console.error;
+  console.error = () => {};
   const response = responseDouble();
-  await handler({ method: 'POST', query: { id: runId }, headers: { 'x-pm-csrf': 'same-origin' }, body: { retry: true, idempotency_key: 'apogee-finalisation-retry-1' } }, response);
+  try {
+    await handler({ method: 'POST', query: { id: runId }, headers: { 'x-pm-csrf': 'same-origin' }, body: { retry: true, idempotency_key: 'apogee-finalisation-retry-1' } }, response);
+  } finally { console.error = originalError; }
   assert.equal(retried, 'apogee-finalisation-retry-1');
+  assert.equal(woken, 1, 'the wake was sent: the retry applied and the run advances');
   assert.equal(response.statusCode, 202);
   assert.equal(response.body.retry_applied, true);
   assert.equal(response.body.run_id, runId);
   assert.equal(response.body.status, 'RUNNING');
   assert.equal(response.body.warning, 'RETRY_APPLIED_READ_INCOMPLETE');
+});
+
+test('a retry that changed nothing is not reported as applied', async () => {
+  const runId = '2f2b6f2e-6d3e-4c2b-9d1c-1a2b3c4d5e6f';
+  // A READY run: product_phase3_retry_run answers it unchanged.
+  const store = {
+    assertAccess: async () => 'OWNER',
+    retryRun: async () => ({ status: 'READY', stage: 'READY' }),
+    getRun: async () => ({ run_id: runId, status: 'READY', stage: 'READY', model_config: { ...CODEX_MODEL_CONFIG } }),
+    getAgreementAnalysis: async () => { throw new Error('upstream request timeout'); },
+  };
+  const handler = createProductRunHandler({
+    getClient: () => ({}), storeFactory: () => store, actorResolver: async () => 'lawyer@example.test',
+    modelConfigResolver: () => CODEX_MODEL_CONFIG,
+    wakeRun: async () => { throw new Error('a READY run is not woken'); },
+  });
+  const originalError = console.error;
+  console.error = () => {};
+  const response = responseDouble();
+  try {
+    await handler({ method: 'POST', query: { id: runId }, headers: { 'x-pm-csrf': 'same-origin' }, body: { retry: true, idempotency_key: 'spent' } }, response);
+  } finally { console.error = originalError; }
+  assert.equal(response.statusCode, 500, 'no retry was applied, so a failed read is a failure');
+  assert.equal(response.body.error, 'Product analysis could not advance');
+});
+
+test('a genuine advance failure after an applied retry stays a 500 and is logged', async () => {
+  const runId = '2f2b6f2e-6d3e-4c2b-9d1c-1a2b3c4d5e6f';
+  let status = 'FAILED';
+  let logged = 0;
+  const store = {
+    assertAccess: async () => 'OWNER',
+    retryRun: async () => { status = 'RUNNING'; return { status: 'RUNNING', stage: 'DRAFT_FINALIZATION' }; },
+    getRun: async () => ({ run_id: runId, status, stage: 'DRAFT_FINALIZATION', model_config: { provider_id: CODEX_MODEL_CONFIG.provider_id } }),
+    getAgreementAnalysis: async () => ({ kind: 'analysisProgress' }),
+  };
+  const handler = createProductRunHandler({
+    getClient: () => ({}), storeFactory: () => store, actorResolver: async () => 'lawyer@example.test',
+    modelConfigResolver: () => CODEX_MODEL_CONFIG,
+    databaseUrlResolver: () => 'postgres://db', serviceRoleKeyResolver: () => 'key',
+    wakeRun: async () => { throw new Error('sandbox wake refused'); },
+  });
+  const originalError = console.error;
+  console.error = () => { logged += 1; };
+  const response = responseDouble();
+  try {
+    await handler({ method: 'POST', query: { id: runId }, headers: { 'x-pm-csrf': 'same-origin' }, body: { retry: true, idempotency_key: 'k' } }, response);
+  } finally { console.error = originalError; }
+  assert.equal(response.statusCode, 500);
+  assert.ok(logged >= 1, 'the failure is on the deployment log');
 });
 
 test('a run route failure that is not a retry is still a 500', async () => {
@@ -134,4 +200,44 @@ test('a run route failure that is not a retry is still a 500', async () => {
   } finally { console.error = originalError; }
   assert.equal(response.statusCode, 500);
   assert.equal(response.body.error, 'Product analysis could not advance');
+});
+
+// Work package 39 (the review of 2026-10-25, blocker): the finalise is
+// idempotent, the cross-section staging before it is not — the staging RPC
+// refuses a run that already has a draft row, so a retry after a committed
+// but timed-out finalise used to fail at the staging call and fall to
+// FAILED with the draft in place. finalizeDraft now stages only when the
+// run has no draft row.
+test('a retried finalise does not stage cross-section relationships again when a draft already exists', async () => {
+  const { ProductPhase2Store } = require('../lib/product/phase-2-store');
+  const drafted = (hasDraft) => {
+    const calls = [];
+    const client = {
+      from: (table) => ({ select: () => ({ eq: () => ({ maybeSingle: async () => {
+        calls.push(`select:${table}`);
+        return { data: hasDraft ? { draft_analysis_id: 'd'.repeat(64) } : null, error: null };
+      } }) }) }),
+      rpc: async (name) => { calls.push(`rpc:${name}`); return { data: { run: { status: 'READY' } }, error: null }; },
+    };
+    return { calls, store: new ProductPhase2Store({ client }) };
+  };
+  const draft = {
+    draft_analysis_id: 'x'.repeat(64),
+    source_document_id: 's'.repeat(64),
+    agreement_structure_id: 'a'.repeat(64),
+    legal_schema_version: 'LEGAL_SCHEMA/V2',
+    totals: {}, issues: [], coverage_assertions: [], sections: [], residual_passes: [],
+    model_calls: [], source_closures: [], spans: [], section_routings: [],
+    proposition_groups: [], proposals: [],
+    fact_links: [{ schema_version: 'PRODUCT_FACT_LINK/V2', source_span_ids: [], target_source_span_ids: [], relationship_type: 'QUALIFIES', from_proposal_id: 'a', to_proposal_id: 'b' }],
+  };
+  // No draft yet: staging runs, then the finalise.
+  const first = drafted(false);
+  await first.store.finalizeDraft({ runId: '2f2b6f2e-6d3e-4c2b-9d1c-1a2b3c4d5e6f', draft });
+  assert.deepEqual(first.calls, ['select:product_draft_analyses', 'rpc:product_phase2_stage_cross_section_relationships', 'rpc:product_phase2_finalize_saved_run']);
+  // The first attempt committed and its response timed out: the retry finds
+  // the draft, stages nothing, and the finalise answers with the stored one.
+  const retried = drafted(true);
+  await retried.store.finalizeDraft({ runId: '2f2b6f2e-6d3e-4c2b-9d1c-1a2b3c4d5e6f', draft });
+  assert.deepEqual(retried.calls, ['select:product_draft_analyses', 'rpc:product_phase2_finalize_saved_run']);
 });

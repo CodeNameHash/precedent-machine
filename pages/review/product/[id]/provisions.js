@@ -121,6 +121,7 @@ const NO_FACTS_REASONS = {
   RETURNED_NOTHING: 'the families routed to this section produced no fact',
   UNCLASSIFIED_PROVISION: 'the analysis flagged words here it could not classify',
   NOT_RECORDED: 'the stored analysis does not say which families this section was read for',
+  NOT_ANALYSED: 'the run ended before this section was analysed',
 };
 
 function SectionsWithoutFacts({ entries }) {
@@ -169,6 +170,10 @@ export function ProvisionsPreviewBody({ workspace, runId }) {
       {preview.facts.length === 0 ? (
         <div className="p-[9.5px] md:p-[18.5px]">
           <EmptyState icon="" title={live ? 'No sections in yet' : 'No layered facts'} description={live ? 'The first completed section appears here within a few minutes.' : 'This run has no valid layered (V2) facts to show.'} />
+          {/* Work package 39 (the review of 2026-10-25, finding 10): a run
+              whose every section returned nothing is exactly the silent
+              absence this block exists for, so it renders here too. */}
+          <SectionsWithoutFacts entries={preview.sections_without_facts} />
           <UnplacedHeldFacts entries={preview.unplaced_held} />
         </div>
       ) : (

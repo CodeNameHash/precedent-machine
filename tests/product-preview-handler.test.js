@@ -250,7 +250,7 @@ test('the preview workspace is projected to the fields the page reads', () => {
     'code', 'family_key', 'issue_id', 'kind', 'message', 'proposal_id', 'structure_node_id',
   ]);
   assert.deepEqual(Object.keys(workspace.analysis.agreement_structure.nodes[0]).sort(), [
-    'authored_order', 'node_id', 'reference',
+    'authored_order', 'kind', 'node_id', 'reference',
   ]);
   // A routing carries the reasons a section that produced no facts is listed
   // for (work package 33): the families it was asked for and, when the row

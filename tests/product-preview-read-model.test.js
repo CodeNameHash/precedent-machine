@@ -43,7 +43,7 @@ function section() {
 }
 
 function store(overrides = {}) {
-  const state = { modelWrites: 0, sectionReads: 0, modelRow: null };
+  const state = { modelWrites: 0, sectionReads: 0, modelRow: null, reviewVersion: 0 };
   const value = {
     assertAccess: async () => 'OWNER',
     getRun: async () => context().run,
@@ -51,8 +51,12 @@ function store(overrides = {}) {
     loadPreviewSectionResults: async () => { state.sectionReads += 1; return [section()]; },
     loadDraftIssues: async () => [],
     getReview: async () => null,
+    getReviewVersion: async () => state.reviewVersion,
     getPreviewReadModel: async () => state.modelRow,
-    savePreviewReadModel: async ({ payload }) => { state.modelWrites += 1; state.modelRow = { run_id: RUN_ID, payload, built_at: '2026-10-25T00:00:00.000Z', stale: false }; },
+    savePreviewReadModel: async ({ payload, reviewVersion = 0 }) => {
+      state.modelWrites += 1;
+      state.modelRow = { run_id: RUN_ID, payload, built_at: '2026-10-25T00:00:00.000Z', stale: false, review_version: Number(reviewVersion) || 0 };
+    },
     markPreviewReadModelStale: async () => { if (state.modelRow) state.modelRow = { ...state.modelRow, stale: true }; },
     ...overrides,
   };
@@ -75,6 +79,11 @@ test('the delivery rule: a finished, fresh, current-version model is served; a l
   assert.equal(previewReadModelUsable({ run: { status: 'READY' }, row: { payload, stale: true } }), false, 'a review save made it stale');
   assert.equal(previewReadModelUsable({ run: { status: 'READY' }, row: null }), false);
   assert.equal(previewReadModelUsable({ run: { status: 'READY' }, row: { payload: { schema_version: 'PRODUCT_PREVIEW_WORKSPACE/V0' }, stale: false } }), false, 'a payload another build wrote');
+  // Work package 39 (the review of 2026-10-25, findings 7 and 8): the row's
+  // review version must be the run's, whatever the stale flag says.
+  assert.equal(previewReadModelUsable({ run: { status: 'READY' }, row: { payload, stale: false, review_version: 3 }, reviewVersion: 3 }), true);
+  assert.equal(previewReadModelUsable({ run: { status: 'READY' }, row: { payload, stale: false, review_version: 2 }, reviewVersion: 3 }), false, 'a save landed after the build');
+  assert.equal(previewReadModelUsable({ run: { status: 'READY' }, row: { payload, stale: true, review_version: 3 }, reviewVersion: 3 }), false);
   assert.equal(previewReadModelUsable({ run: { status: 'READY' }, row: { payload: null, stale: false } }), false);
 });
 
@@ -110,6 +119,19 @@ test('a finished run is stored once and served from the model afterwards without
   await handler({ method: 'GET', query: { id: RUN_ID } }, fourth);
   assert.equal(fourth.headers['X-Preview-Read'], 'MODEL');
   assert.equal(state.sectionReads, 2);
+
+  // A review save whose stale mark failed to write: the review version has
+  // moved on and the stored row is not served (findings 7 and 8).
+  state.reviewVersion = 1;
+  const missedMark = responseDouble();
+  await handler({ method: 'GET', query: { id: RUN_ID } }, missedMark);
+  assert.equal(missedMark.headers['X-Preview-Read'], 'REBUILT');
+  assert.equal(state.modelRow.review_version, 1, 'the rebuilt row is stamped with the review it was built from');
+  assert.equal(state.sectionReads, 3);
+  const afterRebuild = responseDouble();
+  await handler({ method: 'GET', query: { id: RUN_ID } }, afterRebuild);
+  assert.equal(afterRebuild.headers['X-Preview-Read'], 'MODEL');
+  assert.equal(state.sectionReads, 3);
 });
 
 test('a run still analysing reads live every time and stores nothing', async () => {
@@ -162,14 +184,17 @@ test('a review save, and a restore of an earlier review, mark the stored project
   const staleCalls = [];
   const client = {
     rpc: async (name) => ({ data: { schema_version: 'PRODUCT_REVIEW_STATE/V1', name }, error: null }),
-    from: () => ({
-      update: (values) => ({ eq: async (column, value) => { staleCalls.push([values.stale, column, value]); return { error: null }; } }),
+    from: (table) => ({
+      update: (values) => ({ eq: async (column, value) => { staleCalls.push([table, values.stale, column, value]); return { error: null }; } }),
     }),
   };
   const store = new ProductPhase3Store({ client });
   await store.saveReview({ runId: RUN_ID, expectedVersion: 1, state: {}, actor: 'lawyer@example.test', eventType: 'SAVE', idempotencyKey: 'one', command: { type: 'SAVE' } });
   await store.restoreReview({ runId: RUN_ID, expectedVersion: 2, restoreVersion: 1, actor: 'lawyer@example.test', idempotencyKey: 'two' });
-  assert.deepEqual(staleCalls, [[true, 'run_id', RUN_ID], [true, 'run_id', RUN_ID]]);
+  assert.deepEqual(staleCalls, [
+    ['product_preview_reads', true, 'run_id', RUN_ID],
+    ['product_preview_reads', true, 'run_id', RUN_ID],
+  ]);
   // A store without the model (an older deployment) still saves and restores.
   const plain = new ProductPhase3Store({ client });
   plain.markPreviewReadModelStale = undefined;

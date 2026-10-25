@@ -24,7 +24,14 @@ CREATE TABLE public.product_preview_reads (
   run_id uuid PRIMARY KEY REFERENCES public.product_analysis_runs(run_id) ON DELETE CASCADE,
   payload jsonb NOT NULL CHECK (jsonb_typeof(payload) = 'object'),
   built_at timestamptz NOT NULL DEFAULT now(),
-  stale boolean NOT NULL DEFAULT false
+  stale boolean NOT NULL DEFAULT false,
+  -- The review version the payload was built from (0 before the first review
+  -- save). The page is served only when it still matches the run's review
+  -- session, so a save that lands while a build is in flight cannot be
+  -- hidden by the build's own write, and a stale mark that failed to write
+  -- cannot serve a review the lawyer has already changed (the review of
+  -- 2026-10-25, findings 7 and 8).
+  review_version integer NOT NULL DEFAULT 0 CHECK (review_version >= 0)
 );
 
 ALTER TABLE public.product_preview_reads ENABLE ROW LEVEL SECURITY;

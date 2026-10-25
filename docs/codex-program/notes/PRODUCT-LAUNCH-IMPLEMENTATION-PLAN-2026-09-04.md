@@ -6528,6 +6528,71 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       read-only smoke test of Phase 6). A fresh run on this commit is the
       only way to see (247), (248) and (249) applied (extractor V11), and
       Ben has held that until the lawyer loop is read.
+      (255) 2026-10-25 03:30 UTC (the manager), work package 39: an
+      adversarial review of this session's own changes, and the fixes it
+      found. A subagent read the whole diff (89d53f14..HEAD) against the
+      code and the database SQL and reported 13 findings; six were real
+      defects in (247) to (251), and all six are fixed, with the tests that
+      would have caught them. They are recorded here because two of them
+      would have made things worse, not better. (1) The finalisation retry
+      (250) was unsafe: the finalise is idempotent but the cross-section
+      staging before it is not — product_phase2_stage_cross_section_
+      relationships refuses a run that already has a draft row (ERRCODE
+      55000) — so an attempt whose finalise committed but whose response
+      timed out would fail on its retry at the staging call, a
+      non-retryable error, and the run would fall to FAILED with the draft
+      in place: exactly the failure the retry was added to prevent.
+      lib/product/phase-2-store.js now stages only when the run has no
+      draft row (`hasFinalizedDraft`), and a staging refusal re-checks the
+      row before it is believed; the finalise RPC returns the stored draft
+      (test: the staging call runs once, and not at all on the retry).
+      (2) The summary locator check (248) was a regression: it applied its
+      four-content-word floor to every summary, so "Parent may terminate"
+      was reported as containing a section reference it does not have and
+      lost its line. Only a summary that actually carries a locator is
+      judged now, and the problem reads "is only a section reference". Two
+      further edge cases the review found are fixed in the same place: a
+      shortened line that lands on "U.S." or "Inc." is cleaned, not
+      dropped, and a cut never ends on the/A/an/from/under/per/if/than or
+      an unmatched "(" (extended `SUMMARY_DANGLING_WORD`, a bracket-balance
+      retry). Re-read on the 19 stored Apogee summaries: 18 kept, 1
+      repaired, 0 dropped, as before. (3) The run route's retry answer
+      (250) reported `retry_applied: true` for a retry that changed
+      nothing (product_phase3_retry_run answers a READY run, or a spent
+      key, unchanged): it now compares the run's status and stage before
+      and after and says applied only when they moved. (4) The same branch
+      swallowed every failure after it, including a genuine advance or
+      write failure, and skipped the deployment log: it now answers 202
+      only for a failure in the read that builds the reply (the hosted wake
+      and RUN_ENDED paths), always logs, and carries the error's code; an
+      advance failure stays a 500 (tests for all three). (5) The read model
+      (251) could serve a pre-save projection for ever: a build that
+      started before a lawyer's save could upsert `stale = false` over the
+      mark, and a mark that failed to write left a fresh row served with no
+      authority behind it. The row now carries the review version it was
+      built from (`review_version`, new column in the same migration, which
+      has not been applied yet) and the handler serves it only when that
+      equals the run's review session version — one indexed row read on a
+      hit — with the stale flag kept as the fast path; a save, a restore, a
+      retry and a failed finalisation all mark the row stale (the last two
+      were missing). (6) The page's silent-absence block was not rendered
+      on a run with no valid facts at all (the one case it exists for) and
+      could not name a section the run never reached; it now renders inside
+      the empty state, and a READY, FAILED or PARTIAL run lists every
+      substantive section with no section result as "the run ended before
+      this section was analysed". Two nits from the review are also
+      addressed: the payload now carries each node's `kind`, so the
+      section-kind guard is real (an article with a routing is not a
+      section of the list), and a comment records that the V11 label
+      covers the earlier V9/V8 profiles whose labels did not move (the call
+      identity is the whole request, so nothing is reused across the
+      change). The review also named weak tests in the new files; each of
+      the six fixes has a test that fails without it, and the store doubles
+      now assert the table, the column and the run they touch. 228 tests
+      across the fourteen touched files are green. Not changed: the review
+      found the reference resolver itself sound over about forty forms, and
+      the read model's migration, columns, grants and RLS match the
+      supabase-js calls (read, not executed).
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
