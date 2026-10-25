@@ -6464,7 +6464,11 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       suites are unverified beyond the code review; this session's
       verification is the local suite runs recorded in (246) to (252)
       (221 tests green across the touched files) plus the real payload
-      reads. Ben's to fix: the GitHub account's billing. (b) A second
+      reads; `next build` cannot stand in for the CI build either, because
+      this checkout's node_modules is a partial install (13 top-level
+      packages from a 109-package pnpm store, with `tailwindcss` absent),
+      so the build stops at "Cannot find module 'tailwindcss'" before it
+      reaches any page. Ben's to fix: the GitHub account's billing. (b) A second
       Vercel project, precedent-machine-restored-20260812, is connected
       to the same repository: every push of this session created a
       "Preview - precedent-machine-restored-20260812" deployment beside
