@@ -6831,8 +6831,15 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       whole fixture draft (every substantive section built, two of them
       with a short answer) assembled and validated with two such issues
       present and no validation error — so the issue travels through
-      finalisation like any other. 14 suites on the draft path green (267
-      tests). Not changed: the extraction
+      finalisation like any other. It also does not fire on another
+      agreement's real stored call: compiling NCS generation 5's 6.4
+      (Frustration of closing conditions, tests/fixtures/product/
+      ncs-generation-5-6-4-extraction-call.json) gives three valid facts
+      and no uncited sentence, and its review row is a rendered item: the
+      review UI titles it "Uncited operative sentences", quotes the
+      sentences from the message and offers Acknowledge, which
+      tests/product-review-ui-presentation.test.js now asserts. 15 suites
+      on the draft and review path green (283 tests). Not changed: the extraction
       instruction, the thin-answer floors and the page; the sentence list
       on the lawyer preview remains a product decision for Ben.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the

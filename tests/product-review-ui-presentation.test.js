@@ -21,7 +21,7 @@ const sourceContextModule = require('../components/product/SourceContextPanel.js
 const SourceContextPanel = sourceContextModule.default;
 const { surroundingSourceSpan } = sourceContextModule;
 const {
-  AcceptedSummary, AddFact, DraftReview, ReleaseEvaluation, ReviewSectionHeading, missingFactCommand, toggleSourceSpanId,
+  AcceptedSummary, AddFact, DraftReview, ReleaseEvaluation, Requirement, ReviewSectionHeading, missingFactCommand, toggleSourceSpanId,
 } = require('../components/product/ReviewWorkspace.jsx');
 
 const nodes = [
@@ -487,4 +487,30 @@ test('source panel identifies context-only text as outside owned evidence', () =
 
   assert.match(markup, /Supporting context outside the owned section/);
   assert.match(markup, /It is not owned evidence for this proposal/);
+});
+
+
+// Work package 43 (plan finding (261)): a section's uncited operative
+// sentence is a coverage issue, so the review shows it as an item a lawyer
+// acknowledges — title in words and the sentences quoted from their message.
+test('the review lists an uncited operative sentence as an item naming the sentences', () => {
+  const item = {
+    item_id: 'issue-uncited',
+    kind: 'ISSUE',
+    decision: 'PENDING',
+    structure_node_id: 'node-6-3',
+    source_span_ids: [],
+    original: {
+      code: 'UNCITED_OPERATIVE_SENTENCES',
+      kind: 'COVERAGE',
+      state: 'OPEN',
+      family_key: null,
+      message: '1 sentence in this section states an obligation and no fact cites it: "(a) In connection with the Written Consent, the Company shall take all actions necessary or advisable to comply". Add a fact or record why the words state no separate effect.',
+    },
+  };
+  const markup = renderToStaticMarkup(React.createElement(Requirement, { item, analysis: { sections: [], proposals: [] }, onDecision() {}, onSource() {}, busy: false }));
+  assert.match(markup, /Uncited operative sentences/, 'the item is titled in words');
+  assert.match(markup, /1 sentence in this section states an obligation and no fact cites it/, 'the sentences are quoted');
+  assert.match(markup, /Add a fact or record why the words state no separate effect/);
+  assert.match(markup, /Acknowledge/, 'a lawyer acknowledges it before publication');
 });
