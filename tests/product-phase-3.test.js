@@ -1066,4 +1066,12 @@ test('a database refusal to publish answers 422 with the reason, not an opaque 5
   assert.equal(response.statusCode, 422);
   assert.equal(response.body.error, 'REVIEW_NOT_PUBLISHABLE');
   assert.match(response.body.message, /source coverage is incomplete/);
+  // A database-level failure says what the database said.
+  store.saveReview = async () => { throw new ProductPhase1StoreError('DATABASE_ERROR', 'canceling statement due to statement timeout'); };
+  const database = responseDouble();
+  await handler({ method: 'POST', query: { id: analysis.analysis_run_id }, headers: { 'x-pm-csrf': 'same-origin' }, body: {
+    expected_version: 3, idempotency_key: 'publish-timeout', command: { type: 'CONFIRM_AGREEMENT_COVERAGE', confirmed: true },
+  } }, database);
+  assert.equal(database.statusCode, 500);
+  assert.match(database.body.message, /statement timeout/);
 });
