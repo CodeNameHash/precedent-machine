@@ -39,7 +39,10 @@ require.extensions['.js'] = function compileProjectEsm(module, filename) {
 };
 
 const ReviewSectionRail = require('../components/product/ReviewSectionRail.jsx').default;
-const { ReleaseEvaluation } = require('../components/product/ReviewWorkspace.jsx');
+const {
+  ReleaseEvaluation,
+  SectionReviewItems,
+} = require('../components/product/ReviewWorkspace.jsx');
 
 const sections = [{
   node: { node_id: 'node-6-3', reference: '6.3', title: 'No solicitation' },
@@ -76,4 +79,21 @@ test('the release evaluation panel shows the bars and the evaluate command, and 
   const html = renderToStaticMarkup(React.createElement(ReleaseEvaluation, { state, analysis, referenceSources: [], onEvaluate() {}, busy: false, onSource() {} }));
   assert.match(html, /Supervised candidate evaluation/);
   assert.match(html, /Evaluate/, 'the panel offers the evaluate command');
+});
+
+// Ben, 2026-10-25: machine notes stop blocking publication. They also stop
+// filling the section list: a section's notes sit behind one line, and the
+// items that hold the release stay visible.
+test('a section keeps its machine notes behind one line and shows the items that block', () => {
+  const items = [
+    { item_id: 'v1', kind: 'ISSUE', decision: 'PENDING', structure_node_id: 'n1', source_span_ids: [], original: { kind: 'VALIDATION', code: 'INVALID_FACT_COMPONENTS', state: 'OPEN', message: 'byte range missing' } },
+    { item_id: 'note-1', kind: 'ISSUE', decision: 'PENDING', structure_node_id: 'n1', source_span_ids: [], original: { kind: 'NOTE', code: 'CONCLUSIONS_CELLS_DROPPED', state: 'OPEN', message: '{"client_ref":"p1"}' } },
+    { item_id: 'note-2', kind: 'ISSUE', decision: 'PENDING', structure_node_id: 'n1', source_span_ids: [], original: { kind: 'NOTE', code: 'LEAN_RESPONSE_NORMALISED', state: 'OPEN', message: 'normalised' } },
+  ];
+  const markup = renderToStaticMarkup(React.createElement(SectionReviewItems, {
+    items, analysis: { sections: [], proposals: [], spans: [] }, busy: false, onSource() {}, onDecision() {},
+  }));
+  assert.match(markup, /Show 2 machine notes/, 'the notes are counted and hidden behind one line');
+  assert.match(markup, /Invalid fact components/, 'the item that blocks publication is visible');
+  assert.doesNotMatch(markup, /Conclusions cells dropped/, 'a note is not in the list until asked for');
 });

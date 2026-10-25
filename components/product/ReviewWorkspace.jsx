@@ -127,6 +127,21 @@ function RecordedReviewDetail({ message }) {
   </div>;
 }
 
+// Machine notes (an issue whose kind is NOTE) no longer hold publication
+// (Ben, 2026-10-25), so the section list shows the items that do and keeps
+// the notes behind one line: "Show N machine notes". A note is still there
+// to read, and still decides like any other item.
+export function SectionReviewItems({ items, analysis, busy, onSource, onDecision }) {
+  const [showNotes, setShowNotes] = useState(false);
+  const notes = items.filter((item) => item.kind === 'ISSUE' && item.original?.kind === 'NOTE');
+  const hidden = new Set(notes.map((item) => item.item_id));
+  const shown = showNotes ? items : items.filter((item) => !hidden.has(item.item_id));
+  return <>
+    {shown.map((item) => <Requirement key={item.item_id} item={item} analysis={analysis} busy={busy} onSource={onSource} onDecision={onDecision} />)}
+    {notes.length ? <button type="button" onClick={() => setShowNotes((current) => !current)} className="rounded border border-border px-3 py-1 text-xs font-semibold text-inkLight">{showNotes ? `Hide ${notes.length} machine note${notes.length === 1 ? '' : 's'}` : `Show ${notes.length} machine note${notes.length === 1 ? '' : 's'}`}</button> : null}
+  </>;
+}
+
 export function Requirement({ item, onDecision, onSource, busy, analysis }) {
   const title = item.kind === 'COVERAGE' ? `${displayReviewLabel(item.original.family_key) || 'Section'} ${displayReviewLabel(item.original.subject_kind)}`
     : item.kind === 'IMMATERIAL_ROUTING' ? `Confirm ${displaySectionReference(item.original.section_reference)} is immaterial`
@@ -266,7 +281,7 @@ export function DraftReview({ workspace, view, busy, command, openSource, focus 
     </nav>}
     {focused ? null : <section aria-labelledby="proposed-facts-heading" className="space-y-6">
       <div className="border-b border-border pb-2"><p className="text-xs font-bold uppercase tracking-wide text-accent">Primary review</p><h2 id="proposed-facts-heading" className="font-display text-2xl text-ink">Proposed facts</h2><p className="text-sm text-inkLight">Review the proposed legal facts in agreement order. Open the source from each fact.</p></div>
-      {view.sections.map((section) => <section id={`section-${section.node.node_id}`} key={section.node.node_id} className="scroll-mt-40 space-y-3"><div className="flex items-end justify-between border-b border-border pb-2"><ReviewSectionHeading section={section} /><AddFact section={section} analysis={analysis} busy={busy} onAdd={(fact) => command({ type: 'ADD_MISSING_FACT', ...fact })} /></div>{section.proposals.map((entry) => <ProposalCard key={entry.proposal.proposal_id} entry={entry} busy={busy} onSource={openSource} requiredRoleKeys={proposalRequiredRoles(entry.proposal)} structureNodes={analysis.agreement_structure?.nodes || []} availablePropositionGroups={analysis.proposition_groups || []} availableProposals={analysis.proposals || []} availableSourceSpans={analysis.spans.filter((span) => span.source_closure_ids?.includes(entry.proposal.source_closure_id))} onDecision={(itemId, decision, edits = {}) => command({ type: 'DECIDE_ITEM', item_id: itemId, decision, ...edits })} />)}{section.review_items.map((item) => <Requirement key={item.item_id} item={item} analysis={analysis} busy={busy} onSource={openSource} onDecision={(itemId, decision) => command({ type: 'DECIDE_ITEM', item_id: itemId, decision })} />)}{section.proposals.length === 0 && section.review_items.length === 0 ? <p className="text-sm text-inkLight">No proposed fact or flagged review item.</p> : null}</section>)}
+      {view.sections.map((section) => <section id={`section-${section.node.node_id}`} key={section.node.node_id} className="scroll-mt-40 space-y-3"><div className="flex items-end justify-between border-b border-border pb-2"><ReviewSectionHeading section={section} /><AddFact section={section} analysis={analysis} busy={busy} onAdd={(fact) => command({ type: 'ADD_MISSING_FACT', ...fact })} /></div>{section.proposals.map((entry) => <ProposalCard key={entry.proposal.proposal_id} entry={entry} busy={busy} onSource={openSource} requiredRoleKeys={proposalRequiredRoles(entry.proposal)} structureNodes={analysis.agreement_structure?.nodes || []} availablePropositionGroups={analysis.proposition_groups || []} availableProposals={analysis.proposals || []} availableSourceSpans={analysis.spans.filter((span) => span.source_closure_ids?.includes(entry.proposal.source_closure_id))} onDecision={(itemId, decision, edits = {}) => command({ type: 'DECIDE_ITEM', item_id: itemId, decision, ...edits })} />)}<SectionReviewItems items={section.review_items} analysis={analysis} busy={busy} onSource={openSource} onDecision={(itemId, decision) => command({ type: 'DECIDE_ITEM', item_id: itemId, decision })} />{section.proposals.length === 0 && section.review_items.length === 0 ? <p className="text-sm text-inkLight">No proposed fact or flagged review item.</p> : null}</section>)}
     </section>}
     <section id="review-checks" aria-labelledby="review-checks-heading" className="scroll-mt-40 space-y-5">
       <div className="border-b border-border pb-2"><p className="text-xs font-bold uppercase tracking-wide text-accent">Complete before finalising</p><h2 id="review-checks-heading" className="font-display text-2xl text-ink">Review checks</h2><p className="text-sm text-inkLight">{view.pending_count} items need review. {view.unresolved_count} items are unresolved.{view.note_count > 0 ? ` ${view.note_count} machine note${view.note_count === 1 ? '' : 's'} remain readable in the list and do not hold publication.` : ''} Coverage, agreement-level findings and relationships remain available below.</p></div>
