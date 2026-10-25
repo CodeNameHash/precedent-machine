@@ -250,3 +250,15 @@ test('a stored payload from an earlier build (V1, no node kinds) is not served',
   assert.equal(response.headers['X-Preview-Read'], 'REBUILT');
   assert.equal(response.body.schema_version, PREVIEW_WORKSPACE_VERSION);
 });
+
+test('initialising the review starts the projection stale, so the session it creates is reflected', async () => {
+  const { ProductPhase3Store } = require('../lib/product/phase-3-store');
+  const calls = [];
+  const client = {
+    rpc: async (name) => ({ data: { name }, error: null }),
+    from: (table) => ({ update: (values) => ({ eq: async (column, value) => { calls.push([table, values, column, value]); return { error: null }; } }) }),
+  };
+  const store = new ProductPhase3Store({ client });
+  await store.initialiseReview({ runId: RUN_ID, state: { schema_version: 'PRODUCT_REVIEW_STATE/V1' }, actor: 'lawyer@example.test' });
+  assert.deepEqual(calls, [['product_preview_reads', { stale: true }, 'run_id', RUN_ID]]);
+});
