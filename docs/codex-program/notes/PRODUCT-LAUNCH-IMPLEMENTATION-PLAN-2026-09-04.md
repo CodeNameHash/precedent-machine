@@ -6419,6 +6419,13 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       product_run_sandboxes: the target rebuilds the projection on its
       first preview read, so the source's copy carries nothing the target
       cannot make (lib/product/production-move.js SKIPPED_TABLES).
+      Work package 39 added the database test the projection was missing
+      (tests/product-preview-read-model-db.test.js: the table's keys and
+      checks, the cascade from a run, RLS on with no policy, and the
+      service role the only role that may read or write it — it joined the
+      CI database step), and the four page and retry suites are now in
+      `npm run test:active`, where none of them was, so CI's behaviour
+      step covers this work when CI returns.
       Tests: tests/product-preview-read-model.test.js (the rule; stored
       once then served without a section read; a review save rebuilds
       once; a live run never uses it; a missing table and a store without
