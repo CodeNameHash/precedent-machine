@@ -120,7 +120,7 @@ const NO_FACTS_REASONS = {
   READ_AS_IMMATERIAL: 'the analysis read this section as having no provision of the catalogued families',
   RETURNED_NOTHING: 'the families routed to this section produced no fact',
   UNCLASSIFIED_PROVISION: 'the analysis flagged words here it could not classify',
-  NOT_RECORDED: 'no analysis result was recorded for this section',
+  NOT_RECORDED: 'the stored analysis does not say which families this section was read for',
 };
 
 function SectionsWithoutFacts({ entries }) {

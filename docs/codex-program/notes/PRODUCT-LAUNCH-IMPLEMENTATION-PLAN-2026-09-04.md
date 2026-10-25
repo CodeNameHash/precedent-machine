@@ -6202,8 +6202,10 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       every substantive section that produced no fact at all, in section
       order, with its authored heading and its reason (read as immaterial,
       routed families that returned nothing, or words flagged as
-      unclassified) and one sentence: "This is not a finding that the
-      agreement has no such provision." Exhibits and annexes, a section
+      unclassified; a payload that carries no routing at all says the
+      stored analysis does not say which families the section was read for)
+      and one sentence: "This is not a finding that the agreement has no
+      such provision." Exhibits and annexes, a section
       inside one, and an out-of-scope exhibit already named by its own
       line are not listed; a section with a valid, held or rejected fact
       is not listed either (a held fact is listed with its reason, a
