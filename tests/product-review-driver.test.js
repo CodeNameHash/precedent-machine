@@ -56,6 +56,13 @@ test('a held proposal is rejected rather than accepted, because the server refus
   ]).state;
   const commands = acceptanceCommands(state);
   assert.deepEqual(commands.map((command) => [command.item_id, command.decision]), [['p-ok', 'ACCEPTED'], ['p-held', 'REJECTED']]);
+  // A model relationship is rejected for the same reason: ACCEPTED on one the
+  // schema's type rules do not allow makes the save fail (finding (277)).
+  const links = acceptanceCommands(reviewWith([
+    { ...item('r1', 'RELATIONSHIP'), original: { relationship_type: 'QUALIFIES' } },
+    { ...item('e1', 'EXCEPTION_LINK'), original: { relationship_type: 'EXCEPTS' } },
+  ]).state);
+  assert.deepEqual(links.map((command) => command.decision), ['REJECTED', 'REJECTED']);
 });
 
 test('a batch of decisions with a note included still counts the note', () => {

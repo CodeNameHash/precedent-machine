@@ -7255,6 +7255,51 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       pending item accepted once, the note included, versions from the
       answers, the group repair, the release order, a refusal names its
       code). Dry run on Claude 88d4032a: 2,397 pending in 8 batches.
+      (277) 2026-10-25 18:40 UTC (the manager), work package 50 part 2:
+      the Claude review driven to publication on the deployment, and the
+      one step that would not. With Ben's instruction "You can push apogee.
+      Only I use the site so no concerns on lawyer review etc", the driver
+      (276) was pointed at the run through the preview deployment:
+      **2,077 item decisions recorded in 7 batch saves in 428 seconds**
+      (the batches at 300, 51-65 s each, versions 5 to 12), 338 of them
+      rejections — the 11 held facts (a held proposal cannot be ACCEPTED)
+      and the 327 model relationships and exception links (ACCEPTED on one
+      whose recorded type the schema does not allow threw inside the save
+      and the deployment answered 500, so the harness rejected the machine's
+      link rather than pretend it stands). Coverage was then confirmed
+      (version 13, agreement_coverage ACCEPTED), leaving the review at 2,060
+      accepted and 338 rejected, every item decided. **PUBLISH answered 500
+      "Product review could not be updated"** — and the same command
+      publishes the same state locally: `applyReviewCommand(state,
+      {type:'PUBLISH'})` on the stored analysis returns status PUBLISHED
+      with 858 facts, exactly the run's valid facts. So the review logic is
+      not the failure: the deployment's save of a PUBLISH event is, after
+      the state has passed validation (the strongest candidate is the
+      publication insert or the RPC's payload at publication size; the
+      handler logs the cause under [product-review], which needs Ben's
+      Vercel log or a Vercel token to read). Two product defects found on
+      the way, both real and both recorded for fixing: `DECIDE_ITEM`
+      ACCEPTED on a relationship whose type fails the schema's rule throws
+      out of the handler's ProductReviewError catch and surfaces as 500
+      rather than 422 with the code (the UI's relationship editor is the
+      supported path), and nothing in the UI records a bulk decision, so
+      the only way through a 2,000-item review today is this script.
+      (278) 2026-10-25 19:00 UTC (the manager), work package 50 part 3:
+      where the night left the Apogee loop, so the morning does not start
+      from zero. Claude 88d4032a: review version 13, status DRAFT, 2,398
+      items all decided (2,060 ACCEPTED, 338 REJECTED), agreement coverage
+      ACCEPTED — the review half of the lawyer loop is done and durable on
+      the preview database. PUBLISH is the one step that failed, server-side
+      (277). The DeepSeek run 34847358 is untouched: 2,398 pending (the
+      batch work was all on Claude). Code pushed at 516480e0 plus the
+      driver's rejection policy: the batch route, the trimmed batch answer,
+      the 300-second function limit, the driver and its tests. What the
+      morning needs, in order: read the [product-review] error for the
+      PUBLISH save (Vercel logs or a token), fix or work around it, then
+      publish, evaluate, activate, verify the published page and Query page,
+      roll the release back and forward, and only then a fresh deal. The
+      read-model migration is still unapplied, so every preview read is
+      still the live 3.9 MB build.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
