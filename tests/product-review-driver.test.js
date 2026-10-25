@@ -49,6 +49,15 @@ test('every pending item is accepted, notes included, in batches whose version c
   assert.equal(calls[0].body.commands[0].item_id, 'p1');
 });
 
+test('a held proposal is rejected rather than accepted, because the server refuses an accepted invalid fact', () => {
+  const state = reviewWith([
+    { ...item('p-ok', 'PROPOSAL'), original: { validation_status: 'VALID' } },
+    { ...item('p-held', 'PROPOSAL'), original: { validation_status: 'INVALID' } },
+  ]).state;
+  const commands = acceptanceCommands(state);
+  assert.deepEqual(commands.map((command) => [command.item_id, command.decision]), [['p-ok', 'ACCEPTED'], ['p-held', 'REJECTED']]);
+});
+
 test('a batch of decisions with a note included still counts the note', () => {
   const commands = acceptanceCommands(reviewWith([item('n1', 'ISSUE', 'PENDING', { kind: 'NOTE' })]).state);
   assert.equal(commands.length, 1, 'the loop empties the queue rather than leaving notes behind');

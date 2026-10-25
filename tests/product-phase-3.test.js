@@ -1015,7 +1015,8 @@ test('a batch of item decisions is applied in one save and recorded as one event
     commands: proposals.map((item) => ({ type: 'DECIDE_ITEM', item_id: item.item_id, decision: 'ACCEPTED' })),
   } }, postResponse);
   assert.equal(postResponse.statusCode, 200);
-  assert.equal(postResponse.body.review.version, 1, 'one save for the batch');
+  assert.equal(postResponse.body.version, 1, 'one save for the batch');
+  assert.equal(postResponse.body.analysis, undefined, 'a batch answer carries the review, not the workspace');
   for (const item of proposals) {
     assert.equal(postResponse.body.review.state.items.find((entry) => entry.item_id === item.item_id).decision, 'ACCEPTED');
   }
