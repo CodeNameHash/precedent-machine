@@ -6478,6 +6478,38 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       to Vercel SSO for every path, including the per-deployment URLs, so
       the bypass secret remains the one thing needed to verify the four
       page and read changes live. Nothing changed in code here.
+      (254) 2026-10-25 02:00 UTC (the manager): the 19 rows with no
+      coded cell are not a defect, and the commands that verify (246) to
+      (251) live. (a) (242) recorded "19 of the rows with no coded cell"
+      among the Apogee page's faults. Read through the page's own builder
+      over the stored payload (buildTableView on prev4-projected.json):
+      239 rows in 39 tables, 19 rows with no coded cell, and every one of
+      them is a subject of a qualification matrix with no qualifier —
+      Brokers; Finders, Information Supplied / Proxy Statement, Authority;
+      Enforceability, Investment Intention and the like on the two
+      representations tables (bring-down standard, qualifiers, lookback),
+      seven on the interim-operating exceptions table, four on the
+      employee-benefits protections table. The facts behind them exist and
+      carry summaries ("No broker or advisor other than Goldman and
+      Jefferies is entitled to Transaction fees from the Company"); their
+      readout has no cells because the agreement states no qualifier for
+      that subject, and the dashes are the matrix's true answer. So the
+      row is not empty and no page rule changes; the facts' summaries were
+      the separate defect (248), now repaired at extraction. (b) What to
+      run when the deployment is reachable again, in order: with
+      x-vercel-protection-bypass and Authorization: Bearer, GET
+      https://deal-corpus-preview.vercel.app/api/product/analysis/
+      34847358-ae50-41e9-a4a1-82eb41d4d282/preview (or 88d4032a for the
+      Claude run) and read `sections_without_facts` (expect 3.30 and 5.16
+      for the DeepSeek run, none for the Claude run — finding (246)); GET
+      it a second time after the migration is applied and expect the
+      X-Preview-Read header to say MODEL with the same bytes, and compare
+      the response time (finding (251)); GET the run status and confirm it
+      no longer takes 15 to 25 s; node scripts/product/smoke-test.js
+      --base-url https://deal-corpus-preview.vercel.app (the outside-in
+      read-only smoke test of Phase 6). A fresh run on this commit is the
+      only way to see (247), (248) and (249) applied (extractor V11), and
+      Ben has held that until the lawyer loop is read.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
