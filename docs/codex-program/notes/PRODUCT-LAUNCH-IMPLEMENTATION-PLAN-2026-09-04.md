@@ -6759,11 +6759,12 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       this machine runs its tests through /tmp/dsh-node-unsigned with no
       `node` on PATH. With a `node` shim on PATH both pass (63 of 63), so
       no change was made for them — the CI runner has node on PATH and has
-      always run them. The local picture now: every product suite this
-      machine can run is green except the ones that need a database, which
-      cannot run here at all, and the ones that hang by design on the
-      heartbeat (phase-2, phase-4, phase-6, run-replay), which are excluded
-      from the sweep.
+      always run them. The local picture now: the same 88-file sweep,
+      re-run with the node shim on PATH after these changes, is 88 files
+      green and none red. What this machine still cannot run at all is the
+      database-shaped suites (no Postgres or PGlite here) and the files
+      that hang by design on the heartbeat (phase-2, phase-4, phase-6,
+      run-replay), which stay out of the sweep.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
