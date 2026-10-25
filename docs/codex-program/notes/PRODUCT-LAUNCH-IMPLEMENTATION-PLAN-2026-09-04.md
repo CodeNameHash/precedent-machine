@@ -6894,7 +6894,14 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       cannot see the difference. The two projects then deployed 0ca13e99
       successfully (GitHub deployments 01:55 and 01:56 UTC), and the
       earlier failures — many notifications to Ben — were all this one
-      error.
+      error. Re-checked at the head after the fix (4d76acbc): with the same
+      two stubs, `next build` exits 0 and every page compiles, and the
+      88-file local sweep is 90 of 90 green. `next build` with those stubs
+      is now a check this machine runs before a push, alongside the sweep.
+      The one thing still unverified here is the preview itself: the alias
+      serves 0ca13e99 (both projects' deployments green at 01:55 and 01:56
+      UTC) but still answers 302 to Vercel SSO on every path, so the bypass
+      secret remains the only way to read it.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
