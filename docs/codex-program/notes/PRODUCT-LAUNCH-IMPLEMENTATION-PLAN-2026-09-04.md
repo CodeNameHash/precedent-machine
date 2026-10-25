@@ -7504,7 +7504,14 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       publish-direct.js does (285), verified in dry run at 858 facts. The
       durable fix stays what (285) says: stop rewriting the whole state per
       save. This is the first time the cause is a database statement rather
-      than an opaque proxy page, and it is the line to hand over.
+      than an opaque proxy page, and it is the line to hand over. Measured
+      for the durable fix: the state is **7.3 MB**, of which **5.2 MB** is
+      the per-item `original` payload — the proposal's own payload copied
+      into every item — and a save writes the whole state twice (the session
+      row and the revision) and hands all of it to the validator. Storing
+      the payload once (it already exists in product_proposals) and giving
+      the item a hash or a reference would cut the publish's work by about
+      three quarters before any other change.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
