@@ -68,9 +68,11 @@ function renderReport({ items, facts, error }) {
   lines.push('| Status | Count |', '| --- | --- |');
   lines.push(`| MATCHED | ${summary.MATCHED} |`);
   lines.push(`| PARTIAL | ${summary.PARTIAL} |`);
+  lines.push(`| UNMATCHED | ${summary.UNMATCHED} |`);
   lines.push(`| MISSING | ${summary.MISSING} |`);
   lines.push(`| GAP | ${summary.GAP} |`);
   lines.push('');
+  lines.push('UNMATCHED: the section has facts, but none shares the note\'s words — a lawyer should look, because a shorthand note ("cap on buyer") can describe a fact without sharing a word with it. MISSING: the section has no fact at all.', '');
   lines.push('Success rate unavailable until the lawyer marks severity.', '');
 
   lines.push('## Note items', '');

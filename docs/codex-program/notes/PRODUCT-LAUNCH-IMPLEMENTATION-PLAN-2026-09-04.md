@@ -1273,7 +1273,11 @@ it is not an attestation or a completed independent inventory.
       model as layered components (Phase 5B below). His Olaplex and Apogee
       samples are reconciled against V2 output, not V1.
 - [ ] Reconcile Ben's existing independent, detailed provision samples against
-      the corresponding V2 agreement results. A separate full lawyer-written
+      the corresponding V2 agreement results. Status 2026-10-25: Apogee is
+      reconciled from run 88d4032a's stored analysis read — MATCHED 4,
+      PARTIAL 2, UNMATCHED 1, MISSING 0, GAP 0, report in
+      `reports/reconcile/APOGEE-SAMPLE-RECONCILIATION-2026-10-25.md`
+      (finding (257)); Olaplex still waits on a run of its own. A separate full lawyer-written
       inventory is not required. Tooling merged 2026-09-12 23:40 UTC from
       `session_01XujbrYbTFpQC1WWMjAfYEQ`: `lib/product/sample-reconciliation.js`
       and `scripts/product/reconcile-sample-notes.js` match the note items in
@@ -6664,6 +6668,41 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       the before/after retry comparison, the publish/restore staleness and
       the read-model SQL sound, and it did not execute the staging SQL or
       the migration on a database.
+      (257) 2026-10-25 05:30 UTC (the manager), work package 41: Ben's
+      Apogee notes reconciled against the Apogee V2 run, and a status this
+      tool was getting wrong. The Phase 5 item "Reconcile Ben's existing
+      independent, detailed provision samples against the corresponding V2
+      agreement results" has waited on a V2 run of Apogee; 88d4032a is one.
+      Ran the reconciliation over the run's stored analysis read against
+      `fixtures/product/ben-samples/apogee-ben-partial-inventory.v1.json`
+      (Ben's partial independent inventory, same exhibit, written before
+      any machine draft he had seen): 7 note items, MATCHED 4 (2.1(a)(i)
+      consideration, 3.9(b) ordinary course, 5.2(b)(viii) capex cap,
+      5.5(e)), PARTIAL 2 (Article III intro, 6.3(a)(i) bring-down),
+      UNMATCHED 1 (5.5(b)), MISSING 0, GAP 0; the report is
+      `reports/reconcile/APOGEE-SAMPLE-RECONCILIATION-2026-10-25.md`, its
+      severity and acceptance columns left for Ben, and the command that
+      reproduces it against the deployment is in its header. Reading the
+      one item the tool first called MISSING found a status defect, not a
+      product one: Ben's note for 5.5(b) is "cap on buyer. efforts; anti
+      hell or high water", and the section does carry the fact
+      (REMEDY_LIMITATION, headline "No divestiture, conduct or litigation
+      commitment", "in no event shall Guarantor, Merger Sub or any of their
+      respective Affiliates ... be obligated to undertake or commit or
+      agree to undertake ...") — but a shorthand that is a legal idea
+      shares no word with the agreement's words, so the matcher scored 0
+      and reported MISSING, which a lawyer reads as "the machine missed
+      my provision". `reconcileSampleNotes` now separates the two:
+      MISSING only when the section has no fact at all, UNMATCHED when it
+      has facts none of which shares the note's words (the summary gains
+      the row and the report says what each means). Tests:
+      tests/product-sample-reconciliation.test.js, including a true
+      MISSING and a shorthand UNMATCHED case (12 of 12). Not changed: the
+      overlap rule itself (0.5 matched, 0.2 partial) — a conceptual
+      shorthand is a note a lawyer reads against, not something a word
+      score should guess; the severity-weighted recall and the UNRESOLVED
+      count of the next two Phase 5 items wait on Ben's marks in this
+      report.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is

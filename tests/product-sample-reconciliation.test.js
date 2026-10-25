@@ -139,9 +139,30 @@ test('reconcileSampleNotes: MATCHED, PARTIAL and MISSING cases against a synthet
   assert.equal(byId['i-partial'].best_fact.fact_id, 'f-noshop');
   assert.ok(byId['i-partial'].overlap_share >= 0.2 && byId['i-partial'].overlap_share < 0.5);
 
-  assert.equal(byId['i-missing'].status, 'MISSING');
+  // 9.3 has a fact (the governing-law one) that shares no words with the
+  // note: UNMATCHED, not MISSING (work package 41).
+  assert.equal(byId['i-missing'].status, 'UNMATCHED');
 
-  assert.deepEqual(summary, { MATCHED: 1, PARTIAL: 1, MISSING: 1, GAP: 0 });
+  assert.deepEqual(summary, { MATCHED: 1, PARTIAL: 1, UNMATCHED: 1, MISSING: 0, GAP: 0 });
+});
+
+test('reconcileSampleNotes: MISSING means the section has no fact at all, UNMATCHED means it has facts none of which share the note\'s words', () => {
+  const facts = [fact({ fact_id: 'f-term', section_reference: '9.1', label: 'Termination fee', text: 'Company pays Parent a termination fee of $50,000,000 in cash' })];
+  const items = [
+    // No fact in 9.7: the machine proposed nothing there.
+    { item_id: 'i-empty-section', section_reference: '9.7', text: 'Anything about a section the machine did not reach', is_gap: false },
+    // A conceptual shorthand: the section has the fact (a remedy cap), the
+    // note shares no word with it.
+    { item_id: 'i-shorthand', section_reference: '9.1', text: 'cap on buyer. efforts; anti hell or high water', is_gap: false },
+  ];
+  const { results, summary } = reconcileSampleNotes({ items, facts });
+  const byId = Object.fromEntries(results.map((r) => [r.item_id, r]));
+  assert.equal(byId['i-empty-section'].status, 'MISSING');
+  assert.equal(byId['i-empty-section'].candidate_count, 0);
+  assert.equal(byId['i-shorthand'].status, 'UNMATCHED');
+  assert.equal(byId['i-shorthand'].candidate_count, 1);
+  assert.equal(summary.MISSING, 1);
+  assert.equal(summary.UNMATCHED, 1);
 });
 
 test('reconcileSampleNotes: a GAP item never runs matching and always reports GAP', () => {
@@ -151,7 +172,7 @@ test('reconcileSampleNotes: a GAP item never runs matching and always reports GA
   assert.equal(results[0].status, 'GAP');
   assert.equal(results[0].best_fact, null);
   assert.equal(results[0].overlap_share, null);
-  assert.deepEqual(summary, { MATCHED: 0, PARTIAL: 0, MISSING: 0, GAP: 1 });
+  assert.deepEqual(summary, { MATCHED: 0, PARTIAL: 0, UNMATCHED: 0, MISSING: 0, GAP: 1 });
 });
 
 test('reconcileSampleNotes: an unmatched fact in a covered section is listed as not mentioned, not an error', () => {
