@@ -6937,6 +6937,30 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       https://deal-corpus-preview.vercel.app` with the same credential.
       Not changed in code: nothing this round; the deployment is the
       head that was already green.
+      (265) 2026-10-25 11:10 UTC (the manager), work package 46 part 2:
+      the deployed build itself verified from the outside, without a
+      session. Vercel's protection bypass lets the deployment's public
+      artifacts be read even though every page and API path is gated, so
+      the alias's build could be inspected: the login page (the one public
+      page) names build id mTHRNGAqT3pJ_cQ1g5OrK, its build manifest lists
+      the page chunks, and the lawyer-preview chunk
+      (static/chunks/pages/review/product/[id]/provisions-a314078f8719be99.js)
+      contains the three strings of the silent-absence block ("Sections
+      with no facts extracted", "the run did not reach this section",
+      "This is not a finding that the agreement has no such provision") and
+      none of "node:crypto", "canonical-bytes", "source-context" or
+      "substantiveSections" — so the deployment carries the page change and
+      the client-bundle fix (263) in the artifact itself, not only in the
+      repository. The review workbench's chunk carries "Finalise
+      candidate", "Activate evaluated release" and "Roll back active
+      release", so the PW review controls are deployed as the source has
+      them. What this is not: a read of the run data. The two page routes,
+      the preview API and the run API all need a session or the internal
+      token (264). Nor is it artifact equality with a local build: the
+      local build (with stubbed CSS plugins) hashes its chunks differently
+      (provisions-bf6be9264bfd0876 against provisions-a314078f8719be99),
+      because the CSS file names inline into the chunk; the string
+      presence is the check. Nothing changed in code this round.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
