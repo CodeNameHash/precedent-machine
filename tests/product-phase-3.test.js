@@ -1035,3 +1035,35 @@ test('a batch of item decisions is applied in one save and recorded as one event
   } }, tooBig);
   assert.equal(tooBig.statusCode, 400);
 });
+
+// Work package 50 (plan finding (279)): a state the database refuses to
+// publish is the request's problem, and the reason has to reach the client —
+// the first PUBLISH of the Claude Apogee run answered the opaque 500, and
+// the cause sat in the RPC's 55000 message that nothing read.
+test('a database refusal to publish answers 422 with the reason, not an opaque 500', async () => {
+  const analysis = analysisFixture();
+  const store = {
+    assertAccess: async () => 'OWNER',
+    getAgreementAnalysis: async () => analysis,
+    getReview: async () => ({ version: 3, status: 'DRAFT', state: initialiseReviewState(analysis), revisions: [], publications: [], release_history: [] }),
+    saveReview: async () => {
+      const error = new Error('REVIEW_NOT_PUBLISHABLE: published review source coverage is incomplete');
+      error.code = 'REVIEW_NOT_PUBLISHABLE';
+      throw error;
+    },
+  };
+  // The handler maps the store's error class; build the same error type the
+  // store throws.
+  const { ProductPhase1StoreError } = require('../lib/product/phase-1-store');
+  store.saveReview = async () => { throw new ProductPhase1StoreError('REVIEW_NOT_PUBLISHABLE', 'published review source coverage is incomplete'); };
+  const handler = createProductReviewHandler({ getClient: () => ({}), storeFactory: () => store, actorResolver: async () => 'lawyer@example.test' });
+  const response = responseDouble();
+  await handler({ method: 'POST', query: { id: analysis.analysis_run_id }, headers: { 'x-pm-csrf': 'same-origin' }, body: {
+    // Any command whose JavaScript path succeeds: the mapping is what is
+    // under test, and the store is the layer that refuses.
+    expected_version: 3, idempotency_key: 'publish-refused', command: { type: 'CONFIRM_AGREEMENT_COVERAGE', confirmed: true },
+  } }, response);
+  assert.equal(response.statusCode, 422);
+  assert.equal(response.body.error, 'REVIEW_NOT_PUBLISHABLE');
+  assert.match(response.body.message, /source coverage is incomplete/);
+});
