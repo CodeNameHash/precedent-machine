@@ -88,7 +88,7 @@ test('a CROSS_REFERENCE to a statute outside the agreement needs no resolution; 
 // is a problem for the extractor to drop with a note, never a held fact, so
 // validateFactComponents does not report it.
 test('headline.summary is optional; headlineSummaryProblems checks it without holding the fact', () => {
-  const { headlineSummaryProblems, HEADLINE_SUMMARY_MAX_WORDS, HEADLINE_SUMMARY_ASKED_WORDS, HEADLINE_SUMMARY_RULE } = require('../lib/product/fact-components');
+  const { headlineSummaryProblems, repairHeadlineSummary, HEADLINE_SUMMARY_MAX_WORDS, HEADLINE_SUMMARY_ASKED_WORDS, HEADLINE_SUMMARY_RULE } = require('../lib/product/fact-components');
   const fact = example();
   fact.components.forEach((component) => { if (component.origin === 'CHAPEAU') component.origin_structure_node_id = 'n31'; });
   assert.equal(HEADLINE_SUMMARY_ASKED_WORDS, 15);
@@ -123,6 +123,13 @@ test('headline.summary is optional; headlineSummaryProblems checks it without ho
   // that carries no locator is not "only a section reference"; the first
   // wording refused every summary under four content words.
   assert.deepEqual(headlineSummaryProblems('Parent may terminate'), []);
+  // A line that says nothing is not a reading, locator or not; and an
+  // abbreviation's own full stop is not a sentence-ending period.
+  assert.ok(headlineSummaryProblems('N/A').some((problem) => problem.includes('says too little')));
+  assert.ok(headlineSummaryProblems('Termination').some((problem) => problem.includes('says too little')));
+  assert.ok(headlineSummaryProblems('Clause 4').some((problem) => problem.includes('says too little')));
+  assert.deepEqual(headlineSummaryProblems('Parent, Merger Sub and the Company shall use reasonable best efforts to obtain all approvals in the U.S.'), []);
+  assert.equal(repairHeadlineSummary('Parent, Merger Sub and the Company shall use reasonable best efforts to obtain all approvals in the U.S.'), null);
   assert.deepEqual(headlineSummaryProblems('No third-party beneficiaries'), []);
   assert.deepEqual(headlineSummaryProblems('Parent may terminate at will'), []);
   // A summary that is only a disclosure-letter section is still a locator.
@@ -141,7 +148,6 @@ test('headline.summary is optional; headlineSummaryProblems checks it without ho
   // Work package 35: repairHeadlineSummary shortens an over-long line at its
   // last clause boundary and strips a trailing period; it refuses what a
   // cut cannot repair (a quotation, a foreign-script character).
-  const { repairHeadlineSummary } = require('../lib/product/fact-components');
   const long = 'Parent, Merger Sub and the Company shall use reasonable best efforts to make all filings and obtain all approvals, and to take every other action necessary so that the Transactions close as promptly as practicable';
   const shortened = repairHeadlineSummary(long);
   assert.equal(shortened, 'Parent, Merger Sub and the Company shall use reasonable best efforts to make all filings and obtain all approvals');
@@ -159,8 +165,12 @@ test('headline.summary is optional; headlineSummaryProblems checks it without ho
   // to the last word that can end the line.
   const twoDanglers = repairHeadlineSummary('Parent, Merger Sub and the Company shall use reasonable best efforts to make all filings and obtain all approvals described in this Agreement and agreed to by the');
   assert.equal(twoDanglers, 'Parent, Merger Sub and the Company shall use reasonable best efforts to make all filings and obtain all approvals described in this Agreement');
+  // A line that still opens a bracket it never closes at the cut floor is
+  // refused outright (the second review, finding 6): a line cut inside a
+  // parenthesis is not a reading.
   const openBracket = repairHeadlineSummary('Parent, Merger Sub and the Company shall use reasonable best efforts to make all filings and obtain all approvals described in the (the "Approvals") and to take every other action necessary so that the Transactions close promptly');
-  assert.ok(openBracket === null || (openBracket.match(/\(/g) || []).length === (openBracket.match(/\)/g) || []).length);
+  assert.equal(openBracket, null);
+  assert.equal(repairHeadlineSummary('(the Acquirer shall deliver all certificates and other documents described in the schedule and take every other action necessary so that the Transactions close promptly'), null, 'the bracket floor');
   // A 19-word line the old cap dropped is now kept whole (Apogee 3.1).
   assert.equal(repairHeadlineSummary('Each Company Subsidiary is duly organized, validly existing and in good standing, subject to a Material Adverse Effect exception'), null);
   assert.deepEqual(headlineSummaryProblems('Each Company Subsidiary is duly organized, validly existing and in good standing, subject to a Material Adverse Effect exception'), []);

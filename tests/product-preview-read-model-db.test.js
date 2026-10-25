@@ -33,7 +33,7 @@ async function createRun() {
   return runId;
 }
 
-const PAYLOAD = { schema_version: 'PRODUCT_PREVIEW_WORKSPACE/V1', analysis: {}, review: {}, progress: {} };
+const PAYLOAD = { schema_version: 'PRODUCT_PREVIEW_WORKSPACE/V2', analysis: {}, review: {}, progress: {} };
 
 // The store's own write (phase-2-store.js savePreviewReadModel), as SQL.
 async function save(runId, { payload = PAYLOAD, reviewVersion = 0 } = {}) {

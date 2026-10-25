@@ -95,7 +95,7 @@ test('the handler reads access, context, completed sections, draft-level issues 
   const res = { headers: {}, setHeader(k, v) { this.headers[k] = v; }, status(code) { this.statusCode = code; return this; }, json(body) { this.body = body; return this; } };
   await handler({ method: 'GET', query: { id: context.run.run_id }, headers: {} }, res);
   assert.equal(res.statusCode, 200);
-  assert.equal(res.body.schema_version, 'PRODUCT_PREVIEW_WORKSPACE/V1');
+  assert.equal(res.body.schema_version, 'PRODUCT_PREVIEW_WORKSPACE/V2');
   assert.equal(res.body.analysis.proposals.length, 1);
   assert.equal(res.body.progress.completed, 1);
   assert.deepEqual(res.body.analysis.issues.map((issue) => issue.issue_id), ['i-drift']);

@@ -97,7 +97,7 @@ test('a finished run is stored once and served from the model afterwards without
   assert.equal(first.headers['X-Preview-Read'], 'REBUILT');
   assert.equal(state.sectionReads, 1);
   assert.equal(state.modelWrites, 1);
-  assert.equal(first.body.schema_version, 'PRODUCT_PREVIEW_WORKSPACE/V1');
+  assert.equal(first.body.schema_version, PREVIEW_WORKSPACE_VERSION);
   // Second view: the stored row, the analysis never read.
   const second = responseDouble();
   await handler({ method: 'GET', query: { id: RUN_ID } }, second);
@@ -157,7 +157,7 @@ test('a store without the read model, or a read model that fails, still answers 
   await handlerFor(plain.value)({ method: 'GET', query: { id: RUN_ID } }, response);
   assert.equal(response.statusCode, 200);
   assert.equal(plain.state.sectionReads, 1);
-  assert.equal(response.body.schema_version, 'PRODUCT_PREVIEW_WORKSPACE/V1');
+  assert.equal(response.body.schema_version, PREVIEW_WORKSPACE_VERSION);
 
   // The migration has not reached the database: the table read throws
   // (42P01/PGRST205) and the page is still served.
@@ -169,7 +169,7 @@ test('a store without the read model, or a read model that fails, still answers 
     await handlerFor(missing.value)({ method: 'GET', query: { id: RUN_ID } }, fallback);
     assert.equal(fallback.statusCode, 200);
     assert.equal(missing.state.sectionReads, 1);
-    assert.equal(fallback.body.schema_version, 'PRODUCT_PREVIEW_WORKSPACE/V1');
+    assert.equal(fallback.body.schema_version, PREVIEW_WORKSPACE_VERSION);
   } finally { console.error = originalError; }
 });
 
@@ -209,7 +209,44 @@ test('a read-only store client (the pg facade the cutover scripts read through) 
   });
   const client = { from: selectOnly, rpc: async () => ({ data: null, error: null }) };
   const store = new ProductPhase2Store({ client });
-  await store.savePreviewReadModel({ runId: RUN_ID, payload: { schema_version: 'PRODUCT_PREVIEW_WORKSPACE/V1' } });
+  await store.savePreviewReadModel({ runId: RUN_ID, payload: { schema_version: PREVIEW_WORKSPACE_VERSION } });
   await store.markPreviewReadModelStale(RUN_ID);
   assert.equal(typeof store.getReviewVersion, 'function');
+});
+
+test('a review save that lands while the payload is being built is not stamped as fresh', async () => {
+  // The version is read before the build (the second review, finding 1): a
+  // save during the build leaves the row older than the session, and the
+  // next view rebuilds instead of serving the pre-save payload.
+  const { value, state } = store();
+  const originalLoad = value.loadPreviewSectionResults;
+  let firstBuild = true;
+  value.loadPreviewSectionResults = async () => {
+    if (firstBuild) { firstBuild = false; state.reviewVersion = 1; } // a lawyer saves during the build
+    return originalLoad();
+  };
+  const handler = handlerFor(value);
+  const first = responseDouble();
+  await handler({ method: 'GET', query: { id: RUN_ID } }, first);
+  assert.equal(first.headers['X-Preview-Read'], 'REBUILT');
+  assert.equal(state.modelRow.review_version, 0, 'the row is stamped with the version the build started from');
+  const second = responseDouble();
+  await handler({ method: 'GET', query: { id: RUN_ID } }, second);
+  assert.equal(second.headers['X-Preview-Read'], 'REBUILT', 'the session has moved on, so the row is not served');
+  assert.equal(state.modelRow.review_version, 1);
+  const third = responseDouble();
+  await handler({ method: 'GET', query: { id: RUN_ID } }, third);
+  assert.equal(third.headers['X-Preview-Read'], 'MODEL');
+});
+
+test('a stored payload from an earlier build (V1, no node kinds) is not served', async () => {
+  const { value, state } = store();
+  state.modelRow = {
+    run_id: RUN_ID, built_at: '2026-10-24T00:00:00.000Z', stale: false, review_version: 0,
+    payload: { schema_version: 'PRODUCT_PREVIEW_WORKSPACE/V1', analysis: {}, review: {}, progress: {} },
+  };
+  const response = responseDouble();
+  await handlerFor(value)({ method: 'GET', query: { id: RUN_ID } }, response);
+  assert.equal(response.headers['X-Preview-Read'], 'REBUILT');
+  assert.equal(response.body.schema_version, PREVIEW_WORKSPACE_VERSION);
 });

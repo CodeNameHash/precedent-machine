@@ -707,7 +707,7 @@ test('a run with no facts at all still names its empty sections, and a substanti
   const neverReached = failedPreview.sections_without_facts.filter((entry) => entry.reason === 'NOT_ANALYSED');
   assert.deepEqual(neverReached.map((entry) => entry.section_reference), ['9.9']);
   const failedHtml = renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: failed, runId: 'run-1' }));
-  assert.match(failedHtml, /§ 9\.9<\/span> — no facts were extracted: the run ended before this section was analysed\./);
+  assert.match(failedHtml, /§ 9\.9<\/span> — no facts were extracted: the run did not reach this section\./);
 
   // A run still analysing lists only what has completed: its not-yet-reached
   // sections are not "empty".

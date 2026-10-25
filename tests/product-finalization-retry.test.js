@@ -143,7 +143,12 @@ test('a retry that changed nothing is not reported as applied', async () => {
   const handler = createProductRunHandler({
     getClient: () => ({}), storeFactory: () => store, actorResolver: async () => 'lawyer@example.test',
     modelConfigResolver: () => CODEX_MODEL_CONFIG,
-    wakeRun: async () => { throw new Error('a READY run is not woken'); },
+    databaseUrlResolver: () => 'postgres://db', serviceRoleKeyResolver: () => 'key',
+    // The wake succeeds and the reply read fails: the only reason this is
+    // not a 202 is that the retry changed nothing (the second review's
+    // finding 11a: the first version of this test failed in the wake, so it
+    // answered 500 either way).
+    wakeRun: async () => ({ command_id: 'command-1' }),
   });
   const originalError = console.error;
   console.error = () => {};
@@ -240,4 +245,31 @@ test('a retried finalise does not stage cross-section relationships again when a
   const retried = drafted(true);
   await retried.store.finalizeDraft({ runId: '2f2b6f2e-6d3e-4c2b-9d1c-1a2b3c4d5e6f', draft });
   assert.deepEqual(retried.calls, ['select:product_draft_analyses', 'rpc:product_phase2_finalize_saved_run']);
+});
+
+// Work package 40 (the second review, finding 3): the inline path's reply
+// read is inside advanceAgreementDraftAnalysis, after a finalisation that
+// has committed, so the runner tells its caller when that read starts; the
+// route's 202 branch is then reachable on the non-hosted path too.
+test('the runner calls its reply hook before the read that builds the reply, after the finalise', async () => {
+  const { advanceAgreementDraftAnalysis } = require('../lib/product/analysis-runner');
+  const legalSchema = require('../contracts/product/legal-schema.v2.json');
+  const events = [];
+  const store = {
+    getRunContext: async () => ({
+      run: { run_id: 'run-1', schema_version: 'LEGAL_SCHEMA/V2' },
+      sourceDocument: { schema_version: 'SOURCE_DOCUMENT/V1', source_document_id: 's', canonical_text: 'Section 1.1 Merger. The Merger shall occur.', canonical_text_sha256: 'x', agreement_id: 's' },
+      agreementStructure: { agreement_id: 's', nodes: [], root_node_id: 'root', coordinate_system: 'UTF8_CANONICAL_TEXT_HALF_OPEN' },
+    }),
+    claimNextSection: async () => null,
+    getProgress: async () => ({ completed: 0, total: 0 }),
+    loadCompletedSectionResults: async () => [],
+    finalizeDraft: async () => { events.push('finalize'); },
+    markPreviewReadModelStale: async () => {},
+    getAgreementAnalysis: async () => { events.push('reply-read'); throw new Error('upstream request timeout'); },
+  };
+  await assert.rejects(() => advanceAgreementDraftAnalysis({
+    runId: 'run-1', store, legalSchema, model: {}, onReplyRead: () => events.push('reply-hook'),
+  }), /upstream request timeout/);
+  assert.deepEqual(events, ['finalize', 'reply-hook', 'reply-read']);
 });

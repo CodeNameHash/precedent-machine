@@ -121,7 +121,7 @@ const NO_FACTS_REASONS = {
   RETURNED_NOTHING: 'the families routed to this section produced no fact',
   UNCLASSIFIED_PROVISION: 'the analysis flagged words here it could not classify',
   NOT_RECORDED: 'the stored analysis does not say which families this section was read for',
-  NOT_ANALYSED: 'the run ended before this section was analysed',
+  NOT_ANALYSED: 'the run did not reach this section',
 };
 
 function SectionsWithoutFacts({ entries }) {

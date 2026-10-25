@@ -6600,6 +6600,58 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       found the reference resolver itself sound over about forty forms, and
       the read model's migration, columns, grants and RLS match the
       supabase-js calls (read, not executed).
+      (256) 2026-10-25 04:40 UTC (the manager), work package 40: a second
+      adversarial review, of the fixes in (255), and what it found. The
+      first review's bugs were fixed and pushed; a second subagent read the
+      fix commits (d8981f7d..HEAD) and found that two of the fixes had
+      holes of their own, plus smaller ones. All are fixed, with the tests
+      that would have caught them; 331 tests across the twenty-two files
+      this session touches are green. (1) Blocker: the review version was
+      read AFTER the payload was built and stamped on it, so a lawyer's
+      save landing during a build wrote a pre-save payload stamped with the
+      post-save version — served for ever, exactly the hole the version was
+      added to close. The version is now read before the first data read
+      and that value is what the row carries (test: a save during the build
+      rebuilds on the next view, then serves). (2) The payload's shape
+      changed when `kind` joined the nodes, but its version was still
+      PRODUCT_PREVIEW_WORKSPACE/V1, so a row an earlier build wrote would
+      have been served without the node kinds and the new "sections the run
+      did not reach" list would never appear; the version is now /V2, built
+      from the one constant both the builder and the delivery rule read,
+      and a V1 row is rebuilt (test). (3) The retry route's reply-read
+      protection missed the non-hosted path: the inline runner returns the
+      analysis from inside itself, after the finalisation commits, so a
+      read failure there answered 500 where it should answer 202. The
+      runner now calls an `onReplyRead` hook before that read and the route
+      marks the reply stage from it (test: the hook fires after the
+      finalise and before the read). (4) The new before-read in the retry
+      branch was unwrapped, so a failing `getRun` would have prevented the
+      retry from being applied at all; it is guarded, and with no before
+      value a retry is taken as applied unless the run is left READY (the
+      one no-op shape). (5) A summary that says nothing now fails
+      independently of the locator rule ("N/A", "Termination", "Clause 4" —
+      the clause and schedule forms joined the locator patterns), and an
+      abbreviation's own full stop ("in the U.S.", "e.g.") is no longer
+      treated as a sentence-ending period, so the line keeps "U.S." instead
+      of being cut to "U.S". (6) A cut that still opens a bracket at the
+      eight-word floor is refused rather than shown cut mid-parenthesis
+      (test). (7) The "the run ended before this section was analysed" line
+      is now "the run did not reach this section", which is true of a
+      PARTIAL run that a wake can resume where "ended" was not. (8) The
+      migration file had been edited in place once (review_version), so a
+      database that applied the earlier form has the table without the
+      column and caching would be silently off; a follow-up migration,
+      20261025001000_product_preview_read_model_review_version.sql, adds
+      the column if it is absent and a guarded check, and changes nothing
+      on a database that applied the current file. The review also named
+      weak tests: the no-op retry test failed in the wake before the reply
+      stage (so it answered 500 whether or not the bug was present) and the
+      bracket test accepted a dropped line; both are rewritten, and the
+      inline reply read, the build-time save and the old payload now have
+      tests of their own. Not changed: the reviewer found the staging skip,
+      the before/after retry comparison, the publish/restore staleness and
+      the read-model SQL sound, and it did not execute the staging SQL or
+      the migration on a database.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
