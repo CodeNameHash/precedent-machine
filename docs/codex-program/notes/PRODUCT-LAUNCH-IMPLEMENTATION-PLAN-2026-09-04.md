@@ -6863,6 +6863,38 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       The reconciliation is a word-overlap read and its statuses are
       comparative, never a legal acceptance; Ben's severity and acceptance
       columns are open in both reports.
+      (263) 2026-10-25 10:05 UTC (the manager), work package 45: the
+      production build broken by this session's own change, found from a
+      Vercel notification and fixed. Every preview deployment from 01:28
+      UTC failed on both projects (deal-corpus and
+      precedent-machine-restored-20260812) with "Command \"npm run build\"
+      exited with 1", which the manager first read as an account problem
+      and then reproduced locally. The cause: work package 40's
+      NOT_ANALYSED list imported `substantiveSections` from
+      lib/product/source-context into lib/product/provisions-preview.js to
+      find a finished run's unanalysed sections — and that module is
+      imported by the lawyer preview *page*, so source-context's
+      `node:crypto` (via lib/canonical-v2/canonical-bytes.js) entered the
+      browser bundle; webpack refuses it with "Module build failed:
+      UnhandledSchemeError: Reading from node:crypto is not handled by
+      plugins", trace `node:crypto ← canonical-bytes ← source-context ←
+      provisions-preview`. The rule (a SECTION with a reference holding no
+      section of its own under it) is now three lines in provisions-preview
+      over the projected nodes, with a comment tying it to source-context's
+      version, and the module keeps no server-only import. Verification
+      that did not exist before: on this machine `next build` could not run
+      at all (tailwind and autoprefixer are not in its partial
+      node_modules), so the manager stubbed both PostCSS plugins in
+      node_modules (untracked, removed afterwards), ran the real build,
+      watched it fail on node:crypto, fixed the import, and watched it
+      complete (all pages compiled, exit 0 — the two /admin pages' data
+      warnings aside). Run `next build` that way before any change to a
+      module a page imports. The lesson, for the guide: a lib that a page
+      imports may not reach `node:*`; tests that run modules under Node
+      cannot see the difference. The two projects then deployed 0ca13e99
+      successfully (GitHub deployments 01:55 and 01:56 UTC), and the
+      earlier failures — many notifications to Ben — were all this one
+      error.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
