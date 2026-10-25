@@ -155,6 +155,10 @@ test('headline.summary is optional; headlineSummaryProblems checks it without ho
   const atThe = repairHeadlineSummary('Parent, Merger Sub and the Company shall use reasonable best efforts to make all filings and obtain all approvals and to take every other action necessary so that the Transactions close as promptly as practicable at the');
   assert.equal(atThe, 'Parent, Merger Sub and the Company shall use reasonable best efforts to make all filings and obtain all approvals');
   assert.doesNotMatch(atThe, /\s(?:the|a|an|of|to|and|with|for|in|on|from|under|per|if|than)$/);
+  // More than one dangling word at the cut ("agreed to by the") is stripped
+  // to the last word that can end the line.
+  const twoDanglers = repairHeadlineSummary('Parent, Merger Sub and the Company shall use reasonable best efforts to make all filings and obtain all approvals described in this Agreement and agreed to by the');
+  assert.equal(twoDanglers, 'Parent, Merger Sub and the Company shall use reasonable best efforts to make all filings and obtain all approvals described in this Agreement');
   const openBracket = repairHeadlineSummary('Parent, Merger Sub and the Company shall use reasonable best efforts to make all filings and obtain all approvals described in the (the "Approvals") and to take every other action necessary so that the Transactions close promptly');
   assert.ok(openBracket === null || (openBracket.match(/\(/g) || []).length === (openBracket.match(/\)/g) || []).length);
   // A 19-word line the old cap dropped is now kept whole (Apogee 3.1).
