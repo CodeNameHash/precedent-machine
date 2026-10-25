@@ -1,0 +1,823 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Corpus — Compare and market position (mockup)</title>
+<style>
+  :root{
+    --ink:#1c1c1c; --muted:#6b6b6b; --faint:#9a968c;
+    --line:#e6e2d8; --line-soft:#f1eee6;
+    --paper:#ffffff; --paper2:#faf9f5;
+    --accent:#2f56b8; --accent-soft:#e9effa;
+    --green:#166534; --green-soft:#e7f3ea;
+    --amber:#92400e; --amber-soft:#fdf3e3;
+    --red:#9f1239; --red-soft:#fbe9ee;
+    --rail:#0b0b0b;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    --serif:Georgia,"Times New Roman",serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+  .app{display:flex;min-height:100vh;align-items:flex-start}
+
+  /* ── left rail ─────────────────────────────────────────── */
+  .rail{width:210px;min-height:100vh;background:var(--rail);color:#fff;padding:20px 14px;position:sticky;top:0;flex:0 0 210px}
+  .rail .eyebrow{font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.45);margin:0 0 8px}
+  .rail h1{font-size:21px;line-height:1.08;font-weight:700;letter-spacing:-.02em;margin:0 0 22px;color:#fff}
+  .rail .group{font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.38);margin:18px 0 6px}
+  .rail a{display:block;color:rgba(255,255,255,.82);text-decoration:none;font-size:11.5px;line-height:1.25;padding:5px 8px;border-radius:2px;margin:1px 0}
+  .rail a.active{background:#fff;color:#000;font-weight:700}
+  .rail .cohort{margin-top:22px;border:1px solid rgba(255,255,255,.16);border-radius:2px;padding:9px 9px 8px}
+  .rail .cohort .n{font-size:17px;font-weight:700;color:#fff;line-height:1}
+  .rail .cohort p{font-size:8.5px;line-height:1.35;color:rgba(255,255,255,.55);margin:4px 0 0}
+
+  /* ── main ──────────────────────────────────────────────── */
+  .main{flex:1;min-width:0;padding:30px 30px 40px 34px}
+  .topline{display:flex;align-items:flex-start;justify-content:space-between;gap:20px}
+  .kicker{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0}
+  .h1{font-size:28px;line-height:1.05;letter-spacing:-.025em;font-weight:650;margin:7px 0 0;color:#161616}
+  .meta{font-size:9.5px;color:var(--muted);margin:8px 0 0;line-height:1.5}
+  .meta b{color:#3a3a3a;font-weight:600}
+  .rule{height:2px;background:#0b0b0b;margin:16px 0 14px}
+  .mock{font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);border:1px solid var(--line);border-radius:999px;padding:4px 8px;white-space:nowrap}
+
+  /* toolbar */
+  .toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 12px}
+  .chip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:#fff;border-radius:2px;padding:5px 8px;font-size:9.5px;color:#2c2c2c}
+  .chip b{font-weight:650}
+  .chip .x{color:var(--faint);font-size:11px;line-height:1;cursor:pointer}
+  .chip.add{border-style:dashed;color:var(--accent);cursor:pointer}
+  .spacer{flex:1}
+  .control{display:inline-flex;align-items:center;gap:6px;font-size:9px;color:var(--muted);border:1px solid var(--line);background:#fff;border-radius:2px;padding:5px 8px;cursor:pointer}
+  .control b{color:#2c2c2c;font-weight:600}
+  .toggle{display:inline-flex;align-items:center;gap:6px;font-size:9px;color:#2c2c2c;cursor:pointer;user-select:none}
+  .track{width:24px;height:13px;border-radius:999px;background:#d9d5ca;position:relative;transition:.15s}
+  .track:after{content:"";position:absolute;width:9px;height:9px;border-radius:50%;background:#fff;top:2px;left:2px;transition:.15s}
+  .toggle.on .track{background:var(--accent)}
+  .toggle.on .track:after{left:13px}
+  .tabs{display:inline-flex;border:1px solid var(--line);border-radius:2px;overflow:hidden;margin-left:2px}
+  .tabs button{border:0;background:#fff;color:var(--muted);font-size:9px;padding:5px 9px;cursor:pointer;font-family:inherit}
+  .tabs button.active{background:#0b0b0b;color:#fff;font-weight:600}
+
+  /* table */
+  .table{border-top:1px solid var(--line)}
+  .thead,.trow{display:grid;grid-template-columns:minmax(210px,1.18fr) minmax(190px,1fr) minmax(190px,1fr) minmax(190px,.95fr);gap:0}
+  .thead{position:sticky;top:0;background:#fff;z-index:2;border-bottom:1px solid var(--line)}
+  .thead div{padding:7px 10px;font-size:8px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);font-weight:650;line-height:1.35}
+  .thead div:not(:first-child){border-left:1px solid var(--line-soft)}
+  .thead .mkt{color:var(--accent)}
+  .trow{border-bottom:1px solid var(--line-soft);cursor:pointer;transition:background .1s}
+  .trow:hover{background:#fcfbf7}
+  .trow.sel{background:#f7f9fe;box-shadow:inset 2px 0 0 var(--accent)}
+  .trow.diff .prov:before{content:"";display:inline-block;width:4px;height:4px;border-radius:50%;background:#c98a2e;margin-right:6px;vertical-align:2px}
+  .cell{padding:9px 10px;min-width:0;border-left:1px solid var(--line-soft)}
+  .prov{padding:10px 10px 9px 0;min-width:0}
+  .prov .name{font-size:11.5px;font-weight:600;line-height:1.25;color:#1b1b1b}
+  .prov .sub{font-size:8.5px;color:var(--faint);line-height:1.35;margin-top:3px}
+  .big{font-size:14px;font-weight:650;letter-spacing:-.01em;line-height:1.2;color:#111}
+  .big small{font-size:9px;font-weight:500;color:var(--muted);letter-spacing:0}
+  .sum{font-size:8.5px;color:var(--muted);line-height:1.4;margin-top:3px}
+  .words{display:inline-block;font-size:8px;color:var(--accent);text-decoration:none;margin-top:4px;letter-spacing:.02em}
+  .words:hover{text-decoration:underline}
+  .pill{display:inline-flex;align-items:center;border-radius:999px;padding:2px 6px;font-size:8px;font-weight:650;letter-spacing:.02em;line-height:1.3;white-space:nowrap}
+  .pill.yes{background:var(--green-soft);color:var(--green)}
+  .pill.no{background:var(--red-soft);color:var(--red)}
+  .pill.neu{background:#f2f1ec;color:#4b4b4b}
+  .pill.acc{background:var(--accent-soft);color:var(--accent)}
+  .pill.amb{background:var(--amber-soft);color:var(--amber)}
+  .pill.green{background:var(--green-soft);color:var(--green)}
+  .mcell{padding:8px 10px;border-left:1px solid var(--line-soft);min-width:0}
+  .mhead{display:flex;align-items:baseline;justify-content:space-between;gap:6px;margin-bottom:4px}
+  .mhead .v{font-size:9.5px;font-weight:650;color:#222}
+  .mhead .n{font-size:8px;color:var(--faint)}
+  .bar{height:6px;background:#efede6;border-radius:999px;overflow:hidden;display:flex;margin:4px 0 3px}
+  .bar i{display:block;height:100%}
+  .bar .s1{background:#2f56b8}.bar .s2{background:#b8c6e8}.bar .s3{background:#ddd8ca}
+  .dots{display:flex;align-items:center;gap:2px;height:14px;margin:3px 0 2px;position:relative}
+  .dots .band{position:absolute;left:0;right:0;top:5px;height:4px;background:#eef1f8;border-radius:2px}
+  .dots i{width:5px;height:5px;border-radius:50%;background:#c9c5ba;position:relative;z-index:1}
+  .dots i.hi{background:var(--accent);width:7px;height:7px;box-shadow:0 0 0 2px #fff}
+  .mnote{font-size:7.5px;color:var(--faint);line-height:1.3;margin-top:1px}
+  .dcount{font-size:8px;color:var(--faint);margin-left:-2px;margin-right:4px}
+  .diff-tag{display:inline-block;font-size:7px;letter-spacing:.08em;text-transform:uppercase;color:var(--amber);background:var(--amber-soft);border-radius:2px;padding:1px 4px;margin-left:5px;vertical-align:1px}
+
+
+  /* reference set bar */
+  .refbar{display:flex;align-items:center;gap:7px;flex-wrap:wrap;border:1px solid var(--line);background:#fff;border-radius:2px;padding:7px 9px;margin:0 0 10px}
+  .refbar .lab{font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-right:2px}
+  .refchip{display:inline-flex;align-items:center;gap:5px;font-size:9px;color:#2c2c2c;border:1px solid var(--line);border-radius:2px;padding:4px 7px;cursor:pointer;background:#fff}
+  .refchip.active{background:#0b0b0b;color:#fff;border-color:#0b0b0b;font-weight:600}
+  .refchip b{font-weight:650}
+  .refchip .n{background:rgba(255,255,255,.16);border-radius:999px;padding:0 4px;font-size:8px}
+  .refchip:not(.active) .n{background:#f1efe8}
+  .refsep{font-size:8px;color:var(--faint)}
+  .filter{display:inline-flex;align-items:center;gap:4px;font-size:8px;color:var(--muted)}
+  .filter b{color:#2c2c2c;font-weight:600}
+  .save{font-size:8px;color:var(--accent);border:1px dashed #b9c8e8;border-radius:2px;padding:3px 6px;background:#f7f9fe;cursor:pointer}
+  .small{background:var(--amber-soft);color:var(--amber)}
+  .ev-pair{display:flex;flex-direction:column;gap:10px}
+  .ev-deal{border:1px solid var(--line);border-radius:2px;background:#fff}
+  .ev-deal .dh{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 8px;border-bottom:1px solid var(--line-soft);font-size:8px;font-weight:650;color:#222}
+  .ev-deal .dh span{font-size:7px;font-weight:500;color:var(--faint)}
+  .ev-deal .source{margin:0;border-left:0;padding:8px 9px;font-size:9.5px;background:#fff}
+  .ev-deal .srcref{margin:0;padding:0 9px 7px;font-size:7.5px}
+  .reading b{font-weight:650;color:#111}
+
+
+  /* reference-set adjustments (PW pattern: years, size pills + custom min) */
+  .refrow{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .refrow + .refrow{margin-top:6px;padding-top:6px;border-top:1px solid var(--line-soft)}
+  .refsummary{font-size:8px;color:var(--muted);margin-top:6px}
+  .refsummary b{color:#222;font-weight:650}
+  .refchip.on{background:var(--accent-soft);border-color:#c9d6ee;color:var(--accent);font-weight:600}
+  .mini{font-family:inherit;font-size:8px;border:1px solid var(--line);background:#fff;border-radius:2px;padding:2px 4px;color:#2c2c2c}
+  .sizepill{font-family:inherit;font-size:8px;border:1px solid var(--line);background:#fff;border-radius:2px;padding:2px 5px;color:#2c2c2c;cursor:pointer}
+  .sizepill.active{background:#0b0b0b;color:#fff;border-color:#0b0b0b;font-weight:600}
+  .mininput{width:46px;font-family:inherit;font-size:8px;border:1px solid var(--line);border-radius:2px;padding:2px 4px}
+  .or{font-size:7.5px;color:var(--faint)}
+  .linkbtn{font-family:inherit;font-size:7.5px;border:0;background:none;color:var(--accent);cursor:pointer;text-decoration:underline;padding:0}
+  .draftbtn{border-style:dashed;color:var(--accent);cursor:pointer}
+  .tabs.modes{margin-left:4px}
+  .table.refmode .thead,.table.refmode .trow{grid-template-columns:minmax(230px,1.2fr) minmax(220px,1fr) minmax(300px,1.35fr)}
+  .table.refmode .compare-col{display:none}
+  .table.twodeals .thead,.table.twodeals .trow{grid-template-columns:minmax(210px,1.1fr) minmax(210px,1fr) minmax(210px,1fr)}
+  .table.twodeals .ref-col{display:none}
+  .ev-compare{display:none}
+  .ev-options{display:block}
+  body.twodeals .ev-compare{display:block}
+  body.twodeals .ev-options{display:none}
+  .optrow{display:flex;align-items:center;gap:6px;margin:0 0 5px;font-size:8.5px;color:#2a2a2a}
+  .optrow .ol{width:82px;flex:0 0 82px}
+  .optrow .ob{flex:1;height:5px;background:#efede6;border-radius:999px;overflow:hidden}
+  .optrow .ob i{display:block;height:100%;background:#b9c8e8}
+  .optrow .oc{width:18px;text-align:right;color:var(--faint);font-size:7.5px}
+  .exportnote{font-size:7.5px;color:var(--faint);margin:6px 0 0}
+
+  /* sidebar sample-set comparison */
+  .cmp{border-top:1px solid var(--line);padding-top:10px;margin-top:4px}
+  .cmp-h{display:flex;justify-content:space-between;align-items:baseline;font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-bottom:6px}
+  .cmp-h span:last-child{letter-spacing:0;text-transform:none;color:var(--muted)}
+  .cmp-top{display:flex;align-items:baseline;gap:6px}
+  .cmp-top b{font-size:22px;font-weight:700;letter-spacing:-.03em;color:#111;line-height:1}
+  .cmp-top span{font-size:8px;color:var(--muted)}
+  .cmp-strip{position:relative;height:30px;margin:5px 0 0}
+  .cmp-strip .band{position:absolute;left:24%;width:38%;top:12px;height:7px;background:#eef1f8;border-radius:2px}
+  .cmp-strip .medline{position:absolute;left:46%;top:8px;bottom:1px;width:1px;background:#8d8778}
+  .cmp-strip i{position:absolute;top:14px;width:6px;height:6px;border-radius:50%;background:#c9c5ba;transform:translateX(-3px)}
+  .cmp-strip i.you{background:var(--accent);width:9px;height:9px;top:12.5px;box-shadow:0 0 0 2px #fff,0 0 0 3px var(--accent)}
+  .cmp-axis{display:flex;justify-content:space-between;font-size:7px;color:var(--faint);margin-top:0}
+  .cmp-sub{font-size:8px;color:var(--muted);line-height:1.4;margin-top:4px}
+  .cmp-cat{margin-top:4px}
+  .cmp-stack{display:flex;height:10px;border-radius:2px;overflow:hidden;background:#efede6}
+  .cmp-stack i{display:block;height:100%}
+  .cmp-legend{display:flex;gap:10px;flex-wrap:wrap;font-size:8px;color:var(--muted);margin-top:5px}
+  .cmp-legend i{display:inline-block;width:6px;height:6px;border-radius:1px;margin-right:3px;vertical-align:0}
+  .cmp-options{margin-top:2px}
+  .cmp-opt{display:flex;align-items:center;gap:6px;margin:0 0 5px;font-size:8.5px;color:#2a2a2a}
+  .cmp-opt .l{width:80px;flex:0 0 80px}
+  .cmp-opt .b{flex:1;height:6px;background:#efede6;border-radius:999px;overflow:hidden}
+  .cmp-opt .b i{display:block;height:100%;background:#c9d6ee}
+  .cmp-opt.you .b i{background:var(--accent)}
+  .cmp-opt .c{width:16px;text-align:right;color:var(--faint);font-size:7.5px}
+  .cmp-opt .tag{font-size:6.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);margin-left:2px}
+  .cmp-opt.you .tag{color:var(--accent);font-weight:700}
+  .cmp-opt.common .tag{color:var(--amber)}
+  .cmp-callout{font-size:8px;line-height:1.45;color:#3a3a3a;background:#faf9f5;border-left:2px solid #d8d2c3;padding:6px 7px;margin-top:7px}
+  .cmp-foot{font-size:7.5px;color:var(--faint);line-height:1.4;margin-top:6px}
+
+
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:2px;overflow:hidden}
+  .seg button{border:0;background:#fff;font-size:8px;padding:4px 7px;color:var(--muted);font-family:inherit;cursor:pointer}
+  .seg button.on{background:#0b0b0b;color:#fff;font-weight:600}
+  .hint{font-size:7.5px;color:var(--faint)}
+
+  /* draft modal */
+  .modal{position:fixed;inset:0;background:rgba(10,10,10,.35);display:none;align-items:center;justify-content:center;z-index:60}
+  .modal.on{display:flex}
+  .modal .box{width:620px;max-width:calc(100vw - 32px);background:#fff;border:1px solid var(--line);border-radius:2px;box-shadow:0 18px 60px rgba(0,0,0,.18)}
+  .modal .mh{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--line)}
+  .modal .mh h3{font-size:13px;margin:0;font-weight:650}
+  .modal .mh .x{cursor:pointer;color:var(--faint);font-size:14px}
+  .modal .mb{padding:13px 14px}
+  .modal .mb p{font-size:9px;line-height:1.5;color:var(--muted);margin:0 0 8px}
+  .modal textarea{width:100%;height:120px;border:1px solid var(--line);border-radius:2px;padding:8px;font-family:var(--serif);font-size:10px;line-height:1.5;color:#222;resize:vertical}
+  .modal .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:9px 0 0;font-size:8.5px;color:var(--muted)}
+  .modal .mf{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-top:1px solid var(--line);background:#faf9f5}
+  .modal .mf .note{font-size:7.5px;color:var(--faint);max-width:340px;line-height:1.4}
+  .modal .mf .acts{display:flex;gap:6px}
+
+  /* market detail */
+  .market{margin-top:18px;border:1px solid var(--line);border-radius:2px;background:var(--paper2)}
+  .market-h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 12px;border-bottom:1px solid var(--line)}
+  .market-h .t{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#333;font-weight:700}
+  .market-h .s{font-size:8.5px;color:var(--faint)}
+  .market-grid{display:grid;grid-template-columns:250px 1fr 300px;gap:0}
+  .mcol{padding:12px 13px;border-right:1px solid var(--line-soft)}
+  .mcol:last-child{border-right:0}
+  .mcol .lab{font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-bottom:6px}
+  .stat{font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1;color:#111}
+  .stat small{font-size:10px;font-weight:500;color:var(--muted);letter-spacing:0}
+  .statline{font-size:8.5px;color:var(--muted);line-height:1.45;margin-top:5px}
+  .dotplot{position:relative;height:54px;margin:4px 2px 0}
+  .dotplot .zones{position:absolute;left:0;right:0;top:20px;height:14px;background:#f0ece2;border-radius:2px}
+  .dotplot .zones .p25{position:absolute;left:22%;width:38%;top:0;bottom:0;background:#e2e8f6}
+  .dotplot .dot{position:absolute;top:24px;width:8px;height:8px;border-radius:50%;background:#b9b4a7;transform:translateX(-4px)}
+  .dotplot .dot.sel{background:var(--accent);width:11px;height:11px;top:22.5px;box-shadow:0 0 0 3px #fff,0 0 0 4px var(--accent)}
+  .dotplot .med{position:absolute;top:14px;bottom:8px;width:1px;background:#8d8778}
+  .dotplot .axis{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;font-size:7.5px;color:var(--faint)}
+  .key{display:flex;gap:12px;flex-wrap:wrap;font-size:7.5px;color:var(--muted);margin-top:2px}
+  .key i{display:inline-block;width:6px;height:6px;border-radius:50%;background:#b9b4a7;margin-right:3px;vertical-align:0}
+  .excl{font-size:8.5px;color:var(--muted);line-height:1.55}
+  .excl b{color:#333;font-weight:650}
+  .market-f{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;border-top:1px solid var(--line);font-size:8px;color:var(--faint)}
+  .market-f .btns{display:flex;gap:6px}
+  .btn{font-family:inherit;font-size:8px;border:1px solid var(--line);background:#fff;color:#333;border-radius:2px;padding:4px 7px;cursor:pointer}
+  .btn.primary{background:#0b0b0b;color:#fff;border-color:#0b0b0b}
+
+  /* evidence */
+  .evidence{width:420px;flex:0 0 420px;border-left:1px solid var(--line);min-height:100vh;position:sticky;top:0;background:#fff;align-self:flex-start}
+  .ev-h{padding:16px 16px 10px;border-bottom:1px solid var(--line)}
+  .ev-h .k{font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+  .ev-h h2{font-size:15px;line-height:1.2;font-weight:650;margin:5px 0 2px;letter-spacing:-.01em}
+  .ev-h p{font-size:9px;color:var(--muted);margin:0}
+  .ev-tabs{display:flex;gap:14px;padding:0 16px;border-bottom:1px solid var(--line);font-size:9px;color:var(--muted)}
+  .ev-tabs span{padding:9px 0 7px;cursor:pointer}
+  .ev-tabs span.active{color:#111;font-weight:650;border-bottom:2px solid #111}
+  .ev-b{padding:13px 16px}
+  .ev-lab{font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin:0 0 5px}
+  .reading{font-size:10px;line-height:1.5;color:#222;margin:0 0 13px}
+  .source{font-family:var(--serif);font-size:10.5px;line-height:1.62;color:#1e1e1e;background:#fbfaf6;border-left:2px solid #d8d2c3;padding:10px 11px;margin:0 0 6px}
+  .source mark{background:#dfe8fb;color:#12244f;padding:0 1px}
+  .srcref{font-size:8px;color:var(--faint);margin:0 0 14px}
+  .comp{border-top:1px solid var(--line-soft);padding-top:10px;margin-top:2px}
+  .comp .row{display:flex;gap:8px;font-size:9px;line-height:1.45;margin:0 0 5px}
+  .comp .row .k{width:48px;flex:0 0 48px;color:var(--faint);font-size:7.5px;letter-spacing:.08em;text-transform:uppercase;padding-top:1px}
+  .comp .row .v{color:#2a2a2a}
+  .comp .row .v b{font-weight:650}
+  .trail{margin-top:12px;border-top:1px solid var(--line-soft);padding-top:10px}
+  .trail .line{display:flex;gap:7px;font-size:8.5px;color:var(--muted);line-height:1.45;margin-bottom:6px}
+  .trail .dot{width:5px;height:5px;border-radius:50%;background:var(--green);margin-top:4px;flex:0 0 5px}
+  .trail .dot.amber{background:#c98a2e}
+  .ev-f{padding:10px 16px 16px;position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line)}
+  .ev-f .btn{width:100%;text-align:center;padding:7px;font-size:9px}
+
+  /* summary view */
+  .summary{display:none}
+  .summary.on{display:block}
+  .table.off{display:none}
+  .sblock{border:1px solid var(--line);border-radius:2px;margin:0 0 10px;background:#fff}
+  .sblock .sh{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-bottom:1px solid var(--line-soft);font-size:10px;font-weight:650}
+  .sblock .sb{display:grid;grid-template-columns:1fr 1fr;gap:0}
+  .sblock .sb div{padding:9px 10px;font-size:9px;line-height:1.5;color:#333;border-right:1px solid var(--line-soft)}
+  .sblock .sb div:last-child{border-right:0}
+  .sblock .sb .lab{font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);display:block;margin-bottom:3px}
+  .sblock .sb .only{color:var(--amber)}
+  .foot{margin-top:14px;font-size:7.5px;color:var(--faint);line-height:1.5}
+  .hide-same .trow:not(.diff){display:none}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- LEFT RAIL -->
+  <aside class="rail">
+    <p class="eyebrow">Corpus · Compare</p>
+    <h1>Northstar / Aria</h1>
+    <div class="group">The deal</div>
+    <a href="#">Structure &amp; Mechanics</a>
+    <a href="#">Consideration</a>
+    <a href="#">Representations</a>
+    <a href="#">Covenants</a>
+    <a href="#">No-Shop</a>
+    <a href="#">MAE</a>
+    <a href="#">Conditions</a>
+    <a href="#" class="active">Termination</a>
+    <a href="#">Fees &amp; Remedies</a>
+    <a href="#">Tax</a>
+    <a href="#">Employee Benefits</a>
+    <a href="#">Financing</a>
+    <div class="group">Reference</div>
+    <a href="#">Defined Terms</a>
+    <a href="#">Out of scope</a>
+    <div class="cohort">
+      <div class="n">14</div>
+      <p>published agreements in the reference set<br/>8 cash · 5 stock · 1 mixed<br/>2023–2026</p>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topline">
+      <div>
+        <p class="kicker">Compare · Reference set</p>
+        <h2 class="h1">Northstar / Aria — termination fees</h2>
+        <p class="meta"><b>Your deal</b> · stock · $4.2bn · signed 12 Mar 2026 · <b>14 deals</b> in the reference set · biotech · Barshay (any deal) · $1bn+ · 2018–2026</p>
+      </div>
+      <span class="mock">Mockup · illustrative data</span>
+    </div>
+    <div class="rule"></div>
+
+    <div class="toolbar">
+      <span class="chip"><b>Northstar / Aria</b> · stock · $4.2bn <span class="x">×</span></span>
+      <span class="chip draftbtn" id="draftBtn">Compare a draft clause</span>
+      <span class="chip add">+ Add agreement</span>
+      <span class="spacer"></span>
+      <span class="control">Provision <b>Termination fees</b> ▾</span>
+      <span class="toggle" id="diffToggle"><span class="track"></span>Differences only</span><span class="dcount" id="diffCount">6 of 10 differ</span>
+      <span class="toggle on"><span class="track"></span>Published only</span>
+      <span class="tabs"><button class="active" data-view="table">Provision table</button><button data-view="summary">Summary</button></span>
+      <span class="tabs modes"><button class="active" data-mode="ref">Reference set</button><button data-mode="two">Two deals</button></span>
+    </div>
+
+
+    <div class="refbar">
+      <div class="refrow">
+        <span class="lab">Prebuilt</span>
+        <span class="refchip">Across the whole corpus</span>
+        <span class="refchip on">Biotech</span>
+        <span class="refchip on">Barshay</span>
+        <span class="refchip on">$1bn+</span>
+        <span class="refsep">or</span>
+        <span class="refchip">My saved sets ▾</span>
+        <span class="spacer"></span>
+        <span class="save">Save this set</span>
+      </div>
+      <div class="refrow">
+        <span class="lab">Adjust</span>
+        <span class="filter">Years
+          <select class="mini" aria-label="From year"><option selected>2018</option><option>2019</option><option>2020</option><option>2021</option><option>2022</option><option>2023</option><option>2024</option><option>2025</option><option>2026</option></select>
+          to
+          <select class="mini" aria-label="To year"><option>2024</option><option>2025</option><option selected>2026</option></select>
+        </span>
+        <span class="filter">Deal value
+          <button class="sizepill">$500m+</button>
+          <button class="sizepill active">$1bn+</button>
+          <button class="sizepill">$3bn+</button>
+          <button class="sizepill">$10bn+</button>
+          <span class="or">or $</span><input class="mininput" type="number" value="1000" aria-label="Minimum deal value in $m" />m
+          <button class="linkbtn">Edit bands</button>
+        </span>
+        <span class="filter">Industry <select class="mini" aria-label="Industry"><option selected>Biotech</option><option>Pharma</option><option>Medtech</option><option>All</option></select></span>
+        <span class="filter">Lawyer <select class="mini" aria-label="Lawyer"><option>All</option><option selected>Barshay</option><option>Veeraraghavan</option><option>Goodchild</option></select></span>
+        <span class="filter">Structure <select class="mini" aria-label="Structure"><option selected>All</option><option>Cash</option><option>Stock</option><option>Mixed</option></select></span>
+      </div>
+      <div class="refsummary"><b>14 deals</b> · biotech · Barshay (any deal) · $1bn+ · 2018–2026 · 8 cash, 5 stock, 1 mixed · as of 23 Oct 2026</div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table refmode" id="table">
+      <div class="thead">
+        <div>Provision</div>
+        <div>Your deal — Northstar / Aria<br/><span style="font-weight:400;letter-spacing:.02em;text-transform:none;font-size:8px">Stock · $4.2bn · 12 Mar 2026</span></div>
+        <div class="compare-col">Compare with — Cobalt / Vela<br/><span style="font-weight:400;letter-spacing:.02em;text-transform:none;font-size:8px">Cash · $2.8bn · 4 Sep 2025</span></div>
+        <div class="mkt ref-col">Reference set — 14 deals</div>
+      </div>
+
+      <!-- 1 termination fee -->
+      <div class="trow diff sel" data-row="fee">
+        <div class="prov"><div class="name">Company termination fee <span class="diff-tag">differs</span></div><div class="sub">Section 8.5(b) · Fees &amp; Remedies</div></div>
+        <div class="cell"><div class="big">3.0% <small>of equity value</small></div><div class="sum">Payable within two business days of termination.</div><a class="words" href="#" data-words="fee">The words →</a></div>
+        <div class="cell compare-col"><div class="big">3.5% <small>of equity value</small></div><div class="sum">Payable concurrently with termination.</div><a class="words" href="#" data-words="fee">The words →</a></div>
+        <div class="mcell ref-col">
+          <div class="mhead"><span class="v">Median 3.1%</span><span class="n">n=14</span></div>
+          <div class="dots"><span class="band"></span><i style="margin-left:2%"></i><i style="margin-left:2%"></i><i style="margin-left:3%"></i><i style="margin-left:3%"></i><i class="hi" style="margin-left:4%"></i><i style="margin-left:2%"></i><i style="margin-left:3%"></i><i style="margin-left:2%"></i><i style="margin-left:3%"></i><i style="margin-left:2%"></i><i style="margin-left:3%"></i><i style="margin-left:2%"></i><i style="margin-left:3%"></i><i style="margin-left:2%"></i></div>
+          <div class="mnote"><span class="pill green">MARKET</span> p42 · middle 50%</div>
+        </div>
+      </div>
+
+      <!-- 2 no-vote -->
+      <div class="trow diff" data-row="novote">
+        <div class="prov"><div class="name">No-vote termination <span class="diff-tag">differs</span></div><div class="sub">Section 8.1(b)(i)</div></div>
+        <div class="cell"><span class="pill yes">YES</span><div class="sum">A naked no-vote fee is payable.</div><a class="words" href="#" data-words="novote">The words →</a></div>
+        <div class="cell compare-col"><span class="pill no">NO</span><div class="sum">No fee on a no-vote termination.</div><a class="words" href="#" data-words="novote">The words →</a></div>
+        <div class="mcell ref-col"><div class="mhead"><span class="v">Yes 9 / 14</span><span class="n">64%</span></div><div class="bar"><i class="s1" style="width:64%"></i><i class="s3" style="width:36%"></i></div><div class="mnote">9 of 14</div></div>
+      </div>
+
+      <!-- 3 superior proposal -->
+      <div class="trow" data-row="superior">
+        <div class="prov"><div class="name">Superior-proposal termination</div><div class="sub">Section 8.1(b)(ii)</div></div>
+        <div class="cell"><span class="pill yes">YES</span><div class="sum">Fee follows a superior-proposal termination.</div><a class="words" href="#" data-words="superior">The words →</a></div>
+        <div class="cell compare-col"><span class="pill yes">YES</span><div class="sum">Same trigger, with a matching right.</div><a class="words" href="#" data-words="superior">The words →</a></div>
+        <div class="mcell ref-col"><div class="mhead"><span class="v">Yes 14 / 14</span><span class="n">100%</span></div><div class="bar"><i class="s1" style="width:100%"></i></div><div class="mnote">Universal in the set</div></div>
+      </div>
+
+      <!-- 4 payer -->
+      <div class="trow" data-row="payer">
+        <div class="prov"><div class="name">Payer</div><div class="sub">Section 8.5(b)</div></div>
+        <div class="cell"><span class="pill neu">COMPANY</span><div class="sum">The Company pays.</div><a class="words" href="#" data-words="payer">The words →</a></div>
+        <div class="cell compare-col"><span class="pill neu">COMPANY</span><div class="sum">The Company pays.</div><a class="words" href="#" data-words="payer">The words →</a></div>
+        <div class="mcell ref-col"><div class="mhead"><span class="v">Company 13 / 14</span><span class="n">93%</span></div><div class="bar"><i class="s1" style="width:93%"></i><i class="s3" style="width:7%"></i></div><div class="mnote">One reverse-fee deal in the set</div></div>
+      </div>
+
+      <!-- 5 tail -->
+      <div class="trow" data-row="tail">
+        <div class="prov"><div class="name">Tail</div><div class="sub">Section 8.5(c)</div></div>
+        <div class="cell"><div class="big">12 months <small>· 15%</small></div><div class="sum">Tail on a competing proposal within 12 months.</div><a class="words" href="#" data-words="tail">The words →</a></div>
+        <div class="cell compare-col"><div class="big">12 months <small>· 15%</small></div><div class="sum">Tail on a competing proposal within 12 months.</div><a class="words" href="#" data-words="tail">The words →</a></div>
+        <div class="mcell ref-col"><div class="mhead"><span class="v">12 mo · 15%</span><span class="n">11 / 14</span></div><div class="bar"><i class="s1" style="width:79%"></i><i class="s2" style="width:14%"></i><i class="s3" style="width:7%"></i></div><div class="mnote">2 deals: 12 mo · 20%</div></div>
+      </div>
+
+      <!-- 6 sole remedy -->
+      <div class="trow diff" data-row="sole">
+        <div class="prov"><div class="name">Sole and exclusive remedy <span class="diff-tag">differs</span></div><div class="sub">Section 8.5(f)</div></div>
+        <div class="cell"><span class="pill yes">YES</span><div class="sum">Fee is the sole remedy, with a fraud carve-out.</div><a class="words" href="#" data-words="sole">The words →</a></div>
+        <div class="cell compare-col"><span class="pill no">NO</span><div class="sum">Specific performance survives; no sole-remedy clause.</div><a class="words" href="#" data-words="sole">The words →</a></div>
+        <div class="mcell ref-col"><div class="mhead"><span class="v">Yes 8 / 14</span><span class="n">57%</span></div><div class="bar"><i class="s1" style="width:57%"></i><i class="s3" style="width:43%"></i></div><div class="mnote">8 of 14 · evenly split</div></div>
+      </div>
+
+      <!-- 7 interest -->
+      <div class="trow diff" data-row="interest">
+        <div class="prov"><div class="name">Interest on late payment <span class="diff-tag">differs</span></div><div class="sub">Section 8.5(d)</div></div>
+        <div class="cell"><div class="big">Prime + 2.00%</div><div class="sum">Simple interest from the due date.</div><a class="words" href="#" data-words="interest">The words →</a></div>
+        <div class="cell compare-col"><div class="big">Prime</div><div class="sum">Prime rate only.</div><a class="words" href="#" data-words="interest">The words →</a></div>
+        <div class="mcell ref-col"><div class="mhead"><span class="v">Spread 7 / 14</span><span class="n">50%</span></div><div class="bar"><i class="s1" style="width:50%"></i><i class="s2" style="width:36%"></i><i class="s3" style="width:14%"></i></div><div class="mnote">Prime 5 · spread 7 · other 2</div></div>
+      </div>
+
+      <!-- 8 notice -->
+      <div class="trow diff" data-row="notice">
+        <div class="prov"><div class="name">Notice of superior proposal <span class="diff-tag">unit</span></div><div class="sub">Section 5.3(b)</div></div>
+        <div class="cell"><div class="big">48 hours</div><div class="sum">Written notice before the matching period.</div><a class="words" href="#" data-words="notice">The words →</a></div>
+        <div class="cell compare-col"><div class="big">2 business days</div><div class="sum">Written notice before the matching period.</div><a class="words" href="#" data-words="notice">The words →</a></div>
+        <div class="mcell ref-col"><div class="mhead"><span class="v">48 h 6 / 14</span><span class="n">43%</span></div><div class="bar"><i class="s1" style="width:43%"></i><i class="s2" style="width:29%"></i><i class="s3" style="width:28%"></i></div><div class="mnote">Not pooled: 48 h vs 2 BD</div></div>
+      </div>
+
+      <!-- 9 matching -->
+      <div class="trow diff" data-row="matching">
+        <div class="prov"><div class="name">Matching right period <span class="diff-tag">differs</span></div><div class="sub">Section 5.3(c)</div></div>
+        <div class="cell"><div class="big">5 business days</div><div class="sum">One match, then a second notice.</div><a class="words" href="#" data-words="matching">The words →</a></div>
+        <div class="cell compare-col"><div class="big">3 business days</div><div class="sum">One match, no second notice.</div><a class="words" href="#" data-words="matching">The words →</a></div>
+        <div class="mcell ref-col"><div class="mhead"><span class="v">5 BD 9 / 14</span><span class="n">64%</span></div><div class="bar"><i class="s1" style="width:64%"></i><i class="s2" style="width:22%"></i><i class="s3" style="width:14%"></i></div><div class="mnote">Median 5 business days</div></div>
+      </div>
+
+      <!-- 10 go-shop -->
+      <div class="trow" data-row="goshop">
+        <div class="prov"><div class="name">Go-shop</div><div class="sub">Section 5.3(a)</div></div>
+        <div class="cell"><span class="pill no">NO</span><div class="sum">No go-shop window.</div><a class="words" href="#" data-words="goshop">The words →</a></div>
+        <div class="cell compare-col"><span class="pill no">NO</span><div class="sum">No go-shop window.</div><a class="words" href="#" data-words="goshop">The words →</a></div>
+        <div class="mcell ref-col"><div class="mhead"><span class="v">Yes 5 / 14</span><span class="n">36%</span></div><div class="bar"><i class="s1" style="width:36%"></i><i class="s3" style="width:64%"></i></div><div class="mnote">A minority treatment</div></div>
+      </div>
+    </div>
+
+    <!-- SUMMARY VIEW -->
+    <div class="summary" id="summary">
+      <div class="sblock"><div class="sh"><span>Company termination fee</span><span class="pill amb">differs</span></div><div class="sb">
+        <div><span class="lab">Northstar / Aria — stock</span>3.0% of equity value, payable within two business days after termination.</div>
+        <div><span class="lab">Cobalt / Vela — cash</span>3.5% of equity value, payable concurrently with termination.</div>
+      </div></div>
+      <div class="sblock"><div class="sh"><span>No-vote termination</span><span class="pill amb">differs</span></div><div class="sb">
+        <div><span class="lab">Northstar / Aria</span>A naked no-vote fee is payable under Section 8.1(b)(i).</div>
+        <div><span class="lab">Cobalt / Vela</span>No fee on a no-vote termination; the fee follows only a superior proposal.</div>
+      </div></div>
+      <div class="sblock"><div class="sh"><span>Sole and exclusive remedy</span><span class="pill amb">differs</span></div><div class="sb">
+        <div><span class="lab">Northstar / Aria</span>The fee is the sole remedy, with a fraud carve-out.</div>
+        <div><span class="lab">Cobalt / Vela</span>No sole-remedy clause; specific performance survives.</div>
+      </div></div>
+      <div class="sblock"><div class="sh"><span>Only in Northstar / Aria</span><span class="pill acc">1 fact</span></div><div class="sb">
+        <div style="grid-column:1 / -1"><span class="lab">Section 8.5(g)</span><span class="only">A fee gross-up for certain tax treatments</span> — no counterpart in Cobalt / Vela.</div>
+      </div></div>
+    </div>
+
+    <!-- MARKET DETAIL -->
+    <section class="market" id="market">
+      <div class="market-h"><div><span class="t">Reference set · Company termination fee</span> <span class="s">— biotech · Barshay · $1bn+ · 14 deals</span></div><span class="s">Method: same table, same row, same unit · <a href="#" style="color:var(--accent);text-decoration:none">How this is calculated</a></span></div>
+      <div class="market-grid">
+        <div class="mcol">
+          <div class="lab">Northstar / Aria</div>
+          <div class="stat">3.0%<small> of equity value</small></div>
+          <div class="statline"><span class="pill green">MARKET</span> <span class="pill neu">n=14</span><br/>p42 of 14 · read the range<br/>Within the middle 50% (p25 2.7% – p75 3.4%).</div>
+          <div class="statline" style="color:#8a8578">Sample size 14. No trigger: read the range, not only the label.</div>
+        </div>
+        <div class="mcol">
+          <div class="lab">Every answering deal</div>
+          <div class="dotplot">
+            <div class="zones"><div class="p25"></div></div>
+            <div class="med" style="left:46%"></div>
+            <div class="dot" style="left:8%"></div><div class="dot" style="left:18%"></div><div class="dot" style="left:26%"></div><div class="dot" style="left:32%"></div><div class="dot" style="left:38%"></div><div class="dot" style="left:46%"></div><div class="dot" style="left:52%"></div><div class="dot" style="left:58%"></div><div class="dot sel" style="left:64%"></div><div class="dot" style="left:70%"></div><div class="dot" style="left:76%"></div><div class="dot" style="left:82%"></div><div class="dot" style="left:90%"></div><div class="dot" style="left:96%"></div>
+            <div class="axis"><span>2.2%</span><span>2.7%</span><span>3.1%</span><span>3.4%</span><span>4.0%</span></div>
+          </div>
+          <div class="key"><span><i></i>Other deals</span><span><i style="background:var(--accent)"></i>Northstar / Aria</span><span>Shaded: p25–p75</span></div>
+        </div>
+        <div class="mcol">
+          <div class="lab">Reference set &amp; exclusions</div>
+          <div class="excl">
+            <b>14</b> published agreements: 8 cash · 5 stock · 1 mixed · 2018–2026.<br/>Filters: biotech · Barshay · $1bn+.<br/>
+            <b>Excluded 2:</b> 1 not stated, 1 held by validation.<br/>
+            <b>Not pooled:</b> 5 deals state the fee as % of deal value; they are shown separately.
+          </div>
+        </div>
+      </div>
+      <div class="market-f"><span>Descriptive, not advice. Every point opens on its clause. Last release: 21 Oct 2026.</span><span class="btns"><button class="btn">Copy table</button><button class="btn">Word · table + schedule</button><button class="btn">Excel · 3 sheets</button><button class="btn primary">CSV</button></span></div>
+      <div class="exportnote" style="padding:0 12px 9px">Word: the comparison table plus a schedule of the relevant provision text for each deal. Excel: comparison, provisions and reference-set sheets. CSV: one row per point.</div>
+    </section>
+
+    <p class="foot">Mockup only. Deal names, values, clause text and cohort numbers are illustrative and are not legal advice. The production read runs on published layered facts; draft data is marked wherever it appears.</p>
+  </main>
+
+  <!-- EVIDENCE -->
+  <aside class="evidence">
+    <div class="ev-h"><div class="k" id="evKicker">Your deal · reference set</div><h2 id="evTitle">Company termination fee</h2><p id="evSub">Section 8.5(b) · Fees &amp; Remedies · accepted 21 Oct 2026</p></div>
+    <div class="ev-tabs"><span class="active">Detail</span><span>Source text</span><span>Comments</span></div>
+    <div class="ev-b">
+      <p class="ev-lab">How Corpus read it</p>
+      <p class="reading" id="evReadingA"><b>Northstar / Aria.</b> The Company pays 3.0% of its equity value within two business days after a termination under Section 8.1(b), and the fee is the sole remedy save for fraud.</p>
+      <p class="reading ev-compare" id="evReadingB"><b>Cobalt / Vela.</b> The Company pays 3.5% of its equity value concurrently with termination, and specific performance survives alongside the fee.</p>
+      <p class="ev-lab">The words</p>
+      <div class="ev-pair">
+        <div class="ev-deal">
+          <div class="dh">Northstar / Aria <span>Section 8.5(b)</span></div>
+          <blockquote class="source" id="evSourceA">… the Company shall pay to Parent a fee equal to <mark>3.0% of the equity value of the Company</mark>, payable in immediately available funds <mark>within two business days after</mark> such termination …</blockquote>
+          <p class="srcref" id="evRefA">Section 8.5(b) · page 74 · 412 bytes · source span 8f2c…</p>
+        </div>
+        <div class="ev-deal ev-compare">
+          <div class="dh">Cobalt / Vela <span>Section 8.5(b)</span></div>
+          <blockquote class="source" id="evSourceB">… the Company shall pay to Parent a fee equal to <mark>3.5% of the equity value of the Company</mark>, payable <mark>concurrently with</mark> such termination …</blockquote>
+          <p class="srcref" id="evRefB">Section 8.5(b) · page 69 · 398 bytes · source span 6d1a…</p>
+        </div>
+      </div>
+      <div class="ev-options" id="evOptions">
+        <div class="cmp">
+          <div class="cmp-h"><span>How it compares</span><span id="cmpN">14 deals</span></div>
+          <div class="cmp-top"><b id="cmpValue">3.0%</b><span id="cmpRank">p42</span></div>
+          <div id="cmpNumeric">
+            <div class="cmp-strip">
+              <span class="band"></span>
+              <span class="medline"></span>
+              <i style="left:8%"></i><i style="left:18%"></i><i style="left:26%"></i><i style="left:32%"></i><i style="left:38%"></i><i style="left:46%"></i><i style="left:52%"></i><i style="left:58%"></i><i class="you" id="cmpYou" style="left:64%"></i><i style="left:70%"></i><i style="left:76%"></i><i style="left:82%"></i><i style="left:90%"></i><i style="left:96%"></i>
+            </div>
+            <div class="cmp-axis"><span id="cmpMin">2.2%</span><span id="cmpMedian">median 3.1%</span><span id="cmpMax">4.0%</span></div>
+          </div>
+          <div class="cmp-cat" id="cmpCategorical" style="display:none">
+            <div class="cmp-stack" id="cmpStack"></div>
+            <div class="cmp-legend" id="cmpLegend"></div>
+          </div>
+          <div class="cmp-sub" id="cmpSub">4 of 14 lower · middle 50% 2.7–3.4%</div>
+          <p class="ev-lab" style="margin-top:9px">Options in the set</p>
+          <div class="cmp-options" id="evOptionsList"></div>
+          <div class="cmp-callout" id="cmpCallout">Most common: 3.5% (4 deals). The middle of the set is 3.1%.</div>
+          <div class="cmp-foot" id="cmpFoot">14 deals · 8 cash · 5 stock · 1 mixed · 2018–2026</div>
+        </div>
+        <p class="srcref" style="padding:0;margin-top:5px">Click an option to read an example clause.</p>
+      </div>
+      <div class="comp" id="evComp">
+        <p class="ev-lab">Component tree · Northstar / Aria</p>
+        <div class="row"><span class="k">Amount</span><span class="v"><b>3.0%</b> · canonical 3.0 · unit percent</span></div>
+        <div class="row"><span class="k">Base</span><span class="v">the equity value of the Company</span></div>
+        <div class="row"><span class="k">Timing</span><span class="v">within two business days after termination</span></div>
+        <div class="row"><span class="k">Trigger</span><span class="v">termination under Section 8.1(b)</span></div>
+      </div>
+      <div class="trail">
+        <p class="ev-lab">Review trail</p>
+        <div class="line"><span class="dot"></span><span><b>Accepted</b> by the reviewing lawyer · 21 Oct 2026 · revision 4</span></div>
+        <div class="line"><span class="dot amber"></span><span>Comment resolved: “Confirm the equity value definition” · 20 Oct 2026</span></div>
+      </div>
+    </div>
+    <div class="ev-f"><button class="btn" id="evFooterBtn">Open the reference set →</button></div>
+  </aside>
+</div>
+
+<div class="modal" id="draftModal">
+  <div class="box">
+    <div class="mh"><h3>Compare a draft clause</h3><span class="x" id="draftClose">×</span></div>
+    <div class="mb">
+      <p>Paste a clause, paste the whole document, or upload a file. Corpus aligns the draft to the provision and shows it against the reference set. The draft is not added to the set or the market statistics.</p>
+      <div class="row" style="margin-top:0">
+        <span class="seg"><button class="on">Specific provisions</button><button>Full document</button></span>
+        <span class="hint">Pick one or more provisions, or compare the whole document.</span>
+      </div>
+      <textarea id="draftText">The Company shall pay to Parent a fee equal to 3.25% of the equity value of the Company, payable within three business days after such termination.</textarea>
+      <div class="row">
+        <span>Provision <b>Termination fees</b> ▾</span>
+        <span>or name several: <b>Termination fees, No-Shop</b></span>
+        <span>Reference set <b>14 deals · biotech · Barshay · $1bn+</b></span>
+        <span class="linkbtn" style="font-size:8px">Upload .docx, .pdf or .txt</span>
+      </div>
+    </div>
+    <div class="mf">
+      <span class="note">Draft text is confidential: it is not published, not added to the reference set, and not counted in any market statistic.</span>
+      <span class="acts"><button class="btn" id="draftCancel">Cancel</button><button class="btn primary" id="draftCompare">Compare this draft</button></span>
+    </div>
+  </div>
+</div>
+
+<script>
+  const DATA = {
+    fee: {
+      title: 'Company termination fee',
+      sub: 'Section 8.5(b) · Fees & Remedies · accepted 21 Oct 2026',
+      readingA: '<b>Northstar / Aria.</b> The Company pays 3.0% of its equity value within two business days after a termination under Section 8.1(b), and the fee is the sole remedy save for fraud.',
+      readingB: '<b>Cobalt / Vela.</b> The Company pays 3.5% of its equity value concurrently with termination, and specific performance survives alongside the fee.',
+      sourceA: '… the Company shall pay to Parent a fee equal to <mark>3.0% of the equity value of the Company</mark>, payable in immediately available funds <mark>within two business days after</mark> such termination …',
+      sourceB: '… the Company shall pay to Parent a fee equal to <mark>3.5% of the equity value of the Company</mark>, payable <mark>concurrently with</mark> such termination …',
+      refA: 'Section 8.5(b) · page 74 · 412 bytes · source span 8f2c…',
+      refB: 'Section 8.5(b) · page 69 · 398 bytes · source span 6d1a…',
+      comp: [['Amount','<b>3.0%</b> · canonical 3.0 · unit percent'],['Base','the equity value of the Company'],['Timing','within two business days after termination'],['Trigger','termination under Section 8.1(b)']]
+    },
+    novote: {
+      title: 'No-vote termination',
+      sub: 'Section 8.1(b)(i) · Termination · accepted 21 Oct 2026',
+      readingA: '<b>Northstar / Aria.</b> A termination without the stockholder vote carries the fee; the trigger is a naked no-vote, not a superior proposal.',
+      readingB: '<b>Cobalt / Vela.</b> No fee on a no-vote termination; the fee follows only a superior proposal.',
+      sourceA: '… if this Agreement is terminated by the Company pursuant to <mark>Section 8.1(b)(i)</mark> prior to the receipt of the Requisite Stockholder Approval, the Company shall pay the Termination Fee …',
+      sourceB: '… <mark>no Termination Fee shall be payable</mark> if this Agreement is terminated by the Company pursuant to Section 8.1(b)(i) …',
+      refA: 'Section 8.1(b)(i) · page 61 · 287 bytes · source span 4a11…',
+      refB: 'Section 8.1(b)(i) · page 57 · 244 bytes · source span 3c90…',
+      comp: [['Trigger','termination before the stockholder vote'],['Fee','the Termination Fee'],['Condition','no superior proposal required']]
+    },
+    superior: {
+      title: 'Superior-proposal termination',
+      sub: 'Section 8.1(b)(ii) · Termination · accepted 21 Oct 2026',
+      readingA: '<b>Northstar / Aria.</b> The fee follows a termination to accept a superior proposal, after the matching right has run.',
+      readingB: '<b>Cobalt / Vela.</b> The same trigger, with a matching right on the same terms.',
+      sourceA: '… if this Agreement is terminated by the Company pursuant to <mark>Section 8.1(b)(ii)</mark> … the Company shall pay the Termination Fee …',
+      sourceB: '… if this Agreement is terminated by the Company pursuant to <mark>Section 8.1(b)(ii)</mark> … the Company shall pay the Termination Fee …',
+      refA: 'Section 8.1(b)(ii) · page 62 · 201 bytes · source span 4b02…',
+      refB: 'Section 8.1(b)(ii) · page 58 · 199 bytes · source span 3d44…',
+      comp: [['Trigger','superior proposal'],['Condition','matching right exhausted'],['Fee','the Termination Fee']]
+    },
+    payer: {
+      title: 'Payer',
+      sub: 'Section 8.5(b) · Fees & Remedies · accepted 21 Oct 2026',
+      readingA: '<b>Northstar / Aria.</b> The Company is the payer; Parent has no matching payment obligation on these triggers.',
+      readingB: '<b>Cobalt / Vela.</b> The Company is the payer on the same terms.',
+      sourceA: '… <mark>the Company shall pay to Parent</mark> a fee equal to 3.0% of the equity value of the Company …',
+      sourceB: '… <mark>the Company shall pay to Parent</mark> a fee equal to 3.5% of the equity value of the Company …',
+      refA: 'Section 8.5(b) · page 74 · 118 bytes · source span 8f31…',
+      refB: 'Section 8.5(b) · page 69 · 116 bytes · source span 6d20…',
+      comp: [['Payer','the Company'],['Payee','Parent'],['Amount','3.0% of equity value']]
+    },
+    tail: {
+      title: 'Tail',
+      sub: 'Section 8.5(c) · Fees & Remedies · accepted 21 Oct 2026',
+      readingA: '<b>Northstar / Aria.</b> The fee is payable on a competing proposal within 12 months of termination, at 15% of equity value.',
+      readingB: '<b>Cobalt / Vela.</b> The same 12-month tail and 15% threshold.',
+      sourceA: '… if within <mark>twelve (12) months</mark> after such termination the Company enters into a definitive agreement with respect to a <mark>Competing Proposal</mark> …',
+      sourceB: '… if within <mark>twelve (12) months</mark> after such termination the Company enters into a definitive agreement with respect to a <mark>Competing Proposal</mark> …',
+      refA: 'Section 8.5(c) · page 75 · 243 bytes · source span 6b3e…',
+      refB: 'Section 8.5(c) · page 70 · 241 bytes · source span 5a77…',
+      comp: [['Period','12 months'],['Threshold','15% of equity value'],['Trigger','a competing proposal signed or consummated']]
+    },
+    sole: {
+      title: 'Sole and exclusive remedy',
+      sub: 'Section 8.5(f) · Fees & Remedies · accepted 21 Oct 2026',
+      readingA: '<b>Northstar / Aria.</b> The fee is the sole remedy for the listed termination rights, with a carve-out for fraud.',
+      readingB: '<b>Cobalt / Vela.</b> No sole-remedy clause; specific performance survives.',
+      sourceA: '… <mark>the sole and exclusive remedy</mark> of Parent and Merger Sub for any such termination shall be the payment of the Termination Fee, except in the case of <mark>fraud</mark> …',
+      sourceB: '… <mark>specific performance</mark> shall be available … and nothing in this Section 8.5 shall limit any other remedy …',
+      refA: 'Section 8.5(f) · page 76 · 221 bytes · source span 91be…',
+      refB: 'Section 8.5(f) · page 71 · 188 bytes · source span 7f02…',
+      comp: [['Remedy','the Termination Fee'],['Scope','terminations under Section 8.1'],['Carve-out','fraud'],['Interaction','specific performance preserved']]
+    },
+    interest: {
+      title: 'Interest on late payment',
+      sub: 'Section 8.5(d) · Fees & Remedies · accepted 21 Oct 2026',
+      readingA: '<b>Northstar / Aria.</b> Late payment bears simple interest at Prime plus 2.00% from the due date until paid.',
+      readingB: '<b>Cobalt / Vela.</b> Late payment bears simple interest at the Prime Rate only.',
+      sourceA: '… together with <mark>interest at the Prime Rate plus 2.00% per annum</mark>, simple, from the date such amount was due until paid …',
+      sourceB: '… together with <mark>interest at the Prime Rate</mark>, simple, from the date such amount was due until paid …',
+      refA: 'Section 8.5(d) · page 75 · 164 bytes · source span 7c02…',
+      refB: 'Section 8.5(d) · page 70 · 151 bytes · source span 6a15…',
+      comp: [['Rate','Prime + 2.00%'],['Basis','simple'],['Period','from the due date until paid']]
+    },
+    notice: {
+      title: 'Notice of superior proposal',
+      sub: 'Section 5.3(b) · No-Shop · accepted 20 Oct 2026',
+      readingA: '<b>Northstar / Aria.</b> The Company must notify Parent within 48 hours of receiving a superior proposal, before the matching period begins.',
+      readingB: '<b>Cobalt / Vela.</b> The same notice duty, expressed as two business days.',
+      sourceA: '… the Company shall notify Parent <mark>within forty-eight (48) hours</mark> of receipt of any Superior Proposal …',
+      sourceB: '… the Company shall notify Parent <mark>within two (2) business days</mark> of receipt of any Superior Proposal …',
+      refA: 'Section 5.3(b) · page 47 · 156 bytes · source span 2f91…',
+      refB: 'Section 5.3(b) · page 43 · 158 bytes · source span 2a10…',
+      comp: [['Period','48 hours'],['Trigger','receipt of a superior proposal'],['Effect','starts the matching period']]
+    },
+    matching: {
+      title: 'Matching right period',
+      sub: 'Section 5.3(c) · No-Shop · accepted 20 Oct 2026',
+      readingA: '<b>Northstar / Aria.</b> Five business days to negotiate in good faith before a recommendation change; a second notice follows a material change.',
+      readingB: '<b>Cobalt / Vela.</b> Three business days, one match, no second notice.',
+      sourceA: '… during the <mark>five (5) business day period</mark> following Parent’s receipt of such notice, the Company shall negotiate in good faith …',
+      sourceB: '… during the <mark>three (3) business day period</mark> following Parent’s receipt of such notice, the Company shall negotiate in good faith …',
+      refA: 'Section 5.3(c) · page 48 · 198 bytes · source span 3d7a…',
+      refB: 'Section 5.3(c) · page 44 · 191 bytes · source span 3b21…',
+      comp: [['Period','5 business days'],['Duty','negotiate in good faith'],['Second notice','on a material change']]
+    },
+    goshop: {
+      title: 'Go-shop',
+      sub: 'Section 5.3(a) · No-Shop · accepted 20 Oct 2026',
+      readingA: '<b>Northstar / Aria.</b> No go-shop window; the no-shop applies from signing.',
+      readingB: '<b>Cobalt / Vela.</b> No go-shop window either.',
+      sourceA: '… from the date of this Agreement until the earlier of the Effective Time and the termination of this Agreement, the Company shall not …',
+      sourceB: '… from the date of this Agreement until the earlier of the Effective Time and the termination of this Agreement, the Company shall not …',
+      refA: 'Section 5.3(a) · page 46 · 176 bytes · source span 1a44…',
+      refB: 'Section 5.3(a) · page 42 · 174 bytes · source span 19c2…',
+      comp: [['Window','none'],['Start','signing'],['End','Effective Time or termination']]
+    }
+  };
+  const COMPARE = {
+    fee: { kind:'numeric', value:'3.0%', rank:'p42', min:'2.2%', median:'median 3.1%', max:'4.0%', you:'64%',
+      sub:'4 of 14 lower · middle 50% 2.7–3.4%',
+      options:[['3.5%',4],['3.0%',3],['2.8%',2],['3.8%',2],['Other',3]],
+      callout:'Most common: 3.5% (4 deals). The middle of the set is 3.1%.' },
+    novote: { kind:'categorical', value:'Yes', rank:'9 of 14', sub:'9 of 14 carry a no-vote fee',
+      options:[['Yes',9],['No',5]], callout:'The majority treatment is Yes (9 of 14).' },
+    superior: { kind:'categorical', value:'Yes', rank:'14 of 14', sub:'Every deal in this set has it',
+      options:[['Yes',14]], callout:'Universal in this set.' },
+    payer: { kind:'categorical', value:'Company', rank:'13 of 14', sub:'Company pays in 13 of 14',
+      options:[['Company',13],['Parent',1]], callout:'One reverse-fee deal pays Parent.' },
+    tail: { kind:'categorical', value:'12 mo · 15%', rank:'11 of 14', sub:'11 of 14 use 12 months at 15%',
+      options:[['12 mo · 15%',11],['12 mo · 20%',2],['Other',1]], callout:'Two deals use a 12-month tail at 20%.' },
+    sole: { kind:'categorical', value:'Yes', rank:'8 of 14', sub:'8 of 14 make the fee the sole remedy',
+      options:[['Yes',8],['No',6]], callout:'An even split: 8 yes, 6 no.' },
+    interest: { kind:'categorical', value:'Prime + spread', rank:'7 of 14', sub:'7 of 14 add a spread to Prime',
+      options:[['Prime + spread',7],['Prime',5],['Other',2]], callout:'Prime alone is used by 5 deals.' },
+    notice: { kind:'categorical', value:'48 hours', rank:'6 of 14', sub:'6 of 14 use 48 hours',
+      options:[['48 hours',6],['2 business days',4],['5 business days',2],['Other',2]], callout:'2 business days is used by 4 deals.' },
+    matching: { kind:'categorical', value:'5 business days', rank:'9 of 14', sub:'9 of 14 use 5 business days',
+      options:[['5 business days',9],['3 business days',3],['Other',2]], callout:'3 business days is used by 3 deals.' },
+    goshop: { kind:'categorical', value:'No', rank:'9 of 14', sub:'9 of 14 have no go-shop',
+      options:[['Yes',5],['No',9]], callout:'A minority, 5 of 14, include a go-shop.' }
+  };
+  function renderCompare(id){
+    const c = COMPARE[id] || COMPARE.fee;
+    const max = Math.max(...c.options.map(x=>x[1]), 1);
+    const common = c.options.reduce((a,b)=>b[1]>a[1]?b:a, c.options[0])[0];
+    document.getElementById('cmpValue').textContent = c.value;
+    document.getElementById('cmpRank').textContent = c.rank;
+    document.getElementById('cmpSub').textContent = c.sub;
+    document.getElementById('cmpCallout').textContent = c.callout;
+    const num = document.getElementById('cmpNumeric');
+    const cat = document.getElementById('cmpCategorical');
+    if (c.kind === 'numeric') {
+      num.style.display = 'block'; cat.style.display = 'none';
+      document.getElementById('cmpYou').style.left = c.you;
+      document.getElementById('cmpMin').textContent = c.min;
+      document.getElementById('cmpMedian').textContent = c.median;
+      document.getElementById('cmpMax').textContent = c.max;
+    } else {
+      num.style.display = 'none'; cat.style.display = 'block';
+      const total = c.options.reduce((sum,x)=>sum+x[1],0);
+      const colors = ['#2f56b8','#b8c6e8','#ddd8ca','#e8e2d2'];
+      document.getElementById('cmpStack').innerHTML = c.options.map(([label,count],i)=>`<i style="width:${count/total*100}%;background:${colors[i%colors.length]}"></i>`).join('');
+      document.getElementById('cmpLegend').innerHTML = c.options.map(([label,count],i)=>`<span><i style="background:${colors[i%colors.length]}"></i>${label} ${count}</span>`).join('');
+    }
+    document.getElementById('evOptionsList').innerHTML = c.options.map(([label,count])=>{
+      const isYou = label === c.value;
+      const isCommon = label === common;
+      return `<div class="cmp-opt ${isYou?'you':''} ${isCommon?'common':''}"><span class="l">${label}</span><span class="b"><i style="width:${Math.round(count/max*100)}%"></i></span><span class="c">${count}</span>${isYou?'<span class="tag">you</span>':(isCommon?'<span class="tag">common</span>':'')}</div>`;
+    }).join('');
+  }
+  function selectRow(id){
+    document.querySelectorAll('.trow').forEach(r=>r.classList.toggle('sel', r.dataset.row===id));
+    const d = DATA[id]; if(!d) return;
+    document.getElementById('evTitle').textContent = d.title;
+    document.getElementById('evSub').textContent = d.sub;
+    document.getElementById('evReadingA').innerHTML = d.readingA;
+    document.getElementById('evReadingB').innerHTML = d.readingB;
+    document.getElementById('evSourceA').innerHTML = d.sourceA;
+    document.getElementById('evSourceB').innerHTML = d.sourceB;
+    document.getElementById('evRefA').textContent = d.refA;
+    document.getElementById('evRefB').textContent = d.refB;
+    document.getElementById('evComp').innerHTML = '<p class="ev-lab">Component tree · Northstar / Aria</p>' + d.comp.map(([k,v])=>`<div class="row"><span class="k">${k}</span><span class="v">${v}</span></div>`).join('');
+    renderCompare(id);
+  }
+  document.querySelectorAll('.trow').forEach(row=>row.addEventListener('click', ()=>selectRow(row.dataset.row)));
+  document.querySelectorAll('[data-words]').forEach(a=>a.addEventListener('click', e=>{e.preventDefault();e.stopPropagation();selectRow(a.dataset.words)}));
+  document.getElementById('diffToggle').addEventListener('click', e=>{
+    const t=e.currentTarget; t.classList.toggle('on');
+    document.getElementById('table').classList.toggle('hide-same', t.classList.contains('on'));
+  });
+  function setView(view){
+    document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('active',x.dataset.view===view));
+    const table=document.getElementById('table'), summary=document.getElementById('summary');
+    if(view==='summary'){table.classList.add('off');summary.classList.add('on');}
+    else{table.classList.remove('off');summary.classList.remove('on');}
+  }
+  function setMode(mode){
+    const table=document.getElementById('table');
+    table.classList.toggle('refmode', mode==='ref');
+    table.classList.toggle('twodeals', mode==='two');
+    document.body.classList.toggle('twodeals', mode==='two');
+    document.querySelectorAll('.tabs.modes button').forEach(b=>b.classList.toggle('active', b.dataset.mode===mode));
+    document.getElementById('evKicker').textContent = mode==='ref' ? 'Your deal · reference set' : 'Compare the words · 2 deals';
+    document.getElementById('evFooterBtn').textContent = mode==='ref' ? 'Open the reference set →' : 'Open both sections side by side →';
+  }
+  document.querySelectorAll('.tabs.modes button').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));
+  document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>{ setView(b.dataset.view); }));
+  if(location.hash==='#summary') setView('summary');
+  if(location.hash==='#market') document.getElementById('market').scrollIntoView();
+  const modal=document.getElementById('draftModal');
+  const openDraft=()=>modal.classList.add('on');
+  const closeDraft=()=>modal.classList.remove('on');
+  document.getElementById('draftBtn').addEventListener('click', openDraft);
+  document.getElementById('draftClose').addEventListener('click', closeDraft);
+  document.getElementById('draftCancel').addEventListener('click', closeDraft);
+  document.getElementById('draftCompare').addEventListener('click', closeDraft);
+  modal.addEventListener('click', e=>{ if(e.target===modal) closeDraft(); });
+  if(location.hash==='#draft') modal.classList.add('on');
+  if(location.hash==='#two') setMode('two');
+  renderCompare('fee');
+  const rowHash = location.hash.match(/^#row-(.+)$/); if(rowHash) selectRow(rowHash[1]);
+</script>
+</body>
+</html>

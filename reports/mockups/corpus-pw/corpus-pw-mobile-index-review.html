@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Corpus · mobile index, review list and detail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+  :root{--navy:#03203d;--blue:#0b3d71;--steel:#5d7da3;--mist:#b9c8da;--wash:#f1f4f8;--rule:#dce3e1;--ink:#33475e;--grey:#6b7785;--warn:#6b4a12;--sans:'Inter Tight',Arial,sans-serif;--serif:'Source Serif 4',Georgia,serif}
+  *{box-sizing:border-box}
+  a{color:inherit;text-decoration:none}
+  html,body{margin:0;padding:0;background:#e9edf2}
+  body{font-family:var(--sans);color:var(--navy);-webkit-font-smoothing:antialiased}
+  .board{width:1230px;padding:20px 20px 18px;display:grid;grid-template-columns:repeat(3,390px);gap:20px}
+  .frame{min-width:0}
+  .caption{display:flex;justify-content:space-between;align-items:baseline;margin-top:9px;font:700 8px var(--sans);letter-spacing:.13em;text-transform:uppercase;color:var(--grey)}
+  .caption span:last-child{letter-spacing:.02em;text-transform:none;font-weight:500;font-size:8px;color:#94a0ad}
+  .phone{width:390px;height:844px;background:#fff;overflow:hidden;position:relative;border:1px solid #cfd8e3;display:flex;flex-direction:column}
+  .top{height:44px;display:flex;align-items:center;gap:9px;padding:0 14px;border-bottom:1px solid var(--rule);flex:none}
+  .tile{width:28px;height:28px;background:var(--navy);color:#fff;display:flex;flex-direction:column;justify-content:center;padding-left:4px;font:800 8.2px/.88 var(--sans);letter-spacing:-.03em;flex:none}
+  .brand{font:600 15px var(--sans);letter-spacing:-.03em}
+  .brand small{display:block;font:600 6.5px var(--sans);letter-spacing:.14em;color:var(--grey);margin-top:2px}
+  .icons{margin-left:auto;display:flex;gap:13px;align-items:center;color:var(--navy)}
+  .menu{width:14px;height:9px;border-top:1.4px solid var(--navy);border-bottom:1.4px solid var(--navy);position:relative}
+  .menu:after{content:"";position:absolute;left:0;right:0;top:3.4px;height:1.4px;background:var(--navy)}
+  .scroll{flex:1;min-height:0;overflow:hidden}
+
+  /* index */
+  .ititle{padding:11px 14px 9px}
+  h1{font:700 24px/.98 var(--sans);letter-spacing:-.05em;margin:0;color:var(--navy)}
+  .isearch{display:flex;align-items:center;gap:7px;border:1px solid var(--navy);height:38px;padding:0 8px 0 10px;color:var(--steel);margin:0 14px}
+  .isearch input{flex:1;border:0;outline:0;background:#fff;color:var(--navy);font:500 11.5px var(--sans);min-width:0}
+  .isearch input::placeholder{color:var(--grey)}
+  .isearch .go{background:var(--navy);color:#fff;border-radius:999px;padding:6px 10px;font:700 7.5px var(--sans);letter-spacing:.06em;text-transform:uppercase}
+  .ichips{display:flex;gap:5px;padding:8px 14px 0;overflow:hidden}
+  .ichip{border:1px solid var(--mist);border-radius:999px;padding:3px 8px;font:600 8px var(--sans);color:var(--navy);white-space:nowrap}
+  .ichip span{color:var(--grey);font-weight:500;margin-left:3px}
+  .rule{height:10px;background:var(--mist);margin-top:9px;flex:none}
+  .listhead{display:flex;align-items:baseline;justify-content:space-between;padding:9px 14px 7px}
+  .listhead h2{font:600 17px var(--sans);letter-spacing:-.03em;margin:0}
+  .listhead .n{font:500 9px var(--sans);color:var(--grey);margin-left:5px}
+  .listhead .f{border:1px solid var(--mist);border-radius:999px;padding:4px 8px;font:700 7px var(--sans);letter-spacing:.05em;text-transform:uppercase;color:var(--blue)}
+  .ifilters{display:flex;align-items:center;gap:6px;padding:0 14px 8px;overflow:hidden}
+  .if{border:1px solid var(--mist);border-radius:999px;height:32px;padding:0 10px;display:inline-flex;align-items:center;gap:3px;font:700 9px var(--sans);color:var(--navy);white-space:nowrap}
+  .if span{color:var(--grey);font-weight:500}
+  .if.on{background:var(--navy);border-color:var(--navy);color:#fff}
+  .if.on span{color:var(--mist)}
+  .if.more{border-color:var(--navy);color:var(--blue);margin-left:auto}
+  .ilist{padding:0 14px}
+  .ihead,.irow{display:grid;grid-template-columns:1fr 78px 70px;align-items:center}
+  .ihead{border-bottom:1px solid var(--navy);padding-bottom:5px}
+  .ihead div{font:700 7px var(--sans);letter-spacing:.11em;text-transform:uppercase;color:var(--grey);padding:3px 2px}
+  .ihead div:nth-child(2){text-align:right}
+  .ihead div:nth-child(3){padding-left:8px}
+  .irow{border-bottom:1px solid var(--rule);min-height:54px}
+  .irow>div{padding:7px 2px;min-width:0}
+  .ideal b{display:block;font:600 12px/1.2 var(--sans);letter-spacing:-.01em;color:var(--navy);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ideal span{display:block;font:500 7.5px var(--sans);color:var(--grey);margin-top:2px}
+  .ival{text-align:right;font:600 11px var(--sans);color:var(--navy);white-space:nowrap}
+  .istat{text-align:right}
+  .ipill{display:inline-block;border:1px solid var(--mist);border-radius:999px;padding:2px 6px;font:700 7.5px var(--sans);letter-spacing:.03em;color:var(--navy);white-space:nowrap}
+  .ipill.solid{background:var(--navy);border-color:var(--navy);color:#fff}
+  .ifoot{padding:7px 14px 0;font:500 7.5px var(--sans);color:var(--grey);display:flex;justify-content:space-between}
+  .bottombar{margin-top:auto;height:56px;background:#fff;border-top:1px solid var(--rule);display:flex;align-items:center;gap:7px;padding:8px 14px;flex:none}
+  .bb{display:flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--navy);border-radius:999px;height:36px;font:700 8px var(--sans);letter-spacing:.07em;text-transform:uppercase;background:#fff;color:var(--navy)}
+  .bb.main{flex:1;background:var(--navy);color:#fff}
+  .bb.side{width:112px;border-color:var(--mist);color:var(--blue)}
+  .bb .c{background:var(--navy);color:#fff;border-radius:999px;padding:0 4px;font-size:7px}
+
+  /* review list */
+  .rhead{padding:10px 14px 7px}
+  .rsub{font:400 9px/1.35 var(--serif);color:var(--ink);margin:5px 0 0}
+  .rprog{display:flex;align-items:center;gap:7px;margin-top:7px}
+  .rprog .bar{flex:1;height:4px;background:var(--wash)}
+  .rprog .bar i{display:block;height:100%;width:58%;background:var(--navy)}
+  .rprog span{font:600 7.5px var(--sans);color:var(--grey);white-space:nowrap}
+  .sectionbar{display:flex;align-items:baseline;gap:7px;padding:7px 14px;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);background:#fff;flex:none}
+  .sectionbar b{font:600 12.5px var(--sans);color:var(--navy)}
+  .sectionbar span{font:500 8px var(--sans);color:var(--grey)}
+  .sectionbar .jump{margin-left:auto;font:700 7.5px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--blue);border:1px solid var(--mist);border-radius:999px;padding:4px 8px}
+  .hint{font:500 8px/1.35 var(--sans);color:var(--grey);padding:8px 14px 2px;display:flex;gap:5px;align-items:flex-start}
+  .hint i{width:4px;height:4px;background:var(--navy);flex:none;margin-top:3px}
+  .sech{display:flex;align-items:baseline;gap:7px;padding:8px 14px 3px;border-top:1px solid var(--mist);margin-top:4px}
+  .sech b{font:600 17px var(--sans);letter-spacing:-.02em;color:var(--navy)}
+  .sech span{font:500 8.5px var(--sans);color:var(--grey)}
+  .frow{display:grid;grid-template-columns:1fr 68px;gap:6px;padding:8px 14px 7px;border-bottom:1px solid var(--rule);align-items:start}
+  .frow.pressed{background:var(--wash)}
+  .fmeta{font:700 7.2px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--grey);margin:0 0 2px}
+  .frow b{display:block;font:600 13.5px/1.2 var(--sans);letter-spacing:-.01em;color:var(--navy)}
+  .ftext{font:400 12px/1.4 var(--serif);color:var(--ink);margin:3px 0 0;max-width:44ch}
+  .fsec{font:500 8px var(--sans);color:var(--grey);margin:3px 0 0}
+  .fend{display:flex;flex-direction:column;align-items:flex-end;gap:4px;padding-top:1px}
+  .chev{font:400 18px/1 var(--sans);color:var(--steel)}
+  .frow.heldrow{background:#fbf3e2;border-left:4px solid #c9a45c;padding-left:10px}
+  .heldpill{border:1px solid #c9a45c;color:var(--warn);border-radius:999px;padding:2px 6px;font:700 7.5px var(--sans);letter-spacing:.04em;white-space:nowrap}
+  .nextsec{border-top:10px solid var(--mist);margin-top:2px}
+  .nextsec .sech{border-top:0;padding-top:10px}
+
+  /* review detail */
+  .dtop{height:44px;display:flex;align-items:center;gap:8px;padding:0 12px;border-bottom:1px solid var(--rule);flex:none}
+  .back{font:400 20px/1 var(--sans);color:var(--navy);width:22px}
+  .dtop .t{font:600 13.5px var(--sans);color:var(--navy);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .dtop .n{margin-left:auto;font:600 7.5px var(--sans);color:var(--grey);white-space:nowrap}
+  .dhead{padding:16px 16px 10px}
+  .dhead .k{font:700 7px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--grey);margin:0 0 4px}
+  .dhead h1{font-size:26px;line-height:1.02;letter-spacing:-.045em}
+  .dhead .s{font:500 8.5px var(--sans);color:var(--grey);margin-top:4px}
+  .dbody{flex:1;min-height:0;overflow:hidden;padding:0 16px}
+  .dstmt{font:400 15.5px/1.5 var(--serif);color:var(--navy);margin:8px 0 0}
+  .droles{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);margin-top:13px}
+  .droles div{padding:8px 9px;border-left:1px solid var(--rule)}
+  .droles div:nth-child(odd){border-left:0;padding-left:0}
+  .droles span{display:block;font:700 7px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--grey)}
+  .droles b{display:block;font:600 11px var(--sans);color:var(--navy);margin-top:2px}
+  .dsrc{margin-top:13px;background:var(--wash);border-left:6px solid var(--navy);padding:10px 12px}
+  .dsrc p{font:400 13px/1.5 var(--serif);color:var(--navy);margin:0}
+  .dsrc span{display:block;font:500 7.5px var(--sans);color:var(--grey);margin-top:6px}
+  .dtrail{margin-top:12px;border-top:1px solid var(--rule);padding-top:7px}
+  .dtrail .h{display:flex;justify-content:space-between;font:700 6.8px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--grey);margin-bottom:4px}
+  .dtrail .e{display:grid;grid-template-columns:34px 1fr;gap:4px;padding:4px 0;border-top:1px solid var(--rule)}
+  .dtrail .e span{font:700 6.5px var(--sans);color:var(--grey);grid-row:span 2;padding-top:1px}
+  .dtrail .e b{font:600 8px var(--sans);color:var(--navy)}
+  .dtrail .e p{font:400 8px/1.35 var(--serif);color:var(--ink);margin:0;grid-column:2}
+  .dnote{margin-top:12px;border-top:1px solid var(--rule);padding-top:8px}
+  .dnote .h{display:flex;justify-content:space-between;align-items:baseline;font:700 7px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--grey);margin-bottom:4px}
+  .dnote p{font:400 9.5px/1.4 var(--serif);color:var(--ink);margin:0 0 7px}
+  .notebtn{border:1px solid var(--navy);border-radius:999px;padding:6px 10px;font:700 8px var(--sans);letter-spacing:.05em;text-transform:uppercase;color:var(--navy);background:#fff}
+  .dlink{font:700 7.5px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--blue);border-bottom:1px solid var(--mist);display:inline-block;margin-top:7px}
+  .dlabel{font:700 7.5px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--grey);margin:0 0 4px}
+  .dclause{font:400 16.5px/1.55 var(--serif);color:var(--navy);margin:0}
+  .danswer{font:500 31px/.95 var(--sans);letter-spacing:-.055em;color:var(--navy);margin:0;font-variant-numeric:tabular-nums}
+  .danswer span{font:400 12px var(--sans);letter-spacing:0;color:var(--grey);margin-left:4px}
+  .dread{background:var(--wash);border-left:4px solid var(--navy);padding:9px 11px;font:400 12.5px/1.45 var(--serif);color:var(--navy);margin:6px 0 0}
+  .dterms{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);margin-top:14px}
+  .dterms div{padding:8px 9px;border-left:1px solid var(--rule)}
+  .dterms div:nth-child(odd){border-left:0;padding-left:0}
+  .dterms span{display:block;font:700 7px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--grey)}
+  .dterms b{display:block;font:600 11px var(--sans);color:var(--navy);margin-top:2px}
+  .dsource{font:500 8px var(--sans);color:var(--grey);margin:12px 0 0;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+  .dsource a{font:700 7.5px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--blue);border-bottom:1px solid var(--mist);padding-bottom:1px}
+  .dmore{display:inline-block;margin-top:13px;font:700 8px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--blue);border-bottom:1px solid var(--mist);padding-bottom:2px}
+  .decisionbar{margin-top:auto;height:60px;background:#fff;border-top:1px solid var(--rule);display:flex;align-items:center;gap:7px;padding:10px 14px;flex:none}
+  .dec{display:flex;align-items:center;justify-content:center;border:1px solid var(--navy);height:38px;border-radius:999px;font:700 9px var(--sans);letter-spacing:.06em;text-transform:uppercase;background:#fff;color:var(--navy)}
+  .dec.main{flex:1;background:var(--navy);color:#fff}
+  .dec.side{width:92px}
+  .dec.more{width:44px;border-color:var(--mist);color:var(--blue);font-size:14px}
+</style>
+</head>
+<body>
+<div class="board">
+  <!-- INDEX -->
+  <div class="frame">
+    <div class="phone">
+      <header class="top">
+        <div class="tile" aria-hidden="true"><span>Paul,</span><span>Weiss</span></div>
+        <div class="brand">Corpus<small>Precedent intelligence</small></div>
+        <div class="icons"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="7" cy="7" r="5"/><path d="M11 11l3.5 3.5"/></svg><span class="menu"></span></div>
+      </header>
+      <div class="scroll">
+        <div class="ititle"><h1>The deal index.</h1></div>
+        <div class="isearch"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="7" cy="7" r="5"/><path d="M11 11l3.5 3.5"/></svg><input aria-label="Search the index" placeholder="Search a deal, party or clause"><span class="go">Search</span></div>
+        <div class="rule"></div>
+        <div class="listhead"><h2>All agreements.<span class="n">148</span></h2></div>
+        <div class="ifilters"><span class="if on">All <span>148</span></span><span class="if">Biotech <span>112</span></span><span class="if">$1bn+ <span>22</span></span><span class="if more">More filters</span></div>
+        <div class="ilist">
+          <div class="ihead"><div>Deal</div><div>Value</div><div>Status</div></div>
+          <div class="irow"><div class="ideal"><b>Northstar / Aria</b><span>Biotech · public</span></div><div class="ival">$4.2bn</div><div class="istat"><span class="ipill">Published</span></div></div>
+          <div class="irow"><div class="ideal"><b>Verve / Eli Lilly</b><span>Biotech · public</span></div><div class="ival">$1.2bn</div><div class="istat"><span class="ipill">Published</span></div></div>
+          <div class="irow"><div class="ideal"><b>Metsera / Novo Nordisk</b><span>Biotech · public</span></div><div class="ival">$9.1bn</div><div class="istat"><span class="ipill solid">In review</span></div></div>
+          <div class="irow"><div class="ideal"><b>Endo / Mallinckrodt</b><span>Pharma · public</span></div><div class="ival">$3.4bn</div><div class="istat"><span class="ipill">Published</span></div></div>
+          <div class="irow"><div class="ideal"><b>Apogee / AbbVie</b><span>Biotech · public</span></div><div class="ival">$10.2bn</div><div class="istat"><span class="ipill">Published</span></div></div>
+          <div class="irow"><div class="ideal"><b>Prometheus / Merck</b><span>Biotech · public</span></div><div class="ival">$9.5bn</div><div class="istat"><span class="ipill">Published</span></div></div>
+          <div class="irow"><div class="ideal"><b>Bellus / Eli Lilly</b><span>Biotech · public</span></div><div class="ival">$1.9bn</div><div class="istat"><span class="ipill">Published</span></div></div>
+          <div class="irow"><div class="ideal"><b>CinCor / AstraZeneca</b><span>Biotech · public</span></div><div class="ival">$1.8bn</div><div class="istat"><span class="ipill">Published</span></div></div>
+        </div>
+        <div class="ifoot"><span>Showing 8 of 148</span><a href="#">Load more →</a></div>
+      </div>
+      <nav class="bottombar"><button class="bb main">New comparison</button></nav>
+    </div>
+    <div class="caption"><span>Index · search first</span><span>No hero, no stats band</span></div>
+  </div>
+
+  <!-- REVIEW LIST -->
+  <div class="frame">
+    <div class="phone">
+      <header class="top">
+        <div class="tile" aria-hidden="true"><span>Paul,</span><span>Weiss</span></div>
+        <div class="brand">Corpus<small>Precedent intelligence</small></div>
+        <div class="icons"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="7" cy="7" r="5"/><path d="M11 11l3.5 3.5"/></svg><span class="menu"></span></div>
+      </header>
+      <div class="rhead">
+        <h1>Northstar / Aria</h1>
+      </div>
+      <div class="scroll">
+        <div class="hint"><i></i>Tap a provision for the detail. Scroll to read the whole agreement.</div>
+        <div class="sech"><b>Termination</b><span>Section 8.5</span></div>
+
+        <div class="frow">
+          <div><b>Company termination fee</b><p class="ftext">The Company pays 3.0% of the equity value within two business days of termination.</p><p class="fsec">Section 8.5(b) · Fees &amp; remedies</p></div>
+          <div class="fend"><span class="ipill">Pending</span><span class="chev">›</span></div>
+        </div>
+
+        <div class="frow">
+          <div><b>No-vote termination</b><p class="ftext">A naked no-vote fee is payable if the agreement is terminated for a no-vote.</p><p class="fsec">Section 8.5(c)</p></div>
+          <div class="fend"><span class="ipill">Pending</span><span class="chev">›</span></div>
+        </div>
+
+        <div class="frow">
+          <div><b>Superior-proposal termination</b><p class="ftext">The fee follows a superior-proposal termination.</p><p class="fsec">Section 8.5(d)</p></div>
+          <div class="fend"><span class="ipill solid">Accepted</span><span class="chev">›</span></div>
+        </div>
+
+        <div class="frow">
+          <div><b>Payer</b><p class="ftext">The Company pays the fee.</p><p class="fsec">Section 8.5(e)</p></div>
+          <div class="fend"><span class="ipill solid">Accepted</span><span class="chev">›</span></div>
+        </div>
+
+        <div class="frow heldrow">
+          <div><b>No-vote fee</b><p class="ftext">Proposed under a fact type the table does not accept. Out of the comparison until reviewed.</p><p class="fsec">Section 8.5(c)</p></div>
+          <div class="fend"><span class="heldpill">Held</span><span class="chev">›</span></div>
+        </div>
+
+        <div class="frow">
+          <div><b>Sole and exclusive remedy</b><p class="ftext">The fee is the sole and exclusive remedy, with a fraud carve-out.</p><p class="fsec">Section 8.5(i)</p></div>
+          <div class="fend"><span class="ipill solid">Accepted</span><span class="chev">›</span></div>
+        </div>
+
+        <div class="nextsec"><div class="sech"><b>Fees &amp; remedies</b><span>Section 8.6</span></div></div>
+        <div class="frow"><div><b>Expense reimbursement</b><p class="ftext">Reasonable expenses are reimbursed on a termination under 8.5(b).</p><p class="fsec">Section 8.6(a)</p></div><div class="fend"><span class="ipill solid">Accepted</span><span class="chev">›</span></div></div>
+      </div>
+      <nav class="bottombar"><button class="bb main">Sections</button><button class="bb side">Filter <span class="c">2</span></button></nav>
+    </div>
+    <div class="caption"><span>Review · scroll the agreement</span><span>Tap a provision, not a flick</span></div>
+  </div>
+
+  <!-- REVIEW DETAIL -->
+  <div class="frame">
+    <div class="phone">
+      <div class="dtop"><span class="back">‹</span><span class="t">Termination</span><span class="n"><span class="pending">Pending</span></span></div>
+      <div class="dhead"><h1>Company termination fee</h1><p class="s">Section 8.5(b) · Fees &amp; remedies</p></div>
+      <div class="dbody">
+        <p class="dlabel">Answer</p>
+        <p class="danswer">3.0% <span>of equity value</span></p>
+        <p class="dlabel" style="margin-top:12px">Summary</p>
+        <p class="dread">A 3.0% fee on equity value, payable within two business days of termination.</p>
+        <p class="dlabel" style="margin-top:15px">Exact clause</p>
+        <p class="dclause">“The Company shall pay to Parent a fee equal to 3.0% of the equity value of the Company, payable in immediately available funds within two business days after termination.”</p>
+        <div class="dterms"><div><span>Party</span><b>Company</b></div><div><span>Amount</span><b>3.0% of equity</b></div><div><span>Trigger</span><b>Termination</b></div><div><span>Timing</span><b>2 business days</b></div></div>
+        <p class="dsource">Section 8.5(b) · page 74 · 412 bytes <a href="#">View source</a></p>
+        <a class="dmore" href="#">Review details and trail →</a>
+      </div>
+      <nav class="decisionbar"><button class="dec main">Accept</button><button class="dec side">Edit</button><button class="dec more">⋯</button></nav>
+    </div>
+    <div class="caption"><span>Detail · reading first</span><span>Decisions in the bottom bar</span></div>
+  </div>
+</div>
+</body>
+</html>

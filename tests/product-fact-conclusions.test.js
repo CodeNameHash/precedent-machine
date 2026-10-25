@@ -665,3 +665,29 @@ test('defaultConclusions places the no-shop savings clause on its row by words_r
   const other = defaultConclusions(prerequisite, tableShapes);
   assert.notEqual(other && other.row_label, 'Fiduciary actions are not a breach');
 });
+
+
+// The review of the Claude Apogee run (2026-10-25) showed 51 cells dropped
+// in 5.2, every one the asDrafted column, on a missing `text` the page never
+// reads: an as-drafted column shows the fact's own words, so a cell that
+// cites the components is complete without text of its own. A value column
+// still needs its value, so the neighbouring rule stays.
+test('an as-drafted cell needs only its components, not text of its own', () => {
+  const family = 'INTERIM_OPERATING';
+  const { table } = tablesForFamily(family, tableShapes).find((entry) => entry.table.table_key === 'ioc-exceptions-negative-covenants');
+  const label = table.fixed_row_labels[0];
+  const valueColumn = (table.columns || []).find((column) => column.render === 'value' && !column.derived);
+  const fact = (cells) => ({
+    family_key: family, subtype_key: 'RESTRICTIVE_COVENANT', fact_type: 'INTERIM_OPERATING_RESTRICTIVE_COVENANT',
+    components: [{ component_id: 'c1', kind: 'OPERATION', text: 'shall not amend or modify any privacy policies', origin: 'OWN', start_byte: 0, end_byte: 45 }],
+    conclusions: { table_key: table.table_key, row_label: label, cells },
+  });
+  assert.equal(tableForFact(fact([]), tableShapes).table.table_key, 'ioc-exceptions-negative-covenants');
+  // No text on the as-drafted cell: complete.
+  assert.deepEqual(validateFactConclusions(fact([{ column_id: 'asDrafted', component_ids: ['c1'] }]), { tableShapes }), []);
+  // A value cell without its value still fails.
+  if (valueColumn) {
+    const problems = validateFactConclusions(fact([{ column_id: valueColumn.column_id, component_ids: ['c1'] }]), { tableShapes });
+    assert.ok(problems.some((problem) => /value column needs/.test(problem)), problems.join(' | '));
+  }
+});

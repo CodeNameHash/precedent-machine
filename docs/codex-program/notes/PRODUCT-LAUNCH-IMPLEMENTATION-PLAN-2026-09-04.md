@@ -7170,6 +7170,48 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       release bar" ask), and it decides whether the first review is a
       20-hour queue or an afternoon. Nothing changed in code; the numbers
       are from the two live review reads of (270).
+      (273) 2026-10-25 15:30 UTC (the manager), work package 49: Ben
+      decided the release-bar question in (272) — "Notes stop blocking
+      publication" — and it is implemented. `lib/product/review-state.js`
+      PUBLISH no longer refuses on a pending item whose issue kind is NOTE
+      (`isInformativeNote`); every other kind still blocks, and a NOTE the
+      lawyer marks UNRESOLVED still blocks through the existing
+      REVIEW_UNRESOLVED_ITEMS check. `lib/product/review-view.js` counts
+      what actually holds publication (`pending_count`) and the notes
+      separately (`note_count`), and `can_publish` uses the same rule, so
+      the rail cannot say "cannot publish" while the server allows it; the
+      review header says how many notes remain readable without holding the
+      release. Effect on the Claude run: 1,926 blocking decisions instead of
+      2,398, with the 472 notes still listed. Tests:
+      tests/product-phase-3.test.js — a pending note leaves PUBLISH's
+      pending gate (the refusal names one item, not two), a note marked
+      UNRESOLVED still refuses, and the rail's pending count excludes the
+      note; the 50 tests of the three review suites are green.
+      (274) 2026-10-25 15:50 UTC (the manager), work package 49 part 2:
+      the one deterministic repair from (271) that could be made without
+      guessing, and a reading order for the morning. The repair: an
+      as-drafted column has `render: verbatim, display: fact_text` — the
+      page shows the fact's own words in it and never the cell's text — yet
+      the validator required `cell.text` before it reached the branch that
+      says so, so a model cell citing the components with no text of its
+      own was dropped. On Claude that was 51 cells in 5.2, every one
+      asDrafted. `lib/product/fact-conclusions.js` now lets a fact_text
+      column's cell stand on its components alone, while a value column
+      still needs its value (the neighbouring rule, pinned in the test):
+      the stored run keeps its drops, new runs keep their 5.2 rows. The
+      second repair from (271) — deriving a value cell — is not made: a
+      value cell with no cited component has nothing to parse, and the
+      stored issues do not carry the raw cell, so the fix needs a fresh
+      run's answer to avoid guessing. Also written:
+      reports/review/APOGEE-REVIEW-ORDER-2026-10-25.md, a factual reading
+      order for the Claude run by the machine's own uncertainty (sections
+      ranked by unresolved coverage, then held facts, with notes and
+      dropped cells beside them; the better run's blocking queue is 1,926
+      once notes stop counting), with the three things the run does not show
+      and what is already known about the sections at the top. Tests:
+      tests/product-fact-conclusions.test.js — the as-drafted cell with no
+      text on a real 5.2-shaped row validates clean, and a value column
+      without its value still fails.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is

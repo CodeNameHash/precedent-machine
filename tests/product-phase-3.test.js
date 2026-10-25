@@ -944,3 +944,41 @@ test('Preview run boundary starts one detached Sandbox worker and returns durabl
   // run on the first sandbox and the body says so.
   assert.deepEqual(response.body, { ...progress, execution_mode: 'HOSTED', wake_command_id: 'command-1', sandbox: { sandbox_name: 'pm-codex-preview-worker', state: 'UNPOOLED', sandboxes: [] } });
 });
+
+// Ben, 2026-10-25, after seeing the Claude run's 2,398 items of which 472
+// were NOTES: "Notes stop blocking publication." A NOTE is the machine
+// explaining how it built a fact; it stays in the rail and is still decided,
+// but it no longer holds PUBLISH, and a NOTE the lawyer marks UNRESOLVED
+// still does.
+test('a pending machine note does not block publication, an unresolved one does', () => {
+  const analysis = analysisFixture();
+  const note = {
+    item_id: 'note-uncited', kind: 'ISSUE', decision: 'PENDING', source_id: 'note-source',
+    original: { code: 'CONCLUSIONS_CELLS_DROPPED', kind: 'NOTE', state: 'OPEN' },
+    structure_node_id: null, source_span_ids: [],
+  };
+  let state = initialiseReviewState(analysis);
+  state = { ...state, items: [...state.items, note] };
+  const proposals = state.items.filter((item) => item.kind === 'PROPOSAL');
+  const last = proposals[proposals.length - 1];
+  for (const item of state.items.filter((candidate) => candidate.kind !== 'PROPOSAL' || candidate.item_id !== last.item_id)) {
+    if (item.item_id === note.item_id) continue;
+    state = applyReviewCommand(state, { type: 'DECIDE_ITEM', item_id: item.item_id, decision: 'ACCEPTED' }, { analysis, legalSchema });
+  }
+  // One proposal and the note are pending; only the proposal counts.
+  assert.throws(() => applyReviewCommand(state, { type: 'PUBLISH' }, { analysis, legalSchema }), /REVIEW_PENDING_ITEMS: 1/);
+  state = applyReviewCommand(state, { type: 'DECIDE_ITEM', item_id: last.item_id, decision: 'ACCEPTED' }, { analysis, legalSchema });
+  // The note is still pending, and the pending gate no longer refuses.
+  assert.throws(() => applyReviewCommand(state, { type: 'PUBLISH' }, { analysis, legalSchema }), (error) => !/REVIEW_PENDING_ITEMS/.test(error.message));
+  // A note the lawyer marks unresolved is a decision that the note is not
+  // resolved, and that still blocks.
+  const unresolved = applyReviewCommand(state, { type: 'DECIDE_ITEM', item_id: note.item_id, decision: 'UNRESOLVED' }, { analysis, legalSchema });
+  assert.throws(() => applyReviewCommand(unresolved, { type: 'PUBLISH' }, { analysis, legalSchema }), /REVIEW_UNRESOLVED_ITEMS/);
+  // The rail's pending count is the publication bar, so the note is not in it.
+  const view = buildReviewView({ analysis, review: { state, version: 3 } });
+  // The rail's count is the publication bar: the pending note is not in it,
+  // though the note is still in the list of items.
+  assert.equal(view.pending_count, 0);
+  assert.equal(state.items.filter((item) => item.decision === 'PENDING').length, 1);
+  assert.equal(view.unresolved_count, 0);
+});
