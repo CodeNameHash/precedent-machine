@@ -7230,6 +7230,31 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       Nothing else in section 0's list or section 12's main path is
       startable without him: the lawyer loop, a fix from that review, a
       fresh deal, the second agreement and the cutover all follow it.
+      (276) 2026-10-25 17:30 UTC (the manager), work package 50: the
+      review loop is drivable in one pass, because one save per decision is
+      not. Measured against the deployment: a single DECIDE_ITEM on the
+      Claude run took 47.5 s and returned 21.9 MB (the whole workspace,
+      15.7 MB of it analysis), so the run's 2,398 decisions would be ~31
+      hours and ~52 GB through the API. The review route now accepts
+      `commands` (an array of item-level commands) as an alternative to
+      `command`: the handler applies them in order to one state and saves
+      once, recording `BATCH {count, types}` as the event; publication,
+      release and restore stay their own events and are refused inside a
+      batch; a batch is at most 500. Each decision is still recorded
+      individually against the actor — this changes transport, not what a
+      decision is. `lib/product/review-driver.js` accepts the queue in
+      batches from the version each answer reports, repairs the
+      proposition-group mismatches PUBLISH refuses on (the EDITED/no-group
+      repair the UI offers), then confirms coverage, publishes, evaluates,
+      activates and (for the drill) rolls back and activates again.
+      `scripts/product/drive-review.js` runs it against a deployment with
+      `--dry-run`, `--drill` and `--batch-size`. Tests:
+      tests/product-phase-3.test.js (a batch applies both decisions in one
+      save and records BATCH count 2; PUBLISH inside a batch is 400; 501
+      commands is 400) and tests/product-review-driver.test.js (5: every
+      pending item accepted once, the note included, versions from the
+      answers, the group repair, the release order, a refusal names its
+      code). Dry run on Claude 88d4032a: 2,397 pending in 8 batches.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is

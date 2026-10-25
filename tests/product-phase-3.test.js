@@ -982,3 +982,55 @@ test('a pending machine note does not block publication, an unresolved one does'
   assert.equal(state.items.filter((item) => item.decision === 'PENDING').length, 1);
   assert.equal(view.unresolved_count, 0);
 });
+
+// Work package 50 (plan finding (276)): a batch records several item
+// decisions in one save. Each command is applied and recorded individually;
+// only item-level commands may be batched, and the event says how many.
+test('a batch of item decisions is applied in one save and recorded as one event', async () => {
+  const analysis = analysisFixture();
+  let persisted = null;
+  const events = [];
+  const store = {
+    assertAccess: async () => 'OWNER',
+    getAgreementAnalysis: async () => analysis,
+    getReview: async () => persisted,
+    initialiseReview: async ({ state }) => {
+      persisted = { version: 0, status: state.status, state, revisions: [], publications: [], release_history: [] };
+    },
+    saveReview: async ({ expectedVersion, state, actor, command }) => {
+      assert.equal(expectedVersion, persisted.version);
+      assert.equal(actor, 'lawyer@example.test');
+      events.push(command);
+      persisted = { ...persisted, version: persisted.version + 1, status: state.status, state };
+      return persisted;
+    },
+  };
+  const handler = createProductReviewHandler({ getClient: () => ({}), storeFactory: () => store, actorResolver: async () => 'lawyer@example.test' });
+  const getResponse = responseDouble();
+  await handler({ method: 'GET', query: { id: analysis.analysis_run_id }, headers: {} }, getResponse);
+  const proposals = persisted.state.items.filter((item) => item.kind === 'PROPOSAL').slice(0, 2);
+  const postResponse = responseDouble();
+  await handler({ method: 'POST', query: { id: analysis.analysis_run_id }, headers: { 'x-pm-csrf': 'same-origin' }, body: {
+    expected_version: 0, idempotency_key: 'review-batch-1',
+    commands: proposals.map((item) => ({ type: 'DECIDE_ITEM', item_id: item.item_id, decision: 'ACCEPTED' })),
+  } }, postResponse);
+  assert.equal(postResponse.statusCode, 200);
+  assert.equal(postResponse.body.review.version, 1, 'one save for the batch');
+  for (const item of proposals) {
+    assert.equal(postResponse.body.review.state.items.find((entry) => entry.item_id === item.item_id).decision, 'ACCEPTED');
+  }
+  assert.deepEqual(events, [{ type: 'BATCH', count: 2, types: ['DECIDE_ITEM'] }]);
+  // Publication and release are their own events, never batchable.
+  const refused = responseDouble();
+  await handler({ method: 'POST', query: { id: analysis.analysis_run_id }, headers: { 'x-pm-csrf': 'same-origin' }, body: {
+    expected_version: 1, idempotency_key: 'review-batch-2', commands: [{ type: 'PUBLISH' }],
+  } }, refused);
+  assert.equal(refused.statusCode, 400);
+  // A batch larger than the limit is refused whole.
+  const tooBig = responseDouble();
+  await handler({ method: 'POST', query: { id: analysis.analysis_run_id }, headers: { 'x-pm-csrf': 'same-origin' }, body: {
+    expected_version: 1, idempotency_key: 'review-batch-3',
+    commands: Array.from({ length: 501 }, () => ({ type: 'DECIDE_ITEM', item_id: proposals[0].item_id, decision: 'ACCEPTED' })),
+  } }, tooBig);
+  assert.equal(tooBig.statusCode, 400);
+});
