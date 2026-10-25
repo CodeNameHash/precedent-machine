@@ -2011,3 +2011,39 @@ test('a reference that names several sections resolves to the article that holds
   assert.equal(structureReferenceTarget('Section 9.9, or Section 6.1', context), null, 'one part the agreement lacks leaves the reference unresolved');
   assert.equal(structureReferenceTarget('Section 259 of the DGCL', context), null);
 });
+
+
+// Work package 43 (plan finding (260)): a sentence that states an obligation
+// and that no fact of the section cites is a coverage issue on the section,
+// not something a reader has to infer from the facts that are there.
+// DeepSeek 34847358's 5.4(a) ("the Company shall take all actions necessary
+// or advisable to comply ... with applicable Law and the Company's
+// Organizational Documents") had no fact while the section's other facts made
+// it look covered; Claude's run cites every operative sentence it extracts.
+test('a sentence stating an obligation that no fact cites is a coverage issue on the section', () => {
+  const { sectionUncitedIssue } = require('../lib/product/agreement-draft');
+  const words = 'Section 5.4 Written Consent. (a) In connection with the Written Consent, the Company shall take all actions necessary or advisable to comply, and shall comply in all respects, with applicable Law and the Company\u2019s Organizational Documents. (b) The Company shall deliver notice of the Written Consent to Parent promptly after it is obtained.';
+  const bytes = (value) => Buffer.byteLength(value, 'utf8');
+  const at = (needle) => bytes(words.slice(0, words.indexOf(needle)));
+  const span = { span_id: 'full', start_byte: 0, end_byte: bytes(words), exact_text: words, kind: 'FULL_SECTION' };
+  const closure = { source_closure_id: 'closure', full_section_span_id: 'full', spans: [span] };
+  const node = { node_id: 'node', reference: '5.4' };
+  const component = (needle) => ({ kind: 'OPERATION', text: needle, start_byte: at(needle), end_byte: at(needle) + bytes(needle) });
+  const notice = component('The Company shall deliver notice of the Written Consent to Parent promptly after it is obtained.');
+
+  // One fact, citing only limb (b): limb (a)'s covenant is uncited.
+  const issue = sectionUncitedIssue({ closure, proposals: [{ components: [notice] }], node });
+  assert.ok(issue);
+  assert.equal(issue.code, 'UNCITED_OPERATIVE_SENTENCES');
+  assert.match(issue.message, /^1 sentence in this section states an obligation and no fact cites it: "\(a\) In connection with the Written Consent, the Company shall take all actions necessary or advisable to comply/);
+  assert.match(issue.message, /Add a fact or record why the words state no separate effect\./);
+  assert.equal(issue.structure_node_id, 'node');
+
+  // A fact citing both limbs leaves nothing uncited.
+  const compliance = component('In connection with the Written Consent, the Company shall take all actions necessary or advisable to comply, and shall comply in all respects, with applicable Law and the Company\u2019s Organizational Documents.');
+  assert.equal(sectionUncitedIssue({ closure, proposals: [{ components: [compliance, notice] }], node }), null);
+  // A section that proposed nothing is the thin guard's and the page's case.
+  assert.equal(sectionUncitedIssue({ closure, proposals: [], node }), null);
+  // A non-operative sentence (a heading) is not reported.
+  assert.equal(sectionUncitedIssue({ closure, proposals: [{ components: [notice] }], node: { node_id: 'n', reference: '5.4' } }).message.includes('Section 5.4 Written Consent.'), false, 'a heading states no obligation');
+});

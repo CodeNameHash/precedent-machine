@@ -6801,6 +6801,36 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       extraction, the thin-answer floors and the page's section list — this
       only makes the hole measurable; showing the sentence list to a lawyer
       on the page is a product decision for Ben.
+      (261) 2026-10-25 08:30 UTC (the manager), work package 43 part 2:
+      the sentence-level hole is now recorded on the section, so a lawyer
+      sees it in the review rather than reading past it. Finding (260) built
+      the read; this puts its result where decisions are made:
+      `lib/product/agreement-draft.js` `sectionUncitedIssue` runs after a
+      section's proposals compile and, when at least one proposal exists and
+      some sentence of the section's own full-section text (80 bytes or
+      more, an operative or representational verb) is overlapped by no
+      proposal component, the section carries a COVERAGE issue
+      `UNCITED_OPERATIVE_SENTENCES` whose message names up to three of them
+      verbatim and says "Add a fact or record why the words state no
+      separate effect." It is an issue, not a hold: the facts stay, the
+      draft stays readable, and the issue is a review item a lawyer must
+      acknowledge before publication (pending items block PUBLISH —
+      review-state's own rule). A section that proposed nothing is
+      untouched: the thin-answer guard and the page's section list own that
+      case, and the check is skipped there so the two do not double-report.
+      Effect on the two stored runs, from their payloads: Claude 88d4032a
+      has no uncited operative sentence in any section, so a fresh Claude
+      run carries no such issue; DeepSeek 34847358 would carry two (5.16,
+      the section already listed as empty, and 5.4(a)'s compliance
+      covenant), which is (260)'s evidence arriving in the review. Tests:
+      tests/product-fact-components-extraction.test.js — the helper on a
+      synthetic 5.4-shaped section (limb (a) uncited while (b) is cited →
+      the issue, both cited → none, no proposals → none, a heading → not
+      counted), and a manual end-to-end run of the conduct-of-business
+      fixture's 5.3 with a one-fact answer producing the issue. 14 suites
+      on the draft path green (267 tests). Not changed: the extraction
+      instruction, the thin-answer floors and the page; the sentence list
+      on the lawyer preview remains a product decision for Ben.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
