@@ -200,3 +200,16 @@ test('a review save, and a restore of an earlier review, mark the stored project
   plain.markPreviewReadModelStale = undefined;
   await plain.saveReview({ runId: RUN_ID, expectedVersion: 1, state: {}, actor: 'lawyer@example.test', eventType: 'SAVE', idempotencyKey: 'three', command: { type: 'SAVE' } });
 });
+
+test('a read-only store client (the pg facade the cutover scripts read through) serves live and skips the cache quietly', async () => {
+  const { ProductPhase2Store } = require('../lib/product/phase-2-store');
+  // The pg facade's from() builder has select/eq/maybeSingle and no writes.
+  const selectOnly = () => ({
+    select: () => ({ eq: () => ({ maybeSingle: async () => ({ data: null, error: null }) }) }),
+  });
+  const client = { from: selectOnly, rpc: async () => ({ data: null, error: null }) };
+  const store = new ProductPhase2Store({ client });
+  await store.savePreviewReadModel({ runId: RUN_ID, payload: { schema_version: 'PRODUCT_PREVIEW_WORKSPACE/V1' } });
+  await store.markPreviewReadModelStale(RUN_ID);
+  assert.equal(typeof store.getReviewVersion, 'function');
+});
