@@ -6902,6 +6902,41 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       serves 0ca13e99 (both projects' deployments green at 01:55 and 01:56
       UTC) but still answers 302 to Vercel SSO on every path, so the bypass
       secret remains the only way to read it.
+      (264) 2026-10-25 10:40 UTC (the manager), work package 46: the
+      deployment protection bypass works and the live authentication
+      surface is verified; the internal token is still missing. Ben sent
+      the Vercel bypass secret (2026-10-25): every path now answers as the
+      deployment intends instead of 302 to SSO, so the preview is
+      reachable. What that let this session prove live, for the first time
+      against the deployment (head 0ca13e99/4d76acbc, both projects built):
+      "/" 307 to /login, "/review/product/abc/provisions" 307,
+      "/login" 200 (2,070 bytes), a GET of "/api/auth/login" 405 (POST
+      only), a POST with a wrong password 401 {"error":"Invalid
+      credentials"}, "/api/product/published-facts" and "/api/product/
+      analysis/<run>/preview" 401, "/api/cron/edgar-watch" without its
+      secret 401 — the gate is up on every surface and the one public page
+      is the login page, which is what `lib/auth/gate.js` and OPERATING-
+      RULES require. What it did not unlock: the second string Ben sent
+      ("sk-...") is not the deployment's PRODUCT_INTERNAL_TOKEN. Sent as
+      `Authorization: Bearer`, every /api/product/ path answers the
+      middleware's 401 {"error":"Unauthorized"} — the gate's
+      `internalTokenAllows` compares the bearer byte for byte with the
+      configured token and the value is 35 characters, so length is not the
+      reason; the sk- prefix and shape are a DeepSeek API key's. The
+      `pm_session` cookie left by the previous session (7-day max age from
+      2026-10-23) is also refused now, so SESSION_SECRET has rotated or the
+      cookie has aged out. The product's own reads therefore remain
+      unverified live: `sections_without_facts` on 34847358 and 88d4032a,
+      the X-Preview-Read model header, the run-status timing and the
+      outside-in smoke test. The one thing needed is one of the two
+      credentials — PRODUCT_INTERNAL_TOKEN from the deployment's
+      environment, or a fresh pm_session value — and the ready check is
+      /tmp/pm/live-checks.py <credential> (both previews, their
+      sections-without-facts, the model header, the timings), then
+      `node scripts/product/smoke-test.js --base-url
+      https://deal-corpus-preview.vercel.app` with the same credential.
+      Not changed in code: nothing this round; the deployment is the
+      head that was already green.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
