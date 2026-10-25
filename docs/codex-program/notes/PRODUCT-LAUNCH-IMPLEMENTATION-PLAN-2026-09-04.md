@@ -6474,8 +6474,10 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       page renders that need the same CSS toolchain — identical on the
       pre-session commit 89d53f14, run in a clean worktree beside this one.
       So the only section 9 checks this machine can pass are the behaviour
-      and authentication tests; the build, the database job and the secret
-      scan need CI. Ben's to fix: the GitHub account's billing. (b) A second
+      and authentication tests and a tracked-tree scan for key-shaped
+      strings (run here over every tracked file: none, and this session
+      wrote none — the tokens Ben sent live only in this session and in
+      /tmp); the build, the database job and the full secret scan need CI. Ben's to fix: the GitHub account's billing. (b) A second
       Vercel project, precedent-machine-restored-20260812, is connected
       to the same repository: every push of this session created a
       "Preview - precedent-machine-restored-20260812" deployment beside
