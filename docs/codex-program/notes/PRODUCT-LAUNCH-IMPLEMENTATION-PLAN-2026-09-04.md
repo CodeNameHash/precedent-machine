@@ -6648,7 +6648,19 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       stage (so it answered 500 whether or not the bug was present) and the
       bracket test accepted a dropped line; both are rewritten, and the
       inline reply read, the build-time save and the old payload now have
-      tests of their own. Not changed: the reviewer found the staging skip,
+      tests of their own. One risk the second review raised as its finding 5
+      is closed too: a review session starts at version 0, so the version
+      check cannot tell a projection built before the session was
+      initialised from one built after it, and the page's review block
+      changes from empty to the session's items; `initialiseReview`
+      (lib/product/phase-3-store.js) now marks the projection stale, which
+      is the only signal that can (test). Re-read against both stored runs
+      before the push: of the summaries the runs kept (839 on Claude
+      88d4032a, 627 on DeepSeek 34847358), none is refused by the stricter
+      locator, minimum-content or abbreviation rules, none exceeds the
+      24-word cap, and none ends on an abbreviation; the 19 the Claude run
+      dropped come out 18 kept and 1 repaired, so the rules change nothing
+      that was already good. Not changed: the reviewer found the staging skip,
       the before/after retry comparison, the publish/restore staleness and
       the read-model SQL sound, and it did not execute the staging SQL or
       the migration on a database.
