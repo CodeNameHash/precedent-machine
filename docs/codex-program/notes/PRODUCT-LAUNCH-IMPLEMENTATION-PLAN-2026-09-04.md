@@ -7324,7 +7324,7 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       `DATABASE_ERROR: Could not find the table 'public.product_run_access'
       in the schema cache` in under a second — a table that has existed
       since September and that every earlier request in this session read
-      through. The first failure was the PUBLISH at 19:11 UTC (hidden behind
+      through. The first failure was the PUBLISH at 03:11 UTC on 2026-10-25 (23:11 EDT, hidden behind
       the opaque 500 of (279)); my last successful save was version 13 at
       19:07. Nothing in the code changed between those minutes: the
       candidates are a Supabase project pause/restart (the free tier pauses
@@ -7397,9 +7397,9 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       UNRESOLVED note (must be refused). The other gap from the review is
       unchanged and is for Ben: the evaluate and activate steps belong to
       the review page, where the attestations are made, not to a script.
-      (283) 2026-10-26 00:10 EDT (the manager), work package 51 part 3:
+      (283) 2026-10-25 00:10 EDT (the manager), work package 51 part 3:
       the morning's sequence, in order, with the state each step starts from.
-      The database has been down since 19:11 UTC (280) — the probe has
+      The database has been down since 03:11 UTC (23:11 EDT) that night (280) — the probe has
       logged 500 every five minutes since (03:22 to 03:57 UTC) — so nothing
       product-side has moved for an hour. When it is back:
       (1) Supabase dashboard: reload the schema cache (or restart the
@@ -7426,7 +7426,7 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       review if a second pass is wanted — the driver is the same command.
       Nothing here is new work: every step is built, tested and recorded;
       this is the order.
-      (284) 2026-10-26 00:50 EDT (the manager), work package 51 part 4:
+      (284) 2026-10-25 00:50 EDT (the manager), work package 51 part 4:
       the database is back for reads and the publish is refused by the
       origin, not by the review. At 04:33 UTC the review read answered 200
       with 22,148,110 bytes (version 13, 2,398 items, 2,060 ACCEPTED and 338
@@ -7453,7 +7453,7 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       back or never ran), so retrying is safe and nothing downstream has to
       be undone. A retry loop is trying every four minutes and logging to
       /tmp/pm/publish-retry.log.
-      (285) 2026-10-26 01:05 EDT (the manager), work package 52: why the
+      (285) 2026-10-25 01:05 EDT (the manager), work package 52: why the
       publish cannot pass the REST proxy, and the direct connection that can.
       The evidence: the review reads fine (22 MB, 200), the batch saves
       earlier took 50-65 s and succeeded, and every PUBLISH attempt answers
@@ -7485,7 +7485,7 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       computes "publish would set status PUBLISHED with 858 facts" — the
       run's own valid-fact count, so the REST half of the script and the
       command layer agree with the route's.
-      (286) 2026-10-26 01:05 EDT (the manager), work package 52 part 2:
+      (286) 2026-10-25 01:05 EDT (the manager), work package 52 part 2:
       the publish's failure named exactly — the database's own statement
       timeout. The retry at 05:02 UTC came back, for the first time without
       the proxy's HTML, as `DATABASE_ERROR: canceling statement due to
@@ -7512,7 +7512,7 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       the payload once (it already exists in product_proposals) and giving
       the item a hash or a reference would cut the publish's work by about
       three quarters before any other change.
-      (287) 2026-10-26 01:08 EDT (the manager), work package 52 part 3:
+      (287) 2026-10-25 01:08 EDT (the manager), work package 52 part 3:
       what the release evaluation will ask for, read from the code so the
       morning is not a surprise. After the publish, `EVALUATE_RELEASE`
       refuses without the lawyer's own identity and two attestations
