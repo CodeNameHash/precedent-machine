@@ -6703,6 +6703,28 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       score should guess; the severity-weighted recall and the UNRESOLVED
       count of the next two Phase 5 items wait on Ben's marks in this
       report.
+      (258) 2026-10-25 06:10 UTC (the manager): a broad local sweep, and
+      the one regression it caught. Every product suite this machine can
+      run without a database was run file by file with a 60-second
+      watchdog (88 files; the -db files, phase-2, phase-4, phase-6,
+      run-replay, move-to-production, the calibration and the durability
+      test excluded): 83 green, 5 red. Four of the red are pre-existing on
+      the pre-session commit 89d53f14, proved in a clean worktree beside
+      this one — product-intake-panel-run-identity (9/1, a source-regex
+      assertion on ReviewWorkspace.jsx text the PW work changed),
+      product-legal-schema-v2 (4/1), product-phase-3 (26/1, the same
+      source-regex class) and product-table-shapes (55/3, the generator
+      determinism checks) — and they are the class section 9 lists for
+      removal from blocking CI. The fifth was a regression of (255):
+      product-cross-section-relationship-resolver failed on
+      "this.client.from(...).select is not a function", because
+      `hasFinalizedDraft` assumed a client double with reads; it now
+      returns "no draft row known" when the client has no `select` and
+      stages as the store always did, so that test still proves the
+      staging path (7 of 7), and the finalisation-retry tests still prove
+      the skip (7 of 7). Lesson for the next session: the files this work
+      touches are worth a sweep wider than the touched set — this one was
+      found by a suite no finding named.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
