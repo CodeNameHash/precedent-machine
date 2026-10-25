@@ -6842,6 +6842,27 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       on the draft and review path green (283 tests). Not changed: the extraction
       instruction, the thin-answer floors and the page; the sentence list
       on the lawyer preview remains a product decision for Ben.
+      (262) 2026-10-25 09:15 UTC (the manager), work package 44: Ben's
+      seven Apogee notes reconciled against both runs, side by side. The
+      Claude reconciliation of (257) is joined by the DeepSeek one, from
+      the same notes on the same agreement (`reports/reconcile/
+      APOGEE-DEEPSEEK-SAMPLE-RECONCILIATION-2026-10-25.md`, whose header
+      carries the comparison table and the command that reproduces it).
+      The counts: Claude 88d4032a 4 MATCHED, 2 PARTIAL, 1 UNMATCHED;
+      DeepSeek 34847358 3 MATCHED, 3 PARTIAL, 1 UNMATCHED; MISSING 0 and
+      GAP 0 on both. Read honestly, the difference is not coverage: the one
+      note that changes (5.2(b)(viii), the capex cap) is a matcher word-
+      overlap difference — both runs carry the restriction with both caps —
+      so on Ben's seven points the two tiers are equal. What separates them
+      is what the plan already recorded from other evidence: the held rate
+      (11 of 869, 1.3 per cent, against 116 of 874, 13.3 per cent; (245))
+      and the sentence-level silence 5.16 and 5.4(a) show on DeepSeek and
+      Claude does not have ((260), (261)). That is the fair statement for
+      the tier decision: DeepSeek finds the same provisions at a far weaker
+      citation discipline, not fewer provisions on the lawyer's own list.
+      The reconciliation is a word-overlap read and its statuses are
+      comparative, never a legal acceptance; Ben's severity and acceptance
+      columns are open in both reports.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
