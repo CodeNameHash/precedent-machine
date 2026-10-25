@@ -7149,6 +7149,27 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       change what 253 items on the run Ben is about to read would show, and
       a fact's table row is a shape decision, so they wait for his read
       rather than land under him (section 12's "a fix from that review").
+      (272) 2026-10-25 14:30 UTC (the manager), work package 48 part 6:
+      what the release bar costs in the lawyer loop, counted. `PUBLISH`
+      refuses while any item is PENDING (`lib/product/review-state.js`, the
+      REVIEW_PENDING_ITEMS check), so the queue *is* the bar, and the two
+      live runs size it exactly. Claude 88d4032a, 2,398 items: 869
+      PROPOSAL, 662 COVERAGE, 535 ISSUE, 200 RELATIONSHIP, 127
+      EXCEPTION_LINK, 5 IMMATERIAL_ROUTING; of the 535 issues, **472 are
+      NOTES** (how the machine built the fact — a dropped conclusion cell,
+      a normalised lean answer, a list word order), 43 VALIDATION (held
+      facts) and 20 COVERAGE. DeepSeek 34847358, 3,147: 1,101 COVERAGE,
+      874 PROPOSAL, 820 ISSUE (445 VALIDATION, 336 NOTE, 39 COVERAGE), 287
+      RELATIONSHIP, 61 EXCEPTION_LINK, 4 IMMATERIAL_ROUTING. So a fifth of
+      the decisions the better run asks for are the machine explaining
+      itself, each costing the lawyer the same click as a fact decision,
+      and the weaker tier's extra 445 VALIDATIONs (held facts) are real
+      work rather than noise. That is a release-bar question, not a code
+      question: whether a NOTE must be decided one by one or may be
+      acknowledged in one action is Ben's call (the plan's "weakening a
+      release bar" ask), and it decides whether the first review is a
+      20-hour queue or an afternoon. Nothing changed in code; the numbers
+      are from the two live review reads of (270).
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
