@@ -22,9 +22,11 @@ const item = (id, kind, decision = 'PENDING', original = {}) => ({ item_id: id, 
 
 test('every pending item is accepted, notes included, in batches whose version comes from the answer', async () => {
   const items = [
-    item('p1', 'PROPOSAL'), item('p2', 'PROPOSAL'), item('p3', 'PROPOSAL'),
+    item('p1', 'PROPOSAL', 'PENDING', { validation_status: 'VALID' }),
+    item('p2', 'PROPOSAL', 'PENDING', { validation_status: 'VALID' }),
+    item('p3', 'PROPOSAL', 'PENDING', { validation_status: 'VALID' }),
     item('n1', 'ISSUE', 'PENDING', { kind: 'NOTE', code: 'CONCLUSIONS_CELLS_DROPPED' }),
-    item('d1', 'PROPOSAL', 'ACCEPTED'),
+    item('d1', 'PROPOSAL', 'ACCEPTED', { validation_status: 'VALID' }),
   ];
   const calls = [];
   let version = 0;
@@ -91,7 +93,7 @@ test('a proposal whose recorded group has another family is repaired with an edi
   assert.equal(repairs[0].statement, 'Legal fact.');
 });
 
-test('the release steps run in order and the drill rolls back and activates again', async () => {
+test('publish stops at publication unless the caller holds the lawyer release payload', async () => {
   const seen = [];
   let version = 0;
   let persisted = reviewWith([]);
@@ -101,15 +103,28 @@ test('the release steps run in order and the drill rolls back and activates agai
     version += 1;
     const state = { ...persisted.state };
     if (command.type === 'PUBLISH') state.status = 'PUBLISHED';
+    if (command.type === 'EVALUATE_RELEASE') state.release_evaluation = { passed: true };
     if (command.type === 'ACTIVATE_RELEASE') state.active_release_id = `release-${version}`;
     if (command.type === 'CONFIRM_AGREEMENT_COVERAGE') state.agreement_coverage = { decision: 'ACCEPTED' };
-    persisted = { ...reviewWith(state.items, version), status: state.status, state, active_release_id: state.active_release_id };
+    persisted = { ...reviewWith(state.items, version), status: state.status, state, active_release_id: state.active_release_id, release_evaluation: state.release_evaluation };
     return { status: 200, body: { review: persisted } };
   };
-  const result = await publishAndRelease({ fetchJson, runId: 'run-1', review: reviewWith([]), drill: true });
-  assert.deepEqual(seen, ['CONFIRM_AGREEMENT_COVERAGE', 'PUBLISH', 'EVALUATE_RELEASE', 'ACTIVATE_RELEASE', 'ROLLBACK_RELEASE', 'ACTIVATE_RELEASE']);
-  assert.deepEqual(result.steps.map((step) => step.step), ['coverage', 'publish', 'evaluate', 'activate', 'rollback', 'activate again']);
-  assert.equal(result.review.status, 'PUBLISHED');
+  // Without a release payload: coverage, publish, and a note that the
+  // release steps need the lawyer.
+  const published = await publishAndRelease({ fetchJson, runId: 'run-1', review: reviewWith([]) });
+  assert.deepEqual(seen, ['CONFIRM_AGREEMENT_COVERAGE', 'PUBLISH']);
+  assert.deepEqual(published.steps.map((step) => step.step), ['coverage', 'publish', 'release']);
+  assert.equal(published.steps[2].status, 'NOT_TAKEN');
+  assert.match(published.steps[2].note, /lawyer/);
+  // With the payload, the steps run in order and the drill rolls back.
+  seen.length = 0;
+  const released = await publishAndRelease({
+    fetchJson, runId: 'run-1', review: reviewWith([]),
+    release: { evaluate: { reference_samples: [], lawyer_attestation: true, reference_samples_attestation: true }, activate: { release_id: 'release-x' }, drill: true },
+  });
+  assert.deepEqual(seen, ['CONFIRM_AGREEMENT_COVERAGE', 'PUBLISH', 'EVALUATE_RELEASE', 'ACTIVATE_RELEASE', 'ROLLBACK_RELEASE']);
+  assert.deepEqual(released.steps.map((step) => step.step), ['coverage', 'publish', 'evaluate', 'activate', 'rollback']);
+  assert.equal(released.steps[2].passed, true);
 });
 
 test('chunks never loses an item and a server refusal names its code', async () => {

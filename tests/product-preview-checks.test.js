@@ -74,7 +74,9 @@ function fetchFor(calls, { modelSecondRead = 'MODEL' } = {}) {
 
 test('the credential goes as a bearer, as a cookie, or both when it has the session shape; no header without one', () => {
   assert.deepEqual(headersFor({ token: 'a'.repeat(40) }), { authorization: `Bearer ${'a'.repeat(40)}` });
-  assert.deepEqual(headersFor({ token: 'one.two.three' }), { authorization: 'Bearer one.two.three', cookie: 'pm_session=one.two.three' });
+  // A session-shaped value goes as the cookie only: a bearer is checked
+  // first and refused on a mismatch without falling back (finding 9).
+  assert.deepEqual(headersFor({ token: 'one.two.three' }), { cookie: 'pm_session=one.two.three' });
   assert.deepEqual(headersFor({ token: 'pm_session=one.two.three' }), { cookie: 'pm_session=one.two.three' });
   assert.deepEqual(headersFor({ token: 'a'.repeat(40), bypass: 'bypass-value' }), { 'x-vercel-protection-bypass': 'bypass-value', authorization: `Bearer ${'a'.repeat(40)}` });
   assert.deepEqual(headersFor({}), {});
@@ -160,7 +162,7 @@ test('the check reports the review state beside the preview: version, decisions 
     return { status: 200, text: async () => '{}', headers: { get: () => null } };
   };
   const report = await runPreviewChecks({ baseUrl: DEFAULT_BASE_URL, token: 't'.repeat(40), runs: ['some-run'], fetchImpl });
-  assert.deepEqual(report[0].reviewRead, { status: 200, seconds: report[0].reviewRead.seconds, version: 13, review_status: 'DRAFT', items: 4, accepted: 2, rejected: 1, pending: 1, unresolved: 0, coverage: 'ACCEPTED' });
+  assert.deepEqual(report[0].reviewRead, { status: 200, seconds: report[0].reviewRead.seconds, version: 13, review_status: 'DRAFT', items: 4, accepted: 2, rejected: 1, pending: 1, unresolved: 0, notes: 0, coverage: 'ACCEPTED' });
   const text = renderPreviewChecks(report);
   assert.match(text, /review: version 13, DRAFT, 4 items \(2 accepted, 1 rejected, 1 pending, 0 unresolved\), coverage ACCEPTED/);
 });

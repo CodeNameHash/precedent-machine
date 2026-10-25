@@ -96,4 +96,14 @@ test('a section keeps its machine notes behind one line and shows the items that
   assert.match(markup, /Show 2 machine notes/, 'the notes are counted and hidden behind one line');
   assert.match(markup, /Invalid fact components/, 'the item that blocks publication is visible');
   assert.doesNotMatch(markup, /Conclusions cells dropped/, 'a note is not in the list until asked for');
+  // An UNRESOLVED note blocks the release, so it is never hidden.
+  const withUnresolved = renderToStaticMarkup(React.createElement(SectionReviewItems, {
+    items: [
+      { ...items[1], decision: 'UNRESOLVED' },
+      { ...items[0], item_id: 'v1' },
+    ],
+    analysis: { sections: [], proposals: [], spans: [] }, busy: false, onSource() {}, onDecision() {},
+  }));
+  assert.match(withUnresolved, /Conclusions cells dropped/, 'an unresolved note stays in the list');
+  assert.doesNotMatch(withUnresolved, /machine note/, 'and it is not counted as a hidden note');
 });

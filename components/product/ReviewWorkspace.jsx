@@ -133,7 +133,12 @@ function RecordedReviewDetail({ message }) {
 // to read, and still decides like any other item.
 export function SectionReviewItems({ items, analysis, busy, onSource, onDecision }) {
   const [showNotes, setShowNotes] = useState(false);
-  const notes = items.filter((item) => item.kind === 'ISSUE' && item.original?.kind === 'NOTE');
+  // A note hides only when it cannot hold publication: a pending note does
+  // not (Ben, 2026-10-25) and a rejected one is decided. An UNRESOLVED note
+  // blocks the release, so it stays in the list where the lawyer can see it
+  // (the review of 2026-10-25, finding 7).
+  const notes = items.filter((item) => item.kind === 'ISSUE' && item.original?.kind === 'NOTE'
+    && ['PENDING', 'REJECTED'].includes(item.decision));
   const hidden = new Set(notes.map((item) => item.item_id));
   const shown = showNotes ? items : items.filter((item) => !hidden.has(item.item_id));
   return <>

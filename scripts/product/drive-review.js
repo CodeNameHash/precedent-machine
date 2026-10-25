@@ -11,10 +11,13 @@
 //     node scripts/product/drive-review.js --run <run-id> [--base-url <url>] [--drill] [--dry-run]
 //
 // It decides ACCEPTED for every pending item, notes included, so the queue
-// empties; --dry-run prints what it would do and touches nothing. This is
-// the harness driving the loop with the owner's permission (Ben, 2026-10-25),
-// never a lawyer's review: every decision is recorded against the actor the
-// token names, and the review page shows them as that actor's.
+// empties; --dry-run prints what it would do. This is the harness driving
+// the loop with the owner's permission (Ben, 2026-10-25), never a lawyer's
+// review: every decision is recorded against the actor the token names, and
+// the review page shows them as that actor's. The driver stops at
+// publication: the release evaluation needs the lawyer's own attestations
+// and the activation names a release, so those two steps are taken in the
+// review page's release panel, not here.
 
 const { headersFor, DEFAULT_BASE_URL } = require('../../lib/product/preview-checks');
 const {
@@ -73,8 +76,8 @@ function parseArgs(argv) {
   const repaired = await repairGroups({ fetchJson, runId: args.run, review, analysis: read.body.analysis });
   review = repaired.review;
   if (repaired.repairs) console.log(`repaired ${repaired.repairs} proposition-group mismatches`);
-  const released = await publishAndRelease({ fetchJson, runId: args.run, review, drill: args.drill });
-  for (const step of released.steps) console.log(`  ${step.step}: ${step.status}${step.active ? ` (${step.active})` : ''}`);
+  const released = await publishAndRelease({ fetchJson, runId: args.run, review });
+  for (const step of released.steps) console.log(`  ${step.step}: ${step.status}${step.active ? ` (${step.active})` : ''}${step.note ? ` — ${step.note}` : ''}`);
   const published = await fetchJson('/api/product/published-facts');
   const source = (published.body?.agreements || []).find((entry) => entry.run_id === args.run) || null;
   console.log(`published: ${published.status}, this run ${source ? `present (${source.fact_count ?? '?'} facts)` : 'not listed'}`);

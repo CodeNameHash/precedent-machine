@@ -691,3 +691,20 @@ test('an as-drafted cell needs only its components, not text of its own', () => 
     assert.ok(problems.some((problem) => /value column needs/.test(problem)), problems.join(' | '));
   }
 });
+
+// The exported renderer must not show a dash for the as-drafted cell the
+// validator now allows without text: the page shows the fact's own words, so
+// a helper that prints "—" reads as "absent" (the review of 2026-10-25,
+// finding 16).
+test('an as-drafted cell with no text renders empty in the helper, not a dash', () => {
+  const fact = {
+    family_key: 'INTERIM_OPERATING', subtype_key: 'RESTRICTIVE_COVENANT', fact_type: 'INTERIM_OPERATING_RESTRICTIVE_COVENANT',
+    headline: { label: 'Privacy', summary: 'The Company does not amend its privacy policies' },
+    components: [{ component_id: 'c1', kind: 'OPERATION', text: 'shall not amend or modify any privacy policies', origin: 'OWN', start_byte: 0, end_byte: 45 }],
+    conclusions: { table_key: 'ioc-exceptions-negative-covenants', row_label: 'Charter / Bylaws Amendments', cells: [{ column_id: 'asDrafted', component_ids: ['c1'] }] },
+  };
+  const rendered = renderConclusionCells(fact, tableShapes);
+  const cell = rendered.find((entry) => entry.column_id === 'asDrafted');
+  assert.ok(cell, 'the as-drafted column renders');
+  assert.equal(cell.text, '');
+});

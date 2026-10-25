@@ -7339,6 +7339,64 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       restore it: there is no Supabase token, connection string or service
       key on this machine, and the deployment's own reads are what is
       failing.
+      (281) 2026-10-25 20:40 UTC (the manager), work package 51: a second
+      focused review of tonight's loop code, and its seventeen findings
+      worked through. The ones that mattered: the note exemption existed
+      only in JavaScript while the database still refused a publish with a
+      pending note, so the page offered a publication the server rejected —
+      fixed by a migration (282), because the JS is the right rule and the
+      SQL is the wrong one; the driver's evaluate and activate steps could
+      never have passed the real command layer (EVALUATE_RELEASE needs the
+      lawyer's attestations and reference samples, ACTIVATE_RELEASE needs a
+      named release), so the driver now stops at publication and says the
+      release panel is where those two happen; every driver idempotency key
+      was a fixed literal, and because the database deduplicates by key
+      before the version check a second run was a silent 200 no-op — every
+      key now carries the version; the 5xx retry covered publish, which
+      cannot be replayed (the handler applies the command before the
+      database's idempotency check), so publish no longer retries; the
+      batch's audit row kept only a count and a type list, losing which
+      decision was made on which item and making two different batches of
+      equal size the same action — it now keeps every command; an UNRESOLVED
+      machine note (the one note kind that does hold publication) was hidden
+      behind the notes toggle — only pending and rejected notes hide now;
+      the group-mismatch repair sent the machine's original roles over a
+      lawyer's edited ones and skipped a group the analysis no longer
+      carries, and it sent all repairs in one batch past the 500 limit — all
+      three fixed; a session-shaped credential was sent as both a bearer and
+      a cookie although the bearer is checked first and refused on a
+      mismatch, so the documented cookie path could never authenticate — it
+      is cookie-only now; the live check counted pending notes as pending
+      decisions; the build script's signal traps cleaned up but resumed the
+      build, and a dangling symlink was treated as an installed package; and
+      the exported conclusion renderer showed an em dash for the as-drafted
+      cell it no longer requires text for. Three smaller ones: the held test
+      was narrower than the server's rule (now anything not VALID), a
+      DECIDE_RELATIONSHIP command was listed batchable but has no
+      implementation (removed), and two dead branches went. Verification:
+      the eleven touched suites (226 tests) green and `check-build.sh` exit
+      0.
+      (282) 2026-10-25 20:55 UTC (the manager), work package 51 part 2:
+      the note exemption written into the database, waiting to be applied,
+      and the review's remaining gap. `supabase/migrations/
+      20261025003000_product_note_exemption.sql` replaces the two functions
+      that carry the publish rule — `product_phase3_save_review_legacy`
+      (the PUBLISH gate, the test that actually fires: the validator's own
+      p_for_publish branch is called with false by its wrapper) and
+      `product_phase3_validate_review_immutable_sources` (the same test,
+      patched for consistency) — so that a pending NOTE no longer blocks
+      while an UNRESOLVED one still does. Both bodies are the current
+      definitions with only those two predicates changed (verified by diff:
+      three and five changed lines including the header and the rename).
+      It is not applied: the database is down (280) and this machine has no
+      credential. Until it is applied, the JavaScript rule and the database
+      disagree, so a lawyer who leaves a note pending and presses publish
+      gets the database's "review is not publishable" as a 422 — the harness
+      does not hit it because the driver accepts every note. After applying,
+      verify with a publish holding one pending note (must succeed) and one
+      UNRESOLVED note (must be refused). The other gap from the review is
+      unchanged and is for Ben: the evaluate and activate steps belong to
+      the review page, where the attestations are made, not to a script.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is

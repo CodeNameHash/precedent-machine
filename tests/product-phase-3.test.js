@@ -1020,7 +1020,10 @@ test('a batch of item decisions is applied in one save and recorded as one event
   for (const item of proposals) {
     assert.equal(postResponse.body.review.state.items.find((entry) => entry.item_id === item.item_id).decision, 'ACCEPTED');
   }
-  assert.deepEqual(events, [{ type: 'BATCH', count: 2, types: ['DECIDE_ITEM'] }]);
+  assert.equal(events.length, 1);
+  assert.equal(events[0].type, 'BATCH');
+  assert.deepEqual(events[0].commands.map((command) => [command.item_id, command.decision]),
+    proposals.map((item) => [item.item_id, 'ACCEPTED']), 'the audit row keeps every decision');
   // Publication and release are their own events, never batchable.
   const refused = responseDouble();
   await handler({ method: 'POST', query: { id: analysis.analysis_run_id }, headers: { 'x-pm-csrf': 'same-origin' }, body: {

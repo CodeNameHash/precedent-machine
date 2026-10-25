@@ -25,10 +25,14 @@ stub() {
   # Never touch an install that is really there: on this machine the package
   # is absent, but on a full install (and through pnpm's store symlink) the
   # stub would overwrite and the cleanup would delete it.
-  if [ -e "node_modules/$name" ] || [ -L "node_modules/$name" ]; then
+  # A dangling symlink is not an install: stubbing beside it makes the
+  # PostCSS step resolve, where keeping it would fail the build (the review
+  # of 2026-10-25, finding 15).
+  if [ -e "node_modules/$name" ]; then
     echo "keeping the installed node_modules/$name"
     return 0
   fi
+  [ -L "node_modules/$name" ] && rm -f "node_modules/$name"
   mkdir -p "node_modules/$name"
   printf '{ "name": "%s", "version": "0.0.0-stub", "main": "index.js" }\n' "$name" > "node_modules/$name/package.json"
   printf "module.exports = function () { return { postcssPlugin: '%s-stub', Once() {} }; };\nmodule.exports.postcss = true;\n" "$name" > "node_modules/$name/index.js"
@@ -36,7 +40,9 @@ stub() {
 }
 
 cleanup() { for path in "${CREATED[@]:-}"; do [ -n "$path" ] && rm -rf "$path"; done; }
-trap cleanup EXIT INT TERM
+# A signal must stop the build, not resume it with one stub removed.
+trap 'cleanup; exit 130' INT TERM
+trap cleanup EXIT
 
 stub tailwindcss
 stub autoprefixer
