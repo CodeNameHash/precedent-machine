@@ -7447,7 +7447,12 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       publishing: the project healthy, or its limits raised, then
       `drive-review.js --run 88d4032a…` again; it confirms nothing (the
       queue is empty) and goes straight to PUBLISH. The review remains at
-      version 13, fully decided, exactly as it was.
+      version 13, fully decided, exactly as it was. Checked after the failed
+      attempts: status DRAFT, **0 publications, 0 releases** — the 520
+      attempts left no partial publication (the RPC's transaction rolled
+      back or never ran), so retrying is safe and nothing downstream has to
+      be undone. A retry loop is trying every four minutes and logging to
+      /tmp/pm/publish-retry.log.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
