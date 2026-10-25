@@ -6303,7 +6303,7 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       and tests/product-fact-components-extraction.test.js (the note on a
       fact that stays VALID, the trailing period, the locator in a
       sentence kept and a locator alone dropped).
-      (249) 2026-10-24 24:20 UTC (the manager), work package 36: the
+      (249) 2026-10-24 23:59 UTC (the manager), work package 36: the
       individual-and-aggregate caps rule Ben decided in (239) is in the
       extractor instruction, so the contract is
       PRODUCT_ALL_FAMILY_EXTRACTOR/V11. His words: "I think the word \"in
@@ -6335,7 +6335,7 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       tests/product-ablation-wake.test.js,
       tests/product-lean-request-profile.test.js and
       tests/product-deepseek-api-provider.test.js.
-      (250) 2026-10-25 00:15 UTC (the manager), work package 37: the draft
+      (250) 2026-10-25 00:20 UTC (the manager), work package 37: the draft
       finalisation retries itself and an applied retry is never reported as
       a failure. The evidence is (241) and (245): 88d4032a finalised, a
       DATABASE_ERROR ("upstream request timeout") was written against the
@@ -6425,7 +6425,7 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       TEST_PGLITE_MODULE), so the row's own effect is proven by the same
       migration harness in CI and the live preview read is unmeasured
       until the deployment has both the build and the migration.
-      (252) 2026-10-25 00:45 UTC (the manager): the 5.3 held fact of
+      (252) 2026-10-25 01:00 UTC (the manager): the 5.3 held fact of
       (242)(e), read. (242) recorded it as "5.3's 'value multiple period
       literals' (one period component holding more than one period)"
       and left it open. The stored draft says otherwise. The held fact is
