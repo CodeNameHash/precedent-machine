@@ -117,3 +117,20 @@ test('chunks never loses an item and a server refusal names its code', async () 
   const fetchJson = async () => ({ status: 422, body: { error: 'REVIEW_PENDING_ITEMS', message: '1' } });
   await assert.rejects(() => acceptAll({ fetchJson, runId: 'r', review: reviewWith([item('p1', 'PROPOSAL')]) }), (error) => error.code === 'REVIEW_PENDING_ITEMS');
 });
+
+test('a server error is retried once with the same idempotency key, and a second failure is reported', async () => {
+  const calls = [];
+  const fetchJson = async (path, { body }) => {
+    calls.push(body.idempotency_key);
+    if (calls.length === 1) return { status: 500, body: { error: 'DATABASE_ERROR', message: 'schema cache' } };
+    return { status: 200, body: { review: reviewWith([], 1) } };
+  };
+  const { postCommand } = require('../lib/product/review-driver');
+  const review = await postCommand({ fetchJson, runId: 'r', version: 0, idempotencyKey: 'k-1', body: { command: { type: 'PUBLISH' } } });
+  assert.equal(review.version, 1);
+  assert.deepEqual(calls, ['k-1', 'k-1'], 'the same key on both attempts');
+  // A second failure surfaces the message rather than a retry loop.
+  const alwaysFails = async () => ({ status: 500, body: { error: 'DATABASE_ERROR', message: 'schema cache' } });
+  await assert.rejects(() => postCommand({ fetchJson: alwaysFails, runId: 'r', version: 0, idempotencyKey: 'k-2', body: { command: { type: 'PUBLISH' } } }),
+    (error) => error.code === 'DATABASE_ERROR' && /schema cache/.test(error.message));
+});
