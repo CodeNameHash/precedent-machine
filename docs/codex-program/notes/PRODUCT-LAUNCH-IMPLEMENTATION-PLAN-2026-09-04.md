@@ -7426,6 +7426,28 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       review if a second pass is wanted — the driver is the same command.
       Nothing here is new work: every step is built, tested and recorded;
       this is the order.
+      (284) 2026-10-26 00:50 EDT (the manager), work package 51 part 4:
+      the database is back for reads and the publish is refused by the
+      origin, not by the review. At 04:33 UTC the review read answered 200
+      with 22,148,110 bytes (version 13, 2,398 items, 2,060 ACCEPTED and 338
+      REJECTED, coverage ACCEPTED), and three reads in a row answered 200 —
+      so the schema-cache failure of (280) is over. **Every publish attempt
+      then failed with a Cloudflare 520** from
+      ecrtoofsyxozazkvsvcl.supabase.co ("Web server is returning an unknown
+      error", the origin not answering within Cloudflare's limit): the driver
+      at 04:34 and 04:40, and three bare POSTs at 04:41-04:47, each answered
+      500 with that HTML body. Reads succeed and the heavy write does not,
+      which fits the batch saves of 03:55-04:05: seven of them, 50-65
+      seconds each, succeeded — the write path is at the edge of what the
+      project's origin tolerates, and PUBLISH adds the publication and
+      release inserts and the publish-time validation on top. This is a
+      Supabase-side limit (project resources, statement timeout or a cold
+      project after the outage), not a review error: the same state
+      publishes locally with 858 facts (277). What the morning needs before
+      publishing: the project healthy, or its limits raised, then
+      `drive-review.js --run 88d4032a…` again; it confirms nothing (the
+      queue is empty) and goes straight to PUBLISH. The review remains at
+      version 13, fully decided, exactly as it was.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
