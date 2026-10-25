@@ -7485,6 +7485,26 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       computes "publish would set status PUBLISHED with 858 facts" — the
       run's own valid-fact count, so the REST half of the script and the
       command layer agree with the route's.
+      (286) 2026-10-26 01:05 EDT (the manager), work package 52 part 2:
+      the publish's failure named exactly — the database's own statement
+      timeout. The retry at 05:02 UTC came back, for the first time without
+      the proxy's HTML, as `DATABASE_ERROR: canceling statement due to
+      statement timeout`. So the transaction runs past the project's
+      statement limit and Postgres cancels it; the Cloudflare 520s of
+      (284)/(285) were the same overrun seen through the proxy. That fits
+      every measurement: the batch saves of 50-65 s stayed under the limit
+      and committed, the publish's extra work (the publish-time validation
+      over a 7 MB state, the two 7 MB writes and the publication and release
+      inserts) crosses it at ~88 s, and the review stays DRAFT with **0
+      publications** because the cancelled transaction rolls back — nothing
+      partial, so retrying remains safe. Two fixes, both Ben's: raise the
+      statement timeout for the API role (Supabase allows it per role), or
+      publish over a direct connection, where the timeout is the `postgres`
+      role's rather than the API's — that is what scripts/product/
+      publish-direct.js does (285), verified in dry run at 858 facts. The
+      durable fix stays what (285) says: stop rewriting the whole state per
+      save. This is the first time the cause is a database statement rather
+      than an opaque proxy page, and it is the line to hand over.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
