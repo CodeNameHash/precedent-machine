@@ -6827,8 +6827,12 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       synthetic 5.4-shaped section (limb (a) uncited while (b) is cited →
       the issue, both cited → none, no proposals → none, a heading → not
       counted), and a manual end-to-end run of the conduct-of-business
-      fixture's 5.3 with a one-fact answer producing the issue. 14 suites
-      on the draft path green (267 tests). Not changed: the extraction
+      fixture's 5.3 with a one-fact answer producing the issue, then the
+      whole fixture draft (every substantive section built, two of them
+      with a short answer) assembled and validated with two such issues
+      present and no validation error — so the issue travels through
+      finalisation like any other. 14 suites on the draft path green (267
+      tests). Not changed: the extraction
       instruction, the thin-answer floors and the page; the sentence list
       on the lawyer preview remains a product decision for Ben.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
