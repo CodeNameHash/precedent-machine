@@ -6710,12 +6710,14 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       run-replay, move-to-production, the calibration and the durability
       test excluded): 83 green, 5 red. Four of the red are pre-existing on
       the pre-session commit 89d53f14, proved in a clean worktree beside
-      this one — product-intake-panel-run-identity (9/1, a source-regex
-      assertion on ReviewWorkspace.jsx text the PW work changed),
-      product-legal-schema-v2 (4/1), product-phase-3 (26/1, the same
-      source-regex class) and product-table-shapes (55/3, the generator
-      determinism checks) — and they are the class section 9 lists for
-      removal from blocking CI. The fifth was a regression of (255):
+      this one — product-intake-panel-run-identity (9/1) and
+      product-phase-3 (26/1), both source-regex assertions on
+      ReviewWorkspace.jsx text the PW work changed. The other two,
+      product-legal-schema-v2 (4/1) and product-table-shapes (55/3), were
+      the sweep's own environment, not the code: both spawn `node`, and
+      this machine runs its tests through /tmp/dsh-node-unsigned with no
+      `node` on PATH; with a `node` shim on PATH they are 63 of 63 green
+      (finding (259)). The fifth was a regression of (255):
       product-cross-section-relationship-resolver failed on
       "this.client.from(...).select is not a function", because
       `hasFinalizedDraft` assumed a client double with reads; it now
@@ -6725,6 +6727,43 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       the skip (7 of 7). Lesson for the next session: the files this work
       touches are worth a sweep wider than the touched set — this one was
       found by a suite no finding named.
+      (259) 2026-10-25 07:00 UTC (the manager), work package 42: the
+      source-regex checks section 9 says to take out of the suite, taken
+      out — and the last two local reds shown to be the machine, not the
+      code. (a) product-phase-3 carried one test with twenty
+      regular-expression assertions over components/product/
+      ReviewWorkspace.jsx and ProposalCard.jsx ("Finalise inactive
+      candidate", "ROLLBACK_RELEASE", the 90-minute copy, the
+      pending-action signature and more). The PW redesign reworded the
+      controls, so the check failed while the review flow worked — and a
+      copy assertion is not a behaviour assertion. The test is gone. What
+      it protected stays covered at the interfaces that own it: the review
+      HTTP boundary's publish, evaluate, activate and rollback commands
+      earlier in the same suite, and the rendered components in
+      tests/product-review-ui-presentation.test.js (the source-mismatch
+      copy, the evidence selection), tests/product-review-presentation.test.js
+      and tests/product-focused-review-ui.test.js. The two strings it
+      asserted that had no home now have one in a new rendered test,
+      tests/product-review-release-controls.test.js: the review rail's
+      rendered progress ("4 pending", "2 unresolved · 1 held") and the
+      release evaluation panel's form and evaluate control. That file is
+      in `npm run test:active`. (b) product-intake-panel-run-identity's
+      two remaining copy assertions ("Awaiting review:
+      {view.pending_count}", "Marked unresolved: ...") are dropped for the
+      same reason, with the counts now asserted where they render; the
+      suite keeps its identity behaviour (displayIdentityParties on
+      structured values, historical strings and the empty case, and the
+      component's use of it). (c) The other two reds in (258) were the
+      sweep's environment: product-legal-schema-v2 and
+      product-table-shapes spawn `node` to re-run their generators, and
+      this machine runs its tests through /tmp/dsh-node-unsigned with no
+      `node` on PATH. With a `node` shim on PATH both pass (63 of 63), so
+      no change was made for them — the CI runner has node on PATH and has
+      always run them. The local picture now: every product suite this
+      machine can run is green except the ones that need a database, which
+      cannot run here at all, and the ones that hang by design on the
+      heartbeat (phase-2, phase-4, phase-6, run-replay), which are excluded
+      from the sweep.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is

@@ -290,8 +290,10 @@ test('identity parties render structured API values and historical strings', asy
   assert.equal(displayIdentityParties([]), 'Not identified');
   assert.match(reviewSource, /displayIdentityParties\(workspace\.analysis\.source_document\.display_parties \|\| workspace\.analysis\.source_document\.parties/);
   assert.doesNotMatch(reviewSource, /source_document\.parties\?\.join/);
-  assert.match(reviewSource, /Awaiting review: \{view\.pending_count\}/);
-  assert.match(reviewSource, /Marked unresolved: \{view\.unresolved_count\}/);
+  // Section 9: the counts are asserted where they render, not as source
+  // text. The rail's own rendered counts are in
+  // tests/product-review-release-controls.test.js; this suite keeps the
+  // identity behaviour above and the intake panel below.
 });
 
 test('intake submission sends the current routing prompt contract', async () => {

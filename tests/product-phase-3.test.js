@@ -869,33 +869,20 @@ test('review HTTP boundary uses server-derived reviewer identity and processing 
   assert.equal(rejected.body.error, 'LAWYER_ATTESTATION_REQUIRED');
 });
 
-test('Review UI separates candidate finalisation, evaluation, activation and recovery', () => {
-  const source = fs.readFileSync(require.resolve('../components/product/ReviewWorkspace.jsx'), 'utf8');
-  assert.match(source, /Finalise inactive candidate/);
-  assert.match(source, /Activate evaluated release/);
-  assert.match(source, /ROLLBACK_RELEASE/);
-  assert.match(source, /Retry review load/);
-  assert.match(source, /import \{ displaySectionReference \}/);
-  assert.match(source, /displaySectionReference\(section\.section_reference\)/);
-  assert.match(source, /displaySectionReference\(section\.routing\.section_reference\)/);
-  assert.match(source, /pendingAction\.current\?\.signature === signature/);
-  assert.doesNotMatch(source, /90-minute check/);
-  assert.match(source, /There is no 90-minute pass\/fail limit\. Valid timing is still required\./);
-  assert.match(source, /await load\(\)/);
-  assert.match(source, /loadSource\(\).*catch/);
-  assert.match(source, /Entered total:/);
-  assert.match(source, /Measured review duration:/);
-  assert.match(source, /issue_context\.explanation/);
-  assert.match(source, /Recorded detail:/);
-  assert.match(source, /Status:/);
-  assert.match(source, /availableSourceSpans=/);
-  const proposalCard = fs.readFileSync(require.resolve('../components/product/ProposalCard.jsx'), 'utf8');
-  assert.match(proposalCard, /claimed quotes did not match the source/);
-  assert.match(proposalCard, /presentReviewEvidence/);
-  assert.match(proposalCard, /reviewEvidence\.unmatched/);
-  assert.match(proposalCard, /source_span_ids: selectedSourceSpanIds/);
-  assert.match(proposalCard, /proposal\.validation_status !== 'VALID'/);
-});
+// Section 9: a source-code regular-expression check is not a behaviour
+// check and is not kept in the suite. The test that stood here asserted
+// twenty strings inside components/product/ReviewWorkspace.jsx and
+// ProposalCard.jsx (the buttons "Finalise inactive candidate", "Activate
+// evaluated release", "ROLLBACK_RELEASE", the timing copy, the
+// pending-action signature); the PW redesign reworded several of them, so
+// the check failed while the review flow worked. What it protected is
+// covered at the interfaces that own it: the review HTTP boundary's
+// publish, evaluate, activate and rollback commands earlier in this file,
+// and the rendered review components in
+// tests/product-review-ui-presentation.test.js (the source-mismatch copy,
+// the evidence selection), tests/product-review-presentation.test.js and
+// tests/product-focused-review-ui.test.js. The release controls' own copy
+// is asserted where it renders: tests/product-review-release-controls.test.js.
 
 test('run HTTP boundary exposes one resumable step and explicit retry without a detached server task', async () => {
   const runId = analysisFixture().analysis_run_id;
