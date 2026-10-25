@@ -7453,6 +7453,32 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       back or never ran), so retrying is safe and nothing downstream has to
       be undone. A retry loop is trying every four minutes and logging to
       /tmp/pm/publish-retry.log.
+      (285) 2026-10-26 01:05 EDT (the manager), work package 52: why the
+      publish cannot pass the REST proxy, and the direct connection that can.
+      The evidence: the review reads fine (22 MB, 200), the batch saves
+      earlier took 50-65 s and succeeded, and every PUBLISH attempt answers
+      Cloudflare 520 from the Supabase origin — a proxy timeout, not a review
+      error, because the same state publishes locally with 858 facts (277,
+      284). The publish is one transaction that carries the whole ~7 MB
+      state twice (the session row and the revision), aggregates it for the
+      validator (`jsonb_object_agg` over 2,398 items) and checks every
+      accepted item against the summary, so on a real agreement's review it
+      runs past Cloudflare's ~100-second origin limit while the smaller
+      batch saves sat under it. That is a storage-shape limit, not a bug in
+      this session's code: one jsonb document per review cannot be rewritten
+      wholesale at this size on this plan. The immediate unblock is a
+      connection with no proxy in front of it: `scripts/product/
+      publish-direct.js` reads the analysis and the review over the REST API
+      (reads fit), applies PUBLISH locally with the route's own command
+      layer, and calls `product_private.product_phase3_save_review` over
+      `DATABASE_URL` with `pg`, recomputing the action id the function
+      compares (the test pins that contract). It needs Ben's connection
+      string; nothing else. The durable fix, for after the launch: store the
+      decisions in rows (or the revision as a diff) so a save does not
+      rewrite the whole state, and keep the publish's validation to what
+      changed. Test: tests/product-publish-direct.test.js (the action id, the
+      event type, the command, and that a different actor or key is a
+      different action).
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
