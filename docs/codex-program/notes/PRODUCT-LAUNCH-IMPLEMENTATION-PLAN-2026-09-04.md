@@ -7045,6 +7045,40 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       note legitimately. Verification after the fixes: 9 touched suites
       119 tests green, `check-build.sh` exit 0, and the live check re-run
       (267).
+      (269) 2026-10-25 12:50 UTC (the manager), work package 48 part 3:
+      the outside-in smoke test and the sentence audit against the live
+      deployment, and the false positive reading the live output caught.
+      Smoke test (`scripts/product/smoke-test.js --base-url <alias> --run
+      34847358 --no-pages`, with the internal token and the bypass added by
+      a fetch preload because the deployment has protection on): **passed**
+      — run status READY in 12.9 s (97 of 97 sections, DEEPSEEK_API, 874
+      proposals, LEGAL_SCHEMA/V2), the provisions page read in 11.8 s (758
+      layered facts, 116 held, review DRAFT, generation 4, sandbox
+      pm-codex-preview-worker-2), the published read 0 agreements. Those
+      are the stored run's own numbers, read from the deployment for the
+      first time. The three page checks fail with 307 by design: the
+      internal token authorises `/api/product/*` only
+      (lib/auth/gate.js INTERNAL_TOKEN_PREFIX), so a browser page needs a
+      pm_session — run with `--no-pages` for an internal-token pass, or
+      send a session for the page path. The sentence audit over the live
+      payload (`uncitedOperativeSentences` on the preview body): DeepSeek
+      34847358 now shows 7 uncited operative sentences in 3 sections —
+      5.16's 5, 5.4(a)'s compliance covenant (260) and one more the wider
+      verb list found, 5.2's... no: 7.3's "Each Party acknowledges that the
+      agreements in this Section 7.3 are an integral part of this Agreement
+      and that, without these agreements, the Parties would not have
+      entered into this Agreement" — and Claude 88d4032a shows none in 97
+      sections, so (260)'s claim holds. The near miss: the first widened
+      verb list matched the noun in 5.4's *heading* ("Section 5.4 Written
+      Consent; ..."), so both runs were reported with one uncited sentence
+      that was a heading — a false positive that would have put a pointless
+      acknowledgement in a lawyer's queue and, worse, made (261)'s
+      "a fresh Claude run carries no such issue" false. The list now takes
+      only verb shapes that carry a subject ("consents to", "grants to",
+      "acknowledges") and not the bare nouns; the test pins the 5.4 heading
+      as not operative, and the live audit is clean on Claude again. That
+      is what reading the output buys: the rule, not just the code, was
+      wrong.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is

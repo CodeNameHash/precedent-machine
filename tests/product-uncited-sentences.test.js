@@ -92,9 +92,13 @@ test('the obligation verbs include the ones the first list missed', () => {
   const sentence = 'The Company undertakes to indemnify, defend and hold harmless Parent and its Affiliates from and against any and all losses arising out of the Written Consent.';
   const uncited = uncitedSectionSentences({ sectionText: sentence, proposals: [] });
   assert.equal(uncited.length, 1, 'an undertaking to indemnify is an obligation');
-  for (const words of ['The Company shall act.', 'Parent waives any claim to the fee.', 'The Company grants a licence.', 'Parent consents to the assignment.', 'The Company acknowledges the notice.', 'The Company is required to deliver the certificate.']) {
+  for (const words of ['The Company shall act.', 'Parent waives any claim to the fee.', 'The Company grants to Parent a licence.', 'Parent consents to the assignment.', 'The Company acknowledges the notice.', 'The Company is required to deliver the certificate.']) {
     assert.equal(OPERATIVE_VERB.test(words), true, words);
   }
+  // A heading's noun is not an obligation: the live run flagged both runs'
+  // 5.4 heading ("Written Consent; Preparation of Proxy Statement") until
+  // the added forms were narrowed to verbs.
+  assert.equal(OPERATIVE_VERB.test('Section 5.4 Written Consent; Preparation of Proxy Statement and the Company Stockholders Meeting.'), false);
 });
 
 test('a held fact whose component kept its words but lost its byte range still cites its sentence', () => {
