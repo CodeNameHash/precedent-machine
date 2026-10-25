@@ -7464,7 +7464,9 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       validator (`jsonb_object_agg` over 2,398 items) and checks every
       accepted item against the summary, so on a real agreement's review it
       runs past Cloudflare's ~100-second origin limit while the smaller
-      batch saves sat under it. That is a storage-shape limit, not a bug in
+      batch saves sat under it. Measured: a timed publish attempt ran
+      **88.0 seconds** before the 520, against 50-65 s for the batch saves —
+      so it is the proxy waiting, not a review error. That is a storage-shape limit, not a bug in
       this session's code: one jsonb document per review cannot be rewritten
       wholesale at this size on this plan. The immediate unblock is a
       connection with no proxy in front of it: `scripts/product/
