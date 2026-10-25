@@ -6468,7 +6468,14 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       this checkout's node_modules is a partial install (13 top-level
       packages from a 109-package pnpm store, with `tailwindcss` absent),
       so the build stops at "Cannot find module 'tailwindcss'" before it
-      reaches any page. Ben's to fix: the GitHub account's billing. (b) A second
+      reaches any page; the section 9 authentication checks run and give
+      141 of 143 (cookies 11, credentials 9, gate 13, session 12, route
+      enforcement 108 of 110), and the two failures are the /login and /
+      page renders that need the same CSS toolchain — identical on the
+      pre-session commit 89d53f14, run in a clean worktree beside this one.
+      So the only section 9 checks this machine can pass are the behaviour
+      and authentication tests; the build, the database job and the secret
+      scan need CI. Ben's to fix: the GitHub account's billing. (b) A second
       Vercel project, precedent-machine-restored-20260812, is connected
       to the same repository: every push of this session created a
       "Preview - precedent-machine-restored-20260812" deployment beside
