@@ -7512,6 +7512,31 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       the payload once (it already exists in product_proposals) and giving
       the item a hash or a reference would cut the publish's work by about
       three quarters before any other change.
+      (287) 2026-10-26 01:08 EDT (the manager), work package 52 part 3:
+      what the release evaluation will ask for, read from the code so the
+      morning is not a surprise. After the publish, `EVALUATE_RELEASE`
+      refuses without the lawyer's own identity and two attestations
+      (`lib/product/review-state.js`), and then `evaluateSupervisedRelease`
+      measures seven bars, every one of which must be true
+      (`lib/product/release-evaluation.js`): reference samples reviewed (each
+      with a severity, an assessment, and either a comparison or a reviewed
+      limitation, `reviewed_by_role: LAWYER`); a citation assessment for
+      **every published fact** (858 of them on the Claude run) saying the
+      citation is exact and legally sufficient; complete section, role,
+      exception and agreement coverage; no group contradiction; no unresolved
+      item presented as completion; every final fact lawyer-accepted; and
+      **timing measured without developer assistance** (`developer_assisted:
+      false` plus the measured review seconds). Two consequences for tonight's
+      work. (a) The release is the lawyer's, by construction: the harness can
+      publish — it made every decision and the page records them — but it
+      cannot honestly satisfy an evaluation that attests a lawyer reviewed
+      858 citations unaided, and `developer_assisted` would have to be true
+      for a script-driven read, which fails the bar by design. (b) The
+      evaluation is a large act of review in itself: 858 citation
+      assessments is more work than the item queue the notes exemption
+      removed. That is the right bar for a product meant to be trusted, and
+      it is why the publish is worth having: it puts the run in front of the
+      person whose name the bar requires.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
