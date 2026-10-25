@@ -163,7 +163,12 @@ test('lawyer review can edit or reject collided candidates and resolve every col
   for (const item of state.items.filter((entry) => entry.kind === 'ISSUE' && entry.original.code === 'DUPLICATE_FACT_OCCURRENCE')) {
     state = applyReviewCommand(state, { type: 'DECIDE_ITEM', item_id: item.item_id, decision: 'ACCEPTED' }, { analysis, legalSchema });
   }
-  assert.equal(state.items.filter((item) => item.kind === 'ISSUE' && item.decision === 'PENDING').length, 0);
+  // The collision holds are what this test resolves; a section can also
+  // carry an unrelated coverage issue (the uncited-sentence note of finding
+  // (261), which this fixture's short facts earn), and leaving that pending
+  // is not a collision left unresolved.
+  assert.equal(state.items.filter((item) => item.kind === 'ISSUE'
+    && item.original.code === 'DUPLICATE_FACT_OCCURRENCE' && item.decision === 'PENDING').length, 0);
   assert.deepEqual(retained.map((item) => state.items.find((entry) => entry.item_id === item.item_id).decision),
     ['EDITED', 'EDITED']);
   assert.equal(state.items.find((item) => item.item_id === relationship.item_id).decision, 'ACCEPTED');
