@@ -6961,6 +6961,26 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       (provisions-bf6be9264bfd0876 against provisions-a314078f8719be99),
       because the CSS file names inline into the chunk; the string
       presence is the check. Nothing changed in code this round.
+      (266) 2026-10-25 11:40 UTC (the manager), work package 47: the live
+      checks are a repository command, not a scratch script. The bypass made
+      the deployment reachable (264) and the credential is still missing, so
+      the four checks were turned into `scripts/product/check-preview.js`
+      over `lib/product/preview-checks.js`: for each run, the preview read's
+      status, size, seconds and X-Preview-Read, its `sections_without_facts`
+      (reference, reason, families), a second read to see whether the stored
+      model serves it (finding (251)), and the run analysis read timed. The
+      credential is either PRODUCT_INTERNAL_TOKEN as `Authorization: Bearer`
+      or a `pm_session` value (the shape decides; a three-part token is sent
+      as both, so a session value works without naming it), with
+      VERCEL_PROTECTION_BYPASS for the deployment protection; nothing but
+      statuses, sizes, timings and section references is printed, and the
+      tests assert the credential never reaches the report. A refused read
+      says so and names the two things to check rather than printing an
+      empty section list. Run against the live alias with a deliberately
+      wrong token, it answers what it should: 401, refused, nothing
+      invented. Tests: tests/product-preview-checks.test.js (3), in
+      `npm run test:active`. Still unrun: the real checks themselves, which
+      need the credential.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
