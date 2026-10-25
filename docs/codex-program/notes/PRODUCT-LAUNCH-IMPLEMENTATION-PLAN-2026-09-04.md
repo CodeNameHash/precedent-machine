@@ -6765,6 +6765,42 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       database-shaped suites (no Postgres or PGlite here) and the files
       that hang by design on the heartbeat (phase-2, phase-4, phase-6,
       run-replay), which stay out of the sweep.
+      (260) 2026-10-25 07:45 UTC (the manager), work package 43: the
+      silent-absence guard read one level finer, and what it finds on the
+      DeepSeek run. The page block (246) names a section that proposed
+      nothing; the thin-answer guard fails an empty answer at extraction
+      time. Neither answers the lawyer's question of a finished page: is
+      there a sentence stating an obligation that no fact cites at all?
+      Built: lib/product/uncited-sentences.js and
+      scripts/product/audit-uncited-sentences.js — every sentence of a
+      section's own full-section text (the canonical bytes, offsets carried)
+      of at least 80 bytes that names an operative or representational verb
+      (shall, must, will, may not, agrees, covenants, represents, warrants,
+      terminate, entitled, obligat...) and whose bytes no proposal of the
+      section overlaps, a CHAPEAU/INTRO/DEFINITION component counting as a
+      citation because the fact tree quotes it; `--analysis <file>` or
+      `--run <id>`, `--json`, `--min-bytes`. A read, not a gate: a sentence
+      can be cited only as context and the verb list is a heuristic, so the
+      script always exits 0. Read on both stored runs: Claude 88d4032a has
+      no uncited operative sentence in any section (0 of 97), which is the
+      completeness claim the Apogee read rests on; DeepSeek 34847358 has
+      six, in two sections — 5.16's five, all of them, the section the page
+      already lists as empty, and one more the section-level read cannot
+      show: 5.4(a) "In connection with the Written Consent, the Company
+      shall take all actions necessary or advisable to comply, and shall
+      comply in all respects, with applicable Law and the Company's
+      Organizational Documents." (bytes 179803-180015), which Claude's run
+      covers with a fact and DeepSeek's leaves alone. That is a second,
+      sentence-sized silent absence on the non-default tier, and further
+      evidence for keeping Claude the default ((245)). Tests:
+      tests/product-uncited-sentences.test.js (the splitter keeps "Section
+      5.16" whole and a page footer inside its sentence; a cited sentence,
+      a short one, a non-operative one and a context-cited one; the
+      analysis read skips introductions, exhibits and a fully cited
+      section; the report text), in `npm run test:active`. Not changed: the
+      extraction, the thin-answer floors and the page's section list — this
+      only makes the hole measurable; showing the sentence list to a lawyer
+      on the page is a product decision for Ben.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
