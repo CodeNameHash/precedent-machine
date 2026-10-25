@@ -6374,6 +6374,54 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       the route and runner suites that can (product-hosted-worker-pool 14,
       product-attempt-resume 7, product-phase-3 26 with its one
       pre-existing source-regex failure) are green.
+      (251) 2026-10-25 00:45 UTC (the manager), work package 38: the
+      lawyer preview read is served from a stored read model, Ben's choice
+      of the two cures section 0 put to him ("Build the server-side read
+      model", 2026-10-25). The problem, as measured: the page's payload is
+      3.9 MB after work package 32 but the read is about 16 s on a
+      finished 97-section run, nearly all of it the database scanning the
+      run's rows (finding (244): 31 sections 8 s, a light query 0.7 s;
+      finding (241): 40 s on the 38.9 MB read before that), and every
+      view rebuilt the same projection from product_section_results,
+      product_source_closures, product_source_spans,
+      product_section_routings, product_proposals, product_issues,
+      product_fact_components, product_fact_headlines and
+      product_fact_conclusions (loadPreviewSectionResults, 9 tables paged
+      500 rows at a time). Built: supabase/migrations/
+      20261025000000_product_preview_read_model.sql —
+      public.product_preview_reads(run_id primary key, payload jsonb,
+      built_at, stale boolean), RLS on, service role only, no grant to
+      anon or authenticated (the row is exactly the payload the route
+      already returns after its own access check); the delivery rule in
+      lib/product/preview-read-model.js/previewModelUsable (only a READY
+      or FAILED run, only a non-stale row, only the payload version this
+      code builds); the store methods in
+      lib/product/phase-2-store.js (getPreviewReadModel,
+      savePreviewReadModel, markPreviewReadModelStale); the handler
+      (lib/product/preview-handler.js) reads the run row first, serves the
+      stored model on a hit without reading the analysis at all, stores
+      the projection on a miss, and answers X-Preview-Read MODEL or
+      REBUILT; every review save marks the run stale
+      (lib/product/phase-3-store.js saveReview), and a finalisation marks
+      it stale too, so a retry of a FAILED run that re-finalises with
+      different facts is rebuilt on the next view. A run still analysing
+      reads live and stores nothing; a store without the model (an older
+      deployment) or a table the migration has not reached (42P01 /
+      PGRST205) falls back to the live read with the error on the
+      deployment log, so the code is safe to deploy before the migration
+      lands. Not changed: the live path's own projection, the browser's
+      one-minute private cache, the review read and the analysis read.
+      Tests: tests/product-preview-read-model.test.js (the rule; stored
+      once then served without a section read; a review save rebuilds
+      once; a live run never uses it; a missing table and a store without
+      the methods both answer live) and tests/product-preview-handler.test.js
+      (12) stay green; product-phase-3 is 26 with its one pre-existing
+      source-regex failure. Open on this work: the migration has not been
+      applied by this session (no database credentials here and no local
+      Postgres or PGlite: every -db test needs TEST_DATABASE_URL or
+      TEST_PGLITE_MODULE), so the row's own effect is proven by the same
+      migration harness in CI and the live preview read is unmeasured
+      until the deployment has both the build and the migration.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
