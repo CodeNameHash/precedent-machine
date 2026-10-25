@@ -459,6 +459,13 @@ test('a section that returned no facts is named under the title with its reason,
   const preview = previewFactsFromWorkspace(ws);
   assert.deepEqual(preview.sections_without_facts.map((entry) => entry.section_reference), ['3.30', '5.16'],
     'the section with a valid fact, the one with a held fact, the disclosure-schedule section and the out-of-scope exhibit are not listed');
+  // A "::" scope that is not an exhibit is still a section of this agreement.
+  const scoped = noFactsWorkspace();
+  scoped.analysis.agreement_structure.nodes.push({ node_id: 'node-article-scope', reference: 'Article-I::1.6', authored_order: 90, kind: 'SECTION' });
+  scoped.analysis.sections.push({ structure_node_id: 'node-article-scope', section_reference: 'Article-I::1.6', families: [], disposition: 'IMMATERIAL' });
+  scoped.analysis.source_closures.push({ source_closure_id: 'c-scope', structure_node_id: 'node-article-scope', section_reference: 'Article-I::1.6', full_section_span_id: 's-scope' });
+  scoped.analysis.spans.push({ span_id: 's-scope', kind: 'FULL_SECTION', structure_node_id: 'node-article-scope', start_byte: 0, end_byte: 40, exact_text: 'Section 1.6 Directors and Officers.', source_closure_ids: ['c-scope'] });
+  assert.deepEqual(previewFactsFromWorkspace(scoped).sections_without_facts.map((entry) => entry.section_reference), ['3.30', '5.16', 'Article-I::1.6']);
   assert.deepEqual(preview.sections_without_facts.map((entry) => entry.heading), ['No Other Representation', 'Regulatory Matters']);
   assert.deepEqual(preview.sections_without_facts.map((entry) => entry.reason), ['RETURNED_NOTHING', 'READ_AS_IMMATERIAL']);
   assert.deepEqual(preview.sections_without_facts.map((entry) => entry.families), [['REPRESENTATIONS'], []]);

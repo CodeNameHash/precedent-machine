@@ -6188,9 +6188,10 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       facts must never read as 'this agreement has no such provision'".
       What the two runs of Apogee show: DeepSeek 34847358 produced no fact
       at 5.16 (Regulatory Matters, 3,413 bytes, six facts on Claude's
-      88d4032a) and none at 3.30 (No Other Representation), and Claude's
-      own run produced none at 3.30's class wherever the router reads a
-      section as immaterial; in every case the draft already carries the
+      88d4032a) and none at 3.30 (No Other Representation, which Claude's
+      run does extract); Claude's own run leaves no main-agreement section
+      without a fact, but the page had no block for one either, so the hole
+      was provider-independent. In every case the draft already carries the
       absence claim as something the review must decide (an
       IMMATERIAL_ROUTING item for a section the router read as immaterial,
       a COVERAGE item for a family the extraction answered NOT_FOUND, and
