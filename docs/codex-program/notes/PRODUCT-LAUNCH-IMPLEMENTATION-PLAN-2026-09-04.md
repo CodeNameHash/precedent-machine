@@ -7397,6 +7397,35 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       UNRESOLVED note (must be refused). The other gap from the review is
       unchanged and is for Ben: the evaluate and activate steps belong to
       the review page, where the attestations are made, not to a script.
+      (283) 2026-10-26 00:10 EDT (the manager), work package 51 part 3:
+      the morning's sequence, in order, with the state each step starts from.
+      The database has been down since 19:11 UTC (280) — the probe has
+      logged 500 every five minutes since (03:22 to 03:57 UTC) — so nothing
+      product-side has moved for an hour. When it is back:
+      (1) Supabase dashboard: reload the schema cache (or restart the
+      project), then `select 1 from public.product_run_access limit 1`; the
+      app's own check is `scripts/product/check-preview.js --run
+      88d4032a-d92c-407d-8c2f-9656a85f3916` with PRODUCT_INTERNAL_TOKEN and
+      VERCEL_PROTECTION_BYPASS set, which prints the preview read, the
+      sections without facts and the review's position.
+      (2) Apply supabase/migrations/20261025003000_product_note_exemption.sql
+      (282) in the SQL editor — the note rule the page already applies.
+      (3) `node scripts/product/drive-review.js --run
+      88d4032a-d92c-407d-8c2f-9656a85f3916 --base-url <deployment>`: the
+      queue is empty, so it confirms coverage if needed and publishes, then
+      stops — the release evaluation and activation take the lawyer's
+      attestations in the review page's release panel, by design (281). If
+      the alias answers 400 Invalid review command it predates the batch
+      route: use the per-deployment URL of the latest deal-corpus deployment
+      (`gh api repos/CodeNameHash/precedent-machine/deployments` and the
+      status's environment_url).
+      (4) Review page: evaluate the release (the evaluation form asks for
+      the attestations and the reference samples), activate, check the
+      published page and the Query page, roll back once and activate again.
+      (5) Then a fresh deal (Ben's choice of filing) and the DeepSeek run's
+      review if a second pass is wanted — the driver is the same command.
+      Nothing here is new work: every step is built, tested and recorded;
+      this is the order.
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is
