@@ -6981,6 +6981,70 @@ existing path untouched. First worker: `session_01AcnvBt4no15zzgKA5z6t7v` (Q1 an
       invented. Tests: tests/product-preview-checks.test.js (3), in
       `npm run test:active`. Still unrun: the real checks themselves, which
       need the credential.
+      (267) 2026-10-25 12:05 UTC (the manager), work package 48: the live
+      read, at last, and what it corrects. Ben sent PRODUCT_INTERNAL_TOKEN
+      (2026-10-25); with it and the bypass,
+      `scripts/product/check-preview.js` read both runs from the deployment
+      (head 0ca13e99/9a42c9f6). DeepSeek 34847358: preview 200, 3,937,539
+      bytes, 10.8-14.5 s, 97 sections, 874 facts, X-Preview-Read absent on
+      both reads, and the page lists two sections with no facts — **5.16
+      RETURNED_NOTHING (ANTITRUST_REGULATORY)** and **3.30 RETURNED_NOTHING
+      (NO_OTHER_REPS_FRAUD, REPRESENTATIONS)**. That corrects a guess in
+      (246): the silence on 5.16 was not an immaterial routing — the router
+      assigned the family and the answer came back empty, which is the
+      shape the page's reason `RETURNED_NOTHING` names, and the family
+      coverage is the UNRESOLVED the review then has to decide. Claude
+      88d4032a: preview 200, 3,881,146 bytes, 15.4-17.5 s, 869 facts, no
+      section without facts — the two runs differ exactly as the stored
+      payloads said ((246), (260)). The read model is confirmed not
+      serving: X-Preview-Read is absent on the first and second read of
+      both runs, so the migration has not been applied and every read is
+      the live 3.9 MB build; the run read takes 12.4-15.5 s, which is
+      (244)'s 16 seconds measured again. Timings, sizes and section counts
+      are printed by the check, never the credential.
+      `scripts/product/check-preview.js` is that check, in the repository
+      since (266).
+      (268) 2026-10-25 12:20 UTC (the manager), work package 48 part 2:
+      the focused review of the newest code, and its fixes. A read-only
+      reviewer went over `git diff 7e4f545e..HEAD` and the five pieces
+      behind it and found sixteen things; all are fixed except one
+      intended difference. The two that mattered most were live defects of
+      this session's own tooling: (a) the live check read a
+      `sections_without_facts` field the API does not return — it is
+      computed by the page from the payload — so the first run of the
+      check printed "none" for a run with two (Ben's token arrived in the
+      same minutes; the check now projects the payload with
+      `previewFactsFromWorkspace`, and the test uses a page-shaped
+      workspace rather than a fabricated field); (b) `check-build.sh`
+      deleted a real `node_modules/tailwindcss` when one was installed
+      (written through a pnpm symlink, then removed), so it now keeps any
+      package that exists and removes only the paths it created — proved
+      in a fake tree where the real package survives. The rest, each fixed
+      with a test: a followed login redirect could read as a 200 preview
+      (fetch now uses `redirect: 'manual'` and a 200 that is not
+      `PRODUCT_PREVIEW_WORKSPACE/V2` is refused, not reported as an empty
+      run); a refusal now says what kind it is (401/403 credential,
+      404 run/access, 5xx deployment, other) instead of always naming the
+      credential; a flaky second read no longer loses the whole report;
+      the verb list gains undertakes/indemnify/waive/consent/grant/
+      assign/acknowledge/is required to/has the right to (the review's
+      proved miss: an uncited undertaking to indemnify); a held fact whose
+      component kept its words but lost its byte range now cites its
+      sentence instead of being reported as no fact; `sentenceByteSpans`
+      defaults startByte to 0 instead of producing NaN offsets; an
+      abbreviation ("U.S.") and an SEC page footer on its own line no
+      longer split a sentence; an inverted component range is ignored
+      rather than covering the interval; the page's substantive-section
+      rule no longer differs from source-context's on an empty reference;
+      `NODE_FIELDS` projects `title` so a NOT_ANALYSED row can show one;
+      `--run`/`--base-url` reject a missing value instead of probing
+      `/analysis/undefined` or silently falling back to production; the
+      issue snippet cuts at a word boundary. The one intended difference:
+      the collision test asserts the collision holds it resolves, not that
+      no other issue is pending — a section can carry the uncited-sentence
+      note legitimately. Verification after the fixes: 9 touched suites
+      119 tests green, `check-build.sh` exit 0, and the live check re-run
+      (267).
       (140) 2026-10-18 (implementer D), parallel hosted workers, on the
       manager's brief of 19:06 UTC. No run submitted, woken or touched;
       nothing created on Vercel; no live sandbox call; the migration is

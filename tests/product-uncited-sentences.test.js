@@ -84,3 +84,39 @@ test('the analysis read reports a section that states an obligation with no fact
   assert.match(report, /§ 5\.16 \(1\)/);
   assert.match(renderUncitedReport([]), /No section has an uncited operative sentence/);
 });
+
+// The review of 2026-10-25 (findings 6, 8, 9, 10, 11): the verbs that were
+// missing, a held fact whose component lost its bytes, the default offset,
+// abbreviations and page footers, and an inverted range.
+test('the obligation verbs include the ones the first list missed', () => {
+  const sentence = 'The Company undertakes to indemnify, defend and hold harmless Parent and its Affiliates from and against any and all losses arising out of the Written Consent.';
+  const uncited = uncitedSectionSentences({ sectionText: sentence, proposals: [] });
+  assert.equal(uncited.length, 1, 'an undertaking to indemnify is an obligation');
+  for (const words of ['The Company shall act.', 'Parent waives any claim to the fee.', 'The Company grants a licence.', 'Parent consents to the assignment.', 'The Company acknowledges the notice.', 'The Company is required to deliver the certificate.']) {
+    assert.equal(OPERATIVE_VERB.test(words), true, words);
+  }
+});
+
+test('a held fact whose component kept its words but lost its byte range still cites its sentence', () => {
+  const sentence = 'The Company shall deliver notice of the Written Consent to Parent promptly after it is obtained.';
+  const uncited = uncitedSectionSentences({
+    sectionText: sentence, proposals: [{ validation_status: 'INVALID', components: [{ kind: 'OPERATION', text: sentence }] }],
+  });
+  assert.deepEqual(uncited, [], 'the held fact quotes the sentence, so the sentence is not uncited');
+  // A text too short to identify a sentence does not count as a citation.
+  const shortText = uncitedSectionSentences({ sectionText: sentence, proposals: [{ components: [{ kind: 'TERM', text: 'notice' }] }] });
+  assert.equal(shortText.length, 1);
+});
+
+test('the offset default is zero, an abbreviation and a page footer do not split a sentence, and an inverted range cites nothing', () => {
+  const spans = sentenceByteSpans('The notice goes to the U.S. Food and Drug Administration.');
+  assert.equal(spans.length, 1);
+  assert.ok(spans.every((span) => Number.isSafeInteger(span.start) && Number.isSafeInteger(span.end)), 'offsets are numbers without a startByte');
+  const footer = sentenceByteSpans('The Company shall deliver the certificate to Parent.\n12\nThe Parent shall accept it promptly.');
+  assert.equal(footer.length, 2, 'a footer number on its own line does not end a sentence');
+  assert.match(footer[0].text, /to Parent\.$/);
+  // An inverted range is ignored rather than covering the interval.
+  const sentence = 'The Company shall deliver the certificate to Parent promptly after the Written Consent.';
+  const uncited = uncitedSectionSentences({ sectionText: sentence, proposals: [{ components: [{ kind: 'OPERATION', start_byte: 100, end_byte: 10, text: 'x' }] }] });
+  assert.equal(uncited.length, 1);
+});

@@ -19,14 +19,23 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 NODE="${NODE:-node}"
 cd "$ROOT" || exit 1
 
+CREATED=()
 stub() {
   local name="$1"
+  # Never touch an install that is really there: on this machine the package
+  # is absent, but on a full install (and through pnpm's store symlink) the
+  # stub would overwrite and the cleanup would delete it.
+  if [ -e "node_modules/$name" ] || [ -L "node_modules/$name" ]; then
+    echo "keeping the installed node_modules/$name"
+    return 0
+  fi
   mkdir -p "node_modules/$name"
   printf '{ "name": "%s", "version": "0.0.0-stub", "main": "index.js" }\n' "$name" > "node_modules/$name/package.json"
   printf "module.exports = function () { return { postcssPlugin: '%s-stub', Once() {} }; };\nmodule.exports.postcss = true;\n" "$name" > "node_modules/$name/index.js"
+  CREATED+=("node_modules/$name")
 }
 
-cleanup() { rm -rf "node_modules/tailwindcss" "node_modules/autoprefixer"; }
+cleanup() { for path in "${CREATED[@]:-}"; do [ -n "$path" ] && rm -rf "$path"; done; }
 trap cleanup EXIT INT TERM
 
 stub tailwindcss

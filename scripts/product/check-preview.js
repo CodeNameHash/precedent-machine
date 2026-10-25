@@ -21,8 +21,13 @@ const { DEFAULT_BASE_URL, runPreviewChecks, renderPreviewChecks } = require('../
 function parseArgs(argv) {
   const args = { runs: [], baseUrl: DEFAULT_BASE_URL };
   for (let index = 0; index < argv.length; index += 1) {
-    if (argv[index] === '--run') { args.runs.push(argv[index + 1]); index += 1; continue; }
-    if (argv[index] === '--base-url') { args.baseUrl = argv[index + 1]; index += 1; continue; }
+    if (argv[index] === '--run' || argv[index] === '--base-url') {
+      const value = argv[index + 1];
+      if (typeof value !== 'string' || value === '' || value.startsWith('--')) throw new TypeError(`${argv[index]} needs a value`);
+      if (argv[index] === '--run') args.runs.push(value); else args.baseUrl = value;
+      index += 1;
+      continue;
+    }
     throw new TypeError(`unknown argument ${argv[index]}`);
   }
   if (args.runs.length === 0) throw new TypeError('usage: check-preview.js --run <run-id> [--run <run-id>] [--base-url <url>]');

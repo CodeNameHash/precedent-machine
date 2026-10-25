@@ -18,21 +18,42 @@ function response({ status = 200, body = {}, headers = {} } = {}) {
   };
 }
 
+// A preview payload shaped like the deployment's (PRODUCT_PREVIEW_WORKSPACE/V2);
+// `sections_without_facts` is computed from it by the page's own projection,
+// not read off a field.
+function workspace(sections) {
+  return {
+    schema_version: 'PRODUCT_PREVIEW_WORKSPACE/V2',
+    analysis: {
+      source_document: { parties: ['Parent Inc.', 'Target Corp.'] },
+      agreement_structure: { nodes: sections.map((section, index) => ({ node_id: section.node_id, reference: section.reference, authored_order: index + 1, kind: 'SECTION' })) },
+      sections: sections.map((section) => ({ structure_node_id: section.node_id, section_reference: section.reference, families: section.families || [], disposition: section.disposition })),
+      source_closures: sections.map((section) => ({ source_closure_id: `c-${section.node_id}`, structure_node_id: section.node_id, section_reference: section.reference, full_section_span_id: `span-${section.node_id}` })),
+      spans: sections.map((section) => ({ span_id: `span-${section.node_id}`, kind: 'FULL_SECTION', structure_node_id: section.node_id, start_byte: 0, end_byte: 20, exact_text: `Section ${section.reference} Test.`, source_closure_ids: [`c-${section.node_id}`] })),
+      proposals: sections.filter((section) => section.fact).map((section) => ({
+        proposal_id: `p-${section.node_id}`, structure_node_id: section.node_id, validation_status: 'VALID',
+        statement: 'A fact.', family_key: 'REPRESENTATIONS', subtype_key: 'STATUS_REPRESENTATION',
+        headline: { label: 'Representation', distinguishing_component_ids: ['comp'] },
+        components: [{ component_id: 'comp', kind: 'TERM', label: 'word', text: 'word', origin: 'OWN', start_byte: 0, end_byte: 4 }],
+      })),
+      proposition_groups: [], fact_links: [], issues: [], coverage_assertions: [],
+    },
+    review: { version: 0, state: { status: 'DRAFT', items: [], agreement_coverage: { decision: 'PENDING' } } },
+    progress: { status: 'READY', stage: 'READY', completed: sections.length, total: sections.length, generation: 3 },
+  };
+}
+
 const RUNS = {
   'deepseek-run': {
     status: 200,
-    body: {
-      schema_version: 'PRODUCT_PREVIEW_WORKSPACE/V2',
-      analysis: { sections: [{ structure_node_id: 'n1' }], proposals: [{ proposal_id: 'p1' }] },
-      sections_without_facts: [
-        { section_reference: '5.16', reason: 'READ_AS_IMMATERIAL', families: [] },
-        { section_reference: '3.30', reason: 'RETURNED_NOTHING', families: ['REPRESENTATIONS'] },
-      ],
-    },
+    body: workspace([
+      { node_id: 'n-516', reference: '5.16', families: [], disposition: 'IMMATERIAL' },
+      { node_id: 'n-330', reference: '3.30', families: ['REPRESENTATIONS'], disposition: 'FAMILY_ASSIGNED' },
+    ]),
   },
   'claude-run': {
     status: 200,
-    body: { analysis: { sections: [], proposals: [] }, sections_without_facts: [] },
+    body: workspace([{ node_id: 'n-330', reference: '3.30', families: ['REPRESENTATIONS'], disposition: 'FAMILY_ASSIGNED', fact: true }]),
   },
 };
 
@@ -70,7 +91,7 @@ test('the report names the sections a run left without facts, the model header a
   assert.deepEqual(report[0].withoutFacts, [
     { section_reference: '5.16', reason: 'READ_AS_IMMATERIAL', families: [] },
     { section_reference: '3.30', reason: 'RETURNED_NOTHING', families: ['REPRESENTATIONS'] },
-  ]);
+  ], 'the page\'s own projection is what the check reports');
   assert.equal(report[0].model, null, 'the first read carries no model header');
   assert.equal(report[0].second.model, 'MODEL', 'the second read is served from the stored projection');
   assert.equal(report[1].withoutFacts.length, 0);
@@ -101,4 +122,46 @@ test('a refused read is reported as refused, with what to check, and no section 
   // Without a token the function refuses to pretend.
   await assert.rejects(() => runPreviewChecks({ runs: ['x'], fetchImpl: fetchFor([]) }), /token or session value/);
   await assert.rejects(() => runPreviewChecks({ token: 't', runs: [], fetchImpl: fetchFor([]) }), /at least one run id/);
+});
+
+// The review of 2026-10-25 (findings 3, 4, 5): a redirect or an HTML page is
+// not a read, a refusal says what kind of refusal it is, and one flaky
+// second read does not lose the report.
+test('a 200 that is not the preview workspace is refused, not reported as a run with no sections', async () => {
+  const calls = [];
+  const fetchImpl = async (url, options) => {
+    calls.push({ url, options });
+    if (url.endsWith('/preview')) return { status: 200, text: async () => '<!DOCTYPE html><html>Login</html>', headers: { get: () => null } };
+    return { status: 200, text: async () => '{}', headers: { get: () => null } };
+  };
+  const report = await runPreviewChecks({ baseUrl: DEFAULT_BASE_URL, token: 't'.repeat(40), runs: ['some-run'], fetchImpl });
+  assert.equal(report[0].workspace, false);
+  const text = renderPreviewChecks(report);
+  assert.match(text, /the answer was not the preview workspace/);
+  assert.doesNotMatch(text, /sections with no facts: none/, 'an HTML page must not read as an empty preview');
+  assert.equal(calls[0].options.redirect, 'manual', 'a redirect is not followed into a login page');
+});
+
+test('a refusal names what kind of refusal it is, and a flaky second read keeps the first read report', async () => {
+  const statuses = { 'run-404': 404, 'run-500': 500 };
+  const fetchImpl = async (url) => {
+    const run = Object.keys(statuses).find((key) => url.includes(key));
+    if (run) return { status: statuses[run], text: async () => '{}', headers: { get: () => null } };
+    if (url.includes('flaky-run') && url.endsWith('/preview')) {
+      // First read fine, second read throws, run read fine.
+      const isSecond = url.includes('flaky-run') && fetchImpl.seen;
+      fetchImpl.seen = true;
+      if (isSecond) throw new Error('socket hang up');
+      return { status: 200, text: async () => JSON.stringify(workspace([])), headers: { get: () => null } };
+    }
+    return { status: 200, text: async () => '{}', headers: { get: () => null } };
+  };
+  const report = await runPreviewChecks({ baseUrl: DEFAULT_BASE_URL, token: 't'.repeat(40), runs: ['run-404', 'run-500', 'flaky-run'], fetchImpl });
+  const text = renderPreviewChecks(report);
+  assert.match(text, /run-404: preview 404/);
+  assert.match(text, /the run was not found, or this credential has no access to it/);
+  assert.match(text, /run-500: preview 500/);
+  assert.match(text, /the deployment failed the read; check its logs/);
+  assert.match(text, /flaky-run: preview 200/);
+  assert.match(text, /second read failed: socket hang up/);
 });
