@@ -2,6 +2,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { Breadcrumbs, EmptyState } from '../../../components/UI';
 import ProvisionRail from '../../../components/product/ProvisionRail';
+import PwBar from '../../../components/chrome/PwBar';
 import ProvisionTables from '../../../components/product/ProvisionTables';
 import { buildTableView } from '../../../lib/product/table-view';
 import legalSchemaV2 from '../../../contracts/product/legal-schema.v2.json';
@@ -46,8 +47,10 @@ export default function ReleasedDealPage({ agreement, error }) {
     ? new Date(agreement.agreement_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
     : null;
   return (
-    <div className="pw-provisions flex min-h-screen bg-white text-[#03203D]" data-testid="released-deal-page">
+    <div className="pw-provisions min-h-screen bg-white text-[#03203D]" data-testid="released-deal-page">
       <Head><title>{`Corpus - ${agreement.agreement_label}`}</title></Head>
+      <PwBar active="index" />
+      <div className="flex">
       <ProvisionRail sections={tableShapesV3.sections} title={agreement.agreement_label} />
       <div className="min-w-0 flex-1 px-[9px] py-[18.5px] md:px-[18.5px] lg:pb-[56px] lg:pl-[37px] lg:pr-[56px] lg:pt-[37px]">
         <header className="mb-[16px]" data-testid="released-header">
@@ -81,6 +84,7 @@ export default function ReleasedDealPage({ agreement, error }) {
               initialShowCodes
               onSource={() => { if (agreement.retrieval_url) window.open(agreement.retrieval_url, '_blank', 'noopener'); }}
             />}
+      </div>
       </div>
     </div>
   );
