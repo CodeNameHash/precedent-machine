@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useSessionUser } from '../lib/useSessionUser';
-import ReleasedV2Strip from '../components/product/ReleasedV2Strip';
 import { useRouter } from 'next/router';
 import MergertraceStyles from '../components/review-v2/MergertraceStyles';
 import QueryLaunchBox from '../components/query/QueryLaunchBox';
@@ -340,8 +339,38 @@ export default function HomePage({ initialData, processPilotUiEnabled = false })
     return map;
   }, [deals]);
 
+  // Released V2 agreements join the table as rows, badged in the deal cell and
+  // routed to their own page (work package 53, finding (294)).
+  const [v2Deals, setV2Deals] = useState([]);
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/product/published-facts', { headers: { accept: 'application/json' } })
+      .then((response) => (response.ok ? response.json() : { agreements: [] }))
+      .then((body) => {
+        if (cancelled) return;
+        setV2Deals((body.agreements || []).map((agreement) => {
+          const names = (agreement.parties || []).map((party) => (typeof party === 'string' ? party : party && party.name)).filter(Boolean);
+          return {
+            id: agreement.source_document_id,
+            deal_name: names.length ? names.join(' / ') : agreement.agreement_label,
+            signing_date: agreement.agreement_date || null,
+            buyer_display: names[0] || null,
+            value: null,
+            consideration_type: null,
+            v2: true,
+            review_warning: agreement.released_with_warning === true,
+            released_at: agreement.released_at,
+            fact_count: (agreement.facts || []).length,
+          };
+        }));
+      })
+      .catch(() => { if (!cancelled) setV2Deals([]); });
+    return () => { cancelled = true; };
+  }, []);
+  const tableDeals = useMemo(() => [...v2Deals, ...deals], [v2Deals, deals]);
+
   const visibleDeals = useMemo(() => {
-    let rows = deals.filter((deal) => {
+    let rows = tableDeals.filter((deal) => {
       for (const [key, allowed] of Object.entries(filters)) {
         if (!Array.isArray(allowed) || !allowed.length) continue;
         const col = getColumn(key);
@@ -366,7 +395,7 @@ export default function HomePage({ initialData, processPilotUiEnabled = false })
       });
     }
     return rows;
-  }, [deals, filters, sort]);
+  }, [tableDeals, filters, sort]);
 
   const suggestions = useMemo(() => {
     return homeSearchSuggestions(search, deals, searchIndex);
@@ -489,7 +518,6 @@ export default function HomePage({ initialData, processPilotUiEnabled = false })
               <div className="wrap">
                 <header className="pw-head">
                   <h1>The deal index.</h1>
-                  <ReleasedV2Strip />
                   <form className="search pw-search" onSubmit={submitSearch} onClick={(e) => e.stopPropagation()}>
                     <svg className="pw-searchicon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7"><circle cx="7" cy="7" r="5"/><path d="M11 11l3.5 3.5"/></svg>
                     <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search a deal, a party or a provision" aria-label="Search deals, parties and provisions" />
@@ -548,7 +576,7 @@ export default function HomePage({ initialData, processPilotUiEnabled = false })
                   <div className="listTitleBar">
                     <span className="listTitleMain">All agreements.</span>
                     <span className="listTitleSub">
-                      {data ? `${visibleDeals.length === deals.length ? deals.length : `${visibleDeals.length} of ${deals.length}`} deals · click a row to open its agreement` : 'Loading…'}
+                      {data ? `${visibleDeals.length === tableDeals.length ? tableDeals.length : `${visibleDeals.length} of ${tableDeals.length}`} deals · click a row to open its agreement` : 'Loading…'}
                     </span>
                     <div className="opsActions" onClick={(e) => e.stopPropagation()}>
                       <button type="button" className="gearBtn" onClick={() => setPickerOpen((v) => !v)} title="Choose columns">
@@ -616,7 +644,7 @@ export default function HomePage({ initialData, processPilotUiEnabled = false })
                               });
                               return;
                             }
-                            router.push(`/review/${deal.id}`);
+                            router.push(deal.v2 ? `/deals/v2/${deal.id}` : `/review/${deal.id}`);
                           };
                           return (
                         <tr

@@ -3,12 +3,16 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useUser } from '../../../lib/useUser';
 import { Breadcrumbs, EmptyState, SkeletonCard } from '../../../components/UI';
-import { displayReviewLabel } from '../../../lib/product/review-labels';
+import PublishedSummary from '../../../components/product/PublishedSummary';
+import { groupPublishedFacts } from '../../../lib/product/published-layers';
+import legalSchemaV2 from '../../../contracts/product/legal-schema.v2.json';
+import tableShapesV3 from '../../../contracts/product/table-shapes.v3.json';
 
-// The released deal page (work package 53, plan finding (293)): one agreement
-// as published — its facts grouped by family, with the words cited by the
-// review, and the release's health warning when it carries one. It reads only
-// the current release (the active release pointer), never a draft.
+// The released deal page is the deal page (work package 53, plan finding
+// (294)): the same provision tables and evidence renderer the lawyer preview
+// uses, fed by the current release instead of a draft. Header: the parties and
+// the agreement date, not the SEC URL, and the release's health warning when
+// it carries one.
 export default function ReleasedDealPage() {
   const { user } = useUser({ redirectTo: '/login' });
   const router = useRouter();
@@ -30,21 +34,16 @@ export default function ReleasedDealPage() {
     return () => { cancelled = true; };
   }, [id, user]);
 
-  const families = useMemo(() => {
-    const groups = new Map();
-    for (const fact of agreement?.facts || []) {
-      const key = fact.family_key || 'OTHER';
-      if (!groups.has(key)) groups.set(key, []);
-      groups.get(key).push(fact);
-    }
-    return [...groups.entries()];
-  }, [agreement]);
-
-  const label = agreement ? String(agreement.agreement_label || '').split('/').pop() : '';
+  const groups = useMemo(() => (agreement ? groupPublishedFacts(agreement.facts, legalSchemaV2) : []), [agreement]);
+  const parties = (agreement?.parties || []).map((party) => (typeof party === 'string' ? party : party?.name)).filter(Boolean);
+  const date = agreement?.agreement_date
+    ? new Date(agreement.agreement_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+    : null;
+  const unreviewed = (agreement?.facts || []).filter((fact) => fact.decided_by_role !== 'LAWYER').length;
 
   return (
-    <div className="space-y-6 max-w-4xl">
-      <Breadcrumbs items={[{ label: 'Index', href: '/' }, { label: 'Released deal' }]} />
+    <div className="space-y-6">
+      <Breadcrumbs items={[{ label: 'Index', href: '/' }, { label: 'Released agreement' }]} />
       {loading ? <SkeletonCard /> : null}
       {!loading && !agreement ? (
         <EmptyState
@@ -56,29 +55,33 @@ export default function ReleasedDealPage() {
       ) : null}
       {agreement ? (
         <>
-          <div>
-            <p className="text-xs font-ui uppercase tracking-wide text-inkLight">Released {new Date(agreement.released_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
-            <h1 className="font-display text-2xl text-ink">{label || 'Released agreement'}</h1>
-            <p className="text-sm font-ui text-inkLight mt-1">{agreement.facts.length} published facts · run {String(agreement.run_id).slice(0, 8)}</p>
-          </div>
+          <header className="space-y-1">
+            <p className="text-xs font-ui uppercase tracking-wide text-inkLight">
+              Released {new Date(agreement.released_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+            </p>
+            <h1 className="font-display text-2xl text-ink">{parties.length ? parties.join(' / ') : agreement.agreement_label}</h1>
+            <p className="text-sm font-ui text-inkLight">
+              {date ? `${date} · ` : ''}{agreement.facts.length} facts
+              {agreement.retrieval_url ? <> · <a href={agreement.retrieval_url} target="_blank" rel="noreferrer" className="text-accent hover:underline">SEC exhibit</a></> : null}
+            </p>
+          </header>
           {agreement.released_with_warning ? (
             <div className="rounded border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900" data-testid="release-health-warning">
               <strong>Health warning.</strong> {agreement.release_warning?.detail || 'This release was published on the owner\'s acknowledgement, not a full lawyer attestation.'}
             </div>
           ) : null}
-          {families.map(([family, facts]) => (
-            <section key={family} className="space-y-2">
-              <h2 className="font-display text-lg text-ink">{displayReviewLabel(family)}</h2>
-              <div className="space-y-2">
-                {facts.map((fact) => (
-                  <article key={fact.review_item_id || fact.fact_id || fact.statement} className="rounded border border-border bg-white p-3">
-                    <p className="text-sm text-ink">{fact.statement || fact.summary}</p>
-                    {fact.headline?.label ? <p className="mt-1 text-xs font-ui text-inkLight">{fact.headline.label}</p> : null}
-                  </article>
-                ))}
-              </div>
-            </section>
-          ))}
+          {unreviewed > 0 ? (
+            <p className="text-xs font-ui text-inkLight" data-testid="not-lawyer-reviewed">
+              {unreviewed} of {agreement.facts.length} facts have not been lawyer-reviewed; they are shown as the model read them.
+            </p>
+          ) : null}
+          <PublishedSummary
+            groups={groups}
+            tableShapes={tableShapesV3}
+            legalSchema={legalSchemaV2}
+            heading={null}
+            onSource={() => { if (agreement.retrieval_url) window.open(agreement.retrieval_url, '_blank', 'noopener'); }}
+          />
         </>
       ) : null}
     </div>
