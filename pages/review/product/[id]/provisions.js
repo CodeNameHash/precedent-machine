@@ -238,6 +238,7 @@ export function ProvisionsPreviewBody({ workspace, runId }) {
               sectionTextByFactId={preview.sectionTextByFactId}
               reviewItemsByFactId={preview.reviewItemsByFactId}
               heldFacts={preview.held_facts || []}
+              initialShowCodes
             />
             <UnplacedHeldFacts entries={preview.unplaced_held} />
           </div>

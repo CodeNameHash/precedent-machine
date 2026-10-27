@@ -171,6 +171,9 @@ export default function PublishedSummary({
   // Work package 16: the run's held layered facts, read by the election
   // options table alone.
   heldFacts = null,
+  // The coded answers can be shown by default on a surface whose job is to be
+  // read rather than reviewed (work package 54, finding (303)).
+  initialShowCodes = undefined,
 }) {
   const flatFacts = useMemo(() => (groups || []).flatMap((group) => group.facts), [groups]);
   const tableView = useMemo(
@@ -190,6 +193,7 @@ export default function PublishedSummary({
       {heading ? <h2 id="published-summary-heading" className="font-display text-2xl text-ink">{heading}</h2> : null}
       <ProvisionTables
         tableView={tableView}
+        initialShowCodes={initialShowCodes}
         facts={flatFacts}
         reviewItemsByFactId={reviewItemsByFactId}
         provenanceByFactId={provenanceByFactId}
