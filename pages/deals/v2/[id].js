@@ -52,10 +52,10 @@ export default function ReleasedDealPage({ agreement, error }) {
       <PwBar active="index" />
       <div className="flex">
       <ProvisionRail sections={tableShapesV3.sections} title={agreement.agreement_label} />
-      <div className="min-w-0 flex-1 px-[9px] py-[18.5px] md:px-[18.5px] lg:pb-[56px] lg:pl-[37px] lg:pr-[56px] lg:pt-[37px]">
-        <header className="mb-[16px]" data-testid="released-header">
+      <div className="min-w-0 flex-1 border-t-[10px] border-[#B9C8DA] px-[max(16px,min(4vw,64px))] py-[clamp(28px,4vw,56px)]" data-testid="released-screen">
+        <header className="mb-[24px]" data-testid="released-header">
           <div className="flex flex-wrap items-center gap-[7px]">
-            <p className="font-ui text-[9.5px] uppercase tracking-[0.14em] text-[#6B7785]">Released</p>
+            <p className="font-ui text-[12px] font-bold uppercase tracking-[0.1em] text-[#0B3D71]">Released</p>
             <span className="inline-flex items-center rounded-full bg-green-100 px-[6px] py-[1px] text-[9px] font-ui font-medium uppercase tracking-wide text-green-800">V2</span>
             {agreement.released_with_warning ? (
               <span className="inline-flex items-center rounded-full bg-amber-100 px-[6px] py-[1px] text-[9px] font-ui font-medium uppercase tracking-wide text-amber-800" data-testid="release-health-warning">Health warning</span>
@@ -64,14 +64,19 @@ export default function ReleasedDealPage({ agreement, error }) {
               <span className="inline-flex items-center rounded-full bg-[#F1F4F8] px-[6px] py-[1px] text-[9px] font-ui font-medium uppercase tracking-wide text-[#33475E]" data-testid="not-lawyer-reviewed">{unreviewed} facts not lawyer-reviewed</span>
             ) : null}
           </div>
-          <h1 className="mt-[8px] font-sans text-[30px] font-bold leading-[.98] tracking-[-.05em] text-[#03203D] md:text-[38px]">{agreement.agreement_label}</h1>
-          <p className="mt-[6px] font-ui text-[10px] uppercase tracking-[0.12em] text-[#6B7785]">
+          <h1 className="mt-[10px] font-sans font-extrabold leading-[.96] tracking-[-.05em] text-[#03203D]" style={{ fontSize: 'clamp(34px,4.4vw,62px)' }}>{agreement.agreement_label}</h1>
+          <p className="mt-[10px] font-ui text-[12px] uppercase tracking-[0.1em] text-[#6B7785]">
             {[date, `${agreement.facts.length} facts`].filter(Boolean).join(' · ')}
             {agreement.retrieval_url ? <> · <a href={agreement.retrieval_url} target="_blank" rel="noreferrer" className="underline">SEC exhibit</a></> : null}
           </p>
-          <div className="mt-[10px] border-t-[3px] border-[#03203D]" />
+          <div className="mt-[14px] border-t-[10px] border-[#B9C8DA]" />
           {agreement.released_with_warning ? (
-            <p className="mt-[8px] text-sm text-amber-900">{agreement.release_warning?.detail || 'Released on the owner\'s acknowledgement, not a full lawyer attestation.'}</p>
+            // The design system's one warning shape: wash panel, 6px navy
+            // left border, dark text. Not a red banner.
+            <p className="mt-[18px] border-l-[6px] border-[#03203D] bg-[#F1F4F8] px-[22px] py-[16px] font-body text-[19px] leading-[1.4] text-[#33475E]" data-testid="release-warning-callout">
+              <b className="font-sans tracking-[-.02em]">Health warning.</b>{' '}
+              {agreement.release_warning?.detail || 'Released on the owner\'s acknowledgement, not a full lawyer attestation.'}
+            </p>
           ) : null}
         </header>
         {agreement.facts.length === 0
