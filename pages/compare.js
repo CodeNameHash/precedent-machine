@@ -3,6 +3,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useUser } from '../lib/useUser';
 import { Breadcrumbs, EmptyState, SkeletonCard } from '../components/UI';
+import PwBar from '../components/chrome/PwBar';
 import { displayReviewLabel } from '../lib/product/review-labels';
 
 // The comparison surface (work package 53, plan finding (295)). It is the
@@ -57,12 +58,15 @@ export default function ComparePage() {
     : (current.length >= 3 ? current : [...current, id])));
 
   return (
-    <div className="space-y-6 max-w-6xl">
+    <div className="min-h-screen bg-white text-[#03203D]" data-testid="compare-page">
+      <PwBar active="compare" />
+      <div className="space-y-6 border-t-[10px] border-[#B9C8DA] px-[max(16px,min(6vw,96px))] py-[clamp(28px,4vw,56px)]">
   <Head><title>Compare agreements · Corpus</title></Head>
       <Breadcrumbs items={[{ label: 'Index', href: '/' }, { label: 'Compare' }]} />
       <div>
-        <h1 className="font-display text-2xl text-ink">Compare agreements</h1>
-        <p className="text-sm text-inkLight font-ui mt-1">
+        <p className="font-ui text-[12px] font-bold uppercase tracking-[0.1em] text-[#0B3D71]">Comparison</p>
+        <h1 className="mt-[10px] font-sans font-extrabold leading-[.96] tracking-[-.05em]" style={{ fontSize: 'clamp(32px,4vw,56px)' }}>Compare agreements</h1>
+        <p className="mt-[10px] max-w-[70ch] font-body text-[19px] leading-[1.35] text-[#33475E]">
           The same provision, side by side. A row that exists in one agreement and not another says so rather than disappearing.
         </p>
         {selected.length >= 3 ? <p className="mt-1 text-xs font-ui text-inkLight">Three at a time — clear one to add another.</p> : null}
@@ -148,6 +152,7 @@ export default function ComparePage() {
           <p className="mt-2 text-[11px] font-ui text-inkLight">▲ not lawyer-reviewed · every fact is shown as the model read it.</p>
         </div>
       ) : null}
+      </div>
     </div>
   );
 }
