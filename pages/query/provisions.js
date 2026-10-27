@@ -18,6 +18,7 @@ export function QueryProvisionsBody({
   agreements, error, families, familyKey, subtypeKey, onFamilyChange, onSubtypeChange,
 }) {
   const selectedFamily = families.find((family) => family.family_key === familyKey) || null;
+  const warned = (agreements || []).filter((agreement) => agreement.released_with_warning);
   const agreementsWithFacts = (agreements || []).filter((agreement) => agreement.facts.length > 0);
 
   return (
@@ -27,6 +28,11 @@ export function QueryProvisionsBody({
         { label: 'Review', href: '/review' },
         { label: 'Query published provisions' },
       ]} />
+      {warned.length ? (
+        <div className="rounded border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900" data-testid="release-health-warning">
+          <strong>Health warning.</strong> {warned.length === 1 ? 'This release was' : `${warned.length} releases were`} published on the owner's acknowledgement, not a full lawyer attestation: {warned[0].release_warning?.detail || 'no release evaluation was run.'}
+        </div>
+      ) : null}
 
       <div>
         <h1 className="font-display text-2xl text-ink">Query published provisions</h1>

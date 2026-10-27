@@ -39,6 +39,11 @@ export default function ComparePage() {
   return (
     <div className="space-y-6 max-w-6xl">
       <Breadcrumbs items={[{ label: 'Index', href: '/' }, { label: 'Compare' }]} />
+      {columns.some((agreement) => agreement.released_with_warning) ? (
+        <div className="rounded border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900" data-testid="release-health-warning">
+          <strong>Health warning.</strong> At least one compared release was published on the owner's acknowledgement, not a full lawyer attestation.
+        </div>
+      ) : null}
       <div>
         <h1 className="font-display text-2xl text-ink">Compare agreements</h1>
         <p className="text-sm text-inkLight font-ui mt-1">

@@ -149,3 +149,13 @@ test('a server error is retried once with the same idempotency key, and a second
   await assert.rejects(() => postCommand({ fetchJson: alwaysFails, runId: 'r', version: 0, idempotencyKey: 'k-2', body: { command: { type: 'PUBLISH' } } }),
     (error) => error.code === 'DATABASE_ERROR' && /schema cache/.test(error.message));
 });
+
+test('a mismatch repair on a proposal with no roles rejects it rather than editing it', () => {
+  const analysis = { proposition_groups: [{ proposition_group_id: 'g-wrong', family_key: 'NO_SHOP', subtype_key: 'PROHIBITED_ACTION' }] };
+  const state = reviewWith([{
+    ...item('p-noroles', 'PROPOSAL'),
+    original: { family_key: 'NO_SHOP', subtype_key: 'EXCEPTION_PREREQUISITE', proposition_group_id: 'g-wrong', statement: 'Legal fact.', roles: {} },
+  }]).state;
+  const repairs = groupMismatchRepairs(analysis, state);
+  assert.deepEqual(repairs, [{ type: 'DECIDE_ITEM', item_id: 'p-noroles', decision: 'REJECTED' }]);
+});
