@@ -15,6 +15,7 @@ export default function TopBar() {
   const links = [
     ['/', 'Index'],
     ['/review', 'Review'],
+    ['/query/provisions', 'Query'],
     ['/library', 'Library'],
   ];
   return (

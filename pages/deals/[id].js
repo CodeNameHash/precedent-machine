@@ -36,7 +36,7 @@ export default function DealDetail() {
   if (!deal) return (
     <div className="text-center py-12">
       <p className="text-inkFaint font-ui">Deal not found.</p>
-      <Link href="/deals" className="text-accent text-sm font-ui hover:underline">← Back to Deals</Link>
+      <Link href="/library" className="text-accent text-sm font-ui hover:underline">← Back to Deals</Link>
     </div>
   );
 
