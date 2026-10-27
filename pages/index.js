@@ -352,7 +352,7 @@ export default function HomePage({ initialData, processPilotUiEnabled = false })
           const names = (agreement.parties || []).map((party) => (typeof party === 'string' ? party : party && party.name)).filter(Boolean);
           return {
             id: agreement.source_document_id,
-            deal_name: names.length ? names.join(' / ') : agreement.agreement_label,
+            deal_name: agreement.agreement_label,
             signing_date: agreement.agreement_date || null,
             buyer_display: names[0] || null,
             value: null,
