@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { answerFor, explanationFor } from '../../lib/product/provision-presentation';
+import tableShapesV3 from '../../contracts/product/table-shapes.v3.json';
 
 // The released page's main body, on the presentation schema (work package 54):
 // one row per provision, the operative answer once, the springing condition
@@ -27,7 +28,7 @@ export default function ProvisionAnswers({ facts, onSource = null }) {
           </h2>
           <div className="mt-[10px] divide-y divide-[#DCE3E1]">
             {familyFacts.map((fact) => {
-              const { answer, condition, extras } = answerFor(fact);
+              const { answer, condition, extras } = answerFor(fact, tableShapesV3);
               const key = fact.review_item_id || fact.fact_id || fact.statement;
               return (
                 <article key={key} className="grid grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] gap-[18px] py-[10px] md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_auto]">
