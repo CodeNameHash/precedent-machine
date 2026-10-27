@@ -4,6 +4,7 @@ import { Breadcrumbs, EmptyState } from '../../../components/UI';
 import ProvisionRail from '../../../components/product/ProvisionRail';
 import PwBar from '../../../components/chrome/PwBar';
 import ProvisionTables from '../../../components/product/ProvisionTables';
+import ProvisionAnswers from '../../../components/product/ProvisionAnswers';
 import { buildTableView } from '../../../lib/product/table-view';
 import legalSchemaV2 from '../../../contracts/product/legal-schema.v2.json';
 import tableShapesV3 from '../../../contracts/product/table-shapes.v3.json';
@@ -81,14 +82,16 @@ export default function ReleasedDealPage({ agreement, error }) {
         </header>
         {agreement.facts.length === 0
           ? <EmptyState icon="" title="No published facts in this release" description="The release exists but carries no layered facts." />
-          : <ProvisionTables
+          : <ProvisionAnswers facts={agreement.facts} />}
+        {agreement.facts.length === 0 ? null : <details className="mt-[28px]"><summary className="cursor-pointer font-ui text-[13px] font-semibold text-[#0B3D71]">The provision tables</summary>
+          <div className="mt-[12px]"><ProvisionTables
               tableView={tableView}
               facts={agreement.facts}
               // The coded answers are the point of the page: pills on, so a
               // reader sees the answer before the words (Ben, 2026-10-27).
               initialShowCodes
               onSource={() => { if (agreement.retrieval_url) window.open(agreement.retrieval_url, '_blank', 'noopener'); }}
-            />}
+            /></div></details>}
       </div>
       </div>
     </div>
