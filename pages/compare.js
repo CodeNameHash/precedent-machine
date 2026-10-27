@@ -5,6 +5,8 @@ import { useUser } from '../lib/useUser';
 import { Breadcrumbs, EmptyState, SkeletonCard } from '../components/UI';
 import PwBar from '../components/chrome/PwBar';
 import { displayReviewLabel } from '../lib/product/review-labels';
+import { compareAcross } from '../lib/product/provision-compare';
+import tableShapesV3 from '../contracts/product/table-shapes.v3.json';
 
 // The comparison surface (work package 53, plan finding (295)). It is the
 // summary view of the design note: one row per family and subtype, one column
@@ -38,6 +40,12 @@ export default function ComparePage() {
   }, [user]);
 
   const columns = useMemo(() => (agreements || []).filter((agreement) => selected.includes(agreement.source_document_id)), [agreements, selected]);
+
+  // The coded-cell comparison: rows are the schema's provisions, cells are the
+  // answers the deal page shows (work package 54, finding (301)). It runs
+  // whenever the compared releases carry coded conclusions.
+  const codedRows = useMemo(() => (columns.length ? compareAcross(columns, tableShapesV3) : []), [columns]);
+  const coded = codedRows.length > 0;
 
   const rows = useMemo(() => {
     const keyed = new Map();
@@ -102,7 +110,55 @@ export default function ComparePage() {
         </section>
       ) : null}
 
-      {columns.length > 0 ? (
+      {coded ? (
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-sm" data-testid="coded-compare">
+            <thead>
+              <tr>
+                <th className="w-56 border-b border-[#B9C8DA] p-2 text-left text-xs font-bold uppercase tracking-wide text-[#6B7785]">Provision</th>
+                {columns.map((agreement) => (
+                  <th key={agreement.source_document_id} className="border-b border-[#B9C8DA] p-2 text-left">
+                    <div className="font-sans text-[15px] font-extrabold tracking-[-.03em] text-[#03203D]">{agreement.agreement_label}</div>
+                    <div className="font-ui text-[11px] text-[#6B7785]">V2 · {agreement.facts.length} facts</div>
+                  </th>
+                ))}
+                <th className="w-24 border-b border-[#B9C8DA] p-2 text-left text-xs font-bold uppercase tracking-wide text-[#6B7785]">n</th>
+              </tr>
+            </thead>
+            <tbody>
+              {codedRows.map((row) => (
+                <tr key={`${row.table_key}-${row.row_label}`} className="align-top">
+                  <th scope="row" className="border-b border-[#DCE3E1] p-2 text-left font-ui text-[12px] font-semibold text-[#33475E]">
+                    {row.row_label}
+                    <div className="font-normal text-[#6B7785]">{row.table_key}</div>
+                  </th>
+                  {columns.map((agreement) => {
+                    const cells = row.by_source[agreement.source_document_id] || [];
+                    return (
+                      <td key={agreement.source_document_id} className="border-b border-[#DCE3E1] p-2">
+                        {cells.length === 0 ? <span className="font-ui text-[11px] text-[#6B7785]">Not stated</span> : (
+                          <div className="flex flex-wrap gap-[4px]">
+                            {cells.map((cell, index) => (
+                              <span key={`${cell.answer}-${index}`} className="inline-flex flex-col items-start gap-[2px]">
+                                {cell.answer ? <span className="inline-flex items-center rounded-full bg-[#03203D] px-[9px] py-[2px] font-ui text-[11px] font-semibold text-white">{cell.answer}</span> : null}
+                                {cell.condition ? <span className="inline-flex items-center rounded-full border border-[#B9C8DA] px-[9px] py-[2px] font-ui text-[11px] text-[#0B3D71]">{cell.condition}</span> : null}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </td>
+                    );
+                  })}
+                  <td className="border-b border-[#DCE3E1] p-2 font-ui text-[11px] text-[#6B7785]">{row.n}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className="mt-2 font-ui text-[11px] text-[#6B7785]">Every cell is the answer the deal page shows; n counts the agreements that state one.</p>
+        </div>
+      ) : null}
+
+      {!coded && columns.length > 0 ? (
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-sm">
             <thead>
