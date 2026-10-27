@@ -20,5 +20,10 @@ export default async function handler(req, res) {
   const result = await verifySessionToken(token, { secret });
   if (!result.valid) return res.status(200).json({ authenticated: false });
 
-  return res.status(200).json({ authenticated: true, sub: result.claims.sub });
+  // The owner is the configured login (AUTH_USERNAME, default 'ben'). Only
+  // the owner sees the operations surfaces — the review queue, publishing and
+  // release (work package 53, plan finding (290)). With one user today this is
+  // always true; the shape is what matters when a second login exists.
+  const owner = process.env.AUTH_USERNAME || 'ben';
+  return res.status(200).json({ authenticated: true, sub: result.claims.sub, admin: result.claims.sub === owner });
 }

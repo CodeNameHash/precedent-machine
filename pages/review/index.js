@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useUser } from '../../lib/useUser';
+import { useSessionUser } from '../../lib/useSessionUser';
 import { Breadcrumbs, EmptyState, SkeletonCard } from '../../components/UI';
 import ProductIntakePanel from '../../components/product/ProductIntakePanel';
 
@@ -25,6 +27,14 @@ function formatDate(value) {
 
 export default function ReviewIndex() {
   const { user } = useUser({ redirectTo: '/login' });
+  const router = useRouter();
+  // Operations, for the owner only (work package 53): a reviewer account that
+  // is not the owner reads the index, a deal and a comparison, never the
+  // queue or the release.
+  const session = useSessionUser();
+  useEffect(() => {
+    if (!session.loading && !session.admin) router.replace('/');
+  }, [router, session.admin, session.loading]);
   const [runs, setRuns] = useState(null);
   const [error, setError] = useState(null);
 

@@ -9,13 +9,19 @@
 // must be imported by the page) since every rule here reads .mtx tokens.
 
 import Link from 'next/link';
+import { useSessionUser } from '../../lib/useSessionUser';
 
-const NAV_ITEMS = [
-  { key: 'review', href: '/review', label: 'Runs' },
-  { key: 'query', href: '/query/provisions', label: 'Query' },
+const PUBLIC_NAV_ITEMS = [
+  { key: 'index', href: '/', label: 'Index' },
+  { key: 'compare', href: '/compare', label: 'Compare' },
+];
+const ADMIN_NAV_ITEMS = [
+  { key: 'review', href: '/review', label: 'Review' },
 ];
 
 export default function AppHeader({ active, center, onBrandClick }) {
+  const session = useSessionUser();
+  const NAV_ITEMS = session.admin ? [...PUBLIC_NAV_ITEMS, ...ADMIN_NAV_ITEMS] : PUBLIC_NAV_ITEMS;
   return (
     <header className="top">
       <Link href="/" className="brand" onClick={onBrandClick}><span />Corpus</Link>

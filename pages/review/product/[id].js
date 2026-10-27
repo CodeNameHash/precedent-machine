@@ -1,8 +1,10 @@
 import { useRouter } from 'next/router';
 import ReviewWorkspace from '../../../components/product/ReviewWorkspace';
 import { useUser } from '../../../lib/useUser';
+import { useSessionUser } from '../../../lib/useSessionUser';
 import { parseFocusSections } from '../../../lib/product/section-highlight';
 import { briefForRun } from '../../../lib/product/review-briefs';
+import { useEffect } from 'react';
 
 // A run with a reviewer brief opens on the briefed provisions. `?focus=7.1,7.3`
 // overrides the list; `?all=1` shows every section.
@@ -16,6 +18,10 @@ export function resolveFocus(query, brief) {
 export default function ProductReviewPage() {
   useUser({ redirectTo: '/login' });
   const router = useRouter();
+  const session = useSessionUser();
+  useEffect(() => {
+    if (!session.loading && !session.admin) router.replace('/');
+  }, [router, session.admin, session.loading]);
   const id = Array.isArray(router.query.id) ? router.query.id[0] : router.query.id;
   const brief = id ? briefForRun(id) : null;
   const focus = id ? resolveFocus(router.query, brief) : [];

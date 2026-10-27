@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useUser } from '../../lib/useUser';
 import { ViewModeToggle } from '../ViewModeContext';
+import { useSessionUser } from '../../lib/useSessionUser';
 
 // Site-wide top banner, PW redesign. The Index page and the comparison
 // surface render their own mastheads; this is the shared banner for the
@@ -12,13 +13,14 @@ export default function TopBar() {
   const router = useRouter();
   const path = router?.pathname || '';
   const active = (href) => (href === '/' ? path === '/' : path === href || path.startsWith(`${href}/`));
-  // The two live product surfaces. "Index" (/), a static snapshot of the V1
-  // corpus, and "Library" (/library), a contained V1 page, are deliberately
-  // not in the navigation (work package 53): they look like the product and
-  // are not live.
+  // The product's surfaces (work package 53, plan finding (290)): the index
+  // and a comparison are for everyone; the review queue, publishing and
+  // release are the owner's operations and appear only for the owner.
+  const session = useSessionUser();
   const links = [
-    ['/review', 'Runs'],
-    ['/query/provisions', 'Query'],
+    ['/', 'Index'],
+    ['/compare', 'Compare'],
+    ...(session.admin ? [['/review', 'Review']] : []),
   ];
   return (
     <header className="pw-topbar sticky top-0 z-50 flex items-center gap-4 border-b border-[#DCE3E1] bg-white px-4 md:gap-7 md:px-10" style={{ height: 76, fontFamily: "'Inter Tight', Arial, sans-serif" }}>
