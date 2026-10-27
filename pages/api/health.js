@@ -35,6 +35,9 @@ export default function handleHealth(req, res) {
     key_kind: kindOf(process.env.PRODUCT_SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY),
     v1_ref: refOf(v1Url),
     v1_key_kind: kindOf(process.env.SUPABASE_SERVICE_ROLE_KEY),
-    schema: process.env.NEXT_PUBLIC_PRODUCT_LEGAL_SCHEMA_VERSION || process.env.PRODUCT_LEGAL_SCHEMA_VERSION || null,
+    // The effective version the routes will use, not merely the env: with the
+    // variable unset the selection module falls back to its default.
+    schema: process.env.NEXT_PUBLIC_PRODUCT_LEGAL_SCHEMA_VERSION || process.env.PRODUCT_LEGAL_SCHEMA_VERSION
+      || require('../../lib/product/legal-schema-selection').DEFAULT_VERSION || null,
   });
 }
