@@ -11,10 +11,8 @@
 import Link from 'next/link';
 
 const NAV_ITEMS = [
-  { key: 'corpus', href: '/', label: 'Corpus' },
-  { key: 'review', href: '/review', label: 'Review' },
+  { key: 'review', href: '/review', label: 'Runs' },
   { key: 'query', href: '/query/provisions', label: 'Query' },
-  { key: 'library', href: '/library', label: 'Library' },
 ];
 
 export default function AppHeader({ active, center, onBrandClick }) {
