@@ -73,7 +73,14 @@ export default function ReleasedDealPage({ agreement, error }) {
         </header>
         {agreement.facts.length === 0
           ? <EmptyState icon="" title="No published facts in this release" description="The release exists but carries no layered facts." />
-          : <ProvisionTables tableView={tableView} facts={agreement.facts} onSource={() => { if (agreement.retrieval_url) window.open(agreement.retrieval_url, '_blank', 'noopener'); }} />}
+          : <ProvisionTables
+              tableView={tableView}
+              facts={agreement.facts}
+              // The coded answers are the point of the page: pills on, so a
+              // reader sees the answer before the words (Ben, 2026-10-27).
+              initialShowCodes
+              onSource={() => { if (agreement.retrieval_url) window.open(agreement.retrieval_url, '_blank', 'noopener'); }}
+            />}
       </div>
     </div>
   );
