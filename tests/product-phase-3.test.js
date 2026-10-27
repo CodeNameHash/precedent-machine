@@ -289,9 +289,11 @@ test('a published summary without any layered facts keeps the pre-5B.5 V1 summar
     assert.equal(Object.hasOwn(fact, 'coverage_only'), false);
     assert.equal(Object.hasOwn(fact, 'section_reference'), false);
   }
-  // Computed on this same fixture with the pre-5B.5 compileReviewSummary
-  // (before components/headline/coverage_only/section_reference existed).
-  assert.equal(state.summary.summary_id, '505416779dc47f05acaa0fb2a7b5f39039c3a692071fffbb59ccec1ec36326d3');
+  // Computed on this same fixture after the facts gained their reviewer role
+  // (decided_by_role, work package 53) and conclusions travel with a fact when
+  // it has one. The V1 shape is otherwise unchanged: no components, headline,
+  // coverage_only or section_reference.
+  assert.equal(state.summary.summary_id, 'b72219e530c773636dd3c967ffc10e1f2b9e59d2e1441d251c87a9f71c82cb43');
 });
 
 test('an accepted proposal carrying a FACT_COMPONENTS/V2 tree publishes with layered summary fields', () => {
