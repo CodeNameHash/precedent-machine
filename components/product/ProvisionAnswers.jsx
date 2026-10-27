@@ -6,7 +6,7 @@ import tableShapesV3 from '../../contracts/product/table-shapes.v3.json';
 // one row per provision, the operative answer once, the springing condition
 // beside it, coded extras after it. The drafting, the interpretation and the
 // read live in the row's sidebar, which opens on click.
-export default function ProvisionAnswers({ facts, onSource = null }) {
+export default function ProvisionAnswers({ facts, market = {}, agreementCount = 0, onSource = null }) {
   const families = useMemo(() => {
     const map = new Map();
     for (const fact of facts || []) {
@@ -46,7 +46,7 @@ export default function ProvisionAnswers({ facts, onSource = null }) {
                     ))}
                   </div>
                   <button type="button" className="justify-self-start font-ui text-[12px] font-semibold text-[#0B3D71] hover:underline" onClick={() => setOpen(open === key ? null : key)} aria-expanded={open === key}>The words</button>
-                  {open === key ? <Explanation fact={fact} onSource={onSource} /> : null}
+                  {open === key ? <Explanation fact={fact} marketRow={market[`${fact.conclusions?.table_key}\u001f${fact.conclusions?.row_label}`]} agreementCount={agreementCount} onSource={onSource} /> : null}
                 </article>
               );
             })}
@@ -57,7 +57,7 @@ export default function ProvisionAnswers({ facts, onSource = null }) {
   );
 }
 
-function Explanation({ fact, onSource }) {
+function Explanation({ fact, marketRow = null, agreementCount = 0, onSource }) {
   const explanation = explanationFor(fact);
   return (
     <div className="col-span-full mt-[6px] border-l-[6px] border-[#03203D] bg-[#F1F4F8] px-[18px] py-[14px]" data-testid="answer-explanation">
@@ -66,6 +66,21 @@ function Explanation({ fact, onSource }) {
         {explanation.table_key ? <><dt className="font-semibold uppercase tracking-[.08em]">Table</dt><dd>{explanation.table_key}</dd></> : null}
         {explanation.interpretation ? <><dt className="font-semibold uppercase tracking-[.08em]">Read</dt><dd>{explanation.interpretation}</dd></> : null}
       </dl>
+      {marketRow ? (
+        <div className="mt-[10px]" data-testid="market-block">
+          <p className="font-ui text-[11px] font-semibold uppercase tracking-[.08em] text-[#6B7785]">Where this sits</p>
+          <p className="mt-[4px] font-ui text-[12px] text-[#33475E]">
+            {marketRow.n} of {agreementCount} released agreements state an answer here.
+          </p>
+          <div className="mt-[6px] flex flex-wrap gap-[6px]">
+            {Object.entries(marketRow.distribution || {}).sort((left, right) => right[1] - left[1]).map(([answer, count]) => (
+              <span key={answer} className="inline-flex items-center gap-[6px] rounded-full bg-[#F1F4F8] px-[10px] py-[2px] font-ui text-[11px] text-[#33475E]">
+                {answer}<b className="font-semibold text-[#03203D]">{count}</b>
+              </span>
+            ))}
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

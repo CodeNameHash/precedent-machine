@@ -9,6 +9,7 @@ import { buildTableView } from '../../../lib/product/table-view';
 import legalSchemaV2 from '../../../contracts/product/legal-schema.v2.json';
 import tableShapesV3 from '../../../contracts/product/table-shapes.v3.json';
 import { ProductPhase3Store } from '../../../lib/product/phase-3-store';
+import { compareAcross } from '../../../lib/product/provision-compare';
 import { getProductSupabase } from '../../../lib/supabase';
 
 // The released deal page is the lawyer-preview page, released (work package
@@ -24,7 +25,13 @@ export async function getServerSideProps({ params }) {
     const store = new ProductPhase3Store({ client });
     const agreements = await store.listPublishedLayeredFacts({});
     const agreement = agreements.find((entry) => entry.source_document_id === id) || null;
-    return { props: { agreement, error: null } };
+    // The market block: the same comparison rows, so the sidebar says where
+    // this answer sits across every released agreement (finding (302)).
+    const market = {};
+    for (const row of compareAcross(agreements, tableShapesV3)) {
+      market[`${row.table_key}\u001f${row.row_label}`] = { n: row.n, distribution: row.distribution };
+    }
+    return { props: { agreement, market, agreementCount: agreements.length, error: null } };
   } catch (failure) {
     return { props: { agreement: null, error: failure.message } };
   }
@@ -32,7 +39,7 @@ export async function getServerSideProps({ params }) {
 
 function money(value) { return value ? `$${(Number(value) / 1e9).toFixed(1)}bn` : null; }
 
-export default function ReleasedDealPage({ agreement, error }) {
+export default function ReleasedDealPage({ agreement, market = {}, agreementCount = 0, error }) {
   if (error) return <div className="p-6"><p className="text-sm font-ui text-red-700">The release could not be read: {error}</p></div>;
   if (!agreement) {
     return (
@@ -82,7 +89,7 @@ export default function ReleasedDealPage({ agreement, error }) {
         </header>
         {agreement.facts.length === 0
           ? <EmptyState icon="" title="No published facts in this release" description="The release exists but carries no layered facts." />
-          : <ProvisionAnswers facts={agreement.facts} />}
+          : <ProvisionAnswers facts={agreement.facts} market={market} agreementCount={agreementCount} />}
         {agreement.facts.length === 0 ? null : <details className="mt-[28px]"><summary className="cursor-pointer font-ui text-[13px] font-semibold text-[#0B3D71]">The provision tables</summary>
           <div className="mt-[12px]"><ProvisionTables
               tableView={tableView}
