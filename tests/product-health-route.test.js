@@ -35,6 +35,8 @@ test('the health route is public at the gate and reports the commit, the databas
     assert.equal(res.body.supabase_ref, 'sjumbznveyyiizhwvixj');
     assert.equal(res.body.schema, 'LEGAL_SCHEMA/V2');
     assert.equal(res.body.key_kind, 'secret');
+    assert.equal(res.body.v1_ref, 'sjumbznveyyiizhwvixj', 'with no product URL the V1 URL is also the product URL');
+    assert.equal(res.body.v1_key_kind, 'secret');
     assert.doesNotMatch(JSON.stringify(res.body), /sb_secret_/, 'the key itself never appears');
     // A legacy JWT is reported as such — the failure this route was built to
     // make visible.

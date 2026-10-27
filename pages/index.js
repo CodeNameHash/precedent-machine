@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import { useSessionUser } from '../lib/useSessionUser';
 import { useRouter } from 'next/router';
 import MergertraceStyles from '../components/review-v2/MergertraceStyles';
 import QueryLaunchBox from '../components/query/QueryLaunchBox';
@@ -175,6 +176,7 @@ function ColumnHeaderPopover({ col, sort, onSort, activeFilters, options, onTogg
 }
 
 export default function HomePage({ initialData, processPilotUiEnabled = false }) {
+  const { admin: sessionAdmin } = useSessionUser();
   const router = useRouter();
   // F3: seed from the ISR snapshot (getStaticProps) so first paint already
   // has the deal table, instead of starting blank and waiting on the
@@ -469,7 +471,8 @@ export default function HomePage({ initialData, processPilotUiEnabled = false })
           </Link>
           <nav className="pw-nav" aria-label="Sections">
             <Link href="/" className="on">Index</Link>
-            <Link href="/library">Library</Link>
+            <Link href="/compare">Compare</Link>
+            {sessionAdmin ? <Link href="/review">Review</Link> : null}
           </nav>
           <div className="pw-tools">
             <span className="login">Login</span>

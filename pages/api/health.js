@@ -10,22 +10,31 @@ export default function handleHealth(req, res) {
     res.setHeader('Allow', 'GET');
     return res.status(405).json({ error: 'GET only' });
   }
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || '';
-  let supabaseRef = null;
-  try {
-    const host = new URL(url).hostname;
-    const match = /^([a-z0-9]+)\.supabase\.co$/.exec(host);
-    supabaseRef = match ? match[1] : null;
-  } catch { supabaseRef = null; }
+  const refOf = (url) => {
+    try {
+      const match = /^([a-z0-9]+)\.supabase\.co$/.exec(new URL(url).hostname);
+      return match ? match[1] : null;
+    } catch { return null; }
+  };
+  const kindOf = (key) => (String(key || '').startsWith('sb_secret_') ? 'secret'
+    : String(key || '').startsWith('eyJ') ? 'legacy-jwt' : 'missing');
+  // Two databases (work package 53, finding (291)): the V1 corpus pages read
+  // one project, the product another, so health names both.
+  const v1Url = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || '';
+  const productUrl = process.env.PRODUCT_SUPABASE_URL || v1Url;
+  const supabaseRef = refOf(productUrl);
   res.setHeader('Cache-Control', 'private, no-store');
   return res.status(200).json({
     ok: Boolean(supabaseRef),
     commit: process.env.VERCEL_GIT_COMMIT_SHA || null,
     ref: process.env.VERCEL_GIT_COMMIT_REF || null,
     deployment: process.env.VERCEL_URL || null,
+    // The product database first (what /review and /compare read), then the
+    // V1 corpus database behind the index and deal pages.
     supabase_ref: supabaseRef,
+    key_kind: kindOf(process.env.PRODUCT_SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY),
+    v1_ref: refOf(v1Url),
+    v1_key_kind: kindOf(process.env.SUPABASE_SERVICE_ROLE_KEY),
     schema: process.env.NEXT_PUBLIC_PRODUCT_LEGAL_SCHEMA_VERSION || process.env.PRODUCT_LEGAL_SCHEMA_VERSION || null,
-    key_kind: (process.env.SUPABASE_SERVICE_ROLE_KEY || '').startsWith('sb_secret_') ? 'secret'
-      : (process.env.SUPABASE_SERVICE_ROLE_KEY || '').startsWith('eyJ') ? 'legacy-jwt' : 'missing',
   });
 }

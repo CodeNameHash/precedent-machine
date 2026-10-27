@@ -1,5 +1,5 @@
-import { getServiceSupabase } from '../../../../../lib/supabase';
+import { getProductSupabase } from '../../../../../lib/supabase';
 
 const { createProductSourceHandler } = require('../../../../../lib/product/source-handler');
 
-export default createProductSourceHandler({ getClient: getServiceSupabase });
+export default createProductSourceHandler({ getClient: getProductSupabase });

@@ -1,5 +1,5 @@
-import { getServiceSupabase } from '../../../../../lib/supabase';
+import { getProductSupabase } from '../../../../../lib/supabase';
 
 const { createProductIdentityHandler } = require('../../../../../lib/product/identity-handler');
 
-export default createProductIdentityHandler({ getClient: getServiceSupabase });
+export default createProductIdentityHandler({ getClient: getProductSupabase });

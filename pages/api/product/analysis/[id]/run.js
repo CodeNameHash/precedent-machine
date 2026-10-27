@@ -1,6 +1,6 @@
-import { getServiceSupabase } from '../../../../../lib/supabase';
+import { getProductSupabase } from '../../../../../lib/supabase';
 
 const { createProductRunHandler } = require('../../../../../lib/product/run-handler');
 
 export const config = { maxDuration: 300 };
-export default createProductRunHandler({ getClient: getServiceSupabase });
+export default createProductRunHandler({ getClient: getProductSupabase });
