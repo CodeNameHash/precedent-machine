@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import { useEffect, useMemo, useState } from 'react';
 import { useUser } from '../../lib/useUser';
 import { Breadcrumbs, EmptyState, SkeletonCard, ErrorState } from '../../components/UI';
@@ -23,6 +24,7 @@ export function QueryProvisionsBody({
 
   return (
     <div className="space-y-6 max-w-4xl">
+  <Head><title>Published provisions · Corpus</title></Head>
       <Breadcrumbs items={[
         { label: 'Dashboard', href: '/' },
         { label: 'Review', href: '/review' },

@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import ReviewWorkspace from '../../../components/product/ReviewWorkspace';
 import { useUser } from '../../../lib/useUser';

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useUser } from '../../../lib/useUser';
@@ -43,6 +44,7 @@ export default function ReleasedDealPage() {
 
   return (
     <div className="space-y-6">
+  <Head><title>Released agreement · Corpus</title></Head>
       <Breadcrumbs items={[{ label: 'Index', href: '/' }, { label: 'Released agreement' }]} />
       {loading ? <SkeletonCard /> : null}
       {!loading && !agreement ? (
@@ -59,7 +61,7 @@ export default function ReleasedDealPage() {
             <p className="text-xs font-ui uppercase tracking-wide text-inkLight">
               Released {new Date(agreement.released_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
             </p>
-            <h1 className="font-display text-2xl text-ink">{parties.length ? parties.join(' / ') : agreement.agreement_label}</h1>
+            <h1 className="font-display text-2xl text-ink">{agreement.agreement_label}</h1>
             <p className="text-sm font-ui text-inkLight">
               {date ? `${date} · ` : ''}{agreement.facts.length} facts
               {agreement.retrieval_url ? <> · <a href={agreement.retrieval_url} target="_blank" rel="noreferrer" className="text-accent hover:underline">SEC exhibit</a></> : null}

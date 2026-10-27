@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -279,6 +280,15 @@ export default function ProvisionsPreviewPage() {
   }, [id]);
   if (error) return <div className="p-[18.5px]"><ErrorState message={error} /></div>;
   if (!id || !workspace) return <div className="space-y-[9.5px] p-[18.5px]"><SkeletonCard /><SkeletonCard /></div>;
-  return <ProvisionsPreviewBody workspace={workspace} runId={id} />;
+  return (
+    <>
+      {/* The page renders without the shell, so it carries its own way back
+          (work package 53, finding (296)). */}
+      <div className="p-[18.5px] pb-0">
+        <Link href={`/review/product/${id}`} className="text-sm font-ui text-accent hover:underline">← Back to the review</Link>
+      </div>
+      <ProvisionsPreviewBody workspace={workspace} runId={id} />
+    </>
+  );
 }
 ProvisionsPreviewPage.noLayout = true;

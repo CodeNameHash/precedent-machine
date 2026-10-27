@@ -206,11 +206,11 @@ export default function PublishedSummary({
     {(groups || []).map((group) => group.collapsed
       ? <details key={group.family_key} data-testid="published-family" data-collapsed="true">
         <summary className="cursor-pointer font-display text-lg text-ink border-b border-border pb-1">{displayReviewLabel(group.family_key)} <span className="text-sm text-inkLight">({group.facts.length} boilerplate {group.facts.length === 1 ? 'rule' : 'rules'}, click to expand)</span></summary>
-        <ul className="mt-2 space-y-2">{group.facts.map((fact) => <PublishedFact key={fact.fact_id} fact={fact} onSource={onSource} initiallyExpanded={initiallyExpanded} />)}</ul>
+        <ul className="mt-2 space-y-2">{group.facts.map((fact) => <PublishedFact key={fact.fact_id || fact.review_item_id} fact={fact} onSource={onSource} initiallyExpanded={initiallyExpanded} />)}</ul>
       </details>
       : <div key={group.family_key} data-testid="published-family">
         <h3 className="font-display text-lg text-ink border-b border-border pb-1">{displayReviewLabel(group.family_key)}</h3>
-        <ul className="mt-2 space-y-2">{group.facts.map((fact) => <PublishedFact key={fact.fact_id} fact={fact} onSource={onSource} initiallyExpanded={initiallyExpanded} />)}</ul>
+        <ul className="mt-2 space-y-2">{group.facts.map((fact) => <PublishedFact key={fact.fact_id || fact.review_item_id} fact={fact} onSource={onSource} initiallyExpanded={initiallyExpanded} />)}</ul>
       </div>)}
   </section>;
 }

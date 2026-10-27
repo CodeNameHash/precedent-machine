@@ -14,14 +14,20 @@ import {
   validateHomeSearchSnapshot,
 } from '../lib/home-search';
 const { getHomeStaticProps } = require('../lib/home-static-props');
+const { releasedIndexRows } = require('../lib/product/released-index');
 const { isCanonicalV2ProcessPilotUiEnabled } = require('../lib/canonical-v2/feature-flags');
 
 export async function getStaticProps() {
   const result = await getHomeStaticProps();
+  // The released V2 rows ride with the page so the index shows them in its
+  // first paint, not after a client fetch (work package 53, finding (296)).
+  let releasedRows = [];
+  try { releasedRows = await releasedIndexRows(); } catch { releasedRows = []; }
   return {
     ...result,
     props: {
       ...result.props,
+      releasedRows,
       processPilotUiEnabled: isCanonicalV2ProcessPilotUiEnabled(),
     },
   };
@@ -113,6 +119,10 @@ function readColumnsFromStorage() {
 
 function renderCell(col, deal) {
   if (col.key === 'deal') {
+    // A released V2 row is named by its label and carries its marker and
+    // health warning (work package 53, finding (296)); a V1 row keeps the
+    // buyer / target pair the snapshot gives it.
+    if (deal.v2) return <b>{col.accessor(deal)}</b>;
     return <><b>{deal.buyer_display || 'Buyer'}</b> {' / '}{deal.target_display || 'Target'}</>;
   }
   if (col.key === 'signed') {
@@ -175,7 +185,7 @@ function ColumnHeaderPopover({ col, sort, onSort, activeFilters, options, onTogg
   );
 }
 
-export default function HomePage({ initialData, processPilotUiEnabled = false }) {
+export default function HomePage({ releasedRows = [], initialData, processPilotUiEnabled = false }) {
   const { admin: sessionAdmin } = useSessionUser();
   const router = useRouter();
   // F3: seed from the ISR snapshot (getStaticProps) so first paint already
@@ -339,34 +349,9 @@ export default function HomePage({ initialData, processPilotUiEnabled = false })
     return map;
   }, [deals]);
 
-  // Released V2 agreements join the table as rows, badged in the deal cell and
-  // routed to their own page (work package 53, finding (294)).
-  const [v2Deals, setV2Deals] = useState([]);
-  useEffect(() => {
-    let cancelled = false;
-    fetch('/api/product/published-facts', { headers: { accept: 'application/json' } })
-      .then((response) => (response.ok ? response.json() : { agreements: [] }))
-      .then((body) => {
-        if (cancelled) return;
-        setV2Deals((body.agreements || []).map((agreement) => {
-          const names = (agreement.parties || []).map((party) => (typeof party === 'string' ? party : party && party.name)).filter(Boolean);
-          return {
-            id: agreement.source_document_id,
-            deal_name: agreement.agreement_label,
-            signing_date: agreement.agreement_date || null,
-            buyer_display: names[0] || null,
-            value: null,
-            consideration_type: null,
-            v2: true,
-            review_warning: agreement.released_with_warning === true,
-            released_at: agreement.released_at,
-            fact_count: (agreement.facts || []).length,
-          };
-        }));
-      })
-      .catch(() => { if (!cancelled) setV2Deals([]); });
-    return () => { cancelled = true; };
-  }, []);
+  // Released V2 agreements join the table as rows, delivered with the page.
+  const v2Deals = releasedRows || [];
+
   const tableDeals = useMemo(() => [...v2Deals, ...deals], [v2Deals, deals]);
 
   const visibleDeals = useMemo(() => {
@@ -504,9 +489,7 @@ export default function HomePage({ initialData, processPilotUiEnabled = false })
             <Link href="/compare">Compare</Link>
             {sessionAdmin ? <Link href="/review">Review</Link> : null}
           </nav>
-          <div className="pw-tools">
-            <span className="login">Login</span>
-          </div>
+          <div className="pw-tools" />
         </header>
 
         {/* F3: a failed client refresh should never blank a table that
@@ -596,7 +579,7 @@ export default function HomePage({ initialData, processPilotUiEnabled = false })
                   </div>
 
                   <div className="pw-filters" onClick={(e) => e.stopPropagation()}>
-                    <button type="button" className={`pw-fbtn${activeFilterCount === 0 ? ' on' : ''}`} onClick={clearAllFilters}>All <span>{deals.length}</span></button>
+                    <button type="button" className={`pw-fbtn${activeFilterCount === 0 ? ' on' : ''}`} onClick={clearAllFilters}>All <span>{tableDeals.length}</span></button>
                     <button type="button" className={`pw-fbtn${sectorActive ? ' on' : ''}`} onClick={toggleSectorPreset}>Biopharma <span>{biopharmaCount}</span></button>
                     <button type="button" className={`pw-fbtn${valueActive ? ' on' : ''}`} onClick={toggleValuePreset}>$1bn+ <span>{billionCount}</span></button>
                     {pwFirmCount > 0 && (

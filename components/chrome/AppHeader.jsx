@@ -33,7 +33,7 @@ export default function AppHeader({ active, center, onBrandClick }) {
           </Link>
         ))}
       </nav>
-      <span className="login">Login</span>
+      
       <style jsx>{`
         .top { height: 64px; display: grid; grid-template-columns: 180px minmax(260px, 1fr) auto auto; gap: 18px; align-items: center; padding: 0 28px; border-bottom: 1px solid var(--line); background: var(--surface); position: sticky; top: 0; z-index: 20; }
         .brand { color: var(--ink); text-decoration: none; font-size: 20px; font-weight: 650; display: inline-flex; align-items: center; gap: 9px; font-family: var(--mtx-sans); }

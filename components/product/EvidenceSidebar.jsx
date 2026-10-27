@@ -298,7 +298,7 @@ export default function EvidenceSidebar({
     <section>{recordDetail}</section>
     </>}
 
-    {tab !== 'comments' ? null : (
+    {tab !== 'comments' || !reviewItem ? null : (
     <section data-testid="evidence-review-trail-section">
       <p className={HEADING}>Review trail</p>
       <div className="mt-[7px]">

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import Head from 'next/head';
 import Link from 'next/link';
 import { useUser } from '../lib/useUser';
 import { Breadcrumbs, EmptyState, SkeletonCard } from '../components/UI';
@@ -57,12 +58,14 @@ export default function ComparePage() {
 
   return (
     <div className="space-y-6 max-w-6xl">
+  <Head><title>Compare agreements · Corpus</title></Head>
       <Breadcrumbs items={[{ label: 'Index', href: '/' }, { label: 'Compare' }]} />
       <div>
         <h1 className="font-display text-2xl text-ink">Compare agreements</h1>
         <p className="text-sm text-inkLight font-ui mt-1">
           The same provision, side by side. A row that exists in one agreement and not another says so rather than disappearing.
         </p>
+        {selected.length >= 3 ? <p className="mt-1 text-xs font-ui text-inkLight">Three at a time — clear one to add another.</p> : null}
       </div>
 
       {agreements === null ? <SkeletonCard /> : null}

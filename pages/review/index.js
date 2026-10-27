@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useUser } from '../../lib/useUser';
@@ -23,6 +24,14 @@ function formatDate(value) {
   if (!value) return '';
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? '' : date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+/** The agreement a run belongs to, from the URL the row carries. */
+function runLabel(run) {
+  const url = String(run.retrieval_url || '');
+  const file = url.split('/').pop();
+  if (file) return file.replace(/[-_]/g, ' ');
+  return String(run.run_id || '').slice(0, 8);
 }
 
 export default function ReviewIndex() {
@@ -50,6 +59,7 @@ export default function ReviewIndex() {
 
   return (
     <div className="space-y-6 max-w-4xl">
+  <Head><title>Runs · Corpus</title></Head>
       <Breadcrumbs items={[{ label: 'Dashboard', href: '/' }, { label: 'Review' }]} />
       <div>
         <h1 className="font-display text-2xl text-ink">Review agreements</h1>
@@ -80,7 +90,10 @@ export default function ReviewIndex() {
             <div key={run.run_id} className="bg-white border border-border rounded-lg shadow-sm p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <h3 className="font-display text-base text-ink">{STATUS_LABEL[run.status] || run.status || 'Run'} <span className="font-ui text-xs text-inkLight">{String(run.run_id).slice(0, 8)}</span></h3>
+                  <h3 className="font-display text-base text-ink">
+                    {runLabel(run)}
+                    <span className="ml-2 font-ui text-xs text-inkLight">{STATUS_LABEL[run.status] || run.status || 'Run'}</span>
+                  </h3>
                   <div className="flex flex-wrap gap-3 mt-1 text-xs font-ui text-inkLight">
                     <span>{formatDate(run.created_at)}</span>
                     {run.stage ? <span>{run.stage}</span> : null}
