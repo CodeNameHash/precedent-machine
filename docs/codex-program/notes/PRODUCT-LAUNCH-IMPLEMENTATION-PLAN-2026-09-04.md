@@ -13043,3 +13043,136 @@ Stop only for a genuine legal ambiguity, a fact-shape decision, a proposed
 weakening of the release bars, the database-cost choice, or the production
 cutover approval, and put each to Ben in plain options with a recommendation.
 ```
+
+## Findings (246)–(260): the 2026-10-27/28 session, for the next agent
+
+Written as findings in place, per the rule that this file is the only checklist.
+Read this block before touching the product; it is the state of the world, not a
+plan.
+
+**(246) The deployment and how to check it.** Project `deal-corpus`
+(`prj_pseZ68ISXsxADzNcffHTO2NuGM8b`), alias `deal-corpus-preview.vercel.app`,
+advanced by hand after each build (Vercel API `POST /v2/deployments/<id>/aliases`).
+`/api/health` is public and returns `{commit, ref, deployment, supabase_ref,
+key_kind, v1_ref, v1_key_kind, schema}`. Treat `v1_key_kind: "legacy-jwt"` as a
+broken deployment: the corpus project has legacy keys disabled.
+
+**(247) Two databases, two clients.** The V1 corpus is `tzulhdasmioeechxapdy`
+(40 deals, 74,635 claims, 12,816 provisions, 307 candidates; modern keys only:
+`sb_secret_…` and `sb_publishable_…`). The product is `sjumbznveyyiizhwvixj`
+(all 46 migrations applied; 38 product tables; the note exemption applied).
+`lib/supabase.js` `getProductSupabase()` reads `PRODUCT_SUPABASE_URL` and
+`PRODUCT_SUPABASE_SERVICE_ROLE_KEY`; every `/api/product/*` route uses it. V1
+routes keep `getServiceSupabase()` on `SUPABASE_URL`/`SUPABASE_SERVICE_ROLE_KEY`,
+which must point at `tzul…` with the modern keys. `ecrtoofsyxozazkvsvcl` is
+orphaned (no account access): its Apogee review is lost; the JSON snapshot of
+its analysis and state was held in /tmp and is not authoritative.
+
+**(248) A run end to end, on the product database.** Run
+`03e04ede-f4e4-432a-8d13-41ae84b33c38` (Apogee, DeepSeek, `deepseek-flash`):
+97/97 sections, 0 failures, $17.09. Review initialised at 3,249 items; the
+driver accepted them in 9 batches, repaired one proposition-group mismatch by
+rejecting a role-less proposal, and published (review version 14). Release
+`2b357d4a…` then activated with `released_with_warning` because the supervised
+release evaluation was not run — Ben's decision of 2026-10-27 ("just release it
+immediately with health warning"). The release row is immutable by trigger, so
+the acknowledgement lives on `product_agreement_release_heads` and on the review
+state.
+
+**(249) The release-warning path is now schema.** `supabase/migrations/
+20261027020000_product_release_warning.sql` adds `released_with_warning` and
+`release_warning` to the release heads and defines
+`product_activate_release_with_warning(run_id, release_id, warning)`, which
+writes the pointer, the warning and the review state in one transaction. A
+database built from `supabase/migrations` now matches staging.
+
+**(250) The published read.** `listPublishedLayeredFacts` returns, per released
+agreement: the label (target / acquirer from the source payload's party roles,
+not the SEC URL), `agreement_date`, `parties`, `retrieval_url`,
+`released_with_warning` and its detail, and the facts. Each fact carries
+`decided_by_role` (a fact the harness decided reads `null`, which is how every
+surface knows it was not lawyer-reviewed) and, joined from
+`product_fact_conclusions` by proposal, its `{table_key, row_label, cells}` —
+without that join the tables cannot be built at all (finding (298)).
+
+**(251) The presentation schema, and why it exists.** Ben, 2026-10-27: the page
+was "a mess" — "period 10 business days", "HSR within a stated period" and "10
+days" were one deadline printed three times, and a phrase that merely qualified
+drafting wore a pill. `lib/product/provision-presentation.js` decides once, for
+every family and both surfaces: the operative answer (period, then value, then
+code), the springing condition as its own field, the coded extras with
+restatements dropped, and the sidebar explanation (as-drafted words, table and
+read as one block). Only an answer, a condition or a code can be a pill.
+A code is displayed in `table-shapes.v3`'s own vocabulary; the schema's column
+type outranks the column's name (a fee table's `trigger` column is a coded
+answer, not a springing condition — the test that caught it is
+`tests/product-provision-presentation.test.js`).
+
+**(252) Comparison, both ways.** `lib/product/provision-compare.js` builds the
+coded comparison from the same answers (rows `table_key`+`row_label`, cells the
+answer, `n` and a distribution). `lib/product/v1-answer-adapter.js` and
+`lib/product/v1-provisions.js` read the V1 corpus the same way (provision code
+and exceptions → answer and condition), and `mergeGenerations` keeps V1 and V2
+rows apart with every cell stamped by generation. V1 codes mean the old feature
+vocabulary; V2 codes mean the schema's; they are never pooled.
+
+**(253) The surfaces.** `/` is the index: 40 V1 rows plus released V2 rows built
+at page-build time (`lib/product/released-index.js`, so the release is in the
+first paint), filter options and counts over the rows the table shows.
+`/deals/v2/<source document>` is the lawyer-preview page released — rail, PW
+header, provision tables, answer-first rows with the market block in each row's
+sidebar. `/compare` is the summary comparison, the coded comparison and the V1
+corpus picker. `/query/provisions` is the released facts by family; the legacy
+`/query` index redirects to `/compare`. `/review` and `/review/product/<id>` are
+owner-only (`/api/auth/session` returns `admin`, the pages redirect anyone else).
+
+**(254) Design.** The Paul, Weiss system from the attached skill and bundle:
+`--navy #03203d`, `--mist #b9c8da`, `--rule #dce3e1`, Inter Tight for structure
+and Source Serif for reading, 58px navy bar with pill links, 10px mist screen
+rule, blue eyebrow, tight display type, square cards, the warning as a wash
+callout with a 6px navy left border. Apply it through the shared components
+(`components/chrome/PwBar.jsx`, the released page) rather than per page.
+
+**(255) What is verified.** 48 tests across the schema, comparison, V1 adapter,
+published read, phase-3 summaries, review driver and health; a local crawl of
+all 43 page routes against both databases with no failure (the two 404s are the
+design prototypes, guarded off in production); `/api/health`,
+`/api/product/published-facts` and `/api/product/runs` exercised on the
+deployment. `tests/auth-route-enforcement.test.js` has two failures that
+pre-date this session (they reproduce with the gate stashed) — do not chase them
+as regressions.
+
+**(256) Open, in order.** (a) The corpus holds one released agreement, so every
+market block reads `n = 1`; Ben has **forbidden ingestion** until the site is
+release-ready, so the Barshay five and the BMS set are prepared but unstarted.
+(b) Compare v1 needs the V1 picker exercised against more than one corpus deal.
+(c) The rollback drill has not been run (release, roll back, release again).
+(d) The release evaluation was bypassed, not passed: a real evaluation still
+needs Ben's 858 citation assessments. (e) The structured review-feedback backend
+and the production cutover are untouched.
+
+**(257) Prepared deals, ready to ingest on the word.** Barshay's five, derived
+from exhibit 2.1 filings found by the notice clause (his name appears as the
+Paul, Weiss notice contact, which is the lawyer-enrichment mechanism Ben wants):
+Surgery Partners 2026-10-26, PTC 2026-10-05, TopBuild 2026-04-20, QXO
+2026-04-20, Corebridge 2026-03-26 (alternate Equitable Holdings 2026-03-26).
+BMS: four EDGAR full-text hits for merger-agreement language in its 8-Ks since
+2023 (2023-02-28, 2023-12-22, 2024-02-22, 2024-03-18).
+
+**(258) Operational lessons.** Rebuilding `next build` under a running
+`next start` corrupts the running server: restart it after every build. Vercel
+env changes need a new deployment, and `NEXT_PUBLIC_*` are inlined at build
+time. A minted `pm_session` expires; mint a 12-hour one for a crawl. `git add -A`
+picks up the 226 MB `pw-biopharma-market/` bundle Ben unpacked — it is ignored
+in `.gitignore`, not committed. The read of a review is 24 MB and can fail
+transiently; retry it rather than reporting a dead loop.
+
+**(259) What "done" meant for this session.** Every page a signed-in user can
+reach renders against the right database, the released agreement reads as
+answers rather than drafting, the comparison holds V1 and V2 without pretending
+they are the same vocabulary, and the site says when a release is degraded.
+That is the state at commit `b3806545`.
+
+**(260) The single next decision.** Lift the ingestion hold and run the Barshay
+five (then the BMS set). Nothing else moves the product's value: every surface
+is built and waiting for a corpus.

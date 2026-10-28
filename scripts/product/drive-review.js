@@ -58,8 +58,19 @@ function parseArgs(argv) {
   };
 
   const started = Date.now();
-  const read = await fetchJson(`/api/product/review/${args.run}`);
-  if (read.status !== 200) throw new Error(`review read answered ${read.status}: ${read.body?.error || ''}`);
+  // The review read is a 24 MB answer on a real run; a transient failure is
+  // not an error to report as the end of the loop (2026-10-27: two runs
+  // stopped on a single 500 before the queue was touched).
+  let read = null;
+  for (let attempt = 1; attempt <= 4; attempt += 1) {
+    read = await fetchJson(`/api/product/review/${args.run}`);
+    if (read.status === 200) break;
+    if (attempt < 4) {
+      console.log(`review read ${read.status} (${read.body?.error || ''}); retrying in ${attempt * 5}s`);
+      await new Promise((resolve) => setTimeout(resolve, attempt * 5000));
+    }
+  }
+  if (!read || read.status !== 200) throw new Error(`review read answered ${read?.status}: ${read?.body?.error || ''}`);
   let review = read.body.review;
   const pending = review.state.items.filter((item) => item.decision === 'PENDING');
   console.log(`review ${args.run}: version ${review.version}, ${review.state.items.length} items, ${pending.length} pending, status ${review.status}`);
