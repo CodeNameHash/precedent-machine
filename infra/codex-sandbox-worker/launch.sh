@@ -7,7 +7,7 @@ if [[ $# -ne 1 || ! "$1" =~ ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[
   exit 64
 fi
 
-if [[ "${SUPABASE_URL:-}" != 'https://ecrtoofsyxozazkvsvcl.supabase.co' || -z "${SUPABASE_SERVICE_ROLE_KEY:-}" ]]; then
+if [[ "${SUPABASE_URL:-}" != 'https://sjumbznveyyiizhwvixj.supabase.co' || -z "${SUPABASE_SERVICE_ROLE_KEY:-}" ]]; then
   printf '%s\n' 'PRODUCT_HOSTED_PREVIEW_DATABASE_REQUIRED' >&2
   exit 78
 fi
