@@ -8,6 +8,20 @@ orientation, not an instruction set. The single executable checklist is
 manager prompt. Read `docs/core` first (PLAN, OPERATING-RULES, LEGAL-RULES,
 CODEBASE-GUIDE), then the plan's findings from (210) on.
 
+## 00. Update, 2026-10-28 (the Claude manager session, reading the record)
+
+The 2026-10-27/28 session (DeepSeek-driven) wrote its handoff as findings
+(288) to (302) at the end of the plan (written as (246) to (260) and
+renumbered 2026-10-28, since those numbers were already taken). Read that
+block first: the product now has its own database `sjumbznveyyiizhwvixj`
+(the preview branch `ecrtoofsyxozazkvsvcl` named below is orphaned), one
+released agreement (Apogee on `deepseek-flash`, released with a warning on
+Ben's word), the released deal page, index, compare and query surfaces in
+the Paul, Weiss design, and an ingestion hold Ben set until the site is
+release-ready. Findings (246) to (287) are the 2026-10-24/25 session
+(publish over a direct connection, the statement timeout, the state size).
+Sections 2, 5 and 6 below are stale where they disagree with those blocks.
+
 ## 0. Update, 2026-10-24 08:30 EDT (read this first; sections 2 and 6 below are superseded where they disagree)
 
 Two deals have now run end to end. Findings (237) to (245) carry the evidence.
