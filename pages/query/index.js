@@ -16,7 +16,9 @@ QueryIndexPage.noLayout = true;
 export function getServerSideProps() {
   return {
     redirect: {
-      destination: '/',
+      // The legacy query index is folded into the comparison surface (work
+      // package 54, finding (305)): one navigation, no orphan page.
+      destination: '/compare',
       permanent: false,
     },
   };

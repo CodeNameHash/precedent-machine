@@ -105,6 +105,9 @@ export default function ComparePage() {
           The same provision, side by side. A row that exists in one agreement and not another says so rather than disappearing.
         </p>
         {selected.length >= 3 ? <p className="mt-1 text-xs font-ui text-inkLight">Three at a time — clear one to add another.</p> : null}
+        <p className="mt-1 font-ui text-[12px] text-[#6B7785]">
+          <Link href="/query/provisions" className="text-[#0B3D71] underline">Every published fact, by provision family →</Link>
+        </p>
       </div>
 
       {agreements === null ? <SkeletonCard /> : null}

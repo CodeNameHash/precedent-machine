@@ -331,28 +331,31 @@ export default function HomePage({ releasedRows = [], initialData, processPilotU
   // QueryLaunchBox, whose deals effect keys on it.
   const deals = useMemo(() => data?.deals || [], [data]);
 
+  // Released V2 agreements join the table as rows, delivered with the page.
+  const v2Deals = releasedRows || [];
+  const tableDeals = useMemo(() => [...v2Deals, ...deals], [v2Deals, deals]);
+
   const columnOptions = useMemo(() => {
     const map = {};
+    // Built from the rows the table shows, releases included -- otherwise a V2
+    // row cannot be filtered and its year never appears in the year list
+    // (work package 54, finding (305)).
+    const rows = tableDeals;
     for (const col of COLUMNS) {
       if (!col.filterable) continue;
       if (col.filterType === 'band') { map[col.key] = VALUE_BANDS; continue; }
       if (col.filterType === 'year') {
-        map[col.key] = [...new Set(deals.map(signedYear).filter(Boolean))].sort().reverse();
+        map[col.key] = [...new Set(rows.map(signedYear).filter(Boolean))].sort().reverse();
         continue;
       }
       const getter = col.filterValues || col.filterValue || col.accessor;
-      map[col.key] = [...new Set(deals.flatMap((deal) => {
+      map[col.key] = [...new Set(rows.flatMap((deal) => {
         const value = getter(deal);
         return Array.isArray(value) ? value : [value];
       }).filter(Boolean))].sort();
     }
     return map;
-  }, [deals]);
-
-  // Released V2 agreements join the table as rows, delivered with the page.
-  const v2Deals = releasedRows || [];
-
-  const tableDeals = useMemo(() => [...v2Deals, ...deals], [v2Deals, deals]);
+  }, [tableDeals]);
 
   const visibleDeals = useMemo(() => {
     let rows = tableDeals.filter((deal) => {
@@ -451,9 +454,10 @@ export default function HomePage({ releasedRows = [], initialData, processPilotU
   const valueActive = (filters.value || []).includes('$1B-$10B') && (filters.value || []).includes('>$10B');
   const pwFirmActive = (filters.law_firm || []).includes('Paul, Weiss');
   const countDeals = (predicate) => deals.filter(predicate);
-  const biopharmaCount = countDeals((d) => d.sector === 'Biopharma').length;
-  const billionCount = countDeals((d) => Number(d.value) >= 1e9).length;
-  const pwFirmCount = countDeals((d) => [...(d.advisors?.buyer_firms || []), ...(d.advisors?.seller_firms || [])].includes('Paul, Weiss')).length;
+  const countRows = useMemo(() => (predicate) => tableDeals.filter(predicate), [tableDeals]);
+  const biopharmaCount = countRows((d) => d.sector === 'Biopharma').length;
+  const billionCount = countRows((d) => Number(d.value) >= 1e9).length;
+  const pwFirmCount = countRows((d) => [...(d.advisors?.buyer_firms || []), ...(d.advisors?.seller_firms || [])].includes('Paul, Weiss')).length;
   const filterPanelColumns = COLUMNS.filter((col) => col.filterable && (columnOptions[col.key] || []).length > 0);
 
   function clearAllFilters() {
