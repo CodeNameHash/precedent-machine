@@ -13198,3 +13198,20 @@ pre-date this change: the health-route assertion and the P8 staging proof
 whose allowlist file is absent). Pool sandboxes updated to the head before
 the wake. Runs go one at a time, per Ben's "sequential - I agree" of
 2026-10-23: Apogee, then Skechers, then QXO.
+
+**(304) 2026-10-28 23:40 UTC: Apogee on the Sonnet default, READY.** Run
+`5fcf3b0e-de2b-4857-bcf7-4fbcc24d68c9` (Claude subscription, pm-codex-preview-
+worker, woken 21:41, READY 23:29 UTC, 108 minutes with Skechers running beside
+it): 97 of 97 sections, 914 proposals, **910 valid, 4 held** (the DeepSeek
+flash release of (290) had 734 valid of 859); 14.26M input and 2.23M output
+tokens at $0 marginal; three SECTION_FAILED, every one recovered on the next
+attempt (1.8 a THIN_ANSWER with no proposals and an uncited residual
+paragraph, the guard of (199)). After READY the worker's finalisation retry
+logged `lock timeout` then `statement timeout`, the flaky finalise of the
+(288) block: the database shows the run READY and the facts whole, so the
+timeout hit a post-finalise statement, not the draft. Skechers
+`612ed714-eb29-47ad-a7fc-444dc8c88f20` at 86 of 121 with 952 valid of 953;
+QXO woken on the freed sandbox. Ben: "Can we run them at the same time?":
+two at once worked, the subscription window held. Next for Apogee: the
+review (3,000-plus items on the previous run) and Ben's read on the
+provisions page; nothing published from this run yet.
