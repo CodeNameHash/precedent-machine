@@ -191,13 +191,13 @@ test('the wake carries DEEPSEEK_API_KEY into the sandbox for a DeepSeek run only
       },
     };
   } };
-  const base = { runId: '46c45080-6935-49e5-96ae-b6cb0609a924', databaseUrl: 'https://ecrtoofsyxozazkvsvcl.supabase.co', serviceRoleKey: 'service-role-secret-value', sandboxApi };
+  const base = { runId: '46c45080-6935-49e5-96ae-b6cb0609a924', databaseUrl: 'https://sjumbznveyyiizhwvixj.supabase.co', serviceRoleKey: 'service-role-secret-value', sandboxApi };
   await assert.rejects(wakeSandboxProductRun({ ...base, providerId: DEEPSEEK_API_PROVIDER_ID }), /PRODUCT_SANDBOX_DEEPSEEK_API_KEY_REQUIRED/);
   await assert.rejects(wakeSandboxProductRun({ ...base, providerId: DEEPSEEK_API_PROVIDER_ID, deepseekApiKey: 'short' }), /PRODUCT_SANDBOX_DEEPSEEK_API_KEY_REQUIRED/);
   const result = await wakeSandboxProductRun({ ...base, providerId: DEEPSEEK_API_PROVIDER_ID, deepseekApiKey: KEY, anthropicApiKey: 'sk-ant-'.repeat(6), anthropicWorkspaceId: 'wrkspc_never' });
   assert.equal(commandInput.cmd, SANDBOX_LAUNCHER);
   assert.deepEqual(commandInput.env, {
-    SUPABASE_URL: 'https://ecrtoofsyxozazkvsvcl.supabase.co',
+    SUPABASE_URL: 'https://sjumbznveyyiizhwvixj.supabase.co',
     SUPABASE_SERVICE_ROLE_KEY: 'service-role-secret-value',
     PRODUCT_MODEL_PROVIDER: DEEPSEEK_API_PROVIDER_ID,
     PRODUCT_SANDBOX_NAME: 'pm-codex-preview-worker',
@@ -218,7 +218,7 @@ test('the run route wakes a DeepSeek run with the deployment\'s DEEPSEEK_API_KEY
     getClient: () => ({}), storeFactory: () => store, actorResolver: async () => 'ben',
     modelConfigResolver: () => ANTHROPIC_API_MODEL_CONFIG,
     modelFactory: () => assert.fail('no in-process model for a hosted run'),
-    databaseUrlResolver: () => 'https://ecrtoofsyxozazkvsvcl.supabase.co',
+    databaseUrlResolver: () => 'https://sjumbznveyyiizhwvixj.supabase.co',
     serviceRoleKeyResolver: () => 'service-role-secret-value',
     claudeOauthTokenResolver: () => assert.fail('no OAuth token for an API run'),
     anthropicApiKeyResolver: () => assert.fail('no Anthropic key for a DeepSeek run'),
@@ -230,7 +230,7 @@ test('the run route wakes a DeepSeek run with the deployment\'s DEEPSEEK_API_KEY
   await handler({ method: 'POST', query: { id: runId }, headers: { 'x-pm-csrf': 'same-origin' }, body: {} }, response);
   assert.equal(response.statusCode, 202);
   assert.deepEqual(wakeInput, {
-    runId, databaseUrl: 'https://ecrtoofsyxozazkvsvcl.supabase.co', serviceRoleKey: 'service-role-secret-value',
+    runId, databaseUrl: 'https://sjumbznveyyiizhwvixj.supabase.co', serviceRoleKey: 'service-role-secret-value',
     providerId: DEEPSEEK_API_PROVIDER_ID, deepseekApiKey: KEY,
     sandboxName: 'pm-codex-preview-worker',
   });

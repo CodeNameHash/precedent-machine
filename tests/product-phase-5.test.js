@@ -21,7 +21,7 @@ function referenceSample(overrides = {}) {
 }
 
 test('local diagnostic runner is bound to the disposable host and exact diagnostic source', () => {
-  assert.doesNotThrow(() => assertDatabaseTarget('https://ecrtoofsyxozazkvsvcl.supabase.co'));
+  assert.doesNotThrow(() => assertDatabaseTarget('https://sjumbznveyyiizhwvixj.supabase.co'));
   assert.throws(() => assertDatabaseTarget('https://production.supabase.co'), /PRODUCT_PHASE5_DATABASE_TARGET/);
   const runId = crypto.randomUUID();
   assert.doesNotThrow(() => assertDiagnosticRunTarget(runId, {

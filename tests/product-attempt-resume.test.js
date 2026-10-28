@@ -177,7 +177,7 @@ test('the runner hands a stopped attempt back with the reason and the parts done
 
 test('the hosted worker names its sandbox in its worker ids, releases dead claims at start, and a stop signal ends it with its claims handed back', async () => {
   const prior = { SUPABASE_URL: process.env.SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY, PRODUCT_SANDBOX_NAME: process.env.PRODUCT_SANDBOX_NAME };
-  process.env.SUPABASE_URL = 'https://ecrtoofsyxozazkvsvcl.supabase.co';
+  process.env.SUPABASE_URL = 'https://sjumbznveyyiizhwvixj.supabase.co';
   process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-only-not-a-service-key';
   process.env.PRODUCT_SANDBOX_NAME = 'pm-codex-preview-worker-2';
   process.env.CLAUDE_CODE_OAUTH_TOKEN = process.env.CLAUDE_CODE_OAUTH_TOKEN || 'oauth-test-value';

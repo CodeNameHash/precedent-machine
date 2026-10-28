@@ -23,7 +23,7 @@ test.beforeEach(() => {
     SUPABASE_URL: process.env.SUPABASE_URL,
     SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
   };
-  process.env.SUPABASE_URL = 'https://ecrtoofsyxozazkvsvcl.supabase.co';
+  process.env.SUPABASE_URL = 'https://sjumbznveyyiizhwvixj.supabase.co';
   process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-only-not-a-service-key';
 });
 test.afterEach(() => {
@@ -79,7 +79,7 @@ test('hosted worker accepts only bounded pool sizes and defaults to two', () => 
 
 test('ready hosted run exits before creating workers', async () => {
   const oldUrl = process.env.SUPABASE_URL; const oldKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  process.env.SUPABASE_URL = 'https://ecrtoofsyxozazkvsvcl.supabase.co'; process.env.SUPABASE_SERVICE_ROLE_KEY = 'x'.repeat(20);
+  process.env.SUPABASE_URL = 'https://sjumbznveyyiizhwvixj.supabase.co'; process.env.SUPABASE_SERVICE_ROLE_KEY = 'x'.repeat(20);
   let models = 0;
   try {
     const result = await runHostedWorker({ runId: id, actor: 'ben', workers: 2 }, { write() {} }, {
@@ -92,7 +92,7 @@ test('ready hosted run exits before creating workers', async () => {
 
 test('failed hosted run requires explicit retry', async () => {
   const oldUrl = process.env.SUPABASE_URL; const oldKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  process.env.SUPABASE_URL = 'https://ecrtoofsyxozazkvsvcl.supabase.co'; process.env.SUPABASE_SERVICE_ROLE_KEY = 'x'.repeat(20);
+  process.env.SUPABASE_URL = 'https://sjumbznveyyiizhwvixj.supabase.co'; process.env.SUPABASE_SERVICE_ROLE_KEY = 'x'.repeat(20);
   try {
     await assert.rejects(() => runHostedWorker({ runId: id, actor: 'ben', workers: 2 }, { write() {} }, {
       createStore: () => ({ getRun: async () => ({ run_id: id, status: 'FAILED', stage: 'SECTION_ANALYSIS', source_document_id: 'x', model_config: CODEX_MODEL_CONFIG }), assertAccess: async () => {} }),
@@ -109,7 +109,7 @@ test('database, model, actor, worker count and identity checks run before claims
   process.env.SUPABASE_URL = 'https://tzulhdasmioeechxapdy.supabase.co';
   await assert.rejects(runHostedWorker(options, output, unsafe), /DATABASE_TARGET/);
   assert.equal(unsafe.stores.length, 0);
-  process.env.SUPABASE_URL = 'https://ecrtoofsyxozazkvsvcl.supabase.co';
+  process.env.SUPABASE_URL = 'https://sjumbznveyyiizhwvixj.supabase.co';
   const wrongModel = dependencies(null, { model_config: {} });
   await assert.rejects(runHostedWorker(options, output, wrongModel), /MODEL_CONFIG_MISMATCH/);
   const identity = dependencies(null, { stage: 'DOCUMENT_IDENTITY_REVIEW' });

@@ -38,7 +38,7 @@ test('a sandbox is gone on a 404, a missing snapshot, or the older 400 on resume
 
 test('a wake on a gone sandbox fails as PRODUCT_SANDBOX_GONE and the run route answers 503 with that code', async () => {
   const sandboxApi = { async get() { throw apiError(400, 'Status code 400 is not ok: Cannot resume sandbox: no snapshot available'); } };
-  const base = { runId: '46c45080-6935-49e5-96ae-b6cb0609a924', databaseUrl: 'https://ecrtoofsyxozazkvsvcl.supabase.co', serviceRoleKey: 'service-role-secret-value', sandboxApi };
+  const base = { runId: '46c45080-6935-49e5-96ae-b6cb0609a924', databaseUrl: 'https://sjumbznveyyiizhwvixj.supabase.co', serviceRoleKey: 'service-role-secret-value', sandboxApi };
   await assert.rejects(wakeSandboxProductRun({ ...base, providerId: ANTHROPIC_API_PROVIDER_ID, anthropicApiKey: 'sk-ant-'.repeat(6) }), (error) => {
     assert.equal(error.code, 'PRODUCT_SANDBOX_GONE');
     assert.match(error.message, /PRODUCT_SANDBOX_GONE: pm-codex-preview-worker cannot be resumed .*create-sandbox-worker\.js/);
@@ -53,7 +53,7 @@ test('a wake on a gone sandbox fails as PRODUCT_SANDBOX_GONE and the run route a
     getClient: () => ({}), actorResolver: async () => 'ben',
     storeFactory: () => ({ assertAccess: async () => {}, getRun: async () => ({ run_id: runId, model_config: ANTHROPIC_API_MODEL_CONFIG }), getAgreementAnalysis: async () => ({}) }),
     modelConfigResolver: () => ANTHROPIC_API_MODEL_CONFIG,
-    databaseUrlResolver: () => 'https://ecrtoofsyxozazkvsvcl.supabase.co',
+    databaseUrlResolver: () => 'https://sjumbznveyyiizhwvixj.supabase.co',
     serviceRoleKeyResolver: () => 'service-role-secret-value',
     anthropicApiKeyResolver: () => 'sk-ant-'.repeat(6),
     wakeRun: async () => { const error = new Error('PRODUCT_SANDBOX_GONE: gone'); error.code = 'PRODUCT_SANDBOX_GONE'; throw error; },
@@ -206,7 +206,7 @@ test('the run route answers { keepalive: true } by keeping the sandbox alive and
     getClient: () => ({}), actorResolver: async () => 'ben',
     storeFactory: () => ({ assertAccess: async () => {}, getRun: async () => ({ run_id: runId, model_config: ANTHROPIC_API_MODEL_CONFIG }), getAgreementAnalysis: async () => ({}) }),
     modelConfigResolver: () => ANTHROPIC_API_MODEL_CONFIG,
-    databaseUrlResolver: () => 'https://ecrtoofsyxozazkvsvcl.supabase.co',
+    databaseUrlResolver: () => 'https://sjumbznveyyiizhwvixj.supabase.co',
     serviceRoleKeyResolver: () => 'service-role-secret-value',
     anthropicApiKeyResolver: () => 'sk-ant-'.repeat(6),
     wakeRun: async () => { woke += 1; return { command_id: 'cmd' }; },

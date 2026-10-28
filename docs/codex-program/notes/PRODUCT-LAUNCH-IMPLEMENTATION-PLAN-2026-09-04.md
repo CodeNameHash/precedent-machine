@@ -13178,3 +13178,23 @@ That is the state at commit `b3806545`.
 **(302) The single next decision.** Lift the ingestion hold and run the Barshay
 five (then the BMS set). Nothing else moves the product's value: every surface
 is built and waiting for a corpus.
+
+**(303) 2026-10-28 21:40 UTC, Ben: "Rerun and also run sketchers and a qxo deal."**
+The ingestion hold of (300) is lifted for these three. Intaken on the Claude
+subscription provider: Apogee again (`5fcf3b0e-de2b-4857-bcf7-4fbcc24d68c9`,
+generation 2, key apogee-gen4-sonnet-1), Skechers / 3G (8-K of 2025-05-05,
+exhibit 2.1, run `612ed714-eb29-47ad-a7fc-444dc8c88f20`), QXO (8-K of
+2026-04-20, exhibit 2.1, run `24dbdaca-5988-4500-9820-45538f775656`), all
+QUEUED. The first wake was refused: `PRODUCT_SANDBOX_DATABASE_TARGET:
+expected ecrtoofsyxozazkvsvcl`. Read: the run and ablation routes handed the
+sandbox `SUPABASE_URL`, which is the V1 corpus since the split of (289), and
+the wake's guard still named the orphaned preview branch; the 10-27 run was
+driven without the sandbox. Fixed in code: the routes hand the sandbox
+`PRODUCT_SUPABASE_URL` and its key (falling back to `SUPABASE_*`), and the
+guard names the product project `sjumbznveyyiizhwvixj`, so the V1 corpus
+stays out of a sandbox's reach by construction; the tests that named the old
+branch now name the product project (258 of 262 pass here; the three failures
+pre-date this change: the health-route assertion and the P8 staging proof
+whose allowlist file is absent). Pool sandboxes updated to the head before
+the wake. Runs go one at a time, per Ben's "sequential - I agree" of
+2026-10-23: Apogee, then Skechers, then QXO.

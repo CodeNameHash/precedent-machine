@@ -591,7 +591,7 @@ test('Sandbox wake uses one fixed detached launcher and does not return credenti
   const sessionStarted = new Date('2026-09-05T12:00:00.000Z');
   const result = await wakeSandboxProductRun({
     runId: '46c45080-6935-49e5-96ae-b6cb0609a924',
-    databaseUrl: 'https://ecrtoofsyxozazkvsvcl.supabase.co\n',
+    databaseUrl: 'https://sjumbznveyyiizhwvixj.supabase.co\n',
     serviceRoleKey: 'service-role-secret-value',
     providerId: CODEX_PROVIDER_ID,
     sandboxApi: { async get(input) {
@@ -620,7 +620,7 @@ test('Sandbox wake uses one fixed detached launcher and does not return credenti
     args: ['46c45080-6935-49e5-96ae-b6cb0609a924'],
     cwd: SANDBOX_WORKDIR,
     env: {
-      SUPABASE_URL: 'https://ecrtoofsyxozazkvsvcl.supabase.co',
+      SUPABASE_URL: 'https://sjumbznveyyiizhwvixj.supabase.co',
       SUPABASE_SERVICE_ROLE_KEY: 'service-role-secret-value',
       PRODUCT_MODEL_PROVIDER: CODEX_PROVIDER_ID,
       PRODUCT_SANDBOX_NAME: 'pm-codex-preview-worker',
@@ -637,7 +637,7 @@ test('Sandbox wake uses one fixed detached launcher and does not return credenti
   assert.doesNotMatch(JSON.stringify(result), /service-role-secret-value/);
   await assert.rejects(() => wakeSandboxProductRun({
     runId: '46c45080-6935-49e5-96ae-b6cb0609a924',
-    databaseUrl: 'https://ecrtoofsyxozazkvsvcl.supabase.co',
+    databaseUrl: 'https://sjumbznveyyiizhwvixj.supabase.co',
     serviceRoleKey: 'service-role-secret-value',
     providerId: CODEX_PROVIDER_ID,
     sandboxApi: { async get() { return {
@@ -659,7 +659,7 @@ test('Sandbox wake uses one fixed detached launcher and does not return credenti
 test('Sandbox wake rejects a finished failure even when its initial status is null', async () => {
   await assert.rejects(() => wakeSandboxProductRun({
     runId: '46c45080-6935-49e5-96ae-b6cb0609a924',
-    databaseUrl: 'https://ecrtoofsyxozazkvsvcl.supabase.co',
+    databaseUrl: 'https://sjumbznveyyiizhwvixj.supabase.co',
     serviceRoleKey: 'service-role-secret-value',
     providerId: CODEX_PROVIDER_ID,
     sandboxApi: { async get() { return {
@@ -698,10 +698,10 @@ test('Phase 5 local runner requires an exact disposable Supabase target and boun
     runId: 'fe26cdd7-524a-4aed-ab89-810e0054cfdc', actor: 'ben',
     workers: 2, retryKey: 'retry-1',
   });
-  assert.equal(DISPOSABLE_BRANCH_REF, 'ecrtoofsyxozazkvsvcl');
-  assert.doesNotThrow(() => assertDatabaseTarget('https://ecrtoofsyxozazkvsvcl.supabase.co'));
+  assert.equal(DISPOSABLE_BRANCH_REF, 'sjumbznveyyiizhwvixj');
+  assert.doesNotThrow(() => assertDatabaseTarget('https://sjumbznveyyiizhwvixj.supabase.co'));
   assert.throws(() => assertDatabaseTarget('https://production.supabase.co'), /PRODUCT_PHASE5_DATABASE_TARGET/);
-  assert.throws(() => assertDatabaseTarget('http://ecrtoofsyxozazkvsvcl.supabase.co'), /PRODUCT_PHASE5_DATABASE_TARGET/);
+  assert.throws(() => assertDatabaseTarget('http://sjumbznveyyiizhwvixj.supabase.co'), /PRODUCT_PHASE5_DATABASE_TARGET/);
   assert.throws(() => parseArguments([
     '--run-id', 'fe26cdd7-524a-4aed-ab89-810e0054cfdc', '--actor', 'ben',
     '--expected-project-ref', 'production',
@@ -927,7 +927,7 @@ test('Preview run boundary starts one detached Sandbox worker and returns durabl
     actorResolver: async () => 'ben',
     modelConfigResolver: () => CODEX_MODEL_CONFIG,
     modelFactory: () => { modelCreated = true; return {}; },
-    databaseUrlResolver: () => 'https://ecrtoofsyxozazkvsvcl.supabase.co',
+    databaseUrlResolver: () => 'https://sjumbznveyyiizhwvixj.supabase.co',
     serviceRoleKeyResolver: () => 'service-role-secret-value',
     wakeRun: async (input) => { wakeInput = input; return { command_id: 'command-1' }; },
   });
@@ -937,7 +937,7 @@ test('Preview run boundary starts one detached Sandbox worker and returns durabl
   assert.equal(modelCreated, false);
   assert.deepEqual(wakeInput, {
     runId,
-    databaseUrl: 'https://ecrtoofsyxozazkvsvcl.supabase.co',
+    databaseUrl: 'https://sjumbznveyyiizhwvixj.supabase.co',
     serviceRoleKey: 'service-role-secret-value',
     providerId: CODEX_PROVIDER_ID,
     sandboxName: 'pm-codex-preview-worker',

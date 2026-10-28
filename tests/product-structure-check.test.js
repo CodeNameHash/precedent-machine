@@ -78,7 +78,7 @@ test('jsonbText renders as Postgres jsonb::text does: keys by length then bytes,
 });
 
 test('submissionFingerprint reproduces the fingerprints the preview branch stores for real runs', () => {
-  // product_analysis_runs on the preview branch (ecrtoofsyxozazkvsvcl), read
+  // product_analysis_runs on the preview branch (sjumbznveyyiizhwvixj), read
   // 2026-10-18: Metsera generation 8 (run 72d94dd2) and NCS generation 5
   // (run 51577c57), each with the model_config the run carries.
   assert.equal(submissionFingerprint({

@@ -232,13 +232,13 @@ test('the wake carries the API key into the sandbox for the API provider only, a
       },
     };
   } };
-  const base = { runId: '46c45080-6935-49e5-96ae-b6cb0609a924', databaseUrl: 'https://ecrtoofsyxozazkvsvcl.supabase.co', serviceRoleKey: 'service-role-secret-value', sandboxApi };
+  const base = { runId: '46c45080-6935-49e5-96ae-b6cb0609a924', databaseUrl: 'https://sjumbznveyyiizhwvixj.supabase.co', serviceRoleKey: 'service-role-secret-value', sandboxApi };
   await assert.rejects(wakeSandboxProductRun({ ...base, providerId: ANTHROPIC_API_PROVIDER_ID }), /PRODUCT_SANDBOX_ANTHROPIC_API_KEY_REQUIRED/);
   await assert.rejects(wakeSandboxProductRun({ ...base, providerId: ANTHROPIC_API_PROVIDER_ID, anthropicApiKey: 'short' }), /PRODUCT_SANDBOX_ANTHROPIC_API_KEY_REQUIRED/);
   const result = await wakeSandboxProductRun({ ...base, providerId: ANTHROPIC_API_PROVIDER_ID, anthropicApiKey: 'sk-ant-'.repeat(6) });
   assert.equal(commandInput.cmd, SANDBOX_LAUNCHER);
   assert.deepEqual(commandInput.env, {
-    SUPABASE_URL: 'https://ecrtoofsyxozazkvsvcl.supabase.co',
+    SUPABASE_URL: 'https://sjumbznveyyiizhwvixj.supabase.co',
     SUPABASE_SERVICE_ROLE_KEY: 'service-role-secret-value',
     PRODUCT_MODEL_PROVIDER: ANTHROPIC_API_PROVIDER_ID,
     // The sandbox the run is on, for the worker's ids (work package D3).
@@ -268,7 +268,7 @@ test('the run route wakes the sandbox for an API run with the deployment\'s key'
     getClient: () => ({}), storeFactory: () => store, actorResolver: async () => 'ben',
     modelConfigResolver: () => ANTHROPIC_API_MODEL_CONFIG,
     modelFactory: () => assert.fail('no in-process model for a hosted run'),
-    databaseUrlResolver: () => 'https://ecrtoofsyxozazkvsvcl.supabase.co',
+    databaseUrlResolver: () => 'https://sjumbznveyyiizhwvixj.supabase.co',
     serviceRoleKeyResolver: () => 'service-role-secret-value',
     claudeOauthTokenResolver: () => assert.fail('the OAuth token is not read for an API run'),
     anthropicApiKeyResolver: () => 'sk-ant-'.repeat(6),
@@ -279,7 +279,7 @@ test('the run route wakes the sandbox for an API run with the deployment\'s key'
   await handler({ method: 'POST', query: { id: runId }, headers: { 'x-pm-csrf': 'same-origin' }, body: {} }, response);
   assert.equal(response.statusCode, 202);
   assert.deepEqual(wakeInput, {
-    runId, databaseUrl: 'https://ecrtoofsyxozazkvsvcl.supabase.co', serviceRoleKey: 'service-role-secret-value',
+    runId, databaseUrl: 'https://sjumbznveyyiizhwvixj.supabase.co', serviceRoleKey: 'service-role-secret-value',
     providerId: ANTHROPIC_API_PROVIDER_ID, anthropicApiKey: 'sk-ant-'.repeat(6), anthropicWorkspaceId: 'wrkspc_01WORKSPACE',
     // A store without the pool (this fake) places the run on the first sandbox.
     sandboxName: 'pm-codex-preview-worker',
@@ -324,7 +324,7 @@ test('the run route drives a run on the provider its own model_config names, wha
     getClient: () => ({}), storeFactory: () => store, actorResolver: async () => 'ben',
     modelConfigResolver: () => CLAUDE_CLI_MODEL_CONFIG,
     modelFactory: () => assert.fail('no in-process model for a hosted run'),
-    databaseUrlResolver: () => 'https://ecrtoofsyxozazkvsvcl.supabase.co',
+    databaseUrlResolver: () => 'https://sjumbznveyyiizhwvixj.supabase.co',
     serviceRoleKeyResolver: () => 'service-role-secret-value',
     claudeOauthTokenResolver: () => assert.fail('the OAuth token is not read for an API run'),
     anthropicApiKeyResolver: () => 'sk-ant-'.repeat(6),

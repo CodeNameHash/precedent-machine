@@ -41,7 +41,7 @@ function handlerOn(store, { wakeRun, keepAlive } = {}) {
   return createProductRunHandler({
     getClient: () => ({}), actorResolver: async () => 'ben', storeFactory: () => store,
     modelConfigResolver: () => CLAUDE_CLI_MODEL_CONFIG,
-    databaseUrlResolver: () => 'https://ecrtoofsyxozazkvsvcl.supabase.co',
+    databaseUrlResolver: () => 'https://sjumbznveyyiizhwvixj.supabase.co',
     serviceRoleKeyResolver: () => 'service-role-secret-value',
     claudeOauthTokenResolver: () => 'oauth-'.repeat(8),
     wakeRun: wakeRun || (async (input) => ({ command_id: `cmd-${input.sandboxName}`, sandbox_name: input.sandboxName })),
@@ -227,7 +227,7 @@ test('a gone sandbox releases the run so its next wake takes another; the 503 na
   const legacy = createProductRunHandler({
     getClient: () => ({}), actorResolver: async () => 'ben',
     storeFactory: () => ({ assertAccess: async () => {}, getRun: async () => ({ run_id: RUN_A, model_config: ANTHROPIC_API_MODEL_CONFIG }), getAgreementAnalysis: async () => ({}), releaseRunSandbox: async (input) => { legacyReleases.push(input); } }),
-    databaseUrlResolver: () => 'https://ecrtoofsyxozazkvsvcl.supabase.co', serviceRoleKeyResolver: () => 'service-role-secret-value', anthropicApiKeyResolver: () => 'sk-ant-'.repeat(6),
+    databaseUrlResolver: () => 'https://sjumbznveyyiizhwvixj.supabase.co', serviceRoleKeyResolver: () => 'service-role-secret-value', anthropicApiKeyResolver: () => 'sk-ant-'.repeat(6),
     wakeRun: async () => { const error = new Error('PRODUCT_SANDBOX_GONE: gone'); error.code = 'PRODUCT_SANDBOX_GONE'; throw error; },
   });
   assert.equal((await post(legacy, RUN_A)).statusCode, 503);
@@ -282,7 +282,7 @@ test('the wake and the keepalive resume the named sandbox and refuse a name outs
       async runCommand(command) { commands.push(command); return { cmdId: `cmd-${params.name}`, async wait() { return { exitCode: 0 }; } }; },
     };
   } };
-  const base = { runId: RUN_A, databaseUrl: 'https://ecrtoofsyxozazkvsvcl.supabase.co', serviceRoleKey: 'service-role-secret-value', providerId: CLAUDE_CLI_MODEL_CONFIG.provider_id, claudeOauthToken: 'oauth-'.repeat(8), sandboxApi, now: () => now };
+  const base = { runId: RUN_A, databaseUrl: 'https://sjumbznveyyiizhwvixj.supabase.co', serviceRoleKey: 'service-role-secret-value', providerId: CLAUDE_CLI_MODEL_CONFIG.provider_id, claudeOauthToken: 'oauth-'.repeat(8), sandboxApi, now: () => now };
   const wake = await wakeSandboxProductRun({ ...base, sandboxName: SECOND });
   assert.deepEqual([wake.sandbox_name, wake.command_id], [SECOND, `cmd-${SECOND}`]);
   assert.equal(commands[0].env.CLAUDE_CODE_OAUTH_TOKEN, 'oauth-'.repeat(8));

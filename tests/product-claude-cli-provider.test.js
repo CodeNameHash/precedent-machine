@@ -158,13 +158,13 @@ test('the sandbox wake carries the provider and, for Claude, the subscription to
       },
     };
   } };
-  const base = { runId: '46c45080-6935-49e5-96ae-b6cb0609a924', databaseUrl: 'https://ecrtoofsyxozazkvsvcl.supabase.co', serviceRoleKey: 'service-role-secret-value', sandboxApi };
+  const base = { runId: '46c45080-6935-49e5-96ae-b6cb0609a924', databaseUrl: 'https://sjumbznveyyiizhwvixj.supabase.co', serviceRoleKey: 'service-role-secret-value', sandboxApi };
   await assert.rejects(wakeSandboxProductRun({ ...base, providerId: CLAUDE_CLI_PROVIDER_ID }), /PRODUCT_SANDBOX_CLAUDE_TOKEN_REQUIRED/);
   await assert.rejects(wakeSandboxProductRun({ ...base, providerId: 'ANTHROPIC' }), /PRODUCT_SANDBOX_PROVIDER_MISMATCH/);
   const result = await wakeSandboxProductRun({ ...base, providerId: CLAUDE_CLI_PROVIDER_ID, claudeOauthToken: 'oauth-'.repeat(8) });
   assert.equal(commandInput.cmd, SANDBOX_LAUNCHER);
   assert.deepEqual(commandInput.env, {
-    SUPABASE_URL: 'https://ecrtoofsyxozazkvsvcl.supabase.co',
+    SUPABASE_URL: 'https://sjumbznveyyiizhwvixj.supabase.co',
     SUPABASE_SERVICE_ROLE_KEY: 'service-role-secret-value',
     PRODUCT_MODEL_PROVIDER: CLAUDE_CLI_PROVIDER_ID,
     PRODUCT_SANDBOX_NAME: 'pm-codex-preview-worker',
@@ -185,7 +185,7 @@ test('the run route wakes the sandbox for a Claude CLI run with the deployment\'
     getClient: () => ({}), storeFactory: () => store, actorResolver: async () => 'ben',
     modelConfigResolver: () => CLAUDE_CLI_MODEL_CONFIG,
     modelFactory: () => assert.fail('no in-process model for a hosted run'),
-    databaseUrlResolver: () => 'https://ecrtoofsyxozazkvsvcl.supabase.co',
+    databaseUrlResolver: () => 'https://sjumbznveyyiizhwvixj.supabase.co',
     serviceRoleKeyResolver: () => 'service-role-secret-value',
     claudeOauthTokenResolver: () => 'oauth-'.repeat(8),
     wakeRun: async (input) => { wakeInput = input; return { command_id: 'command-1' }; },
@@ -194,7 +194,7 @@ test('the run route wakes the sandbox for a Claude CLI run with the deployment\'
   await handler({ method: 'POST', query: { id: runId }, headers: { 'x-pm-csrf': 'same-origin' }, body: {} }, response);
   assert.equal(response.statusCode, 202);
   assert.deepEqual(wakeInput, {
-    runId, databaseUrl: 'https://ecrtoofsyxozazkvsvcl.supabase.co', serviceRoleKey: 'service-role-secret-value',
+    runId, databaseUrl: 'https://sjumbznveyyiizhwvixj.supabase.co', serviceRoleKey: 'service-role-secret-value',
     providerId: CLAUDE_CLI_PROVIDER_ID, claudeOauthToken: 'oauth-'.repeat(8),
     sandboxName: 'pm-codex-preview-worker',
   });

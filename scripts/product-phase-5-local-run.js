@@ -10,7 +10,7 @@ const {
 const { legalSchemaForVersion } = require('../lib/product/legal-schema-selection');
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-const DISPOSABLE_BRANCH_REF = 'ecrtoofsyxozazkvsvcl';
+const DISPOSABLE_BRANCH_REF = 'sjumbznveyyiizhwvixj';
 const DIAGNOSTIC_SOURCE_DOCUMENT_ID = '238dc3fed996667b9124a853745708a003917bcb28c889bad703f6124d13e721';
 const ARGUMENTS = new Set(['run-id', 'actor', 'retry-key', 'workers']);
 

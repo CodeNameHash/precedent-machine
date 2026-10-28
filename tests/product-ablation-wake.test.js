@@ -326,7 +326,7 @@ test('the ablation wake resumes the experiments sandbox, passes the run wake\'s 
   const sessionStarted = new Date('2026-10-19T03:00:00.000Z');
   const result = await wakeSandboxAblation({
     runId: '51577c57-41b1-4b75-bcdf-c84ef2558589', sections: ['3.19', '5.2', '5.17'], variants: ['baseline', 'format'],
-    databaseUrl: 'https://ecrtoofsyxozazkvsvcl.supabase.co/', serviceRoleKey: 'service-role-secret-value',
+    databaseUrl: 'https://sjumbznveyyiizhwvixj.supabase.co/', serviceRoleKey: 'service-role-secret-value',
     providerId: CLAUDE_CLI_PROVIDER_ID, claudeOauthToken: 'claude-oauth-token-secret-value',
     sandboxApi: { async get(input) {
       getInput = input;
@@ -347,7 +347,7 @@ test('the ablation wake resumes the experiments sandbox, passes the run wake\'s 
     cmd: ABLATION_LAUNCHER,
     args: ['pm-ablation-20261019T031000Z', '51577c57-41b1-4b75-bcdf-c84ef2558589', '3.19,5.2,5.17', 'baseline,format'],
     cwd: SANDBOX_WORKDIR,
-    env: { SUPABASE_URL: 'https://ecrtoofsyxozazkvsvcl.supabase.co', SUPABASE_SERVICE_ROLE_KEY: 'service-role-secret-value', PRODUCT_MODEL_PROVIDER: CLAUDE_CLI_PROVIDER_ID, CLAUDE_CODE_OAUTH_TOKEN: 'claude-oauth-token-secret-value' },
+    env: { SUPABASE_URL: 'https://sjumbznveyyiizhwvixj.supabase.co', SUPABASE_SERVICE_ROLE_KEY: 'service-role-secret-value', PRODUCT_MODEL_PROVIDER: CLAUDE_CLI_PROVIDER_ID, CLAUDE_CODE_OAUTH_TOKEN: 'claude-oauth-token-secret-value' },
     detached: true,
     timeoutMs: MINIMUM_SESSION_MS,
   });
@@ -356,7 +356,7 @@ test('the ablation wake resumes the experiments sandbox, passes the run wake\'s 
     run_id: '51577c57-41b1-4b75-bcdf-c84ef2558589', sandbox_name: ABLATION_SANDBOX_NAME, provider_id: CLAUDE_CLI_PROVIDER_ID, sections: ['3.19', '5.2', '5.17'], variants: ['baseline', 'format'], loops: 1, command_id: 'ablation-command-1',
   });
   assert.doesNotMatch(JSON.stringify(result), /secret-value/);
-  const base = { runId: '51577c57-41b1-4b75-bcdf-c84ef2558589', sections: ['3.19'], variants: ['baseline'], databaseUrl: 'https://ecrtoofsyxozazkvsvcl.supabase.co', serviceRoleKey: 'service-role-secret-value', providerId: CLAUDE_CLI_PROVIDER_ID, claudeOauthToken: 'claude-oauth-token-secret-value', sandboxApi: { get: async () => assert.fail('must fail before the resume') } };
+  const base = { runId: '51577c57-41b1-4b75-bcdf-c84ef2558589', sections: ['3.19'], variants: ['baseline'], databaseUrl: 'https://sjumbznveyyiizhwvixj.supabase.co', serviceRoleKey: 'service-role-secret-value', providerId: CLAUDE_CLI_PROVIDER_ID, claudeOauthToken: 'claude-oauth-token-secret-value', sandboxApi: { get: async () => assert.fail('must fail before the resume') } };
   await assert.rejects(() => wakeSandboxAblation({ ...base, sandboxName: 'pm-codex-preview-worker' , sandboxApi: { async get() { return { currentSession: () => ({}), async extendTimeout() {}, async runCommand() { return { cmdId: 'c', async wait() { return { exitCode: 78 }; } }; } }; } } }), /STARTUP_FAILED/, 'a pool sandbox may be named; the launcher\'s own refusal surfaces');
   await assert.rejects(() => wakeSandboxAblation({ ...base, sandboxName: 'pm-codex-preview-worker-9' }), /PRODUCT_SANDBOX_NAME_INVALID/);
   await assert.rejects(() => wakeSandboxAblation({ ...base, sections: ['3.19; rm -rf /'] }), /PRODUCT_ABLATION_SECTIONS_INVALID/);
@@ -395,7 +395,7 @@ test('the ablation route opens to the internal bearer token alone, starts the jo
     actorResolver: (req) => internalBearerActor(req, INTERNAL_ENV),
     wakeAblation: async (input) => { wakeInput = input; return { schema_version: 'PRODUCT_SANDBOX_ABLATION_WAKE/V1', job_id: 'pm-ablation-20261019T031000Z', command_id: 'c1' }; },
     readStatus: async (input) => { statusInput = input; return { schema_version: 'PRODUCT_SANDBOX_ABLATION_STATUS/V1', state: 'RUNNING', log_tail: 'tail' }; },
-    databaseUrlResolver: () => 'https://ecrtoofsyxozazkvsvcl.supabase.co',
+    databaseUrlResolver: () => 'https://sjumbznveyyiizhwvixj.supabase.co',
     serviceRoleKeyResolver: () => 'service-role-secret-value',
     claudeOauthTokenResolver: () => 'claude-oauth-token-secret-value',
     anthropicApiKeyResolver: () => 'sk-ant-api-secret-value-0000000000',
@@ -417,7 +417,7 @@ test('the ablation route opens to the internal bearer token alone, starts the jo
   assert.equal(response.headers['Cache-Control'], 'private, no-store');
   assert.deepEqual({ ...wakeInput, now: undefined }, {
     runId: '51577c57-41b1-4b75-bcdf-c84ef2558589', sections: ['3.19', '5.2', '5.17'], variants: ['baseline', 'format'], providerId: CLAUDE_CLI_PROVIDER_ID, sandboxName: ABLATION_SANDBOX_NAME, now: undefined, loops: 1,
-    databaseUrl: 'https://ecrtoofsyxozazkvsvcl.supabase.co', serviceRoleKey: 'service-role-secret-value', claudeOauthToken: 'claude-oauth-token-secret-value',
+    databaseUrl: 'https://sjumbznveyyiizhwvixj.supabase.co', serviceRoleKey: 'service-role-secret-value', claudeOauthToken: 'claude-oauth-token-secret-value',
   });
   assert.equal(typeof wakeInput.now, 'function');
   assert.equal(response.body.job.job_id, 'pm-ablation-20261019T031000Z');
@@ -446,12 +446,12 @@ test('the ablation route opens to the internal bearer token alone, starts the jo
   assert.deepEqual(statusInput, { sandboxName: ABLATION_SANDBOX_NAME, jobId: null });
   // A gone sandbox and a missing credential answer as the run route does.
   const gone = Object.assign(new Error('PRODUCT_SANDBOX_GONE: pm-codex-preview-worker-3 cannot be resumed'), { code: 'PRODUCT_SANDBOX_GONE', sandbox_name: 'pm-codex-preview-worker-3' });
-  const goneHandler = createProductAblationHandler({ actorResolver: (req) => internalBearerActor(req, INTERNAL_ENV), wakeAblation: async () => { throw gone; }, databaseUrlResolver: () => 'https://ecrtoofsyxozazkvsvcl.supabase.co', serviceRoleKeyResolver: () => 'service-role-secret-value', claudeOauthTokenResolver: () => 'claude-oauth-token-secret-value' });
+  const goneHandler = createProductAblationHandler({ actorResolver: (req) => internalBearerActor(req, INTERNAL_ENV), wakeAblation: async () => { throw gone; }, databaseUrlResolver: () => 'https://sjumbznveyyiizhwvixj.supabase.co', serviceRoleKeyResolver: () => 'service-role-secret-value', claudeOauthTokenResolver: () => 'claude-oauth-token-secret-value' });
   response = responseDouble();
   await goneHandler({ method: 'POST', headers: bearer, body }, response);
   assert.equal(response.statusCode, 503);
   assert.deepEqual(response.body, { error: 'PRODUCT_SANDBOX_GONE', sandbox_name: 'pm-codex-preview-worker-3' });
-  const unconfigured = createProductAblationHandler({ actorResolver: (req) => internalBearerActor(req, INTERNAL_ENV), wakeAblation: wakeSandboxAblation, databaseUrlResolver: () => 'https://ecrtoofsyxozazkvsvcl.supabase.co', serviceRoleKeyResolver: () => 'service-role-secret-value', claudeOauthTokenResolver: () => null });
+  const unconfigured = createProductAblationHandler({ actorResolver: (req) => internalBearerActor(req, INTERNAL_ENV), wakeAblation: wakeSandboxAblation, databaseUrlResolver: () => 'https://sjumbznveyyiizhwvixj.supabase.co', serviceRoleKeyResolver: () => 'service-role-secret-value', claudeOauthTokenResolver: () => null });
   response = responseDouble();
   await unconfigured({ method: 'POST', headers: bearer, body }, response);
   assert.equal(response.statusCode, 503);
@@ -643,7 +643,7 @@ test('loops runs that many sections at once with the rows in the run\'s order; t
   // The wake: a fifth argument only when more than one.
   let commandInput;
   const api = { async get() { return { currentSession: () => ({ createdAt: new Date('2026-10-19T03:00:00.000Z'), timeout: 60 * 60 * 1000 }), async extendTimeout() {}, async runCommand(command) { commandInput = command; return { cmdId: 'c', async wait({ signal }) { return new Promise((resolve, reject) => { signal.addEventListener('abort', () => reject(signal.reason), { once: true }); }); } }; } }; } };
-  const base = { runId: '51577c57-41b1-4b75-bcdf-c84ef2558589', sections: ['all'], variants: ['anchors_sonnet55'], databaseUrl: 'https://ecrtoofsyxozazkvsvcl.supabase.co', serviceRoleKey: 'service-role-secret-value', providerId: CLAUDE_CLI_PROVIDER_ID, claudeOauthToken: 'claude-oauth-token-secret-value', sandboxApi: api, now: () => Date.parse('2026-10-19T03:10:00.000Z') };
+  const base = { runId: '51577c57-41b1-4b75-bcdf-c84ef2558589', sections: ['all'], variants: ['anchors_sonnet55'], databaseUrl: 'https://sjumbznveyyiizhwvixj.supabase.co', serviceRoleKey: 'service-role-secret-value', providerId: CLAUDE_CLI_PROVIDER_ID, claudeOauthToken: 'claude-oauth-token-secret-value', sandboxApi: api, now: () => Date.parse('2026-10-19T03:10:00.000Z') };
   const woke = await wakeSandboxAblation({ ...base, loops: 3 });
   assert.deepEqual(commandInput.args, ['pm-ablation-20261019T031000Z', '51577c57-41b1-4b75-bcdf-c84ef2558589', 'all', 'anchors_sonnet55', '3']);
   assert.equal(woke.loops, 3);
@@ -652,7 +652,7 @@ test('loops runs that many sections at once with the rows in the run\'s order; t
   await assert.rejects(() => wakeSandboxAblation({ ...base, loops: 0 }), /PRODUCT_ABLATION_LOOPS_INVALID/);
   // The route body.
   let wakeInput;
-  const handler = createProductAblationHandler({ actorResolver: (req) => internalBearerActor(req, INTERNAL_ENV), wakeAblation: async (input) => { wakeInput = input; return { job_id: 'pm-ablation-20261019T031000Z' }; }, databaseUrlResolver: () => 'https://ecrtoofsyxozazkvsvcl.supabase.co', serviceRoleKeyResolver: () => 'service-role-secret-value', claudeOauthTokenResolver: () => 'claude-oauth-token-secret-value' });
+  const handler = createProductAblationHandler({ actorResolver: (req) => internalBearerActor(req, INTERNAL_ENV), wakeAblation: async (input) => { wakeInput = input; return { job_id: 'pm-ablation-20261019T031000Z' }; }, databaseUrlResolver: () => 'https://sjumbznveyyiizhwvixj.supabase.co', serviceRoleKeyResolver: () => 'service-role-secret-value', claudeOauthTokenResolver: () => 'claude-oauth-token-secret-value' });
   const bearer = { authorization: `Bearer ${INTERNAL_ENV.PRODUCT_INTERNAL_TOKEN}` };
   const body = { run_id: '51577c57-41b1-4b75-bcdf-c84ef2558589', sections: ['all'], variants: ['anchors_sonnet55'] };
   let response = responseDouble();
