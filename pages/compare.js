@@ -6,6 +6,7 @@ import { Breadcrumbs, EmptyState, SkeletonCard } from '../components/UI';
 import PwBar from '../components/chrome/PwBar';
 import { displayReviewLabel } from '../lib/product/review-labels';
 import { compareAcross } from '../lib/product/provision-compare';
+import { mergeGenerations } from '../lib/product/v1-provisions';
 import tableShapesV3 from '../contracts/product/table-shapes.v3.json';
 
 // The comparison surface (work package 53, plan finding (295)). It is the
@@ -23,6 +24,11 @@ export default function ComparePage() {
   const [agreements, setAgreements] = useState(null);
   const [error, setError] = useState(null);
   const [selected, setSelected] = useState([]);
+  // The corpus side of the comparison: the V1 deals, adapted to the same
+  // answers, marked V1 on every cell (work package 54, finding (304)).
+  const [v1Deals, setV1Deals] = useState([]);
+  const [v1Selected, setV1Selected] = useState([]);
+  const [v1Agreements, setV1Agreements] = useState([]);
 
   useEffect(() => {
     if (!user) return undefined;
@@ -39,7 +45,28 @@ export default function ComparePage() {
     return () => { cancelled = true; };
   }, [user]);
 
+  useEffect(() => {
+    if (!user) return undefined;
+    let cancelled = false;
+    fetch('/api/deals?view=header', { headers: { accept: 'application/json' } })
+      .then((response) => (response.ok ? response.json() : { deals: [] }))
+      .then((body) => { if (!cancelled) setV1Deals((body.deals || []).slice(0, 60)); })
+      .catch(() => { if (!cancelled) setV1Deals([]); });
+    return () => { cancelled = true; };
+  }, [user]);
+
+  useEffect(() => {
+    if (!user || v1Selected.length === 0) { setV1Agreements([]); return undefined; }
+    let cancelled = false;
+    fetch(`/api/product/v1-provisions?deals=${v1Selected.join(',')}`, { headers: { accept: 'application/json' } })
+      .then((response) => (response.ok ? response.json() : { agreements: [] }))
+      .then((body) => { if (!cancelled) setV1Agreements(body.agreements || []); })
+      .catch(() => { if (!cancelled) setV1Agreements([]); });
+    return () => { cancelled = true; };
+  }, [user, v1Selected]);
+
   const columns = useMemo(() => (agreements || []).filter((agreement) => selected.includes(agreement.source_document_id)), [agreements, selected]);
+  const merged = useMemo(() => mergeGenerations(compareAcross(columns, tableShapesV3), v1Agreements), [columns, v1Agreements]);
 
   // The coded-cell comparison: rows are the schema's provisions, cells are the
   // answers the deal page shows (work package 54, finding (301)). It runs
@@ -108,6 +135,72 @@ export default function ComparePage() {
             );
           })}
         </section>
+      ) : null}
+
+      {v1Deals.length > 0 ? (
+        <details className="rounded-[2px] border border-[#DCE3E1]" data-testid="v1-picker">
+          <summary className="cursor-pointer px-[12px] py-[8px] font-ui text-[12px] font-semibold text-[#0B3D71]">Add V1 corpus deals to the comparison</summary>
+          <div className="flex flex-wrap gap-[6px] px-[12px] pb-[12px]">
+            {v1Deals.map((deal) => {
+              const active = v1Selected.includes(deal.id);
+              return (
+                <button
+                  key={deal.id}
+                  type="button"
+                  onClick={() => setV1Selected((current) => (current.includes(deal.id)
+                    ? current.filter((entry) => entry !== deal.id)
+                    : (current.length >= 3 ? current : [...current, deal.id])))}
+                  className={`rounded-full border px-[11px] py-[4px] font-ui text-[12px] ${active ? 'border-[#0B3D71] bg-[#0B3D71] text-white' : 'border-[#B9C8DA] text-[#33475E]'}`}
+                >
+                  {deal.target_display || deal.buyer_display || deal.deal_name || deal.id}
+                </button>
+              );
+            })}
+          </div>
+        </details>
+      ) : null}
+
+      {v1Agreements.length > 0 ? (
+        <div className="overflow-x-auto" data-testid="generation-compare">
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr>
+                <th className="w-56 border-b border-[#B9C8DA] p-2 text-left text-xs font-bold uppercase tracking-wide text-[#6B7785]">Provision</th>
+                <th className="border-b border-[#B9C8DA] p-2 text-left font-sans text-[15px] font-extrabold tracking-[-.03em] text-[#03203D]">Released · V2</th>
+                {v1Agreements.map((agreement) => (
+                  <th key={agreement.id} className="border-b border-[#B9C8DA] p-2 text-left font-sans text-[15px] font-extrabold tracking-[-.03em] text-[#03203D]">
+                    {agreement.label}
+                    <div className="font-ui text-[11px] font-medium text-[#6B7785]">V1 · {agreement.rows.length} provisions</div>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {merged.map((row) => (
+                <tr key={row.key} className="align-top">
+                  <th scope="row" className="border-b border-[#DCE3E1] p-2 text-left font-ui text-[12px] font-semibold text-[#33475E]">{row.label}</th>
+                  <td className="border-b border-[#DCE3E1] p-2">
+                    <div className="flex flex-wrap gap-[4px]">
+                      {row.cells.filter((cell) => cell.generation === 'V2').map((cell, index) => (
+                        <span key={`v2-${index}`} className="inline-flex items-center gap-[4px] rounded-full bg-[#03203D] px-[9px] py-[2px] font-ui text-[11px] font-semibold text-white"><span className="text-[9px] opacity-70">V2</span>{cell.answer}</span>
+                      ))}
+                    </div>
+                  </td>
+                  {v1Agreements.map((agreement) => (
+                    <td key={agreement.id} className="border-b border-[#DCE3E1] p-2">
+                      <div className="flex flex-wrap gap-[4px]">
+                        {row.cells.filter((cell) => cell.generation === 'V1' && cell.source_id === agreement.id).map((cell, index) => (
+                          <span key={`v1-${index}`} className="inline-flex items-center gap-[4px] rounded-full bg-[#F1F4F8] px-[9px] py-[2px] font-ui text-[11px] text-[#33475E]"><span className="text-[9px] font-semibold text-[#0B3D71]">V1</span>{cell.answer}</span>
+                        ))}
+                      </div>
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className="mt-2 font-ui text-[11px] text-[#6B7785]">V1 codes mean the old feature vocabulary; V2 codes mean the schema's definition. The two are never pooled.</p>
+        </div>
       ) : null}
 
       {coded ? (
