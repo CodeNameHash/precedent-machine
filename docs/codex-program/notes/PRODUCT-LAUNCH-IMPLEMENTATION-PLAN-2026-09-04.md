@@ -13237,3 +13237,19 @@ finalisation, then of QXO; one run at a time until the compute is raised.
 Ben's decision: restart the project from the Supabase dashboard if it does
 not recover on its own (no restart from here), and whether to upgrade the
 compute before more deals run.
+
+**(306) 2026-10-29 01:05 UTC: the database answers again; Skechers READY.**
+The product database came back between 00:47 and 01:03 UTC without a
+restart (Ben's dashboard at 00:50 showed the project ACTIVE on MICRO
+compute; the micro tier's burstable disk is the reading of (305)).
+Skechers / 3G `612ed714-eb29-47ad-a7fc-444dc8c88f20`: READY at 00:07:30
+UTC, before the outage took hold; 121 of 121 sections, **1,176 proposals,
+1,175 valid, 1 held**; the ten FINALIZATION_RETRY failures that followed
+were post-READY statements, as with Apogee in (304). QXO
+`24dbdaca-5988-4500-9820-45538f775656` stalled at 17 of 71 (113 proposals,
+109 valid) when its worker lost every lease and exited at 00:38; woken
+again now on pm-codex-preview-worker, alone. Rule until the compute is
+raised: one run at a time, and no finalisation while another run extracts.
+Three deals on the Sonnet default are now in the product database (Apogee
+910 valid, Skechers 1,175 valid, QXO in progress); none reviewed, none
+published from these runs.
