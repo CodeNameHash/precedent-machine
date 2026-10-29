@@ -13215,3 +13215,25 @@ QXO woken on the freed sandbox. Ben: "Can we run them at the same time?":
 two at once worked, the subscription window held. Next for Apogee: the
 review (3,000-plus items on the previous run) and Ben's read on the
 provisions page; nothing published from this run yet.
+
+**(305) 2026-10-29 00:35 UTC: the product database stopped answering.** With
+Skechers `612ed714` at 120 of 121 (952 valid of 953) entering finalisation
+and QXO `24dbdaca` at 17 of 71, the project `sjumbznveyyiizhwvixj` returned
+Cloudflare 520/522/525 on every REST path from 00:10 UTC (edge logs: 0 of
+the requests succeeding from 00:14), the Postgres log went silent after
+00:10 (its last lines: a checkpoint writing 1,753 buffers in 175 s, a 17 s
+PostgREST statement, a lock timeout), and every direct connection, the MCP
+SQL and the advisors included, times out; the management API reports
+ACTIVE_HEALTHY, the gateway answers 401, Supabase's status page reports no
+incident. Read: the instance is starved, the checkpoint times say disk
+I/O; two eight-worker runs plus a 121-section finalisation is more than the
+compute size carries, which is the cost decision the 2026-10-24 handoff
+raised. Effects: the Skechers worker exhausted ten FINALIZATION_RETRY
+attempts and exited (its `product_phase1_fail_run` calls also met 522, so
+the run should still read RUNNING with its facts written); the QXO worker
+is alive, leases expired, no section since 00:00. No data is known lost.
+Next, once the database answers: a plain wake of Skechers to finish the
+finalisation, then of QXO; one run at a time until the compute is raised.
+Ben's decision: restart the project from the Supabase dashboard if it does
+not recover on its own (no restart from here), and whether to upgrade the
+compute before more deals run.
