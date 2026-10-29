@@ -13253,3 +13253,20 @@ raised: one run at a time, and no finalisation while another run extracts.
 Three deals on the Sonnet default are now in the product database (Apogee
 910 valid, Skechers 1,175 valid, QXO in progress); none reviewed, none
 published from these runs.
+
+**(307) 2026-10-29 03:10 UTC: QXO READY; three deals on the Sonnet default.**
+QXO `24dbdaca-5988-4500-9820-45538f775656` (8-K of 2026-04-20, exhibit 2.1;
+Claude subscription; woken 23:40, stalled by the outage of (305), relaunched
+alone 01:05, READY 02:51 UTC): 71 of 71 sections, **1,167 proposals, 1,145
+valid, 22 held**; 13.4M input and 2.9M output tokens at $0 marginal; after
+the relaunch one MODEL_RESPONSE_SHAPE and three THIN_ANSWER failures, every
+one recovered on the next attempt; one FINALIZATION_RETRY on a database
+error, then READY. The three deals Ben asked for on 2026-10-28 ("Rerun and
+also run sketchers and a qxo deal") are extracted in the product database:
+Apogee 910 valid of 914 ((304)), Skechers 1,175 of 1,176 ((306)), QXO 1,145
+of 1,167; about 7.5 hours of wall time for the three, including the 50-minute
+outage. Nothing reviewed or published from these runs; the live release is
+still the DeepSeek-flash Apogee of (290). Next: the review of Apogee
+5fcf3b0e for Ben's read (the previous run's review was initialised and
+driven by scripts/product/drive-review.js, (290)); Ben's decisions on the
+compute (micro to small) and on which deals to publish.
