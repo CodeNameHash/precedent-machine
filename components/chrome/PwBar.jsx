@@ -6,6 +6,7 @@ import Link from 'next/link';
 export default function PwBar({ active = 'index', admin = false }) {
   const items = [
     { key: 'index', href: '/', label: 'Index' },
+    { key: 'analysed', href: '/analysed', label: 'Analysed' },
     { key: 'compare', href: '/compare', label: 'Compare' },
     ...(admin ? [{ key: 'review', href: '/review', label: 'Review' }] : []),
   ];
@@ -31,8 +32,14 @@ export default function PwBar({ active = 'index', admin = false }) {
         .pwbar { position: sticky; top: 0; z-index: 20; height: 58px; background: var(--navy, #03203d); color: #fff; display: flex; align-items: center; gap: 18px; padding: 0 max(16px, env(safe-area-inset-left, 0px)); font-family: var(--sans, 'Inter Tight', Arial, sans-serif); }
         .pwbar-brand { font-weight: 800; font-size: 17px; letter-spacing: -.03em; color: #fff; text-decoration: none; white-space: nowrap; }
         .pwbar-brand span { font-weight: 500; color: var(--mist, #b9c8da); margin-left: 8px; }
-        .pwbar nav { margin-left: auto; display: flex; gap: 6px; align-items: center; }
-        .pwbar-link { color: #fff; text-decoration: none; font: 600 12px var(--sans, 'Inter Tight', Arial, sans-serif); letter-spacing: .04em; padding: 8px 12px; border: 1px solid rgba(185, 200, 218, .45); border-radius: 999px; }
+        .pwbar nav { margin-left: auto; display: flex; gap: 6px; align-items: center; overflow-x: auto; scrollbar-width: none; }
+        .pwbar nav::-webkit-scrollbar { display: none; }
+        .pwbar-link { flex: 0 0 auto; color: #fff; text-decoration: none; font: 600 12px var(--sans, 'Inter Tight', Arial, sans-serif); letter-spacing: .04em; padding: 8px 12px; border: 1px solid rgba(185, 200, 218, .45); border-radius: 999px; }
+        @media (max-width: 680px) {
+          .pwbar { gap: 10px; padding: 0 12px; }
+          .pwbar-brand span { display: none; }
+          .pwbar-link { padding: 7px 9px; font-size: 11px; }
+        }
         .pwbar-link[data-active='true'] { background: #fff; color: var(--navy, #03203d); }
       `}</style>
     </header>
