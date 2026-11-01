@@ -357,6 +357,67 @@ function applyOtherProtectionsHidden(doc) {
   table.rows_start_collapsed_reason = `${BEN2} (round 3): "I'd have the other protections sort of hidden. You have to click to open them."`;
 }
 
+// 19. Plan finding (311), the persistence audit ("make sure that what you've
+// built is a persistent system, and that we haven't just put protections or
+// UI tweaks on top of systemic failures below ... if you did reextract this
+// stuff, it would work properly"). Where a (309) page rule stood in for a
+// gap in what the extractor is asked, the shape now asks for it, so a
+// re-extraction stores the right thing and the page rule is a repair for
+// older facts only.
+function applyPersistence(doc) {
+  // (a) The no-shop rows the page refines to REQUIRED_IMMEDIATELY may carry
+  // that code at extraction, and the table has a period column for "within
+  // two (2) business days" (the notice table's column, as decision 34
+  // added it there).
+  const core = findTable(doc, 'nosol-noshop-core-mechanics');
+  const provision = findColumn(core, 'provision');
+  for (const row of ['Return or destruction of information', 'Data-room access terminated']) {
+    const list = provision.vocabulary_by_row[row];
+    if (list && !list.includes('REQUIRED_IMMEDIATELY')) list.unshift('REQUIRED_IMMEDIATELY');
+  }
+  if (!core.columns.some((column) => column.column_id === 'period')) {
+    const notice = findColumn(findTable(doc, 'nosol-noshop-notice'), 'period');
+    core.columns.splice(core.columns.findIndex((column) => column.display === 'fact_text'), 0, {
+      ...notice,
+      reason: `${BEN2} (persistence audit): "it should say 'required' and the time period." The period a return or destruction must be requested within, read at extraction from the PERIOD component; shown after the answer.`,
+    });
+  }
+  core.guidance = `${core.guidance} "Immediately" (immediately cease, immediately discontinue access) is REQUIRED_IMMEDIATELY on its row, never plain REQUIRED; a period the clause states ("within two (2) business days") fills the period column.`;
+
+  // (b) Antitrust: Ben's reading of "contest and resist".
+  const antitrust = findTable(doc, 'antitrust-regulatory-table');
+  antitrust.guidance = `${antitrust.guidance} On Regulatory litigation, a covenant to contest and resist (or to contest, resist or appeal) any proceeding is MUST_DEFEND_INCLUDING_APPEALS, not MUST_DEFEND (Ben, 2026-11-01: "it also says 'contest and resist.' I think that includes appeals").`;
+
+  // (c) The control-of-operations boilerplate is not a covenant row.
+  for (const key of ['ioc-exceptions-affirmative-covenants', 'parent-ioc-exceptions-affirmative-covenants', 'ioc-exceptions-negative-covenants', 'parent-ioc-exceptions-negative-covenants']) {
+    const table = findTable(doc, key);
+    table.guidance = `${table.guidance || ''} The control-of-operations boilerplate at the end of the covenant ("nothing in this Agreement gives Parent the right to control or direct the Company's operations"; "the Company shall exercise complete control and supervision over its operations") is not a covenant row of this table: give it no row_label here; the page lists it under Other provisions (Ben, 2026-11-01: "It's boilerplate… so it's in the wrong place").`.trim();
+  }
+
+  // (d) The election cap. A consideration fact whose words state a maximum
+  // election number or cap is the Election caps row; the §1.1 definition
+  // of a cap reaches the row through caps_from_defined_terms.
+  const mechanics = findTable(doc, 'consideration-hero-election-mechanics');
+  mechanics.words_rows = [...(mechanics.words_rows || []), {
+    row_label: 'Election caps',
+    when: 'Maximum\\s+(?:\\w+\\s+){0,3}Election\\s+(?:Cap|Number|Amount)|(?:Cash|Stock|Equity|Mixed)\\s+Election\\s+(?:Cap|Number)|election[^.]{0,80}\\b(?:capped|cap of|not exceed|maximum)',
+    reason: `${BEN2} (round 3): "Is there no cap on election in Sketchers"`,
+  }];
+  mechanics.guidance = `${mechanics.guidance} A cap or maximum on an election (the Maximum Cash Election Number; "Maximum Equity Election Cap" means 29,920,623 shares) is the Election caps row, its as-drafted cell the words that state the number.`;
+
+  // (e) The Disclosure Letter code's label says what the clause says.
+  for (const table of allTables(doc)) {
+    for (const column of table.columns || []) {
+      for (const entry of column.vocabulary || []) {
+        if (entry.code === 'SECTION_SPECIFIC_ONLY' && entry.label === 'Disclosure qualifies only the section it is made against') {
+          entry.label = 'Disclosure qualifies the section it is made against';
+          entry.label_reason = `${BEN2}: "You can't have the 'only' right." The clause that arranges disclosure by section says that; whether it also reaches other sections is CROSS_SECTION_WHERE_REASONABLY_APPARENT.`;
+        }
+      }
+    }
+  }
+}
+
 function applyBen20261101(doc) {
   applySectionOrder(doc);
   applyStructureHeadline(doc);
@@ -376,6 +437,7 @@ function applyBen20261101(doc) {
   applyElectionMechanicsTerms(doc);
   applyElectionCapsFromDefinedTerms(doc);
   applyOtherProtectionsHidden(doc);
+  applyPersistence(doc);
 }
 
 module.exports = { applyBen20261101 };

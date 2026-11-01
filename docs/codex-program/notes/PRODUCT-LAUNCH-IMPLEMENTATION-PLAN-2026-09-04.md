@@ -13588,3 +13588,57 @@ Sketchers". Each, as a rule:
 Checked at 390px on the Skechers page, section by section (no horizontal
 page scroll; the wide tables scroll inside their wrappers). Section 9
 check: `npm run test:active`, result in the commit.
+
+**(311) 2026-11-01: the persistence audit. Would a re-extraction come out
+right, or are (309) and (310) page-side patches over extraction gaps?**
+Ben, overnight: "think deeply and make sure that you think that what
+you've built is a persistent system, and that we haven't just put
+protections or UI tweaks on top of systemic failures below. I want to make
+sure that you think that if you did reextract this stuff, it would work
+properly. I'm not asking you to actually reextract it, but I just want you
+to tell me whether it would work." The honest answer, rule by rule. Three
+kinds of rule exist: (P) presentation, a rule about how any correct fact is
+shown, which is persistent by nature; (A) a rule the extractor now also
+applies at admission (lib/product/fact-conclusions.js, called from
+lib/product/agreement-draft.js with a NOTE), so a re-extraction stores the
+right thing and the page rule only repairs older facts; (G) a gap in what
+the extractor was asked, now closed in the shape it reads (guidance,
+vocabulary, a column), with the page rule as the fallback.
+
+| Rule (finding) | Kind | Would a re-extraction be right? |
+|---|---|---|
+| Consideration options under the type; per-share and options tables embedded (309) | P | Yes. Reads whatever per-share facts the run has. |
+| Disclosure Letter "only" conflict (309) | P + G | The two facts were both correct readings of two sentences; the label said "only". Label is now "Disclosure qualifies the section it is made against" and the drop rule stays for a cell that also carries the cross-section code. Yes. |
+| "Various" bring-down (309) | P | Yes. |
+| One typeface, fixed widths, rail, PwBar, eyebrow (309); phone fixes, Sections button (310) | P | Yes. |
+| Control-of-operations boilerplate off the covenant rows (309) | A + G | Before: the model invented an open row ("Control of operations by the Company"); the page moved it. Now the four covenant tables' guidance says it is not a row, and admission routes it to Other provisions (`routeByWords`, note ROUTED_TO_OTHER_PROVISIONS, stored `placement`). Yes. |
+| Data room "immediately" (309) | A + G | Before: REQUIRED_IMMEDIATELY was not even on those rows' code lists, so the model could not return it and the page's refined code was outside the row's list. Now the lists carry it, the guidance says "immediately" is that code, and admission refines REQUIRED beside "immediately" (`refineCodesByWords`, note CODE_REFINED_BY_WORDS). Yes. |
+| Return or destruction "within two business days" (309) | G | Before: the table had no period column, so the extractor was never asked; the page read the words. Now the table has the notice table's period column (`fill_from` PERIOD), so a re-extraction stores the period and the page shows it under the answer; the words suffix remains for a fact with no period cell. Yes. |
+| "Contest and resist" includes appeals (309) | A + G | Ben's reading. Guidance on the antitrust table and admission refinement. Yes. |
+| Representative obligations each with their fact's summary; breach row at the same level (309) | P | Yes; the two obligations were already two facts. |
+| Notice period into the answer column; capitalization authorised count (309) | P | Yes. |
+| "Would be inconsistent" label (309) | P | Yes (label only; code unchanged). |
+| Subsequent match period, two readings told apart (309) | P | Yes; the two facts are right. What would make it better still is a TRIGGER-aware qualifier; today the fact's summary serves. |
+| "Remedies cap" (309) | G + A | The fixed row is renamed in the shape the extractor reads; admission maps the old label (`aliasRowLabel`, note ROW_ALIASED); stored readouts map on the page. Yes. |
+| Registration rights as Other provisions (309) | P | Yes. |
+| Specifics column last; Other protections closed (309, 310) | P | Yes. |
+| Election caps from a defined term (310) | A + G + P | Before: the Skechers cap was a §1.1 definition (KEY_DEFINED_TERMS) and no mechanics fact carried it. Now the mechanics table's guidance names caps as the Election caps row and a `words_rows` rule places a consideration fact that states a maximum or cap there at admission; the page still reads a defined cap onto the row when no fact fills it, because a definitions-section fact stays a defined term. Partly extraction, partly page, by design: the definition is a definition. |
+| Election mechanics rows named (310) | P | Yes. The "ab initio" redesign (coded rows for the form, deadline, revocation, default, cap, allocation timing) is still open and is extraction-side shape work. |
+
+What is NOT persistent and is said so: the (309) `qualifyReadings` summaries
+depend on the model's headline summaries being distinguishing (they were,
+on three deals); the `period_suffix_from_words` regex is a fallback, not a
+reading; `caps_from_defined_terms` reads a definition's words. None of
+these overwrites a stored fact; each is marked `derived` on the cell. The
+admission ports are covered by tests on the real shapes
+(tests/product-fact-conclusions.test.js). A re-extraction of the three
+deals would exercise them for real; not run tonight, as asked.
+
+The compare work is Ben's DeepSeek agent's: package 2
+(docs/codex-program/notes/DEEPSEEK-WORK-PACKAGE-2-COMPARE-2026-11-01.md)
+gives it the Compare toggle with a market / off-market line under each
+answer on the same page, a "How this compares" block in the evidence
+sidebar, and an "Everything" mode that opens every provision; it owns
+ProvisionTables, EvidenceSidebar and PublishedSummary for that work, and
+the manager stays in table-view, fact-conclusions, the shapes and their
+tests. Section 9 check: `npm run test:active`, result in the commit.

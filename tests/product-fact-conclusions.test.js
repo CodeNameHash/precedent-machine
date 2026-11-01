@@ -708,3 +708,51 @@ test('an as-drafted cell with no text renders empty in the helper, not a dash', 
   assert.ok(cell, 'the as-drafted column renders');
   assert.equal(cell.text, '');
 });
+
+// Plan finding (311), the persistence audit (Ben, 2026-11-01: "make sure
+// that what you've built is a persistent system ... if you did reextract
+// this stuff, it would work properly"): the (309) page rules run at
+// admission too, on the real shapes.
+test('refineCodesByWords sharpens REQUIRED to REQUIRED_IMMEDIATELY on "immediately", and MUST_DEFEND to MUST_DEFEND_INCLUDING_APPEALS on "contest and resist"', () => {
+  const { refineCodesByWords, findTableByKey } = require('../lib/product/fact-conclusions');
+  const component = (id, kind, text) => ({ component_id: id, kind, label: id, text, origin: 'OWN', children: [] });
+  const core = findTableByKey(tableShapes, 'nosol-noshop-core-mechanics').table;
+  const dataRoom = {
+    statement: 'The Company shall immediately discontinue access to any physical or electronic data room.',
+    headline: { label: 'Data room', summary: 'Company immediately cuts data-room access' },
+    components: [component('d1', 'ACTOR', 'the Company'), component('d2', 'OPERATION', 'shall immediately discontinue access'), component('d3', 'OBJECT', 'any physical or electronic data room')],
+  };
+  const refined = refineCodesByWords(dataRoom, core, { table_key: core.table_key, row_label: 'Data-room access terminated', cells: [{ column_id: 'provision', code: 'REQUIRED', component_ids: ['d2'] }] });
+  assert.deepEqual(refined.refined, [{ column_id: 'provision', from: 'REQUIRED', to: 'REQUIRED_IMMEDIATELY' }]);
+  assert.deepEqual(refined.cells[0], { column_id: 'provision', code: 'REQUIRED_IMMEDIATELY', component_ids: ['d2'] });
+  // The row's own list must allow the refined code (REQUIRED_IMMEDIATELY is on both rows since (311)).
+  assert.ok(core.columns.find((column) => column.column_id === 'provision').vocabulary_by_row['Data-room access terminated'].includes('REQUIRED_IMMEDIATELY'));
+  // Nothing on a fact whose words do not match.
+  const prompt = { ...dataRoom, statement: 'The Company shall promptly discontinue access.', headline: { label: 'Data room', summary: 'Company promptly cuts data-room access' }, components: [component('p1', 'OPERATION', 'shall promptly discontinue access')] };
+  assert.equal(refineCodesByWords(prompt, core, { table_key: core.table_key, row_label: 'Data-room access terminated', cells: [{ column_id: 'provision', code: 'REQUIRED', component_ids: ['p1'] }] }), null);
+  const antitrust = findTableByKey(tableShapes, 'antitrust-regulatory-table').table;
+  const litigation = {
+    statement: 'Each Party shall use its reasonable best efforts to contest and resist any Legal Proceeding that prohibits consummation of the Transactions.',
+    headline: { label: 'Litigation', summary: 'Parties contest proceedings blocking the Transactions' },
+    components: [component('l1', 'OPERATION', 'use its reasonable best efforts to contest and resist any Legal Proceeding')],
+  };
+  const out = refineCodesByWords(litigation, antitrust, { table_key: antitrust.table_key, row_label: 'Regulatory litigation', cells: [{ column_id: 'provision', code: 'MUST_DEFEND', component_ids: ['l1'] }] });
+  assert.equal(out.cells[0].code, 'MUST_DEFEND_INCLUDING_APPEALS');
+});
+
+test('routeByWords sends the control-of-operations boilerplate to Other provisions, and aliasRowLabel maps the renamed antitrust row', () => {
+  const { routeByWords, aliasRowLabel, findTableByKey } = require('../lib/product/fact-conclusions');
+  const component = (id, kind, text) => ({ component_id: id, kind, label: id, text, origin: 'OWN', children: [] });
+  const affirmative = findTableByKey(tableShapes, 'ioc-exceptions-affirmative-covenants').table;
+  const control = {
+    statement: 'Prior to the Effective Time, the Company shall exercise, consistent with the terms and conditions of this Agreement, complete control and supervision of its operations and those of its Subsidiaries.',
+    headline: { label: 'Control of operations', summary: 'Company retains complete control and supervision of its operations' },
+    components: [component('c1', 'OBJECT', 'complete control and supervision'), component('c2', 'OBJECT', 'of its operations and those of its Subsidiaries')],
+  };
+  assert.equal(routeByWords(control, affirmative).to, 'other_provisions');
+  const ordinary = { ...control, statement: 'The Company shall use commercially reasonable efforts to conduct its business in the ordinary course.', headline: { label: 'Ordinary course', summary: 'Company conducts its business in the ordinary course' }, components: [component('o1', 'OPERATION', 'use commercially reasonable efforts to conduct its business in the ordinary course')] };
+  assert.equal(routeByWords(ordinary, affirmative), null);
+  const antitrust = findTableByKey(tableShapes, 'antitrust-regulatory-table').table;
+  assert.equal(aliasRowLabel(antitrust, 'Remedy commitment (divestiture cap)'), 'Remedies cap');
+  assert.equal(aliasRowLabel(antitrust, 'Remedies cap'), null);
+});

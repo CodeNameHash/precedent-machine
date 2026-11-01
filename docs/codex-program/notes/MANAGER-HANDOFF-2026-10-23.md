@@ -53,6 +53,16 @@ breaking, a wider term column and natural scrolling below md, the
 the election caps row read from defined terms (Skechers' Maximum Equity
 Election Cap). DeepSeek is running the index / compare package.
 
+Update, 2026-11-01, overnight (finding (311)): the persistence audit, rule
+by rule, with the (309) page rules now also applied at admission
+(refineCodesByWords, routeByWords, aliasRowLabel in fact-conclusions.js,
+called from agreement-draft.js with notes) and the extraction gaps closed in
+the shapes (REQUIRED_IMMEDIATELY on the no-shop rows, a period column on
+the no-shop core table, guidance for the control-of-operations boilerplate,
+appeals and election caps, the Disclosure Letter label). DeepSeek has work
+package 2 (compare in the page, the sidebar block, the Everything mode) and
+owns ProvisionTables, EvidenceSidebar and PublishedSummary for it.
+
 ## 0. Update, 2026-10-24 08:30 EDT (read this first; sections 2 and 6 below are superseded where they disagree)
 
 Two deals have now run end to end. Findings (237) to (245) carry the evidence.
