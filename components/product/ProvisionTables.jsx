@@ -1084,12 +1084,12 @@ export default function ProvisionTables({
           finding (42)): the panel comes up over the page, as the Storylines
           panel does ("the page scrolls under it", finding (37)). */}
       <div className="min-w-0 flex-1 space-y-[16px]" data-sidebar-open={selectedFact ? 'true' : undefined}>
-        <div className="flex items-center gap-[4.5px]" data-testid="section-toggles">
+        <div className={`flex flex-wrap items-center gap-[4.5px] ${selectedFact ? 'lg:pr-[406px]' : ''}`} data-testid="section-toggles">
           <button type="button" onClick={() => setAll(false)} disabled={effectiveCollapsed.size === 0} className={tabClass(effectiveCollapsed.size === 0)}>Expand all</button>
           <button type="button" onClick={() => setAll(true)} disabled={allCollapsed} className={tabClass(allCollapsed)}>Collapse all</button>
-          <button type="button" onClick={() => setEverything((current) => !current)} aria-pressed={everything} className={`ml-auto ${tabClass(everything)}`} data-testid="everything-toggle">Everything</button>
+          <button type="button" onClick={() => setEverything((current) => !current)} aria-pressed={everything} className={tabClass(everything)} data-testid="everything-toggle">Everything</button>
           <button type="button" onClick={() => setCompare((current) => !current)} aria-pressed={compare} className={tabClass(compare)} data-testid="compare-toggle">{compare ? 'Hide compare' : 'Compare'}</button>
-          <button type="button" onClick={() => setShowSpecifics((current) => !current)} aria-pressed={effectiveSpecifics} disabled={everything} className={`${tabClass(effectiveSpecifics)} disabled:opacity-40`} data-testid="specifics-toggle">{effectiveSpecifics ? 'Hide specifics' : 'Show specifics'}</button>
+          <button type="button" onClick={() => setShowSpecifics((current) => !current)} aria-pressed={effectiveSpecifics} disabled={everything} className={`ml-auto ${tabClass(effectiveSpecifics)} disabled:opacity-40`} data-testid="specifics-toggle">{effectiveSpecifics ? 'Hide specifics' : 'Show specifics'}</button>
           <button type="button" onClick={() => setShowCodes((current) => !current)} aria-pressed={effectiveCodes} disabled={everything} className={`${tabClass(effectiveCodes)} disabled:opacity-40`} data-testid="codes-toggle">{effectiveCodes ? 'Hide codes' : 'Show codes'}</button>
         </div>
         <SectionJump sections={tableView.sections} />

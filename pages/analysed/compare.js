@@ -98,6 +98,7 @@ function Cell({ cell }) {
   const text = cellText(cell);
   return (
     <div className="space-y-[3px]" data-testid="compare-cell" data-fact-id={cell.fact_id || undefined} data-run-id={cell.run_id || undefined}>
+      {cell.column_header ? <span className="font-ui text-[9px] font-medium uppercase tracking-[0.08em] text-[#6B7785]">{cell.column_header}</span> : null}
       {cell.answer ? <span className={`inline-flex items-center rounded-full px-[9px] py-[2px] text-[11px] font-ui font-semibold ${toneClass(cell.answer.tone)}`}>{cell.answer.text}</span> : null}
       {cell.condition ? <span className={`inline-flex items-center rounded-full px-[8px] py-[1px] text-[10px] font-ui ${toneClass('condition')}`}>{cell.condition.text}</span> : null}
       {cell.extras.slice(0, 2).map((extra, index) => (

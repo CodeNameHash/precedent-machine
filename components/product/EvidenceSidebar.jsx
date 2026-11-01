@@ -127,7 +127,7 @@ function MarketComparison({ market }) {
               {entry.run_ids?.length ? (
                 <p className="mt-[2px] flex flex-wrap gap-x-[7px] gap-y-[1px]">
                   {entry.run_ids.map((runId) => (
-                    <a key={runId} href={`/review/product/${runId}/provisions`} className={TEXT_LINK} data-testid="evidence-market-deal">{market.runs?.[runId] || runId}</a>
+                    <a key={runId} href={`/review/product/${runId}/provisions`} className={`${TEXT_LINK} mr-[7px]`} data-testid="evidence-market-deal">{market.runs?.[runId] || runId}</a>
                   ))}
                 </p>
               ) : null}
