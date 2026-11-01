@@ -13548,3 +13548,43 @@ table views were rebuilt and read line by line (scratchpad dumps
 tables4-*); the page was rendered and screenshotted for Apogee and
 Skechers, section by section. Section 9 check: `npm run test:active`,
 result recorded in the commit.
+
+**(310) 2026-11-01: the page on a phone; the Skechers election cap.** Ben,
+reading the (309) pages on an iPhone at half width: "some of the columns
+overlap with each other, which is a little bit frustrating"; "there should
+be a little menu button at the bottom of the page that allows you to jump
+between different sections of the merger agreement ... something that's
+light and doesn't impact readability"; "The fee ones as well: maybe just
+allow natural scrolling of the tables"; "In the employee matters or the
+other protections section, I'd have the other protections sort of hidden.
+You have to click to open them."; and "Is there no cap on election in
+Sketchers". Each, as a rule:
+
+- Overlap: a long word in a fixed-layout cell ("Oversubscription") ran
+  into the next column. Every cell breaks words inside itself
+  (`overflow-wrap: anywhere`) and below md the term column takes 34% of
+  the table instead of 26%.
+- Natural scrolling: below md a table with two or more answer columns
+  keeps a minimum width (220px plus 170px a column, at most 760px) and
+  scrolls inside its own wrapper; a Term / Summary table fits the screen.
+  The attribute grids fit the screen.
+- The section menu: below lg, where the rail is hidden, a small fixed
+  "Sections" button at the bottom right opens a list of the sections; a
+  pick scrolls to the section and closes the list (`SectionJump`,
+  components/product/ProvisionTables.jsx). Nothing on wider screens, where
+  the rail does this.
+- Other protections: the table's rows fold behind the "Show N rows" toggle
+  and start closed (`collapsible_rows` and `rows_start_collapsed` on the
+  shape).
+- The Skechers cap: there is one. "Maximum Equity Election Cap" means
+  29,920,623 shares of Company Common Stock, a §1.1 definition that no
+  mechanics fact carried, so the Election caps row was empty while the
+  proration row referred to "the cap". A table's `caps_from_defined_terms`
+  shows every defined term whose name matches on its caps row when the
+  deal has election mechanics and no fact filled the row, the definition
+  fact as the row's backing (table-view, before the sections are built).
+  QXO's caps row (coded facts) is unchanged.
+
+Checked at 390px on the Skechers page, section by section (no horizontal
+page scroll; the wide tables scroll inside their wrappers). Section 9
+check: `npm run test:active`, result in the commit.

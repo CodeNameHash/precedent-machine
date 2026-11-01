@@ -52,7 +52,11 @@ const TINTS = {
 // labels 10.5, cells and subjects 14, quiet links 10, the detail control 11,
 // sub-items 13. Widths, paddings and gaps stay.
 const TH = 'border-b border-[#03203D] px-[10px] py-[8px] text-left text-[10.5px] font-ui font-medium uppercase tracking-[0.12em] text-[#6B7785]';
-const TD = 'px-[10px] py-[10px] align-top';
+// Ben, 2026-11-01, round 3, on the phone: "some of the columns overlap with
+// each other": a long word ("Oversubscription") breaks inside its cell
+// rather than running into the next column, and below md the term column
+// takes 34% of the table.
+const TD = 'px-[10px] py-[10px] align-top [overflow-wrap:anywhere]';
 const ROW = 'border-b border-[#DCE3E1] last:border-0';
 // Ben, 2026-11-01: "The widths of columns vary a lot… more consistent widths
 // throughout." Fixed layout: the term column 26%, the specifics column (display
@@ -319,7 +323,7 @@ function AttributeGrid({ table, selection, onSelect }) {
     <div className="overflow-x-auto">
       <table className="w-full table-fixed border-collapse text-left" data-testid="provision-table" data-table-key={table.table_key} data-layout="attribute-grid">
         <GroupHeader table={table} />
-        <colgroup><col style={{ width: `${TERM_WIDTH}%` }} /><col /></colgroup>
+        <colgroup><col className="w-[34%] md:w-[26%]" /><col /></colgroup>
         <thead>
           <tr>
             <th className={`w-[111.5px] ${TH}`}>Term</th>
@@ -544,6 +548,31 @@ function SectionIcon({ tint }) {
   );
 }
 
+// Ben, 2026-11-01, round 3, on the phone: "there should be a little menu
+// button at the bottom of the page that allows you to jump between different
+// sections of the merger agreement ... something that's light and doesn't
+// impact readability". Below lg (where the rail is hidden) a small fixed
+// button at the bottom right opens a list of the sections; a pick scrolls
+// to the section and closes the list.
+function SectionJump({ sections }) {
+  const [open, setOpen] = useState(false);
+  if (!sections || sections.length === 0) return null;
+  return (
+    <div className="fixed bottom-[14px] right-[14px] z-30 lg:hidden" data-testid="section-jump">
+      {open ? (
+        <nav aria-label="Jump to a section" className="mb-[6px] max-h-[60vh] w-[240px] overflow-y-auto rounded-[2px] border border-[#B9C8DA] bg-white">
+          {sections.map((section) => (
+            <a key={section.section_key} href={`#provision-section-${section.section_key}`} onClick={() => setOpen(false)} className="block border-b border-[#DCE3E1] px-[12px] py-[8px] font-ui text-[13px] text-[#03203D] last:border-0 hover:bg-[#F1F4F8]" data-testid="section-jump-item">{section.title}</a>
+          ))}
+        </nav>
+      ) : null}
+      <button type="button" onClick={() => setOpen((current) => !current)} aria-expanded={open} className="ml-auto flex items-center gap-[6px] rounded-full border border-[#B9C8DA] bg-[#03203D] px-[12px] py-[7px] font-ui text-[12px] font-semibold text-white" data-testid="section-jump-toggle">
+        {open ? 'Close' : 'Sections'}
+      </button>
+    </div>
+  );
+}
+
 function SectionHeading({ title, collapsed, onToggle, tint = 'green' }) {
   return (
     <button type="button" onClick={onToggle} aria-expanded={!collapsed} className={`flex min-h-[38px] w-full items-center gap-[7px] px-[14px] py-[8px] text-left ${TINTS[tint].band}`} data-testid="section-heading">
@@ -675,7 +704,9 @@ function Table({ table, selection, onSelect, initialSubRowsOpen = false }) {
   // Ben, 2026-09-14: "make negative covenant list collapsable (if it is
   // within the covenant section)". A table marked collapsible_rows folds its
   // rows behind a toggle above the header row; open to start.
-  const [rowsOpen, setRowsOpen] = useState(true);
+  // Ben, 2026-11-01, round 3: "I'd have the other protections sort of
+  // hidden. You have to click to open them." (rows_start_collapsed).
+  const [rowsOpen, setRowsOpen] = useState(!table.rows_start_collapsed);
   const showSpecifics = useContext(SpecificsContext);
   if (table.layout === 'attribute grid') return <AttributeGrid table={table} selection={selection} onSelect={onSelect} />;
   // Ben, 2026-11-01: the as-drafted column stays behind "Show specifics".
@@ -698,10 +729,14 @@ function Table({ table, selection, onSelect, initialSubRowsOpen = false }) {
   };
   return (
     <div className="overflow-x-auto">
-      <table className="w-full table-fixed border-collapse text-left" data-testid="provision-table" data-table-key={table.table_key}>
+      {/* Ben, 2026-11-01, round 3, on an iPhone at half width: "some of the
+          columns overlap with each other ... maybe just allow natural
+          scrolling of the tables." Below md the table keeps a minimum width
+          per column and scrolls inside its wrapper. */}
+      <table className="w-full min-w-[var(--table-min)] table-fixed border-collapse text-left md:min-w-0" style={{ '--table-min': columns.length >= 2 ? `${Math.min(760, 220 + 170 * columns.length)}px` : '0px' }} data-testid="provision-table" data-table-key={table.table_key}>
         <GroupHeader table={table} />
         <colgroup>
-          {table.term_column ? <col style={{ width: `${TERM_WIDTH}%` }} /> : null}
+          {table.term_column ? <col className="w-[34%] md:w-[26%]" /> : null}
           {columnWidths(columns, !!table.term_column).map((width, index) => <col key={columns[index].column_id} style={{ width: `${width}%` }} />)}
         </colgroup>
         {table.collapsible_rows ? (
@@ -908,6 +943,7 @@ export default function ProvisionTables({
           <button type="button" onClick={() => setShowSpecifics((current) => !current)} aria-pressed={showSpecifics} className={`ml-auto ${tabClass(showSpecifics)}`} data-testid="specifics-toggle">{showSpecifics ? 'Hide specifics' : 'Show specifics'}</button>
           <button type="button" onClick={() => setShowCodes((current) => !current)} aria-pressed={showCodes} className={tabClass(showCodes)} data-testid="codes-toggle">{showCodes ? 'Hide codes' : 'Show codes'}</button>
         </div>
+        <SectionJump sections={tableView.sections} />
         {tableView.sections.map((section) => {
           const isCollapsed = collapsed.has(section.section_key);
           return (

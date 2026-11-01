@@ -47,6 +47,12 @@ touch provisions.js, ProvisionTables, EvidenceSidebar, ProvisionRail or
 table-view.js). Not done: the election mechanics redesign and the evidence
 sidebar redesign ((309), "Not done").
 
+Update, 2026-11-01, round 3 (finding (310)): the phone fixes (word
+breaking, a wider term column and natural scrolling below md, the
+"Sections" jump button below lg), Other protections closed to start, and
+the election caps row read from defined terms (Skechers' Maximum Equity
+Election Cap). DeepSeek is running the index / compare package.
+
 ## 0. Update, 2026-10-24 08:30 EDT (read this first; sections 2 and 6 below are superseded where they disagree)
 
 Two deals have now run end to end. Findings (237) to (245) carry the evidence.

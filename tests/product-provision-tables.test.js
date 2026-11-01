@@ -592,7 +592,7 @@ test('the equity awards table calls its sub-rows "Exceptions"', () => {
   assert.match(html, /<button[^>]*data-testid="more-detail"[^>]*data-open="true"[^>]*>[^<]*Less detail</);
   assert.doesNotMatch(html, /More detail/);
   assert.match(html, /data-testid="table-sub-row"[^>]*class="[^"]*text-\[13px\]/);
-  assert.match(html, /<td class="px-\[10px\] py-\[10px\] align-top pl-\[18\.5px\] text-inkMid">/);
+  assert.match(html, /<td class="px-\[10px\] py-\[10px\] align-top \[overflow-wrap:anywhere\] pl-\[18\.5px\] text-inkMid">/);
 });
 
 // Ben, 2026-09-14: "we should be able to show the reader the general

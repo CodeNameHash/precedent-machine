@@ -760,7 +760,12 @@
             "ELECTION"
           ],
           "guidance": "Only for a deal whose holders elect between forms of consideration. Never place a fact here when the agreement has no election.",
-          "term_column_reason": "Ben, 2026-11-01, second read of the provisions page: \"'Election mechanics' really suck… completely new look at that sort of ab initio.\" The rows are named; the coded rows are the next piece."
+          "term_column_reason": "Ben, 2026-11-01, second read of the provisions page: \"'Election mechanics' really suck… completely new look at that sort of ab initio.\" The rows are named; the coded rows are the next piece.",
+          "caps_from_defined_terms": {
+            "row_label": "Election caps",
+            "term_words": "(?:Election|Equity|Cash|Stock)\\s+(?:Election\\s+)?(?:Cap|Number|Maximum|Limit)|Maximum\\s+(?:\\w+\\s+){0,3}Election",
+            "reason": "Ben, 2026-11-01, second read of the provisions page (round 3): \"Is there no cap on election in Sketchers\""
+          }
         },
         {
           "table_key": "consideration-registration-rights",
@@ -7624,7 +7629,10 @@
             "Duplication of benefits"
           ],
           "open_rows": true,
-          "guidance": "Term / Provision: one row per protection or disclaimer that is not a benefit element, named as the precedent would; the provision cell carries the operative words."
+          "guidance": "Term / Provision: one row per protection or disclaimer that is not a benefit element, named as the precedent would; the provision cell carries the operative words.",
+          "collapsible_rows": true,
+          "rows_start_collapsed": true,
+          "rows_start_collapsed_reason": "Ben, 2026-11-01, second read of the provisions page (round 3): \"I'd have the other protections sort of hidden. You have to click to open them.\""
         }
       ],
       "print_pages": [

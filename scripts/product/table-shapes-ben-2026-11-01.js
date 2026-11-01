@@ -334,6 +334,29 @@ function applyElectionMechanicsTerms(doc) {
   table.term_column_reason = `${BEN2}: "'Election mechanics' really suck… completely new look at that sort of ab initio." The rows are named; the coded rows are the next piece.`;
 }
 
+// 17. Round 3, 2026-11-01, Ben on the phone: "Is there no cap on election in
+// Sketchers": the cap is a defined term ("Maximum Equity Election Cap"
+// means 29,920,623 shares) no mechanics fact carried; the caps row reads
+// such terms (lib/product/table-view.js, caps_from_defined_terms).
+function applyElectionCapsFromDefinedTerms(doc) {
+  const table = findTable(doc, 'consideration-hero-election-mechanics');
+  table.caps_from_defined_terms = {
+    row_label: 'Election caps',
+    term_words: '(?:Election|Equity|Cash|Stock)\\s+(?:Election\\s+)?(?:Cap|Number|Maximum|Limit)|Maximum\\s+(?:\\w+\\s+){0,3}Election',
+    reason: `${BEN2} (round 3): "Is there no cap on election in Sketchers"`,
+  };
+}
+
+// 18. Round 3: "In the employee matters or the other protections section,
+// I'd have the other protections sort of hidden. You have to click to open
+// them." The table's rows fold behind the toggle, closed to start.
+function applyOtherProtectionsHidden(doc) {
+  const table = findTable(doc, 'employee-benefits-other-protections');
+  table.collapsible_rows = true;
+  table.rows_start_collapsed = true;
+  table.rows_start_collapsed_reason = `${BEN2} (round 3): "I'd have the other protections sort of hidden. You have to click to open them."`;
+}
+
 function applyBen20261101(doc) {
   applySectionOrder(doc);
   applyStructureHeadline(doc);
@@ -351,6 +374,8 @@ function applyBen20261101(doc) {
   applyRegistrationRightsAsOther(doc);
   applyConsiderationEmbed(doc);
   applyElectionMechanicsTerms(doc);
+  applyElectionCapsFromDefinedTerms(doc);
+  applyOtherProtectionsHidden(doc);
 }
 
 module.exports = { applyBen20261101 };
