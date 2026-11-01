@@ -2458,3 +2458,39 @@ test('a words_rows rule on a subtype-named table moves the fact to the rule\'s r
   const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'general-covenants-table');
   assert.deepEqual(table.rows.map((row) => [row.subject, row.backing_facts.length, row.sub_rows ? row.sub_rows.map((sub) => sub.subject) : undefined]), [['Public announcements', 1, ['Consultation and review']]]);
 });
+
+// Round 4 (Ben, 2026-11-01: "only a small number of reps come down de
+// minimis or material, the vast majority are MAE ... where they are
+// multiple qualifiers try and say Generally X but certain portions Y").
+// QXO's reps are all one section (3.1 (a) to (s)); a subsection reference
+// names one rep by its heading, the general tier reaches every other rep,
+// and a tier naming part of a rep's own section reads "Generally X; part: Y".
+test('the bring-down is per rep: the general tier by default, a subsection tier only on the rep its heading names, a part as "Generally"', () => {
+  const component = (id, kind, text, extra = {}) => ({ component_id: id, kind, label: id, text, origin: 'OWN', source_span_id: 's', start_byte: 0, end_byte: 5, gap_before: false, children: [], ...extra });
+  const rep = (id, row, section) => ({ fact_id: id, proposal_id: id, family_key: 'REPRESENTATIONS', subtype_key: 'STATUS_REPRESENTATION', section_reference: section, structure_node_id: `n-${section}`, validation_status: 'VALID',
+    headline: { label: row, summary: row }, components: [component(`${id}-c`, 'OBJECT', row)],
+    conclusions: { table_key: 'representations-qualifiers-table', row_label: row, cells: [] } });
+  const tier = (id, code, statement, refs) => ({ fact_id: id, proposal_id: id, family_key: 'CLOSING_CONDITIONS', subtype_key: 'BRINGDOWN', section_reference: '6.2', structure_node_id: 'n-6-2', validation_status: 'VALID', statement,
+    headline: { label: 'Bring-down', summary: statement }, components: [component(`${id}-s`, 'STANDARD', 'true and correct'), ...refs.map((text, index) => component(`${id}-r${index}`, 'CROSS_REFERENCE', text))],
+    conclusions: { table_key: 'conditions-b-table', row_label: 'Accuracy of Representations', cells: [{ column_id: 'standard', code, component_ids: [`${id}-s`] }] } });
+  const facts = [
+    rep('r1', 'Organization; Qualification; Standing', '3.1'), rep('r2', 'Litigation; Legal Proceedings', '3.1'), rep('r3', 'Brokers; Finders', '3.1'),
+    rep('a1', 'Organization; Qualification; Standing', '3.9'), rep('a2', 'Capitalization; Subsidiaries', '3.3'),
+    tier('t-mae', 'TRUE_EXCEPT_NO_MAE', 'Other Company representations must be true except where failure would not have a Company MAE.', []),
+    tier('t-mat', 'TRUE_IN_ALL_MATERIAL_RESPECTS', 'Company core representations must be true in all material respects.', ['3.1(a) (Organization, Good Standing and Qualification)', '3.1(s) (Brokers and Finders)']),
+    tier('t-min', 'TRUE_EXCEPT_DE_MINIMIS', 'Company capitalization representations must be true except De Minimis Inaccuracies.', ['Section 3.3(a)']),
+    // The covenant condition is not a bring-down of any rep.
+    { ...tier('t-cov', 'TRUE_IN_ALL_MATERIAL_RESPECTS', 'Company performed its covenants in all material respects.', []), conclusions: { table_key: 'conditions-b-table', row_label: 'Performance of Covenants', cells: [{ column_id: 'standard', code: 'TRUE_IN_ALL_MATERIAL_RESPECTS', component_ids: ['t-cov-s'] }] } },
+  ];
+  // r1 and a1 share a row; drop a1 so the row's main section is 3.1.
+  const view = buildTableView({ facts: facts.filter((fact) => fact.fact_id !== 'a1'), tableShapes, legalSchema });
+  const table = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'representations-qualifiers-table');
+  const bringdown = (subject) => table.rows.find((row) => row.subject === subject).cells.find((cell) => cell.column_id === 'bringdown');
+  assert.equal(bringdown('Organization; Qualification; Standing').code, 'TRUE_IN_ALL_MATERIAL_RESPECTS', '3.1(a) by its heading');
+  assert.equal(bringdown('Brokers; Finders').code, 'TRUE_IN_ALL_MATERIAL_RESPECTS', '3.1(s) by its heading');
+  assert.equal(bringdown('Litigation; Legal Proceedings').code, 'TRUE_EXCEPT_NO_MAE', 'every other rep takes the general tier, never the covenant condition');
+  const capitalization = bringdown('Capitalization; Subsidiaries');
+  assert.equal(capitalization.generally, 'TRUE_EXCEPT_NO_MAE');
+  assert.match(capitalization.label, /^Generally true except where failure would not cause an MAE; 3\.3\(a\): true except for de minimis/i);
+  assert.deepEqual(capitalization.many.map((value) => value.code), ['TRUE_EXCEPT_NO_MAE', 'TRUE_EXCEPT_DE_MINIMIS']);
+});

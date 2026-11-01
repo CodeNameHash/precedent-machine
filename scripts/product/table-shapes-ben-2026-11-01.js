@@ -191,8 +191,20 @@ function applyDisclosureOnlyConflict(doc) {
 function applyBringDownVarious(doc) {
   for (const key of ['representations-qualifiers-table', 'parent-representations-qualifiers-table']) {
     const column = findColumn(findTable(doc, key), 'bringdown');
-    column.many_as = 'Various';
-    column.many_as_reason = `${BEN2}: "where it says 'bring down standard' and there are multiple standards for one thing, I would say 'various'."`;
+    // Round 4 (Ben, 2026-11-01 afternoon) supersedes "Various": "I don't
+    // think the 'bring down standard' as 'various' is correct - only a small
+    // number of reps come down de minimis or material, the vast majority are
+    // MAE and they're not subdivided within the reps except in very special
+    // situations ... where they are multiple qualifiers try and say Generally
+    // X but certain portions Y". The bring-down is derived per rep
+    // (lib/product/table-view.js deriveBringDownForRow); a cell that still
+    // carries several readings reads "Generally X; certain portions Y".
+    column.many_as = 'generally';
+    column.many_as_reason = `Ben, 2026-11-01, round 4: "where they are multiple qualifiers try and say Generally X but certain portions Y".`;
+    column.bring_down_default = { side_table: key === 'representations-qualifiers-table' ? 'conditions-b-table' : 'conditions-s-table', reason: `Ben, 2026-11-01, round 4: "the vast majority are MAE": every rep takes the agreement's general bring-down unless a specific tier names it.` };
+    const qualifiers = findColumn(findTable(doc, key), 'materiality');
+    qualifiers.many_as = 'generally';
+    qualifiers.many_as_reason = `Ben, 2026-11-01, round 4: "The same is true of the qualifiers ... where they are multiple qualifiers try and say Generally X but certain portions Y".`;
   }
 }
 

@@ -1193,8 +1193,12 @@
                 "join": "cross_reference"
               },
               "guidance": "Derived by the page from the CLOSING_CONDITIONS bring-down facts whose cross-references name this representation. Never coded from the representation itself.",
-              "many_as": "Various",
-              "many_as_reason": "Ben, 2026-11-01, second read of the provisions page: \"where it says 'bring down standard' and there are multiple standards for one thing, I would say 'various'.\""
+              "many_as": "generally",
+              "many_as_reason": "Ben, 2026-11-01, round 4: \"where they are multiple qualifiers try and say Generally X but certain portions Y\".",
+              "bring_down_default": {
+                "side_table": "conditions-b-table",
+                "reason": "Ben, 2026-11-01, round 4: \"the vast majority are MAE\": every rep takes the agreement's general bring-down unless a specific tier names it."
+              }
             },
             {
               "column_id": "materiality",
@@ -1410,7 +1414,9 @@
                   "when": "CROSS_SECTION_WHERE_REASONABLY_APPARENT",
                   "reason": "Ben, 2026-11-01, second read of the provisions page: \"You can't have the 'only' right.\""
                 }
-              ]
+              ],
+              "many_as": "generally",
+              "many_as_reason": "Ben, 2026-11-01, round 4: \"The same is true of the qualifiers ... where they are multiple qualifiers try and say Generally X but certain portions Y\"."
             },
             {
               "column_id": "lookback",
@@ -1630,8 +1636,12 @@
                 "join": "cross_reference"
               },
               "guidance": "Derived by the page from the CLOSING_CONDITIONS bring-down facts whose cross-references name this representation. Never coded from the representation itself.",
-              "many_as": "Various",
-              "many_as_reason": "Ben, 2026-11-01, second read of the provisions page: \"where it says 'bring down standard' and there are multiple standards for one thing, I would say 'various'.\""
+              "many_as": "generally",
+              "many_as_reason": "Ben, 2026-11-01, round 4: \"where they are multiple qualifiers try and say Generally X but certain portions Y\".",
+              "bring_down_default": {
+                "side_table": "conditions-s-table",
+                "reason": "Ben, 2026-11-01, round 4: \"the vast majority are MAE\": every rep takes the agreement's general bring-down unless a specific tier names it."
+              }
             },
             {
               "column_id": "materiality",
@@ -1847,7 +1857,9 @@
                   "when": "CROSS_SECTION_WHERE_REASONABLY_APPARENT",
                   "reason": "Ben, 2026-11-01, second read of the provisions page: \"You can't have the 'only' right.\""
                 }
-              ]
+              ],
+              "many_as": "generally",
+              "many_as_reason": "Ben, 2026-11-01, round 4: \"The same is true of the qualifiers ... where they are multiple qualifiers try and say Generally X but certain portions Y\"."
             },
             {
               "column_id": "lookback",
