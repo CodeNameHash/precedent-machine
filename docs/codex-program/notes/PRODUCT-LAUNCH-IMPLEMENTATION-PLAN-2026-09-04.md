@@ -13642,3 +13642,54 @@ sidebar, and an "Everything" mode that opens every provision; it owns
 ProvisionTables, EvidenceSidebar and PublishedSummary for that work, and
 the manager stays in table-view, fact-conclusions, the shapes and their
 tests. Section 9 check: `npm run test:active`, result in the commit.
+
+**(312) 2026-11-01: Ben's fourth read; PR 490 merged; DeepSeek packages 2
+and 3; the integration plan commissioned.** PR 490 (DeepSeek package 1:
+`/analysed`, `/analysed/compare`, the compare APIs) merged after its four
+blockers were fixed, with two fixes on the merge: held facts reach the
+comparison view, and how-common is one distribution per row, parent row and
+column. Ben's round-4 points and what each became:
+
+- "Sections with no facts extracted - I'm not sure it's right to flag
+  sections that are basically empty (e.g. the intro lines)". An article
+  heading or a lead-in ("represent and warrant ... as follows:") is not
+  flagged (`sectionHasNothingToExtract`, lib/product/provisions-preview.js).
+  Left flagged, correctly: Apogee 1.8 and 5.13, QXO 4.15, real covenants
+  that produced no fact.
+- "I don't think the 'bring down standard' as 'various' is correct - only a
+  small number of reps come down de minimis or material, the vast majority
+  are MAE ... where they are multiple qualifiers try and say Generally X but
+  certain portions Y". A data error: QXO's reps are one section (3.1 (a) to
+  (s)), so a "3.1(a)" reference reached every rep; the general "all other
+  representations" tier reached none on any deal. `deriveBringDownForRow`:
+  the general tier by default (no references, an Article, or "other than
+  those in ..."); a specific tier only on the rep it names (by section,
+  or by subsection heading where reps share a section); a tier naming part
+  of a rep reads "Generally X; 3.3(a): Y". Qualifiers: "Generally X; certain
+  portions Y" when one reading backs most of the row, else listed.
+- "on AT for the non-impediment covenant (i) add 'Clear Skies' after it and
+  then in period you should say outside date rather than giving the date".
+  Row "Non-impediment covenant (clear skies)" (old label an alias); a
+  period equal to the deal's Outside Date reads "Outside Date". QXO's date
+  (May 29, 2026) is not its Outside Date (January 17, 2027) and stays.
+- "for lookback periods do we calculate the approximate period (e.g. X
+  months)?" Not before; now every lookback cell carries `approx_months`
+  (periods converted; dates measured to the agreement date where the caller
+  has it, the comparison read does), not shown.
+- "for no other reps/fraud, why does that not show resulting rows in QXO?"
+  QXO's five facts had no readout and the table no placing rule; Apogee's
+  were misread as subject-limited disclaimers. `side_rows`: a fact is placed
+  by subtype and by whose representations it concerns (at extraction and on
+  the page); rows for each party's independent investigation added.
+- "Carve-back provisos as drafted - why is this showing up?" (a question):
+  answered in the reply; the footer is now "Provisos to the carve-outs",
+  each line named (Disproportionality carve-back / Underlying cause still
+  counts), each distinct proviso once with its count.
+- The UI points (Other provisions column widths, blue toolbar, Specifics in
+  each section heading, rail clicks that open and clear the header), the
+  review page in the site's design with "See reason", feedback anywhere
+  with an admin page, and reviewer levels: DeepSeek work package 3
+  (docs/codex-program/notes/DEEPSEEK-WORK-PACKAGE-3-LAWYER-USE-2026-11-01.md).
+- The integrated deal record (Corpus + Deal Storylines + the biopharma
+  site): an architecture plan commissioned, to be written to
+  docs/codex-program/notes/INTEGRATION-PLAN-DEAL-RECORD-2026-11-01.md.
