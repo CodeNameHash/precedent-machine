@@ -100,9 +100,9 @@ Untouched, as package 3 requires: `lib/product/table-view.js`,
   6/6; `tests/product-provision-tables.test.js`: 46/46.
 - `npm run test:active` (run through Node's script runner; this machine has
   the node binary but not the npm shim): **1003 tests, 1003 pass, 0 fail, 0
-  cancelled, 0 skipped, 0 todo** (`duration_ms` 316,047). The two known Node
-  22 CI failures remain the Codex final-message test and the health-route
-  assertion; they are not caused by this branch.
+  cancelled, 0 skipped, 0 todo** (`duration_ms` 316,047). The product CI job has not completed on the
+  runner (a rerun was cancelled at test 471); both Vercel builds pass. The
+  local suite is the evidence for this branch.
 
 ## Screenshots
 
