@@ -38,7 +38,7 @@ export function railGroups(sections) {
   return groups;
 }
 
-export default function ProvisionRail({ sections, title = null }) {
+export default function ProvisionRail({ sections, title = null, topOffset = 0 }) {
   const groups = railGroups(sections);
   const [active, setActive] = useState(groups[0]?.sections?.[0]?.section_key || null);
   if (!groups.length) return null;
@@ -51,36 +51,37 @@ export default function ProvisionRail({ sections, title = null }) {
         onClick={() => setActive(sectionKey)}
         data-testid="provision-rail-item"
         data-active={isActive || undefined}
-        className={`block font-serif leading-snug text-[#33475E] ${sub ? 'text-[11.5px]' : 'text-[13.5px]'} ${isActive ? 'bg-[#F1F4F8] font-semibold text-[#03203D]' : 'font-normal hover:bg-[#F1F4F8] hover:text-[#03203D]'}`}
-        style={{ padding: sub ? '4.5px 10px' : '8px 10px', marginLeft: sub ? 8 : 0, borderLeft: isActive ? '3px solid #03203D' : '3px solid transparent' }}
+        className={`block rounded-[2px] font-sans leading-snug ${sub ? 'text-[12px]' : 'text-[13px]'} ${isActive ? 'bg-white font-semibold text-[#03203D]' : 'font-medium text-white hover:bg-white/10'}`}
+        style={{ padding: '10px 10px', marginLeft: sub ? 10 : 0 }}
       >
         {label}
       </a>
     );
   };
+  // Deal Storylines reference (owner's screenshot, 2026-11-01): a full-height
+  // solid navy column 220px wide with 16px side padding, the deal title in
+  // white Inter Tight 700 22px, nav items 13px / 500 white with 10px padding
+  // split by 1px hairlines, the active item a solid white block.
   return (
     <nav
       aria-label="Provision sections"
-      className="sticky top-0 hidden h-screen max-h-screen shrink-0 self-start overflow-y-auto border-r border-[#DCE3E1] bg-white lg:block [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      style={{ width: 264, padding: 22 }}
+      className="sticky hidden shrink-0 self-start overflow-y-auto bg-[#03203D] lg:block [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      style={{ top: topOffset, height: `calc(100vh - ${topOffset}px)`, width: 220, padding: '20px 16px' }}
       data-testid="provision-rail"
     >
-      <div className="mb-[18px] flex items-center gap-[10px]" data-testid="provision-rail-brand">
-        <span className="flex h-[34px] w-[34px] shrink-0 flex-col justify-center gap-[1px] bg-[#03203D] pl-[5px] font-sans text-[9.5px] font-extrabold leading-[.88] tracking-[-.03em] text-white" aria-hidden="true"><span>Paul,</span><span>Weiss</span></span>
-        <span className="font-sans text-[16px] font-semibold tracking-[-.03em] text-[#03203D]">Corpus</span>
-      </div>
+      <p className="mb-[8px] font-sans text-[11px] font-semibold uppercase tracking-[.12em] text-[#B9C8DA]" data-testid="provision-rail-brand">Corpus</p>
       {title ? (
-        <p className="mb-[18px] font-sans text-[21px] font-bold leading-[1.05] tracking-[-.035em] text-[#03203D]" data-testid="provision-rail-title">{title}</p>
+        <p className="mb-[18px] font-sans text-[22px] font-bold leading-[1.05] tracking-[-.03em] text-white" data-testid="provision-rail-title">{title}</p>
       ) : null}
-      <div className="flex flex-col" style={{ gap: 6 }}>
+      <div className="flex flex-col">
         {groups.map((group) => (
-          <div key={group.label} data-testid="provision-rail-group">
+          <div key={group.label} data-testid="provision-rail-group" style={{ borderTop: '1px solid rgba(185,200,218,.28)' }}>
             {group.sections.length === 1
               ? item(group.sections[0].section_key, group.label)
               : (
                 <>
                   {item(group.sections[0].section_key, group.label)}
-                  <div className="flex flex-col" style={{ gap: 2.5, marginTop: 2.5 }}>
+                  <div className="flex flex-col">
                     {group.sections.map((section) => item(section.section_key, section.label, { sub: true }))}
                   </div>
                 </>

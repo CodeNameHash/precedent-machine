@@ -434,7 +434,9 @@
             "components_table_key": "consideration-components",
             "form_column": "form",
             "options_table_key": "consideration-election-options",
-            "reason": "Ben, 2026-11-01, on the provisions page: \"why is consideration type empty? We know it's cash below. Phrase it right.\" When no fact codes the type, the page reads it from the per-share forms (and the election options) below (lib/product/table-view.js deriveConsiderationType)."
+            "reason": "Ben, 2026-11-01, on the provisions page: \"why is consideration type empty? We know it's cash below. Phrase it right.\" When no fact codes the type, the page reads it from the per-share forms (and the election options) below (lib/product/table-view.js deriveConsiderationType).",
+            "embed_components": true,
+            "embed_reason": "Ben, 2026-11-01, second read of the provisions page: \"I'd rather have 'consideration type' and then, immediately under it, have the components laid out ... maybe as a subrow or something\"; \"There are two options.\""
           }
         },
         {
@@ -732,7 +734,10 @@
         {
           "table_key": "consideration-hero-election-mechanics",
           "group_header": "ELECTION MECHANICS",
-          "term_column": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject"
+          },
           "columns": [
             {
               "column_id": "body",
@@ -754,7 +759,8 @@
           "subtype_keys": [
             "ELECTION"
           ],
-          "guidance": "Only for a deal whose holders elect between forms of consideration. Never place a fact here when the agreement has no election."
+          "guidance": "Only for a deal whose holders elect between forms of consideration. Never place a fact here when the agreement has no election.",
+          "term_column_reason": "Ben, 2026-11-01, second read of the provisions page: \"'Election mechanics' really suck… completely new look at that sort of ab initio.\" The rows are named; the coded rows are the next piece."
         },
         {
           "table_key": "consideration-registration-rights",
@@ -909,8 +915,10 @@
           "addition": true,
           "reason": "Ben, 2026-10-18 (plan finding (163)): \"reg rights I think goes with consideration (but at bottom)\"; on sub-items (plan finding (166)): \"are these from a reg rights agreement? I wouldn't go into anywhere near this depth in this product\". NCS generation 5, 5.17: the Specified Stockholders' registration rights came back as covenants spread over five rows of the general covenants table.",
           "guidance": "Every covenant of a registration-rights package for the stock consideration (the resale registration statement or shelf, keeping it effective and amending it, the holders' information and approval rights, the indemnities, the expenses, Rule 144 and legend removal, the listing and reporting covenants for the resale period) is on this table's one row, one fact per operative unit, with no row_detail: the row is present or absent, its facts behind it; the code moves a general covenant whose words name the Registration Statement, Registrable Securities, a prospectus, Rule 144 or Rule 415 here from the general covenants table (work package 18, 2026-10-18). A deal without registration rights shows no such table.",
-          "summary_only": true,
-          "summary_only_reason": "Ben, 2026-11-01, on the provisions page: \"[Registration] rights. Need a summary here. You don't need it as drafted.\""
+          "rows_as_other_provisions": {
+            "label": "Registration rights",
+            "reason": "Ben, 2026-11-01, second read of the provisions page: \"'Registration rights,' I sort of hide as an other thing.\""
+          }
         }
       ],
       "print_pages": [
@@ -1172,7 +1180,9 @@
                 "from_column": "standard",
                 "join": "cross_reference"
               },
-              "guidance": "Derived by the page from the CLOSING_CONDITIONS bring-down facts whose cross-references name this representation. Never coded from the representation itself."
+              "guidance": "Derived by the page from the CLOSING_CONDITIONS bring-down facts whose cross-references name this representation. Never coded from the representation itself.",
+              "many_as": "Various",
+              "many_as_reason": "Ben, 2026-11-01, second read of the provisions page: \"where it says 'bring down standard' and there are multiple standards for one thing, I would say 'various'.\""
             },
             {
               "column_id": "materiality",
@@ -1380,7 +1390,14 @@
                   "OFFICERS"
                 ]
               },
-              "guidance": "On a representation row: the materiality or knowledge qualifier the representation carries. On the General Exceptions row: the codes the article introduction establishes for that source of exception (the portions of the SEC filings excluded, the arrangement and cross-section rule of the Disclosure Letter), several cells when it establishes several. On the Knowledge row: the knowledge standard (Standard) and whose knowledge counts (Persons)."
+              "guidance": "On a representation row: the materiality or knowledge qualifier the representation carries. On the General Exceptions row: the codes the article introduction establishes for that source of exception (the portions of the SEC filings excluded, the arrangement and cross-section rule of the Disclosure Letter), several cells when it establishes several. On the Knowledge row: the knowledge standard (Standard) and whose knowledge counts (Persons).",
+              "drop_when_present": [
+                {
+                  "drop": "SECTION_SPECIFIC_ONLY",
+                  "when": "CROSS_SECTION_WHERE_REASONABLY_APPARENT",
+                  "reason": "Ben, 2026-11-01, second read of the provisions page: \"You can't have the 'only' right.\""
+                }
+              ]
             },
             {
               "column_id": "lookback",
@@ -1599,7 +1616,9 @@
                 "from_column": "standard",
                 "join": "cross_reference"
               },
-              "guidance": "Derived by the page from the CLOSING_CONDITIONS bring-down facts whose cross-references name this representation. Never coded from the representation itself."
+              "guidance": "Derived by the page from the CLOSING_CONDITIONS bring-down facts whose cross-references name this representation. Never coded from the representation itself.",
+              "many_as": "Various",
+              "many_as_reason": "Ben, 2026-11-01, second read of the provisions page: \"where it says 'bring down standard' and there are multiple standards for one thing, I would say 'various'.\""
             },
             {
               "column_id": "materiality",
@@ -1807,7 +1826,14 @@
                   "OFFICERS"
                 ]
               },
-              "guidance": "On a representation row: the materiality or knowledge qualifier the representation carries. On the General Exceptions row: the codes the article introduction establishes for that source of exception (the portions of the SEC filings excluded, the arrangement and cross-section rule of the Disclosure Letter), several cells when it establishes several. On the Knowledge row: the knowledge standard (Standard) and whose knowledge counts (Persons)."
+              "guidance": "On a representation row: the materiality or knowledge qualifier the representation carries. On the General Exceptions row: the codes the article introduction establishes for that source of exception (the portions of the SEC filings excluded, the arrangement and cross-section rule of the Disclosure Letter), several cells when it establishes several. On the Knowledge row: the knowledge standard (Standard) and whose knowledge counts (Persons).",
+              "drop_when_present": [
+                {
+                  "drop": "SECTION_SPECIFIC_ONLY",
+                  "when": "CROSS_SECTION_WHERE_REASONABLY_APPARENT",
+                  "reason": "Ben, 2026-11-01, second read of the provisions page: \"You can't have the 'only' right.\""
+                }
+              ]
             },
             {
               "column_id": "lookback",
@@ -2720,7 +2746,14 @@
           "subtype_keys": [
             "AFFIRMATIVE_COVENANT"
           ],
-          "guidance": "One row per affirmative covenant as the precedent names it (conduct in the ordinary course; preserve the business organization and relationships; maintain permits; maintain property), a new name only when none fits; the efforts standard and any materiality qualifier coded, the covenant as drafted."
+          "guidance": "One row per affirmative covenant as the precedent names it (conduct in the ordinary course; preserve the business organization and relationships; maintain permits; maintain property), a new name only when none fits; the efforts standard and any materiality qualifier coded, the covenant as drafted.",
+          "route_by_words": [
+            {
+              "when": "complete\\s+control\\s+and\\s+supervision|(?:give|grant)s?\\s+(?:to\\s+)?(?:Parent|Buyer|Purchaser|Acquiror|Acquirer)[^.]{0,80}\\bcontrol\\b",
+              "to": "other_provisions",
+              "reason": "Ben, 2026-11-01, second read of the provisions page: \"You have this control of operations by the company. That's not in the general intro. That language is coming from right at the end of the provision. It's boilerplate… so it's in the wrong place.\""
+            }
+          ]
         },
         {
           "table_key": "ioc-exceptions-negative-covenants",
@@ -2968,7 +3001,14 @@
           "fact_type_rows": {
             "DIVIDEND_COORDINATION_COVENANT": "Dividends and Distributions"
           },
-          "statement_words": "\\bthe Company\\b"
+          "statement_words": "\\bthe Company\\b",
+          "route_by_words": [
+            {
+              "when": "complete\\s+control\\s+and\\s+supervision|(?:give|grant)s?\\s+(?:to\\s+)?(?:Parent|Buyer|Purchaser|Acquiror|Acquirer)[^.]{0,80}\\bcontrol\\b",
+              "to": "other_provisions",
+              "reason": "Ben, 2026-11-01, second read of the provisions page: \"You have this control of operations by the company. That's not in the general intro. That language is coming from right at the end of the provision. It's boilerplate… so it's in the wrong place.\""
+            }
+          ]
         }
       ],
       "print_pages": [
@@ -3292,7 +3332,14 @@
           "subtype_keys": [
             "AFFIRMATIVE_COVENANT"
           ],
-          "guidance": "One row per affirmative covenant as the precedent names it (conduct in the ordinary course; preserve the business organization and relationships; maintain permits; maintain property), a new name only when none fits; the efforts standard and any materiality qualifier coded, the covenant as drafted."
+          "guidance": "One row per affirmative covenant as the precedent names it (conduct in the ordinary course; preserve the business organization and relationships; maintain permits; maintain property), a new name only when none fits; the efforts standard and any materiality qualifier coded, the covenant as drafted.",
+          "route_by_words": [
+            {
+              "when": "complete\\s+control\\s+and\\s+supervision|(?:give|grant)s?\\s+(?:to\\s+)?(?:Parent|Buyer|Purchaser|Acquiror|Acquirer)[^.]{0,80}\\bcontrol\\b",
+              "to": "other_provisions",
+              "reason": "Ben, 2026-11-01, second read of the provisions page: \"You have this control of operations by the company. That's not in the general intro. That language is coming from right at the end of the provision. It's boilerplate… so it's in the wrong place.\""
+            }
+          ]
         },
         {
           "table_key": "parent-ioc-exceptions-negative-covenants",
@@ -3460,7 +3507,14 @@
           "fact_type_rows": {
             "DIVIDEND_COORDINATION_COVENANT": "Dividends and Distributions"
           },
-          "statement_words": "\\bParent\\b(?![^.]*\\bthe Company\\b)"
+          "statement_words": "\\bParent\\b(?![^.]*\\bthe Company\\b)",
+          "route_by_words": [
+            {
+              "when": "complete\\s+control\\s+and\\s+supervision|(?:give|grant)s?\\s+(?:to\\s+)?(?:Parent|Buyer|Purchaser|Acquiror|Acquirer)[^.]{0,80}\\bcontrol\\b",
+              "to": "other_provisions",
+              "reason": "Ben, 2026-11-01, second read of the provisions page: \"You have this control of operations by the company. That's not in the general intro. That language is coming from right at the end of the provision. It's boilerplate… so it's in the wrong place.\""
+            }
+          ]
         }
       ],
       "print_pages": [
@@ -3730,7 +3784,15 @@
                     "words": "[\\s\\S]"
                   }
                 ]
-              }
+              },
+              "refine_by_words": [
+                {
+                  "code": "REQUIRED",
+                  "when": "\\bimmediately\\b",
+                  "to": "REQUIRED_IMMEDIATELY",
+                  "reason": "Ben, 2026-11-01, second read of the provisions page: \"Same on the data room: it should say 'immediately.'\""
+                }
+              ]
             },
             {
               "column_id": "asDrafted",
@@ -3780,7 +3842,19 @@
           "fact_type_rows_when": {
             "PROHIBITED_ACTION": "(?=[\\s\\S]*Representative)(?=[\\s\\S]*(?:shall be|constitute|deemed)[^.]{0,60}breach)",
             "EXCEPTION_PREREQUISITE": "(?:clarif|existence (?:of|and) (?:the )?(?:provisions|terms)|(?:terms|provisions) of (?:this|these|the) (?:Section|no-shop|non-solicitation|no-solicitation)|inform[\\s\\S]{0,80}(?:provisions|terms) of this Section)"
-          }
+          },
+          "period_suffix_from_words": {
+            "column_id": "provision",
+            "codes": [
+              "REQUIRED",
+              "REQUIRED_WITHIN_STATED_PERIOD"
+            ],
+            "reason": "Ben, 2026-11-01, second read of the provisions page: \"return or destruction information, it should say 'required' and the time period.\""
+          },
+          "sub_rows_as_rows": true,
+          "qualify_readings": true,
+          "qualify_readings_reason": "Ben, 2026-11-01, second read of the provisions page: \"'shall cause' and… 'shall instruct.' Why do we get two different things? It is because there are different obligations, which should be clear.\"",
+          "sub_rows_as_rows_reason": "Ben, 2026-11-01, second read of the provisions page: \"I'd say 'representative breach' is 'company breach.' I'd have that showing at the same time.\""
         },
         {
           "table_key": "nosol-noshop-notice",
@@ -4073,10 +4147,11 @@
                 },
                 {
                   "code": "INCONSISTENT_WITH_FIDUCIARY_DUTIES",
-                  "label": "Inconsistent with fiduciary duties",
+                  "label": "Would be inconsistent with fiduciary duties",
                   "tone": "neutral",
                   "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted.",
+                  "label_reason": "Ben, 2026-11-01, second read of the provisions page: \"you need to capture the 'would' as well, not just go straight to 'inconsistent.'\""
                 },
                 {
                   "code": "REASONABLY_LIKELY_TO_BE_INCONSISTENT_WITH_FIDUCIARY_DUTIES",
@@ -4891,10 +4966,11 @@
                 },
                 {
                   "code": "INCONSISTENT_WITH_FIDUCIARY_DUTIES",
-                  "label": "Inconsistent with fiduciary duties",
+                  "label": "Would be inconsistent with fiduciary duties",
                   "tone": "neutral",
                   "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted.",
+                  "label_reason": "Ben, 2026-11-01, second read of the provisions page: \"you need to capture the 'would' as well, not just go straight to 'inconsistent.'\""
                 },
                 {
                   "code": "REASONABLY_LIKELY_TO_BE_INCONSISTENT_WITH_FIDUCIARY_DUTIES",
@@ -5348,14 +5424,6 @@
                   "REQUIRED_WITHIN_STATED_PERIOD",
                   "NONE_REQUIRED"
                 ],
-                "Remedy commitment (divestiture cap)": [
-                  "NO_REMEDY_REQUIRED",
-                  "REMEDY_UP_TO_STATED_THRESHOLD",
-                  "REMEDY_UNLESS_MATERIAL_TO_COMBINED_COMPANY",
-                  "EXPRESS_HELL_OR_HIGH_WATER",
-                  "REMEDY_ONLY_IF_CONDITIONED_ON_CLOSING",
-                  "SILENT"
-                ],
                 "Regulatory litigation": [
                   "MUST_DEFEND_INCLUDING_APPEALS",
                   "MUST_DEFEND",
@@ -5395,6 +5463,14 @@
                 "Regulatory request response": [
                   "AS_PROMPTLY_AS_PRACTICABLE",
                   "WITHIN_STATED_PERIOD"
+                ],
+                "Remedies cap": [
+                  "NO_REMEDY_REQUIRED",
+                  "REMEDY_UP_TO_STATED_THRESHOLD",
+                  "REMEDY_UNLESS_MATERIAL_TO_COMBINED_COMPANY",
+                  "EXPRESS_HELL_OR_HIGH_WATER",
+                  "REMEDY_ONLY_IF_CONDITIONED_ON_CLOSING",
+                  "SILENT"
                 ]
               },
               "fill_from": [
@@ -5409,7 +5485,15 @@
               ],
               "addition": true,
               "reason": "Ben's decision 2026-09-14 (decision 34): the Antitrust / Regulatory table is the precedent's row list with a coded Provision per row, a period where the row is a deadline, and the covenant as drafted.",
-              "guidance": "One code from this row's own list (vocabulary_by_row); several cells with distinct codes when the clause states several of them (the acts a no-shop prohibits, the events an intervening-event definition excludes); never a code from another row's list."
+              "guidance": "One code from this row's own list (vocabulary_by_row); several cells with distinct codes when the clause states several of them (the acts a no-shop prohibits, the events an intervening-event definition excludes); never a code from another row's list.",
+              "refine_by_words": [
+                {
+                  "code": "MUST_DEFEND",
+                  "when": "contest\\s+and\\s+resist|\\bappeals?\\b",
+                  "to": "MUST_DEFEND_INCLUDING_APPEALS",
+                  "reason": "Ben, 2026-11-01, second read of the provisions page: \"In regulatory litigation, you say 'must defend,' but it also says 'contest and resist.' I think that includes appeals.\""
+                }
+              ]
             },
             {
               "column_id": "period",
@@ -5447,7 +5531,7 @@
             "Efforts standard",
             "Filing deadline",
             "Other regulatory filings",
-            "Remedy commitment (divestiture cap)",
+            "Remedies cap",
             "Regulatory litigation",
             "Strategy control",
             "Consultation and participation",
@@ -5462,8 +5546,8 @@
             "EFFORTS": "Efforts standard",
             "FILING_DEADLINE": "Filing deadline",
             "FILING_OBLIGATION": "Other regulatory filings",
-            "REMEDY_LIMITATION": "Remedy commitment (divestiture cap)",
-            "REMEDY_RESTRICTION": "Remedy commitment (divestiture cap)",
+            "REMEDY_LIMITATION": "Remedies cap",
+            "REMEDY_RESTRICTION": "Remedies cap",
             "LITIGATION_OBLIGATION": "Regulatory litigation",
             "STRATEGY_CONTROL": "Strategy control",
             "CONSULTATION": "Consultation and participation",
@@ -5473,7 +5557,11 @@
             "THIRD_PARTY_CONSENTS": "Third-party consents",
             "REGULATORY_REQUEST_RESPONSE": "Regulatory request response"
           },
-          "guidance": "One row per regulatory term as the precedent names it; the row follows from the fact's subtype (subtype_rows). The Provision cell is the code from that row's list that the clause establishes (an efforts covenant that says \"reasonable best efforts\" is REASONABLE_BEST_EFFORTS; a proviso that no party need take any action not conditioned on Closing is REMEDY_ONLY_IF_CONDITIONED_ON_CLOSING); period carries the number of days of a filing deadline or response period; asDrafted shows the covenant's words. A limb of a row (the HSR filing and the foreign filings on Other regulatory filings) is a sub-item (row_detail naming the regime) with the same columns."
+          "guidance": "One row per regulatory term as the precedent names it; the row follows from the fact's subtype (subtype_rows). The Provision cell is the code from that row's list that the clause establishes (an efforts covenant that says \"reasonable best efforts\" is REASONABLE_BEST_EFFORTS; a proviso that no party need take any action not conditioned on Closing is REMEDY_ONLY_IF_CONDITIONED_ON_CLOSING); period carries the number of days of a filing deadline or response period; asDrafted shows the covenant's words. A limb of a row (the HSR filing and the foreign filings on Other regulatory filings) is a sub-item (row_detail naming the regime) with the same columns.",
+          "row_aliases": {
+            "Remedy commitment (divestiture cap)": "Remedies cap"
+          },
+          "row_aliases_reason": "Ben, 2026-11-01, second read of the provisions page: \"Change the words to 'vestiture cap' in answers regulatory to 'remedies cap.'\""
         }
       ],
       "print_pages": [],

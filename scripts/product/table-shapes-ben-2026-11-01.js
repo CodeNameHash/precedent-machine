@@ -152,6 +152,188 @@ function applyRegistrationRightsSummary(doc) {
   table.summary_only_reason = `${BEN}: "[Registration] rights. Need a summary here. You don't need it as drafted."`;
 }
 
+// ---------------------------------------------------------------------------
+// Round 2, the same day, on the page after the rules above ("Overall, this is
+// better for sure. It's not good, but it's better."). Each rule is data on
+// the shape; lib/product/table-view.js applies it to every agreement.
+// ---------------------------------------------------------------------------
+const BEN2 = 'Ben, 2026-11-01, second read of the provisions page';
+
+function allTables(doc) {
+  return doc.sections.flatMap((s) => s.tables);
+}
+
+// 8. The General Exceptions: a disclosure that qualifies other sections
+// where reasonably apparent is not "only" the section it is made against.
+// "In the disclosure letter, under representations and warranties, in the
+// general exceptions, you say, 'disclosure qualifies only the section
+// against which it's made,' and then you next say, 'disqualify: disclosure
+// qualifies other sections where reason is apparent.' You can't have the
+// 'only' right." A column's drop_when_present removes the first code from a
+// cell that also carries the second (lib/product/table-view.js
+// resolveCodeConflicts).
+function applyDisclosureOnlyConflict(doc) {
+  for (const key of ['representations-qualifiers-table', 'parent-representations-qualifiers-table']) {
+    const column = findColumn(findTable(doc, key), 'materiality');
+    column.drop_when_present = [{
+      drop: 'SECTION_SPECIFIC_ONLY',
+      when: 'CROSS_SECTION_WHERE_REASONABLY_APPARENT',
+      reason: `${BEN2}: "You can't have the 'only' right."`,
+    }];
+  }
+}
+
+// 9. Several bring-down standards on one representation read "Various".
+// "In the table of reps, where it says 'bring down standard' and there are
+// multiple standards for one thing, I would say 'various'." A column's
+// many_as is the word a cell of several distinct readings shows; the
+// readings stay behind it (lib/product/table-view.js collapseManyAs).
+function applyBringDownVarious(doc) {
+  for (const key of ['representations-qualifiers-table', 'parent-representations-qualifiers-table']) {
+    const column = findColumn(findTable(doc, key), 'bringdown');
+    column.many_as = 'Various';
+    column.many_as_reason = `${BEN2}: "where it says 'bring down standard' and there are multiple standards for one thing, I would say 'various'."`;
+  }
+}
+
+// 10. No-shop mechanics. "In no-shop… return or destruction information, it
+// should say 'required' and the time period. Same on the data room: it
+// should say 'immediately.'" A coded cell is refined by the fact's own
+// words (refine_by_words: REQUIRED read beside "immediately" is REQUIRED_
+// IMMEDIATELY) and a table with period_suffix_from_words says the stated
+// period after the answer ("Required, within two (2) business days") when
+// it has no period column of its own. "You have two different ones…
+// 'shall cause' and… 'shall instruct.' Why do we get two different things?
+// It is because there are different obligations, which should be clear."
+// and "I'd say 'representative breach' is 'company breach.' I'd have that
+// showing at the same time.": the sub-row is a row of its own
+// (sub_rows_as_rows); each reading of a cell read from different facts
+// carries that fact's summary as its qualifier (table-view qualifyReadings).
+function applyNoShopMechanics(doc) {
+  const table = findTable(doc, 'nosol-noshop-core-mechanics');
+  const provision = findColumn(table, 'provision');
+  provision.refine_by_words = [{
+    code: 'REQUIRED', when: '\\bimmediately\\b', to: 'REQUIRED_IMMEDIATELY',
+    reason: `${BEN2}: "Same on the data room: it should say 'immediately.'"`,
+  }];
+  table.period_suffix_from_words = { column_id: 'provision', codes: ['REQUIRED', 'REQUIRED_WITHIN_STATED_PERIOD'], reason: `${BEN2}: "return or destruction information, it should say 'required' and the time period."` };
+  table.sub_rows_as_rows = true;
+  table.qualify_readings = true;
+  table.qualify_readings_reason = `${BEN2}: "'shall cause' and… 'shall instruct.' Why do we get two different things? It is because there are different obligations, which should be clear."`;
+  table.sub_rows_as_rows_reason = `${BEN2}: "I'd say 'representative breach' is 'company breach.' I'd have that showing at the same time."`;
+}
+
+// 11. Antitrust. "Change the words to 'vestiture cap' in answers regulatory
+// to 'remedies cap.'" The row is renamed everywhere the shape names it and
+// the old label is kept as an alias so stored readouts still land on it.
+// "In regulatory litigation, you say 'must defend,' but it also says
+// 'contest and resist.' I think that includes appeals.": MUST_DEFEND read
+// beside "contest and resist" (or "appeal") is MUST_DEFEND_INCLUDING_APPEALS.
+const REMEDY_ROW_OLD = 'Remedy commitment (divestiture cap)';
+const REMEDY_ROW_NEW = 'Remedies cap';
+
+function renameRow(table, from, to) {
+  const swap = (value) => (value === from ? to : value);
+  if (Array.isArray(table.fixed_row_labels)) table.fixed_row_labels = table.fixed_row_labels.map(swap);
+  if (table.subtype_rows) for (const key of Object.keys(table.subtype_rows)) table.subtype_rows[key] = swap(table.subtype_rows[key]);
+  if (table.detail_labels_by_row && table.detail_labels_by_row[from]) { table.detail_labels_by_row[to] = table.detail_labels_by_row[from]; delete table.detail_labels_by_row[from]; }
+  for (const rule of table.words_rows || []) rule.row_label = swap(rule.row_label);
+  for (const column of table.columns || []) {
+    for (const field of ['code_from_words_by_row', 'vocabulary_by_row', 'detail_from_words_by_row']) {
+      const byRow = column[field];
+      if (byRow && byRow[from]) { byRow[to] = byRow[from]; delete byRow[from]; }
+    }
+  }
+  table.row_aliases = { ...(table.row_aliases || {}), [from]: to };
+}
+
+function applyAntitrust(doc) {
+  const table = findTable(doc, 'antitrust-regulatory-table');
+  renameRow(table, REMEDY_ROW_OLD, REMEDY_ROW_NEW);
+  table.row_aliases_reason = `${BEN2}: "Change the words to 'vestiture cap' in answers regulatory to 'remedies cap.'"`;
+  const provision = findColumn(table, 'provision');
+  provision.refine_by_words = [{
+    code: 'MUST_DEFEND', when: 'contest\\s+and\\s+resist|\\bappeals?\\b', to: 'MUST_DEFEND_INCLUDING_APPEALS',
+    reason: `${BEN2}: "In regulatory litigation, you say 'must defend,' but it also says 'contest and resist.' I think that includes appeals."`,
+  }];
+}
+
+// 12. Interim operating covenants. "Informative covenants: this is actually
+// a coding error. You have this control of operations by the company.
+// That's not in the general intro. That language is coming from right at
+// the end of the provision. It's boilerplate… so it's in the wrong place."
+// A fact whose own words are the control-of-operations boilerplate is not
+// an affirmative covenant row: route_by_words sends it to the table's Other
+// provisions (lib/product/table-view.js applyPageRules).
+function applyControlOfOperations(doc) {
+  for (const key of ['ioc-exceptions-affirmative-covenants', 'parent-ioc-exceptions-affirmative-covenants', 'ioc-exceptions-negative-covenants', 'parent-ioc-exceptions-negative-covenants']) {
+    const table = findTable(doc, key);
+    table.route_by_words = [{
+      when: 'complete\\s+control\\s+and\\s+supervision|(?:give|grant)s?\\s+(?:to\\s+)?(?:Parent|Buyer|Purchaser|Acquiror|Acquirer)[^.]{0,80}\\bcontrol\\b',
+      to: 'other_provisions',
+      reason: `${BEN2}: "You have this control of operations by the company. That's not in the general intro. That language is coming from right at the end of the provision. It's boilerplate… so it's in the wrong place."`,
+    }];
+  }
+}
+
+// 13. The board determination standard. "In the board determination
+// standard, you need to capture the 'would' as well, not just go straight
+// to 'inconsistent.'" The code's label, wherever the vocabulary carries it.
+function applyWouldBeInconsistent(doc) {
+  for (const table of allTables(doc)) {
+    for (const column of table.columns || []) {
+      const lists = [column.vocabulary, ...Object.values(column.vocabulary_by_row || {})].filter(Array.isArray);
+      for (const list of lists) {
+        for (const entry of list) {
+          if (entry.code === 'INCONSISTENT_WITH_FIDUCIARY_DUTIES' && entry.label === 'Inconsistent with fiduciary duties') {
+            entry.label = 'Would be inconsistent with fiduciary duties';
+            entry.label_reason = `${BEN2}: "you need to capture the 'would' as well, not just go straight to 'inconsistent.'"`;
+          }
+        }
+      }
+    }
+  }
+}
+
+// 14. Registration rights. "'Registration rights,' I sort of hide as an
+// other thing." The table's facts are its Other provisions block, nothing
+// else (supersedes rule 7's summary_only).
+function applyRegistrationRightsAsOther(doc) {
+  const table = findTable(doc, 'consideration-registration-rights');
+  delete table.summary_only;
+  delete table.summary_only_reason;
+  table.rows_as_other_provisions = { label: 'Registration rights', reason: `${BEN2}: "'Registration rights,' I sort of hide as an other thing."` };
+}
+
+// 15. The consideration type with its components laid out under it. "As I
+// said before, I'd rather have 'consideration type' and then, immediately
+// under it, have the components laid out. I think that would be much
+// better, maybe as a subrow or something" and, on Skechers, "I still think
+// this consideration thing sucks… think visually about how to make this
+// mix selection, cast selection thing clearer. There are two options."
+// embed_components: the per-share rows (grouped by election option) become
+// sub-lines of the type cell; the per-share and options tables go behind
+// "Show specifics" (lib/product/table-view.js embedConsiderationOptions).
+function applyConsiderationEmbed(doc) {
+  const table = findTable(doc, 'consideration-structure');
+  table.type_from_components.embed_components = true;
+  table.type_from_components.embed_reason = `${BEN2}: "I'd rather have 'consideration type' and then, immediately under it, have the components laid out ... maybe as a subrow or something"; "There are two options."`;
+}
+
+// 16. Election mechanics. "'Election mechanics' really suck… completely new
+// look at that sort of ab initio." First step of that look: the table had
+// no term column, so its rows (Election caps, Election deadline,
+// Oversubscription / proration, If no election) ran together as an unnamed
+// list of sentences. Each row is now named; the coded rows (election form,
+// deadline, revocation, non-election default, proration cap, allocation
+// timing) are the next piece of shape work, recorded as not done in plan
+// finding (309).
+function applyElectionMechanicsTerms(doc) {
+  const table = findTable(doc, 'consideration-hero-election-mechanics');
+  table.term_column = { header: 'Term', source: 'subject' };
+  table.term_column_reason = `${BEN2}: "'Election mechanics' really suck… completely new look at that sort of ab initio." The rows are named; the coded rows are the next piece.`;
+}
+
 function applyBen20261101(doc) {
   applySectionOrder(doc);
   applyStructureHeadline(doc);
@@ -160,6 +342,15 @@ function applyBen20261101(doc) {
   applyVotesAnchor(doc);
   applyExceptionsTable(doc);
   applyRegistrationRightsSummary(doc);
+  applyDisclosureOnlyConflict(doc);
+  applyBringDownVarious(doc);
+  applyNoShopMechanics(doc);
+  applyAntitrust(doc);
+  applyControlOfOperations(doc);
+  applyWouldBeInconsistent(doc);
+  applyRegistrationRightsAsOther(doc);
+  applyConsiderationEmbed(doc);
+  applyElectionMechanicsTerms(doc);
 }
 
 module.exports = { applyBen20261101 };

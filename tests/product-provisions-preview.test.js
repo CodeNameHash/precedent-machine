@@ -122,10 +122,12 @@ test('ProvisionsPreviewBody renders the rail, the tables and no decision control
 // font sizes raised by 1.3, the title and rail width unchanged.
 test('the page header is the Storylines header with the agreement date, SEC source and generation', () => {
   const html = renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: workspace(), runId: 'run-1' }));
-  assert.match(html, /<div class="pw-provisions flex min-h-screen bg-white text-\[#03203D\]" style="--font-sans:&#x27;Inter Tight&#x27;[^"]*--font-serif:&#x27;Source Serif 4&#x27;[^"]*" data-testid="provisions-page"/);
+  // Ben, 2026-11-01, round 2: "I would use the look back font for
+  // everything on the site": one typeface, --font-serif is the Inter stack.
+  assert.match(html, /<div class="pw-provisions flex min-h-screen bg-white text-\[#03203D\]" style="--font-sans:&#x27;Inter Tight&#x27;[^"]*--font-serif:&#x27;Inter Tight&#x27;[^"]*" data-testid="provisions-page"/);
   assert.match(html, /<header class="mb-\[16px\]" data-testid="preview-header"/);
-  assert.match(html, /<p class="font-ui text-\[9\.5px\] uppercase tracking-\[0\.14em\] text-\[#6B7785\]">Lawyer preview<\/p>/);
-  assert.match(html, /<h1 class="mt-\[8px\] font-sans text-\[30px\] font-bold leading-\[\.98\] tracking-\[-.05em\] text-\[#03203D\] md:text-\[38px\]">Parent Inc\. \/ Target Corp\.<\/h1>/);
+  assert.match(html, /<p class="font-ui text-\[12px\] font-bold uppercase tracking-\[0\.1em\] text-\[#0B3D71\]">Lawyer preview<\/p>/);
+  assert.match(html, /<h1 class="mt-\[8px\] font-sans text-\[30px\] font-bold leading-\[\.98\] tracking-\[-.05em\] text-\[#03203D\]" style="font-size:clamp\(30px, 3\.2vw, 44px\)">Parent Inc\. \/ Target Corp\.<\/h1>/);
   assert.match(html, /data-testid="preview-badge"[^>]*>Draft</);
   // Ben, 2026-09-14: the metadata line and the facts count are gone.
   assert.doesNotMatch(html, /Date: <span/);
@@ -133,7 +135,7 @@ test('the page header is the Storylines header with the agreement date, SEC sour
   assert.doesNotMatch(html, /Generation: <span/);
   assert.doesNotMatch(html, /data-testid="preview-counts"/);
   assert.match(html, /<div class="mt-\[16px\] h-\[10px\] w-full bg-\[#B9C8DA\]" data-testid="preview-rule"/);
-  assert.match(html, /<nav[^>]*class="[^"]*border-\[#DCE3E1\][^"]*bg-white[^"]*" style="width:264px;padding:22px" data-testid="provision-rail"/);
+  assert.match(html, /<nav[^>]*class="[^"]*bg-\[#03203D\][^"]*" style="top:58px;height:calc\(100vh - 58px\);width:220px;padding:20px 16px" data-testid="provision-rail"/);
   assert.doesNotMatch(html, /shadow/);
   assert.doesNotMatch(html, /font-display/);
 });

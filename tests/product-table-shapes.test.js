@@ -607,7 +607,12 @@ test('Decision 34: no fact table carries a free-text column that is not the fact
 test('Decision 34: Antitrust / Regulatory is the Envestnet row list, each row named from the subtype with its own Provision codes', () => {
   const table = findTableV3(findSectionV3('antitrust-regulatory'), 'antitrust-regulatory-table');
   assert.equal(table.rows_are, 'fixed list');
-  assert.deepEqual(table.fixed_row_labels.slice(0, 7), ['Efforts standard', 'Filing deadline', 'Other regulatory filings', 'Remedy commitment (divestiture cap)', 'Regulatory litigation', 'Strategy control', 'Consultation and participation']);
+  // Ben, 2026-11-01, round 2: "Change the words to 'vestiture cap' in answers
+  // regulatory to 'remedies cap.'" The old label stays as an alias for
+  // stored readouts.
+  assert.deepEqual(table.fixed_row_labels.slice(0, 7), ['Efforts standard', 'Filing deadline', 'Other regulatory filings', 'Remedies cap', 'Regulatory litigation', 'Strategy control', 'Consultation and participation']);
+  assert.deepEqual(table.row_aliases, { 'Remedy commitment (divestiture cap)': 'Remedies cap' });
+  assert.equal(table.subtype_rows.REMEDY_LIMITATION, 'Remedies cap');
   assert.equal(table.subtype_rows.EFFORTS, 'Efforts standard');
   const provision = table.columns.find((c) => c.column_id === 'provision');
   assert.deepEqual(provision.vocabulary_by_row['Efforts standard'], ['REASONABLE_BEST_EFFORTS', 'BEST_EFFORTS', 'COMMERCIALLY_REASONABLE_EFFORTS', 'HELL_OR_HIGH_WATER']);

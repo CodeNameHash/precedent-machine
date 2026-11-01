@@ -54,6 +54,19 @@ const TINTS = {
 const TH = 'border-b border-[#03203D] px-[10px] py-[8px] text-left text-[10.5px] font-ui font-medium uppercase tracking-[0.12em] text-[#6B7785]';
 const TD = 'px-[10px] py-[10px] align-top';
 const ROW = 'border-b border-[#DCE3E1] last:border-0';
+// Ben, 2026-11-01: "The widths of columns vary a lot… more consistent widths
+// throughout." Fixed layout: the term column 26%, the specifics column (display
+// fact_text) 34% when shown, the other columns equal shares of what is left.
+const TERM_WIDTH = 26;
+const SPECIFICS_WIDTH = 34;
+function columnWidths(columns, hasTerm) {
+  const termShare = hasTerm ? TERM_WIDTH : 0;
+  const specifics = columns.filter((column) => column.display === 'fact_text').length;
+  const others = columns.length - specifics;
+  const specificsShare = others > 0 ? SPECIFICS_WIDTH : (100 - termShare) / Math.max(specifics, 1);
+  const otherShare = others > 0 ? (100 - termShare - specifics * specificsShare) / others : 0;
+  return columns.map((column) => (column.display === 'fact_text' ? specificsShare : otherShare));
+}
 const TEXT = 'text-[14px] leading-relaxed text-[#33475E]';
 const SUB_TEXT = 'text-[13px] leading-relaxed text-[#33475E]';
 const SUBJECT = 'font-ui text-[14px] font-semibold text-[#03203D]';
@@ -122,7 +135,7 @@ function Cell({ cell, tableKey, rowIndex, subIndex = null, selected, onSelect })
     return (
       <span className={stacked ? 'flex flex-col gap-[1px]' : 'inline-flex flex-wrap gap-[2.5px]'} data-testid="table-multi">
         {cell.values.map((value, index) => (
-          <Cell key={`${value.label}-${index}`} cell={{ ...value, column_id: cell.column_id, ...(index === cell.values.length - 1 && cell.suffix ? { suffix: cell.suffix } : {}) }} tableKey={tableKey} rowIndex={rowIndex} subIndex={subIndex} selected={selected} onSelect={onSelect} />
+          <Cell key={`${value.label}-${index}`} cell={{ ...value, column_id: cell.column_id, ...(index === cell.values.length - 1 && cell.suffix && !cell.values.some((candidate) => candidate.suffix) ? { suffix: cell.suffix } : {}) }} tableKey={tableKey} rowIndex={rowIndex} subIndex={subIndex} selected={selected} onSelect={onSelect} />
         ))}
       </span>
     );
@@ -145,8 +158,19 @@ function Cell({ cell, tableKey, rowIndex, subIndex = null, selected, onSelect })
   // read as the agreement's fragments rather than as answers.
   // A suffix_of column follows the answer ("$135.11 per share of Company
   // Common Stock"; "14 calendar days after the agreement date").
-  const suffix = cell.suffix && cell.suffix.label ? ` ${cell.suffix.label}` : '';
+  // A suffix read from the fact's words begins with its own punctuation
+  // ("Required, within two (2) business days").
+  const suffix = cell.suffix && cell.suffix.label ? (cell.suffix.label.startsWith(',') ? cell.suffix.label : ` ${cell.suffix.label}`) : '';
   const shown = `${cell.label}${suffix}`;
+  // Ben, 2026-11-01, round 2: "In subsequent match period, you can't have 2
+  // business days and 3 business days"; "'shall cause' and… 'shall
+  // instruct.' Why do we get two different things? It is because there are
+  // different obligations, which should be clear." A reading of a cell read
+  // from several facts says, under it, what its fact says.
+  const qualifier = cell.qualifier ? <span className="block font-ui text-[11px] leading-snug text-[#6B7785]" data-testid="reading-qualifier">{cell.qualifier}</span> : null;
+  // "where it says 'bring down standard' and there are multiple standards
+  // for one thing, I would say 'various'": the readings ride on the title.
+  const manyTitle = Array.isArray(cell.many) ? cell.many.map((value) => value.label).join('; ') : null;
   // The selected pill is outlined in the accent, as the selected card in
   // Deal Storylines is (Ben, 2026-09-14: "I prefer this side bar behavior").
   const selectedClass = selected ? 'ring-2 ring-accent' : '';
@@ -156,8 +180,8 @@ function Cell({ cell, tableKey, rowIndex, subIndex = null, selected, onSelect })
   // the MAE definition summary which you can click through to get the full
   // definition". No inline "definition" link: the cell carries its
   // link_section on the selection and the sidebar pins the summary.
-  if (!canSelect) return <span className={baseClass} data-testid={asWords ? 'table-words' : undefined} data-code={asWords ? cell.code : undefined}>{shown}</span>;
-  const title = cell.defaulted ? 'Not stated for this row; shown as the column\'s default'
+  if (!canSelect) return <span className={baseClass} data-testid={asWords ? 'table-words' : undefined} data-code={asWords ? cell.code : undefined} title={manyTitle || undefined}>{shown}{qualifier}</span>;
+  const title = manyTitle ? manyTitle : cell.defaulted ? 'Not stated for this row; shown as the column\'s default'
     : (cell.reparsed ? 'Re-read from the cited words; the stored number differed'
       : (cell.derived === 'from_components' ? 'Read from the per-share forms below; no fact codes the type'
         : (asWords && cell.words ? `Read from: ${cell.words}` : undefined)));
@@ -181,8 +205,9 @@ function Cell({ cell, tableKey, rowIndex, subIndex = null, selected, onSelect })
       data-defaulted={cell.defaulted || undefined}
       data-reparsed={cell.reparsed || undefined}
       data-code={asWords ? cell.code : undefined}
+      data-many={manyTitle ? 'true' : undefined}
     >
-      {shown}
+      {shown}{qualifier}
     </button>
   );
 }
@@ -292,8 +317,9 @@ function AttributeGrid({ table, selection, onSelect }) {
   const lines = attributeLines(table, row);
   return (
     <div className="overflow-x-auto">
-      <table className="w-full border-collapse text-left" data-testid="provision-table" data-table-key={table.table_key} data-layout="attribute-grid">
+      <table className="w-full table-fixed border-collapse text-left" data-testid="provision-table" data-table-key={table.table_key} data-layout="attribute-grid">
         <GroupHeader table={table} />
+        <colgroup><col style={{ width: `${TERM_WIDTH}%` }} /><col /></colgroup>
         <thead>
           <tr>
             <th className={`w-[111.5px] ${TH}`}>Term</th>
@@ -304,7 +330,32 @@ function AttributeGrid({ table, selection, onSelect }) {
           {lines.map((column) => {
             const cell = row.cells.find((candidate) => candidate.column_id === column.column_id);
             const backing = row.backing_facts.filter((entry) => (cell?.fact_ids || []).includes(entry.fact_id));
-            return (
+            // Ben, 2026-11-01, round 2: "I'd rather have 'consideration
+            // type' and then, immediately under it, have the components
+            // laid out ... maybe as a subrow or something"; "There are two
+            // options." The type cell's options are sub-rows right under
+            // it: on an election one per option, named ("Mixed election",
+            // "Cash election"), each saying what a share receives; on a
+            // plain package one per component, named by its form.
+            const options = Array.isArray(cell?.options) ? cell.options : [];
+            const optionRows = options.map((option, index) => (
+              <tr key={`${column.column_id}-option-${index}`} className={`${ROW} ${rowSelected && selection?.columnId === column.column_id ? 'bg-accentDim' : ''}`} data-testid="attribute-option" data-option-kind={cell.options_kind}>
+                <td className={`${TD} pl-[18.5px]`}>
+                  <span className="font-ui text-[13px] font-medium text-[#33475E]">{cell.options_kind === 'election' && option.label ? `Option: ${option.label}` : (option.label || 'Every option')}</span>
+                </td>
+                <td className={TD}>
+                  <button
+                    type="button"
+                    data-testid="attribute-option-text"
+                    onClick={() => onSelect({ tableKey: table.table_key, rowIndex: 0, subIndex: null, columnId: column.column_id, componentId: (option.component_ids || [])[0] || null, componentIds: option.component_ids || [], factId: option.fact_id || (option.fact_ids || [])[0] || null })}
+                    className={`text-left font-ui ${TEXT} underline-offset-2 hover:underline`}
+                  >
+                    {option.text}
+                  </button>
+                </td>
+              </tr>
+            ));
+            return [
               <tr key={column.column_id} className={ROW} data-testid="attribute-row" data-column-id={column.column_id}>
                 <td className={`${TD} ${SUBJECT}`}>
                   <AttributeTerm header={column.header} backing={backing} tableKey={table.table_key} onSelect={onSelect} />
@@ -314,8 +365,9 @@ function AttributeGrid({ table, selection, onSelect }) {
                     <Cell cell={cell} tableKey={table.table_key} rowIndex={0} selected={!!rowSelected && selection?.columnId === column.column_id} onSelect={onSelect} />
                   ) : <span className="text-inkFaint" data-testid="table-dash" aria-hidden="true">—</span>}
                 </td>
-              </tr>
-            );
+              </tr>,
+              ...optionRows,
+            ];
           })}
         </tbody>
       </table>
@@ -580,7 +632,7 @@ function RowGroup({ table, row, rowIndex, selection, onSelect, initialOpen = fal
           coded says what its fact says, across the columns. */}
       {!sub && entry.summary_fallback ? (
         <td className={`${TD} font-body ${TEXT}`} colSpan={shownColumns.length} data-testid="row-summary-fallback">{entry.summary_fallback}</td>
-      ) : entry.cells.filter((cell) => shownIds.has(cell.column_id)).map((cell, cellIndex) => (
+      ) : shownColumns.map((column) => entry.cells.find((candidate) => candidate.column_id === column.column_id) || { column_id: column.column_id, kind: 'dash', label: null, tone: null, component_ids: [], fact_ids: [] }).map((cell, cellIndex) => (
         <td key={cell.column_id} className={`${TD} ${sub ? SUB_TEXT : ''}`}>
           <Cell
             cell={cell}
@@ -646,8 +698,12 @@ function Table({ table, selection, onSelect, initialSubRowsOpen = false }) {
   };
   return (
     <div className="overflow-x-auto">
-      <table className="w-full border-collapse text-left" data-testid="provision-table" data-table-key={table.table_key}>
+      <table className="w-full table-fixed border-collapse text-left" data-testid="provision-table" data-table-key={table.table_key}>
         <GroupHeader table={table} />
+        <colgroup>
+          {table.term_column ? <col style={{ width: `${TERM_WIDTH}%` }} /> : null}
+          {columnWidths(columns, !!table.term_column).map((width, index) => <col key={columns[index].column_id} style={{ width: `${width}%` }} />)}
+        </colgroup>
         {table.collapsible_rows ? (
           <thead>
             <tr>
@@ -860,9 +916,12 @@ export default function ProvisionTables({
               {isCollapsed ? null : (
                 <div className={CARD_BODY}>
                   <div className="space-y-[18.5px]">
-                    {section.tables.map((table) => (
-                      <div key={table.table_key}>
-                        <Table table={table} selection={selection} onSelect={setSelection} initialSubRowsOpen={initialSubRowsOpen} />
+                    {/* Ben, 2026-11-01, round 2: a table embedded under the
+                        consideration type (the per-share and election
+                        options tables) is shown only with the specifics. */}
+                    {section.tables.filter((table) => !table.embedded_in || showSpecifics).map((table) => (
+                      <div key={table.table_key} data-embedded={table.embedded_in || undefined}>
+                        {table.other_provisions_only ? null : <Table table={table} selection={selection} onSelect={setSelection} initialSubRowsOpen={initialSubRowsOpen} />}
                         {table.other_provisions?.length ? (
                           <OtherProvisions groups={table.other_provisions} tableKey={table.table_key} onSelect={setSelection} label={table.other_provisions_label || 'Other provisions'} />
                         ) : null}

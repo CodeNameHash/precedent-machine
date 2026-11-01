@@ -34,6 +34,19 @@ scripts/product/table-shapes-ben-2026-11-01.js, applied by the pass-3
 builder: edit the builder's modules, never the committed JSON, which the
 shapes test regenerates.
 
+Update, 2026-11-01, later: Ben's second read is finding (309): the
+consideration options under the type line, the Disclosure Letter "only"
+conflict, "Various" bring-downs, one typeface, fixed column widths, the
+control-of-operations routing, the no-shop period and "immediately" rules,
+readings qualified by their facts, the renamed "Remedies cap" row with an
+alias for stored readouts, registration rights as an Other provisions
+block, the PwBar on the provisions page, and the navy Storylines rail. The
+navigation, index, compare and "how common" work is a package for Ben's
+DeepSeek agent (branch deepseek/nav-index-compare-20261101; it must not
+touch provisions.js, ProvisionTables, EvidenceSidebar, ProvisionRail or
+table-view.js). Not done: the election mechanics redesign and the evidence
+sidebar redesign ((309), "Not done").
+
 ## 0. Update, 2026-10-24 08:30 EDT (read this first; sections 2 and 6 below are superseded where they disagree)
 
 Two deals have now run end to end. Findings (237) to (245) carry the evidence.

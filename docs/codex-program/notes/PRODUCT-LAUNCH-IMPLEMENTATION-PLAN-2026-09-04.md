@@ -12991,13 +12991,16 @@ Complete all mechanical work before asking the smallest exact question.
 
 Update, 2026-11-01: the manager now runs on Claude Code Remote with the
 Vercel and Supabase MCP tools (the DeepSeek paragraph below does not apply
-to it). Read findings (303) to (308) before the prompt: three deals are
-extracted on the Sonnet default, Ben's read of the page is applied as rules
-in (308), and the table shapes are edited through
+to it). Read findings (303) to (309) before the prompt: three deals are
+extracted on the Sonnet default, Ben's two reads of the page are applied as
+rules in (308) and (309), the page shell follows the Deal Storylines
+storyline page ((309)), and the table shapes are edited through
 scripts/product/table-shapes-ben-2026-11-01.js and the pass-3 builder,
-never the committed JSON. Waiting on Ben: his read of the pages after
-(308), the two questions put to him there, the compute upgrade (micro to
-small), and which deals to publish.
+never the committed JSON. Ben's DeepSeek agent holds the index / compare /
+how-common work package ((309)); its branch is
+deepseek/nav-index-compare-20261101. Waiting on Ben: his read of the pages
+after (309), the early-termination question from (308), the compute
+upgrade (micro to small), and which deals to publish.
 
 Current wording, 2026-10-24. Superseded: the 2026-09-04 wording (a Sol
 implementer at Phase 0) and the 2026-10-23 wording (a manager on Claude Code
@@ -13414,3 +13417,134 @@ three deals' table views were rebuilt and read line by line before and
 after (scratchpad dumps); the page was rendered and screenshotted for
 Apogee and Skechers. Section 9 check: `npm run test:active`, result
 recorded in the commit.
+
+**(309) 2026-11-01: Ben's second read of the provisions page, applied as
+rules; the page shell set to the Deal Storylines language.** Ben, on the
+page after (308): "Overall, this is better for sure. It's not good, but
+it's better." He then pointed at the Deal Storylines storyline page
+(Inphi / Marvell, the timeline view) as the visual reference: "generally
+poor visual design. Go and look at the latest preview deployment of deal
+storylines. Your left-hand sidebar should match that visually, and your
+visual language should be more similar." As in (308), every change is a
+rule in the shapes (scripts/product/table-shapes-ben-2026-11-01.js, round
+2 functions), in the view (lib/product/table-view.js) or in the page
+components, and applies to every agreement. His words, and what each
+became:
+
+- "As I said before, I'd rather have 'consideration type' and then,
+  immediately under it, have the components laid out ... maybe as a subrow
+  or something" and, on Skechers, "I still think this consideration thing
+  sucks… think visually about how to make this mix selection, cast
+  selection thing clearer. There are two options." `embed_components` on
+  the type rule: the per-share rows become sub-rows of the Consideration
+  type line (embedConsiderationOptions). On an election, one per option:
+  "Option: Mixed election — $57 in cash and one Parent Unit, per share of
+  Company Common Stock" / "Option: Cash election — $63 in cash, per share
+  of Company Common Stock"; QXO, whose rows carry no option words, reads
+  one option per form (Cash election $505; Stock election 20.2 shares of
+  Parent stock). A plain package is one line per component ("Cash —
+  $135.11 per share of Company Common Stock"). The per-share and election
+  options tables are embedded (shown behind "Show specifics"); their data
+  is unchanged.
+- "In the disclosure letter ... you say, 'disclosure qualifies only the
+  section against which it's made,' and then you next say ... 'disclosure
+  qualifies other sections where reason is apparent.' You can't have the
+  'only' right." `drop_when_present` on the General Exceptions column:
+  SECTION_SPECIFIC_ONLY is dropped from a cell that also carries
+  CROSS_SECTION_WHERE_REASONABLY_APPARENT (resolveCodeConflicts; the drop
+  is recorded as `superseded`).
+- "where it says 'bring down standard' and there are multiple standards
+  for one thing, I would say 'various'." `many_as: 'Various'` on the
+  bring-down column: a cell of several distinct standards reads Various,
+  the standards behind it on the title (collapseManyAs).
+- "You see how the look back font is different than the bring down
+  standards and qualifiers font? I would use the look back font for
+  everything on the site." The page root sets --font-serif to the same
+  Inter Tight stack as --font-sans; one typeface under the page.
+- "The widths of columns vary a lot… more consistent widths throughout."
+  Every table is table-layout fixed: the term column 26%, the specifics
+  column 34% when shown, the rest shared equally.
+- "You have this control of operations by the company. That's not in the
+  general intro. That language is coming from right at the end of the
+  provision. It's boilerplate… so it's in the wrong place." `route_by_words`
+  on both affirmative-covenant tables: a fact whose words are the
+  control-of-operations boilerplate is the table's Other provisions, never
+  a covenant row (applyPageRules; the stored fact is untouched).
+- "In no-shop… return or destruction information, it should say 'required'
+  and the time period. Same on the data room: it should say
+  'immediately.'" `refine_by_words` (REQUIRED beside "immediately" is
+  REQUIRED_IMMEDIATELY) and `period_suffix_from_words` ("Required, within
+  two (2) business days", the period read from the fact's own words where
+  the table has no period column).
+- "'shall cause' and… 'shall instruct.' Why do we get two different things?
+  It is because there are different obligations, which should be clear."
+  `qualify_readings`: a cell whose readings come each from a different
+  fact says, under each, what that fact says (qualifyReadings; on every
+  value column, and on the vocabulary columns of a table so marked).
+- "I'd say 'representative breach' is 'company breach.' I'd have that
+  showing at the same time." `sub_rows_as_rows` on the no-shop mechanics
+  table: the sub-item is a row of its own, open, at the same level.
+- "In notice, why is the notice period 24 hours in the left-hand column?
+  Why isn't it in the answer on the right?" A folded one-line column that
+  finds no empty answer cell joins the line's first filled answer cell as
+  a further reading ("Required within a stated period" / "24 hours"; the
+  capitalization authorised count "800,000,000" named Authorised under
+  it); it trails the subject only when the line has no answer cell.
+- "In the board determination standard, you need to capture the 'would'
+  as well, not just go straight to 'inconsistent.'" The code's label is
+  "Would be inconsistent with fiduciary duties" wherever the vocabulary
+  carries it.
+- "In subsequent match period, you can't have 2 business days and 3
+  business days… look at why you have an inconsistent thing there." Looked
+  at: two facts, the three-business-day period for a new Superior Proposal
+  and the two-business-day extension after amended materials; both are
+  right and the cell now says which is which (qualifyReadings).
+- "Change the words to 'vestiture cap' in answers regulatory to 'remedies
+  cap.'" The row is "Remedies cap"; `row_aliases` keeps the old label so
+  stored readouts land on it.
+- "In regulatory litigation, you say 'must defend,' but it also says
+  'contest and resist.' I think that includes appeals." `refine_by_words`:
+  MUST_DEFEND beside "contest and resist" (or "appeal") is
+  MUST_DEFEND_INCLUDING_APPEALS. This is Ben's reading, applied as he gave
+  it.
+- "The thresholds and exceptions: the formatting here is just super
+  weird." The as-drafted (specifics) column is always the last column of a
+  table, so Threshold and Exceptions sit beside the restriction.
+- "'Registration rights,' I sort of hide as an other thing."
+  `rows_as_other_provisions`: the table is its "Registration rights" Other
+  provisions block under Consideration, nothing else (supersedes (308)'s
+  summary_only).
+- "From this page, it shouldn't say 'back to review.' The top bar should
+  be able to take you back to the index, and it should also be able to
+  take you to a compare page." The provisions page carries the PwBar
+  (Index / Compare / Review); the back link is gone.
+- "Your left-hand sidebar should match that visually, and your visual
+  language should be more similar." The rail is the Storylines rail: a
+  full-height navy column, the deal name in white, white 13px items
+  divided by hairlines, the active item a white block; the header's
+  eyebrow is the 12px blue uppercase eyebrow.
+
+Handed to Ben's DeepSeek agent as a work package (the prompt given to Ben
+in the reply of 2026-11-01; branch deepseek/nav-index-compare-20261101 off
+the product branch; it touches none of the files above): "The whole
+compare page is missing. The navigation's missing. There should be an index
+page with all the deals on it, and a compare page where you can pick things
+to compare." and "I wanted to be able to see the other compare results,
+like 'How common is this versus other deals?'… a piece we're missing." (an
+index of every analysed run, a compare page over the built table views,
+read-only APIs, a HowCommon component the sidebar will mount).
+
+Partly done: "'Election mechanics' really suck… completely new look at
+that sort of ab initio". The table had no term column, so its four rows
+(Election caps, Election deadline, Oversubscription / proration, If no
+election) ran together as an unnamed list of sentences; each row is now
+named (`term_column` on the shape). Not done: the coded rows for the
+election form, deadline, revocation, non-election default, proration cap
+and allocation timing, which need the extraction to code those facts and
+are the next piece of shape work. Not done, said plainly: "the right
+side's meant to be redesigned" (the evidence
+sidebar is unchanged until the HowCommon piece lands). The three deals'
+table views were rebuilt and read line by line (scratchpad dumps
+tables4-*); the page was rendered and screenshotted for Apogee and
+Skechers, section by section. Section 9 check: `npm run test:active`,
+result recorded in the commit.

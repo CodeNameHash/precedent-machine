@@ -901,9 +901,15 @@ test('capitalisation facts without a readout fill the capitalization table by se
   const rowOf = (subject) => table.rows.find((row) => row.subject === subject);
   assert.deepEqual(table.rows.map((row) => row.subject), ['Common Stock', 'Company Stock Options', 'ESPP']);
   const common = rowOf('Common Stock');
-  assert.deepEqual(common.trailing_details.map((detail) => [detail.column_id, detail.label]), [['authorised', 'Authorised 800,000,000']], 'the first count names the common stock');
-  assert.deepEqual(common.trailing_details[0].cell.component_ids, ['a-common']);
-  assert.equal(cellOf(common, 'issued').label, '105,278,627');
+  // Ben, 2026-11-01, round 2 ("why is the notice period 24 hours in the
+  // left-hand column? Why isn't it in the answer on the right?"): the
+  // authorised count joins the row's first answer cell as a second
+  // reading, named by its column.
+  assert.equal(common.trailing_details, undefined);
+  const issuedCell = cellOf(common, 'issued');
+  assert.equal(issuedCell.label, '105,278,627');
+  assert.deepEqual(issuedCell.values.map((value) => [value.label, value.folded_from_column || null, value.qualifier || null]), [['105,278,627', null, null], ['800,000,000', 'authorised', 'Authorised']], 'the first count names the common stock');
+  assert.deepEqual(issuedCell.values[1].component_ids, ['a-common']);
   assert.equal(cellOf(common, 'reserved').label, '6,331,920', 'the plan reserve, its ESPP exception not naming the row');
   assert.equal(cellOf(common, 'asOf').label, 'September 18, 2025', 'the Measurement Date inherited from the chapeau');
   assert.equal(cellOf(common, 'validIssuance').label, 'Present');
@@ -1409,15 +1415,20 @@ test('applyColumnRules folds a one-line column into a trailing detail, hides pil
     ],
   };
   const out = applyColumnRules(table, shapeColumns);
-  // (a) the period column, filled on one line of three, is that line's detail; the subject names the column, so the header is not repeated.
+  // (a) the period column, filled on one line of three, folds; Ben,
+  // 2026-11-01, round 2: it joins that line's answer cell as a further
+  // reading ("why is the notice period 24 hours in the left-hand column?
+  // Why isn't it in the answer on the right?"); the subject names the
+  // column, so no qualifier repeats it.
   assert.deepEqual(out.columns.map((column) => column.column_id), ['provision', 'asDrafted']);
-  assert.deepEqual(out.rows[1].trailing_details.map((detail) => [detail.column_id, detail.header, detail.label]), [['period', 'Period', '48 hours']]);
+  assert.equal(out.rows[1].trailing_details, undefined);
+  assert.deepEqual(out.rows[1].cells.find((cell) => cell.column_id === 'provision').values.map((value) => [value.label, value.folded_from_column || null, value.qualifier || null]), [['Required within a stated period', null, null], ['Required promptly', null, null], ['48 hours', 'period', null]]);
   assert.equal(out.rows[0].trailing_details, undefined);
   // (b) Ben, 2026-11-01: the as-drafted summary is behind "Show specifics"
   // when the table has coded answers, so it no longer stands in for a pill:
   // "Required promptly" stays as an answer, nothing is stated_in_summary.
   const notice = out.rows[1].cells.find((cell) => cell.column_id === 'provision');
-  assert.deepEqual(notice.values.map((value) => value.code), ['REQUIRED_WITHIN_STATED_PERIOD', 'REQUIRED_PROMPTLY']);
+  assert.deepEqual(notice.values.filter((value) => !value.folded_from_column).map((value) => value.code), ['REQUIRED_WITHIN_STATED_PERIOD', 'REQUIRED_PROMPTLY']);
   assert.equal(notice.stated_in_summary, undefined);
   const updates = out.rows[2].cells.find((cell) => cell.column_id === 'provision');
   assert.equal(updates.label, 'Required promptly');
@@ -2325,24 +2336,16 @@ test('registration-rights covenants gather on the one Registration rights line u
   assert.ok(consideration, 'the registration rights show under Consideration');
   const table = consideration.tables[consideration.tables.length - 1];
   assert.equal(table.table_key, 'consideration-registration-rights');
-  assert.deepEqual(table.rows.map((row) => [row.subject, row.backing_facts.length]), [['Registration rights', 16]]);
-  // Ben, 2026-10-18 (plan finding (166)): "are these from a reg rights
-  // agreement? I wouldn't go into anywhere near this depth in this
-  // product": one line, the facts behind it, the model's own details
-  // ("Survival", "Legend removal") dropped too.
-  assert.equal(table.rows[0].sub_rows, undefined);
+  // Ben, 2026-11-01, round 2: "'Registration rights,' I sort of hide as an
+  // other thing." The table is its Other provisions block, no rows.
+  assert.deepEqual(table.rows, []);
+  assert.equal(table.other_provisions_label, 'Registration rights');
+  assert.equal(table.other_provisions_only, true);
+  assert.equal(table.other_provisions.reduce((count, group) => count + group.branches.length, 0), 16);
+  // Ben, 2026-10-18 (plan finding (166)): "I wouldn't go into anywhere near
+  // this depth in this product": the model's own details ("Survival",
+  // "Legend removal") never become rows anywhere.
   assert.equal(view.sections.flatMap((section) => section.tables).some((candidate) => candidate.rows.some((row) => ['Registration rights indemnification', 'Registration expenses', 'Access to information', 'Stock exchange listing'].includes(row.subject))), false);
-  // (f): the several indemnity's obligor is the stockholders, in their words.
-  const obligor = table.rows[0].cells.find((cell) => cell.column_id === 'obligor');
-  const obligorValues = obligor.values || [obligor];
-  assert.ok(obligorValues.some((value) => value.code === 'OTHER_PARTY' && value.label === 'Each Specified Stockholder'), JSON.stringify(obligorValues));
-  assert.ok(obligorValues.some((value) => value.code === 'PARENT'), 'Parent\'s indemnity keeps its obligor');
-  // (g) Ben: "Ok on ETA on covenants": the 424(b)(7) filing's trigger and
-  // outside date in By when, from its TRIGGER and PERIOD components.
-  const byWhen = table.rows[0].cells.find((cell) => cell.column_id === 'byWhen');
-  const byWhenValues = byWhen.values || [byWhen];
-  assert.ok(byWhenValues.some((value) => value.label === 'Promptly following the Closing Date (and in any event no later than two Business Days thereafter)' && value.derived === 'fill_from_components'), JSON.stringify(byWhenValues));
-  assert.ok(table.columns.some((column) => column.column_id === 'byWhen'), 'By when shows when a row fills it');
   // A covenants table no row of which states a deadline hides By when.
   assert.ok((covenantsTable.hidden_columns || []).some((column) => column.column_id === 'byWhen'), JSON.stringify(covenantsTable.hidden_columns));
 });
@@ -2385,27 +2388,15 @@ test('NCS 5.17 as stored: 29 registration-rights covenants gather on the one Reg
   const consideration = view.sections.find((section) => section.section_key === 'consideration-hero');
   const table = consideration.tables[consideration.tables.length - 1];
   assert.equal(table.table_key, 'consideration-registration-rights');
-  assert.deepEqual(table.rows.map((row) => [row.subject, row.backing_facts.length, row.sub_rows]), [['Registration rights', 29, undefined]]);
+  assert.deepEqual(table.rows, []);
+  assert.equal(table.other_provisions_label, 'Registration rights');
+  assert.equal(table.other_provisions.reduce((count, group) => count + group.branches.length, 0), 29);
   const covenants = view.sections.flatMap((section) => section.tables).find((candidate) => candidate.table_key === 'general-covenants-table');
   assert.deepEqual(covenants.rows.map((row) => [row.subject, row.backing_facts.map((entry) => entry.fact_id).sort()]), [
     ['Litigation notification', ['52e8af75']],
     ['General notification', ['31da8ce7', '369c5c72']],
   ]);
   assert.equal(view.sections.flatMap((section) => section.without_readout || []).length, 0);
-  // (f): the stockholders' obligations read in their words; Parent's
-  // obligor readings are stated in the summaries and kept under
-  // stated_in_summary (work package B4's rule).
-  const obligor = table.rows[0].cells.find((cell) => cell.column_id === 'obligor');
-  assert.deepEqual(obligor.values.map((value) => [value.code, value.label]).sort(), [
-    ['OTHER_PARTY', 'Each Specified Stockholder'], ['OTHER_PARTY', 'Parent and each Specified Stockholder'], ['OTHER_PARTY', 'the Specified Stockholders'],
-  ]);
-  assert.deepEqual(obligor.stated_in_summary, ['PARENT']);
-  // (g): the deadlines and timing triggers, never a bare event trigger.
-  const byWhen = table.rows[0].cells.find((cell) => cell.column_id === 'byWhen');
-  const labels = byWhen.values.map((value) => value.label);
-  assert.ok(labels.includes('Promptly following the Closing Date (and in any event no later than two Business Days thereafter)'), labels.join(' | '));
-  assert.ok(labels.includes('After the Registration Statement becomes effective'));
-  assert.equal(labels.some((label) => /upon the discovery|insofar as such losses|as such expenses are incurred/.test(label)), false, 'event triggers are not deadlines');
 });
 
 

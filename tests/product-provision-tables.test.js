@@ -278,7 +278,11 @@ test('the provision rail groups sections the old app\'s way, one anchor per sect
   const html = renderToStaticMarkup(React.createElement(ProvisionRail, { sections: tableShapes.sections }));
   // PW redesign: the rail is a light column with a navy rule and the
   // Paul, Weiss / Corpus brand line. The grouping and anchors are unchanged.
-  assert.match(html, /<nav[^>]*class="[^"]*border-\[#DCE3E1\][^"]*bg-white[^"]*"[^>]*data-testid="provision-rail"/);
+  // Ben, 2026-11-01, round 2: "Your left-hand sidebar should match that
+  // visually" (the Deal Storylines rail): a navy column, white items, the
+  // active item a white block.
+  assert.match(html, /<nav[^>]*class="[^"]*bg-\[#03203D\][^"]*"[^>]*data-testid="provision-rail"/);
+  assert.match(html, /data-active="true" class="[^"]*bg-white[^"]*text-\[#03203D\]/);
   assert.doesNotMatch(html, /bg-black/);
   const groups = html.match(/data-testid="provision-rail-group"/g) || [];
   // 17 old-app groups plus Tax Matters and Financing (work package 5, plan

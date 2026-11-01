@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import PwBar from '../../../../components/chrome/PwBar.jsx';
 import { useEffect, useMemo, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -57,8 +57,11 @@ function dealTitle(parties, fallback) {
 // Storylines blue as the one accent (--accent-rgb overridden on the root so
 // the Tailwind accent tokens under the page resolve to it).
 const INTER = "'Inter Tight', 'Inter', ui-sans-serif, -apple-system, 'Segoe UI', Roboto, sans-serif";
-const SERIF = "'Source Serif 4', Georgia, 'Times New Roman', serif";
-const PAGE_STYLE = { '--font-sans': INTER, '--font-serif': SERIF, '--accent-rgb': '3 32 61', '--accent-soft': '#F1F4F8', fontFamily: INTER, color: '#03203D' };
+// Ben, 2026-11-01: "You see how the look back font is different than the
+// bring down standards and qualifiers font? I would use the look back font
+// for everything on the site." So --font-serif is the same Inter Tight stack
+// as --font-sans; every font-body / font-serif class under the page is Inter.
+const PAGE_STYLE = { '--font-sans': INTER, '--font-serif': INTER, '--accent-rgb': '3 32 61', '--accent-soft': '#F1F4F8', fontFamily: INTER, color: '#03203D' };
 // The state badge as a small rounded-[2px] chip in a soft tint, no border.
 // The run's provider, in the eyebrow row beside the state chip (work package
 // 3: the run page shows which account paid).
@@ -179,16 +182,16 @@ export function ProvisionsPreviewBody({ workspace, runId }) {
         </div>
       ) : (
         <>
-          <ProvisionRail sections={tableShapesV3.sections} title={title} />
+          <ProvisionRail sections={tableShapesV3.sections} title={title} topOffset={58} />
           <div className="min-w-0 flex-1 px-[9px] py-[18.5px] md:px-[18.5px] lg:pb-[56px] lg:pl-[37px] lg:pr-[56px] lg:pt-[37px]">
             <header className="mb-[16px]" data-testid="preview-header">
               <div className="flex flex-wrap items-center gap-[7px]">
-                <p className="font-ui text-[9.5px] uppercase tracking-[0.14em] text-[#6B7785]">Lawyer preview</p>
+                <p className="font-ui text-[12px] font-bold uppercase tracking-[0.1em] text-[#0B3D71]">Lawyer preview</p>
                 <span className={`inline-flex items-center rounded-full px-[6px] py-[1px] text-[9px] font-ui font-medium uppercase tracking-wide ${badge.className}`} data-testid="preview-badge">{badge.label}</span>
                 {providerLabel(progress) ? <span className="font-ui text-[9px] uppercase tracking-[0.12em] text-[#6b6b6b]" data-testid="preview-provider">{providerLabel(progress)}</span> : null}
                 {sandboxLabel(progress) ? <span className="font-ui text-[9px] tracking-[0.08em] text-[#6b6b6b]" data-testid="preview-sandbox">{sandboxLabel(progress)}</span> : null}
               </div>
-              <h1 className="mt-[8px] font-sans text-[30px] font-bold leading-[.98] tracking-[-.05em] text-[#03203D] md:text-[38px]">{title}</h1>
+              <h1 className="mt-[8px] font-sans text-[30px] font-bold leading-[.98] tracking-[-.05em] text-[#03203D]" style={{ fontSize: 'clamp(30px, 3.2vw, 44px)' }}>{title}</h1>
               {/* Ben, 2026-09-14: "please remove 'State: draft, not published /
                   Date / Source / Generation' and the facts count line". The
                   header is the eyebrow, the state badge, the title and the
@@ -285,11 +288,11 @@ export default function ProvisionsPreviewPage() {
   if (!id || !workspace) return <div className="space-y-[9.5px] p-[18.5px]"><SkeletonCard /><SkeletonCard /></div>;
   return (
     <>
-      {/* The page renders without the shell, so it carries its own way back
-          (work package 53, finding (296)). */}
-      <div className="p-[18.5px] pb-0">
-        <Link href={`/review/product/${id}`} className="text-sm font-ui text-accent hover:underline">← Back to the review</Link>
-      </div>
+      {/* The page renders without the shell, so it carries the top bar.
+          Ben, 2026-11-01: "From this page, it shouldn't say 'back to review.'
+          The top bar should be able to take you back to the index, and it
+          should also be able to take you to a compare page." */}
+      <PwBar admin active="review" />
       <ProvisionsPreviewBody workspace={workspace} runId={id} />
     </>
   );
