@@ -9222,9 +9222,41 @@
             "Seller no-other-reps",
             "Seller non-reliance",
             "Buyer no-other-reps",
+            "Buyer independent investigation",
+            "Seller independent investigation",
             "Fraud carve-out"
           ],
-          "guidance": "Yes / No per question; the words behind the answer are read in the fact's tree, never summarised in a column."
+          "guidance": "Yes / No per question; the words behind the answer are read in the fact's tree, never summarised in a column. Rows by whose representations the clause concerns: a disclaimer of other representations is the maker's no-other-reps row (Seller for the Company's reps, Buyer for Parent's and the merger subs'); an acknowledgment that one is not relying on other representations is that party's non-reliance row; an acknowledgment of one's own independent investigation is that party's independent investigation row; a clause preserving claims for fraud is Fraud carve-out.",
+          "side_rows": {
+            "seller_words": "\\b(?:the\\s+)?(?:Company|Target|Seller|Sellers)\\b",
+            "buyer_words": "\\b(?:the\\s+)?(?:Parent|Buyer|Buyers|Buyer Parties|Purchaser|Acquir(?:o|e)r|Guarantor|(?:[A-Z][a-z]+\\s+)?Merger Subs?)\\b",
+            "column_id": "status",
+            "code": "YES",
+            "by_subtype": {
+              "NO_OTHER_REPRESENTATIONS_DISCLAIMER": {
+                "side": "maker",
+                "rows": {
+                  "seller": "Seller no-other-reps",
+                  "buyer": "Buyer no-other-reps"
+                }
+              },
+              "NON_RELIANCE_ACKNOWLEDGMENT": {
+                "side": "actor",
+                "rows": {
+                  "seller": "Seller non-reliance",
+                  "buyer": "Buyer non-reliance"
+                }
+              },
+              "INDEPENDENT_INVESTIGATION_ACKNOWLEDGMENT": {
+                "side": "actor",
+                "rows": {
+                  "seller": "Seller independent investigation",
+                  "buyer": "Buyer independent investigation"
+                }
+              }
+            },
+            "reason": "Ben, 2026-11-01, round 4: \"why does that not show resulting rows in QXO? ... (i) they acknowledge the other side has given no reps than in the agreement and (ii) they have relied on no other reps\"."
+          }
         }
       ],
       "print_pages": [

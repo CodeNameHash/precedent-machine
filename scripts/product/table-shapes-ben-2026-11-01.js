@@ -451,6 +451,48 @@ function applyBen20261101(doc) {
   applyOtherProtectionsHidden(doc);
   applyPersistence(doc);
   applyClearSkies(doc);
+  applyNoOtherRepsSides(doc);
+}
+
+// 21. Round 4 (Ben, 2026-11-01): "for no other reps/fraud, why does that not
+// show resulting rows in QXO? Check the basic requirements you need from
+// Abry partners but I think it is each party giving a rep (i) they
+// acknowledge the other side has given no reps than in the agreement and
+// (ii) they have relied on no other reps than those in the agreement. But
+// maybe there is one or two other things?" QXO's five facts came back
+// without a readout and the table had no rule to place one. side_rows
+// places a fact by its subtype and by whose representations it is about:
+// a no-other-reps disclaimer is the maker's (the party that "disclaims" or
+// that "neither ... makes"), a non-reliance or investigation acknowledgment
+// the acknowledging party's (lib/product/fact-conclusions.js
+// defaultConclusions, so at extraction and on the page alike). The ABRY
+// rows beyond Ben's two: the buyer's independent investigation, and the
+// fraud carve-out (ABRY Partners v. F&W Acquisition (Del. Ch. 2006): a
+// party cannot contract out of liability for its own fraud in the
+// agreement's representations; a non-reliance clause in the buyer's own
+// voice is what bars extra-contractual fraud claims).
+function applyNoOtherRepsSides(doc) {
+  const table = findTable(doc, 'no-other-reps-fraud-table');
+  for (const label of ['Buyer independent investigation', 'Seller independent investigation']) {
+    if (!table.fixed_row_labels.includes(label)) table.fixed_row_labels.splice(table.fixed_row_labels.indexOf('Fraud carve-out'), 0, label);
+  }
+  const status = table.columns.find((column) => column.column_id === 'status');
+  if (status && status.vocabulary_by_row) {
+    for (const label of ['Buyer independent investigation', 'Seller independent investigation']) status.vocabulary_by_row[label] = status.vocabulary_by_row[label] || ['YES', 'SILENT', 'NO'];
+  }
+  table.side_rows = {
+    seller_words: '\\b(?:the\\s+)?(?:Company|Target|Seller|Sellers)\\b',
+    buyer_words: '\\b(?:the\\s+)?(?:Parent|Buyer|Buyers|Buyer Parties|Purchaser|Acquir(?:o|e)r|Guarantor|(?:[A-Z][a-z]+\\s+)?Merger Subs?)\\b',
+    column_id: 'status',
+    code: 'YES',
+    by_subtype: {
+      NO_OTHER_REPRESENTATIONS_DISCLAIMER: { side: 'maker', rows: { seller: 'Seller no-other-reps', buyer: 'Buyer no-other-reps' } },
+      NON_RELIANCE_ACKNOWLEDGMENT: { side: 'actor', rows: { seller: 'Seller non-reliance', buyer: 'Buyer non-reliance' } },
+      INDEPENDENT_INVESTIGATION_ACKNOWLEDGMENT: { side: 'actor', rows: { seller: 'Seller independent investigation', buyer: 'Buyer independent investigation' } },
+    },
+    reason: `Ben, 2026-11-01, round 4: "why does that not show resulting rows in QXO? ... (i) they acknowledge the other side has given no reps than in the agreement and (ii) they have relied on no other reps".`,
+  };
+  table.guidance = `${table.guidance || ''} Rows by whose representations the clause concerns: a disclaimer of other representations is the maker's no-other-reps row (Seller for the Company's reps, Buyer for Parent's and the merger subs'); an acknowledgment that one is not relying on other representations is that party's non-reliance row; an acknowledgment of one's own independent investigation is that party's independent investigation row; a clause preserving claims for fraud is Fraud carve-out.`.trim();
 }
 
 // 20. Round 4 (Ben, 2026-11-01): "on AT for the non-impediment covenant (i)

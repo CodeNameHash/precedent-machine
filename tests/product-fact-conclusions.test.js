@@ -756,3 +756,19 @@ test('routeByWords sends the control-of-operations boilerplate to Other provisio
   assert.equal(aliasRowLabel(antitrust, 'Remedy commitment (divestiture cap)'), 'Remedies cap');
   assert.equal(aliasRowLabel(antitrust, 'Remedies cap'), null);
 });
+
+// Round 4 (Ben, 2026-11-01: "for no other reps/fraud, why does that not show
+// resulting rows in QXO?"): QXO's five facts, without a readout, placed by
+// subtype and by whose representations they concern.
+test('side_rows places no-other-reps facts by subtype and by the party whose representations they concern', () => {
+  const { defaultConclusions } = require('../lib/product/fact-conclusions');
+  const fact = (subtype, statement) => ({ family_key: 'NO_OTHER_REPS_FRAUD', subtype_key: subtype, statement, headline: { label: 'x', summary: 'x' },
+    components: [{ component_id: 'c1', kind: 'OBJECT', label: 'c1', text: statement.slice(0, 40), origin: 'OWN', children: [] }] });
+  const row = (subtype, statement) => defaultConclusions(fact(subtype, statement), tableShapes)?.row_label;
+  assert.equal(row('NO_OTHER_REPRESENTATIONS_DISCLAIMER', 'The Company disclaims any other representations or warranties, whether made by the Company or its Affiliates.'), 'Seller no-other-reps');
+  assert.equal(row('NO_OTHER_REPRESENTATIONS_DISCLAIMER', 'Titanium Merger Sub and Forward Merger Sub disclaim any other representations or warranties.'), 'Buyer no-other-reps');
+  assert.equal(row('NO_OTHER_REPRESENTATIONS_DISCLAIMER', 'Parent and Merger Sub acknowledge that neither the Company nor any other Person makes any other express or implied representation.'), 'Seller no-other-reps', 'the maker is the party after "neither"');
+  assert.equal(row('NON_RELIANCE_ACKNOWLEDGMENT', 'The Company acknowledges that, except for the representations in Section 3.2, none of Parent or its Affiliates makes any representation, and it is not relying on any.'), 'Seller non-reliance');
+  assert.equal(row('NON_RELIANCE_ACKNOWLEDGMENT', 'Parent, Titanium Merger Sub and Forward Merger Sub are not relying on any representation or warranty except those in Section 3.1.'), 'Buyer non-reliance');
+  assert.equal(row('INDEPENDENT_INVESTIGATION_ACKNOWLEDGMENT', 'Each of Parent and Merger Sub has conducted its own independent review and analysis of the Company.'), 'Buyer independent investigation');
+});
