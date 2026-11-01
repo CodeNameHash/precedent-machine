@@ -1,9 +1,10 @@
 'use strict';
 
-// Work package 55 (note DEEPSEEK-NAV-INDEX-COMPARE-2026-11-01): the comparison
-// helpers, the three read-only routes and the HowCommon component. The routes
-// are exercised in-process over fake stores, the same pattern as
-// tests/product-runs-list.test.js and tests/product-published-facts-query.test.js.
+// Work package 2 (note DEEPSEEK-WORK-PACKAGE-2-COMPARE-2026-11-01) and the
+// package 1 review: the comparison cells come from buildTableView, the
+// how-common count reads every coded reading, the routes keep their
+// 400/401/404/405 contract, and the market line is a line under the page's
+// own answer.
 
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -16,11 +17,13 @@ const { transformSync } = require('next/dist/build/swc');
 const {
   agreementLabelFromParties, agreementLabelFromUrl, isAnalysedRun, parseRunIdList, runPhase, statusLabel,
 } = require('../lib/product/comparison-runs');
+const { buildComparisonView, marketDistribution } = require('../lib/product/comparison-view');
 const {
-  buildComparisonTables, codedFactStats, howCommonFromConclusions,
+  buildComparisonTablesFromViews, howCommonFromViews, marketLine,
 } = require('../lib/product/comparison-tables');
 const {
-  createComparisonRunsHandler, createComparisonTablesHandler, createComparisonHowCommonHandler,
+  createComparisonRunsHandler, createComparisonTablesHandler,
+  createComparisonHowCommonHandler,
 } = require('../lib/product/comparison-handlers');
 const { ProductRequestAuthError } = require('../lib/product/request-auth');
 
@@ -34,8 +37,6 @@ require.extensions['.jsx'] = function compileJsx(module, filename) {
 };
 const HowCommon = require('../components/product/HowCommon').default || require('../components/product/HowCommon');
 
-// The page bodies are ESM; the repo's test pattern transforms project .js
-// files that carry import/export with SWC (tests/product-published-facts-query.test.js).
 const projectRoot = path.join(__dirname, '..');
 const originalJsLoader = require.extensions['.js'];
 require.extensions['.js'] = function compileProjectEsm(module, filename) {
@@ -52,49 +53,35 @@ require.extensions['.js'] = function compileProjectEsm(module, filename) {
   module._compile(transformed.code, filename);
 };
 
+const tableShapes = require('../contracts/product/table-shapes.v3.json');
+const legalSchema = require('../contracts/product/legal-schema.v2.json');
+
 const FINAL_ID = '11111111-1111-4111-8111-111111111111';
 const DRAFT_ID = '22222222-2222-4222-8222-222222222222';
 const OTHER_ID = '33333333-3333-4333-8333-333333333333';
+const TABLE = 'material-contracts-table';
+const ROW = 'Real estate leases';
 
-const shapes = {
-  schema_version: 'PRODUCT_TABLE_SHAPES/V3',
-  sections: [{
-    section_key: 'termination-fees',
-    title: 'Termination Fees',
-    v2_family_keys: [{ key: 'TERMINATION' }],
-    tables: [{
-      table_key: 'termination-fees-table',
-      columns: [{
-        column_id: 'trigger',
-        render: 'vocabulary',
-        vocabulary: [
-          { code: 'NO_VOTE', label: 'No-vote termination' },
-          { code: 'SUPERIOR_PROPOSAL', label: 'Superior proposal' },
-        ],
-      }],
-    }],
-  }],
-};
-
-function fact({ id = 'f1', code = 'NO_VOTE', rowLabel = 'Termination fee', runId = null } = {}) {
+function fact({ id = 'f1', code = 'MATERIAL', rowLabel = ROW } = {}) {
   return {
-    ...(runId ? { run_id: runId } : {}),
     fact_id: id,
-    statement: 'The Company shall pay the fee.',
-    headline: { label: 'Termination fee', summary: 'The Company pays a fee' },
+    family_key: 'MATERIAL_CONTRACTS',
+    subtype_key: 'MATERIAL_CONTRACT_CATEGORY_CRITERION',
+    statement: 'Any real property lease.',
+    headline: { label: 'Material Contracts category', summary: 'Real estate leases above the threshold' },
     components: [{
-      component_id: `${id}-c1`, kind: 'TERM', text: 'subject to the termination fee', source_span_id: 's1',
-      origin: 'OWN', children: [],
+      component_id: `${id}-c1`, kind: 'TERM', label: 'Contract category', text: 'any real property lease',
+      source_span_id: 's1', start_byte: 0, end_byte: 24, origin: 'OWN', gap_before: false, children: [],
     }],
     conclusions: {
-      table_key: 'termination-fees-table',
+      table_key: TABLE,
       row_label: rowLabel,
-      cells: [{ column_id: 'trigger', code }],
+      cells: [{ column_id: 'qualifier', code, component_ids: [`${id}-c1`] }],
     },
   };
 }
 
-function publishedAgreement({ runId = FINAL_ID, facts = [fact({ id: 'final-fact', code: 'CHANGE_OF_RECOMMENDATION_TERMINATION' })] } = {}) {
+function publishedAgreement({ runId = FINAL_ID, facts = [fact({ id: 'final-fact', code: 'MATERIAL' })] } = {}) {
   return {
     run_id: runId,
     source_document_id: 'doc-final',
@@ -113,19 +100,19 @@ function draftContext() {
   const proposal = {
     proposal_id: 'draft-proposal',
     structure_node_id: 'n1',
-    family_key: 'TERMINATION',
-    subtype_key: 'MUTUAL_CONSENT',
+    family_key: 'MATERIAL_CONTRACTS',
+    subtype_key: 'MATERIAL_CONTRACT_CATEGORY_CRITERION',
     validation_status: 'VALID',
-    statement: 'The Company may terminate on mutual consent.',
-    headline: { label: 'Mutual consent', summary: 'The parties may terminate by mutual consent' },
+    statement: 'Any real property lease outside the ordinary course.',
+    headline: { label: 'Material Contracts category', summary: 'Real estate leases outside the ordinary course' },
     components: [{
-      component_id: 'draft-c1', kind: 'TERM', text: 'by mutual written consent', source_span_id: 's1',
+      component_id: 'draft-c1', kind: 'TERM', text: 'any lease outside the ordinary course', source_span_id: 's1',
       origin: 'OWN', children: [],
     }],
     conclusions: {
-      table_key: 'termination-fees-table',
-      row_label: 'Termination fee',
-      cells: [{ column_id: 'trigger', code: 'SUPERIOR_PROPOSAL_TERMINATION' }],
+      table_key: TABLE,
+      row_label: ROW,
+      cells: [{ column_id: 'qualifier', code: 'OUTSIDE_ORDINARY_COURSE', component_ids: ['draft-c1'] }],
     },
     proposition_group_id: 'g1',
     source_closure_id: 'cl1',
@@ -142,21 +129,22 @@ function draftContext() {
       model_config: { provider_id: 'DEEPSEEK' },
       retrieval_url: 'https://www.sec.gov/Archives/draft-merger-agreement.htm',
       created_at: '2026-10-25T00:00:00.000Z',
+      updated_at: '2026-10-25T00:10:00.000Z',
     },
     sourceDocument: {
       parties: [{ role: 'COMPANY', name: 'Target Inc.' }, { role: 'PARENT', name: 'Acquirer LLC' }],
       agreement_date: '2026-10-01',
     },
     agreementStructure: {
-      nodes: [{ node_id: 'n1', reference: '7.1', kind: 'SECTION', authored_order: 1, title: 'Termination' }],
+      nodes: [{ node_id: 'n1', reference: '3.14', kind: 'SECTION', authored_order: 1, title: 'Material Contracts' }],
     },
     sections: [{
       node_id: 'n1',
-      section_reference: '7.1',
-      routing: { structure_node_id: 'n1', section_reference: '7.1', authored_order: 1, families: ['TERMINATION'], disposition: 'FAMILY_ASSIGNED' },
-      source_closure: { source_closure_id: 'cl1', structure_node_id: 'n1', section_reference: '7.1', full_section_span_id: 's1' },
+      section_reference: '3.14',
+      routing: { structure_node_id: 'n1', section_reference: '3.14', authored_order: 1, families: ['MATERIAL_CONTRACTS'], disposition: 'FAMILY_ASSIGNED' },
+      source_closure: { source_closure_id: 'cl1', structure_node_id: 'n1', section_reference: '3.14', full_section_span_id: 's1' },
       spans: [{
-        span_id: 's1', exact_text: 'Section 7.1 Termination. The Company may terminate by mutual written consent.',
+        span_id: 's1', exact_text: 'Section 3.14 Material Contracts. Any real property lease outside the ordinary course.',
         kind: 'FULL_SECTION', structure_node_id: 'n1', source_closure_ids: ['cl1'],
       }],
       proposals: [proposal],
@@ -173,14 +161,17 @@ function fakeClient(tables = {}) {
     from(table) {
       const rows = Array.isArray(tables[table]) ? tables[table] : [];
       const filters = [];
+      let fromIndex = 0;
+      let toIndex = Infinity;
       const matches = () => rows.filter((row) => filters.every((filter) => {
         if (filter.type === 'in') return filter.values.includes(row[filter.column]);
         return row[filter.column] === filter.value;
-      }));
+      })).slice(fromIndex, toIndex + 1);
       const builder = {
         select() { return builder; },
-        in(column, values) { filters.push({ type: 'in', column, values }); return builder; },
         eq(column, value) { filters.push({ type: 'eq', column, value }); return builder; },
+        in(column, values) { filters.push({ type: 'in', column, values }); return builder; },
+        range(start, end) { fromIndex = start; toIndex = end; return builder; },
         maybeSingle() { return Promise.resolve({ data: matches()[0] || null, error: null }); },
         then(resolve, reject) { return Promise.resolve({ data: matches(), error: null }).then(resolve, reject); },
       };
@@ -189,9 +180,7 @@ function fakeClient(tables = {}) {
   };
 }
 
-function fakeStore({
-  runs = [], published = [], tables = {}, draft = null, actorResolved = 'ben',
-} = {}) {
+function fakeStore({ runs = [], published = [], tables = {}, draft = null } = {}) {
   return {
     client: fakeClient(tables),
     async listRuns() { return runs; },
@@ -218,7 +207,6 @@ function fakeStore({
     },
     async getReview() { return null; },
     async loadDraftIssues() { return []; },
-    actorResolved,
   };
 }
 
@@ -241,6 +229,15 @@ function handlerArgs(store, { actorError = null } = {}) {
   };
 }
 
+function viewsForTests() {
+  const finalView = buildComparisonView({ facts: [fact({ id: 'final-fact', code: 'MATERIAL' })], tableShapes, legalSchema });
+  const draftView = buildComparisonView({ facts: [fact({ id: 'draft-fact', code: 'OUTSIDE_ORDINARY_COURSE' })], tableShapes, legalSchema });
+  return [
+    { run_id: FINAL_ID, agreement_label: 'Apogee / Andor', ...finalView },
+    { run_id: DRAFT_ID, agreement_label: 'Target / Acquirer', ...draftView },
+  ];
+}
+
 test('run labels, phases and the run-id parser are the comparison\'s identity rules', () => {
   assert.equal(agreementLabelFromParties([
     { role: 'COMPANY', name: 'Target Inc.' }, { role: 'PARENT', name: 'Acquirer LLC' },
@@ -258,68 +255,71 @@ test('run labels, phases and the run-id parser are the comparison\'s identity ru
   assert.match(parseRunIdList(seven.join(','), { max: 6 }).error, /at most 6/);
 });
 
-test('coded tables line up the same provision across runs and a run with no answer stays absent', () => {
-  const tables = buildComparisonTables({
-    runs: [
-      { run_id: 'a', facts: [fact({ id: 'a1', code: 'NO_VOTE' })] },
-      { run_id: 'b', facts: [fact({ id: 'b1', code: 'SUPERIOR_PROPOSAL' })] },
-      { run_id: 'c', facts: [] },
-    ],
-    shapes,
-  });
+test('the built page view supplies every comparison cell, including values and sub-rows', () => {
+  const view = buildComparisonView({ facts: [fact({ id: 'a', code: 'MATERIAL' })], tableShapes, legalSchema });
+  const table = view.tables.find((entry) => entry.table_key === TABLE);
+  assert.ok(table);
+  const row = table.rows.find((entry) => entry.row_label === ROW);
+  assert.ok(row);
+  assert.equal(row.cells.length, 1);
+  assert.equal(row.cells[0].code, 'MATERIAL');
+  assert.equal(row.cells[0].label, 'Material');
+  assert.equal(row.cells[0].kind, 'pill');
+  assert.equal(row.cells[0].fact_ids[0], 'a');
+  const tables = buildComparisonTablesFromViews(viewsForTests());
   assert.equal(tables.length, 1);
-  assert.equal(tables[0].table_key, 'termination-fees-table');
-  assert.equal(tables[0].label, 'Termination Fees');
-  assert.equal(tables[0].rows.length, 1);
-  const row = tables[0].rows[0];
-  assert.equal(row.row_label, 'Termination fee');
-  assert.equal(row.by_run.a[0].answer.text, 'No-vote termination');
-  assert.equal(row.by_run.b[0].answer.text, 'Superior proposal');
-  assert.equal(row.by_run.c, undefined);
-  assert.equal(row.n, 2);
-  assert.deepEqual(row.distribution, [
-    { value: 'No-vote termination', count: 1 },
-    { value: 'Superior proposal', count: 1 },
-  ]);
-  assert.deepEqual(codedFactStats([fact({ id: 'a1' }), fact({ id: 'a2', code: 'SUPERIOR_PROPOSAL' })], shapes), {
-    coded_fact_count: 2, table_count: 1, row_count: 1,
-  });
+  const built = tables[0].rows.find((entry) => entry.row_label === ROW);
+  assert.equal(built.by_run[FINAL_ID][0].answer.text, 'Material');
+  assert.equal(built.by_run[DRAFT_ID][0].answer.text, 'Not entered into in the ordinary course of business');
+  assert.equal(built.n, 2);
 });
 
-test('how common counts answering runs, not facts, and keeps not stated out of the denominator', () => {
-  const conclusions = [
-    { run_id: 'a', table_key: 'termination-fees-table', row_label: 'Termination fee', cells: [{ column_id: 'trigger', code: 'NO_VOTE' }] },
-    { run_id: 'a', table_key: 'termination-fees-table', row_label: 'Termination fee', cells: [{ column_id: 'trigger', code: 'NO_VOTE' }] },
-    { run_id: 'b', table_key: 'termination-fees-table', row_label: 'Termination fee', cells: [{ column_id: 'trigger', code: 'NO_VOTE' }] },
-    { run_id: 'c', table_key: 'termination-fees-table', row_label: 'Termination fee', cells: [{ column_id: 'trigger', code: 'SUPERIOR_PROPOSAL' }] },
-  ];
-  const result = howCommonFromConclusions({
-    conclusions, tableKey: 'termination-fees-table', shapes, runIds: ['a', 'b', 'c', 'd'],
-  });
-  assert.equal(result.runs_total, 4);
-  assert.equal(result.rows.length, 1);
-  const row = result.rows[0];
-  assert.equal(row.answered, 3);
-  assert.equal(row.not_stated, 1);
+test('how common counts runs, not facts, and keeps not stated out of the denominator', () => {
+  const views = viewsForTests();
+  const result = howCommonFromViews(views, TABLE);
+  assert.equal(result.runs_total, 2);
+  const row = result.rows.find((entry) => entry.row_label === ROW);
+  assert.equal(row.answered, 2);
+  assert.equal(row.not_stated, 0);
   assert.deepEqual(row.entries.map((entry) => [entry.value, entry.count]), [
-    ['No-vote termination', 2],
-    ['Superior proposal', 1],
+    ['Material', 1],
+    ['Not entered into in the ordinary course of business', 1],
   ]);
-  // A run with no conclusion for the row counts as not stated, never as a No.
-  assert.equal(row.entries.some((entry) => entry.value === 'No'), false);
+  // A view that has no reading for the table counts as not stated, never a No.
+  const empty = buildComparisonView({ facts: [], tableShapes, legalSchema });
+  const withEmpty = howCommonFromViews([...views, { run_id: OTHER_ID, ...empty }], TABLE);
+  assert.equal(withEmpty.rows.find((entry) => entry.row_label === ROW).not_stated, 1);
+});
+
+test('marketDistribution counts a run once per code, and marketLine says Market, Off-market or alone', () => {
+  const views = viewsForTests();
+  const market = marketDistribution(views, FINAL_ID);
+  assert.equal(market.total_runs, 2);
+  const key = `${TABLE}|${ROW}|qualifier`;
+  assert.equal(market.cells[key].total, 2);
+  assert.deepEqual(market.cells[key].codes.MATERIAL, { label: 'Material', count: 1, run_ids: [FINAL_ID] });
+  assert.deepEqual(marketLine(market.cells[key], 'MATERIAL'), { kind: 'market', text: 'Market · 1 of 2 deals' });
+  assert.deepEqual(marketLine({ total: 3, codes: { MATERIAL: { label: 'Material', count: 2 }, OUTSIDE_ORDINARY_COURSE: { label: 'Not entered into in the ordinary course of business', count: 1 } } }, 'OUTSIDE_ORDINARY_COURSE'), {
+    kind: 'off', text: 'Off-market · 1 of 3 · others: Material',
+  });
+  assert.deepEqual(marketLine({ total: 1, codes: { ONLY: { label: 'Only', count: 1 } } }, 'ONLY'), {
+    kind: 'alone', text: 'No comparison · only deal with this row',
+  });
+  const value = marketDistribution(views, FINAL_ID);
+  assert.equal(value.cells[`${TABLE}|${ROW}|qualifier`].codes.MATERIAL.label, 'Material');
 });
 
 test('HowCommon renders the count, the not-stated line and the panel form', () => {
   const distribution = {
-    row_label: 'Termination fee', answered: 3, runs_total: 5, not_stated: 2,
+    row_label: ROW, answered: 3, runs_total: 5, not_stated: 2,
     entries: [
-      { value: 'No-vote termination', count: 3, share: 0.6, run_ids: ['a', 'b', 'c'] },
-      { value: 'Superior proposal', count: 1, share: 0.2, run_ids: ['d'] },
+      { value: 'Material', count: 3, share: 0.6, run_ids: ['a', 'b', 'c'] },
+      { value: 'Outside ordinary course', count: 1, share: 0.2, run_ids: ['d'] },
     ],
   };
   const html = renderToStaticMarkup(React.createElement(HowCommon, { distribution }));
   assert.match(html, /3 of 5 runs answer/);
-  assert.match(html, /No-vote termination/);
+  assert.match(html, /Material/);
   assert.match(html, /3 of 3/);
   assert.match(html, /Not stated in 2/);
   assert.match(html, /not a/);
@@ -331,12 +331,12 @@ test('GET /api/product/compare/runs lists a final release and a draft, not a que
   const draft = draftContext();
   const store = fakeStore({
     runs: [
-      { run_id: DRAFT_ID, status: 'READY', created_at: '2026-10-25T00:00:00.000Z', source_generation: 7, model_config: { provider_id: 'DEEPSEEK' }, retrieval_url: draft.run.retrieval_url, access_role: 'OWNER' },
+      { run_id: DRAFT_ID, status: 'READY', created_at: '2026-10-25T00:00:00.000Z', updated_at: '2026-10-25T00:10:00.000Z', source_generation: 7, model_config: { provider_id: 'DEEPSEEK' }, retrieval_url: draft.run.retrieval_url, access_role: 'OWNER' },
       { run_id: OTHER_ID, status: 'QUEUED', created_at: '2026-10-26T00:00:00.000Z', retrieval_url: 'https://example.com/queued.htm', access_role: 'OWNER' },
     ],
     published: [publishedAgreement()],
     tables: {
-      product_fact_conclusions: [{ run_id: DRAFT_ID, table_key: 'termination-fees-table', row_label: 'Termination fee', cells: [{ column_id: 'trigger', code: 'SUPERIOR_PROPOSAL_TERMINATION' }] }],
+      product_fact_conclusions: [{ run_id: DRAFT_ID, table_key: TABLE, row_label: ROW, cells: [{ column_id: 'qualifier', code: 'OUTSIDE_ORDINARY_COURSE' }] }],
       product_fact_headlines: [{ run_id: DRAFT_ID }, { run_id: DRAFT_ID }],
     },
   });
@@ -349,6 +349,7 @@ test('GET /api/product/compare/runs lists a final release and a draft, not a que
   const draftRow = res.body.runs[0];
   assert.equal(draftRow.phase, 'DRAFT');
   assert.equal(draftRow.analysed, true);
+  assert.equal(draftRow.comparable, true);
   assert.equal(draftRow.coded_fact_count, 1);
   assert.equal(draftRow.table_count, 1);
   assert.equal(draftRow.fact_count, 2);
@@ -369,12 +370,9 @@ test('GET /api/product/compare/runs refuses a non-GET and an unauthenticated rea
   assert.equal(unauth.statusCode, 401);
 });
 
-test('GET /api/product/compare/tables puts a final release and a draft side by side on the coded row', async () => {
+test('GET /api/product/compare/tables puts a final release and a draft side by side on the page\'s own row', async () => {
   const draft = draftContext();
-  const store = fakeStore({
-    published: [publishedAgreement()],
-    draft,
-  });
+  const store = fakeStore({ published: [publishedAgreement()], draft });
   const handler = createComparisonTablesHandler(handlerArgs(store));
   const res = mockRes();
   await handler({ method: 'GET', query: { runs: `${FINAL_ID},${DRAFT_ID}` }, headers: {} }, res);
@@ -383,12 +381,12 @@ test('GET /api/product/compare/tables puts a final release and a draft side by s
   assert.equal(res.body.table_shapes_version, 'PRODUCT_TABLE_SHAPES/V3');
   assert.deepEqual(res.body.runs.map((run) => run.phase), ['FINAL', 'DRAFT']);
   assert.equal(res.body.runs[1].agreement_label, 'Target Inc. / Acquirer LLC');
-  const table = res.body.tables.find((entry) => entry.table_key === 'termination-fees-table');
+  const table = res.body.tables.find((entry) => entry.table_key === TABLE);
   assert.ok(table);
-  const row = table.rows.find((entry) => entry.row_label === 'Termination fee');
+  const row = table.rows.find((entry) => entry.row_label === ROW);
   assert.ok(row);
-  assert.equal(row.by_run[FINAL_ID][0].answer.text, 'Parent terminates for a Change of Recommendation');
-  assert.equal(row.by_run[DRAFT_ID][0].answer.text, 'Company terminates to enter a Superior Proposal agreement');
+  assert.equal(row.by_run[FINAL_ID][0].answer.text, 'Material');
+  assert.equal(row.by_run[DRAFT_ID][0].answer.text, 'Not entered into in the ordinary course of business');
   assert.equal(row.by_run[DRAFT_ID][0].fact_id, 'draft-proposal');
 });
 
@@ -402,35 +400,30 @@ test('GET /api/product/compare/tables validates the run list and refuses an unre
   assert.equal(denied.statusCode, 404);
 });
 
-test('GET /api/product/compare/how-common reads all analysed runs, or only the selected set', async () => {
+test('GET /api/product/compare/how-common reads all comparable runs, or only the selected set', async () => {
   const draft = draftContext();
   const store = fakeStore({
-    runs: [{ run_id: DRAFT_ID, status: 'READY', created_at: '2026-10-25T00:00:00.000Z', access_role: 'OWNER' }],
+    runs: [{ run_id: DRAFT_ID, status: 'READY', created_at: '2026-10-25T00:00:00.000Z', updated_at: '2026-10-25T00:10:00.000Z', access_role: 'OWNER' }],
     published: [publishedAgreement()],
-    tables: {
-      product_fact_conclusions: [
-        { run_id: FINAL_ID, table_key: 'termination-fees-table', row_label: 'Termination fee', cells: [{ column_id: 'trigger', code: 'NO_VOTE' }] },
-        { run_id: DRAFT_ID, table_key: 'termination-fees-table', row_label: 'Termination fee', cells: [{ column_id: 'trigger', code: 'SUPERIOR_PROPOSAL' }] },
-      ],
-    },
+    draft,
   });
   const all = mockRes();
-  await createComparisonHowCommonHandler(handlerArgs(store))({ method: 'GET', query: { table: 'termination-fees-table' }, headers: {} }, all);
+  await createComparisonHowCommonHandler(handlerArgs(store))({ method: 'GET', query: { table: TABLE }, headers: {} }, all);
   assert.equal(all.statusCode, 200);
   assert.equal(all.body.schema_version, 'PRODUCT_COMPARE_HOW_COMMON/V1');
   assert.equal(all.body.scope, 'ALL');
   assert.deepEqual(all.body.reference.run_ids.sort(), [DRAFT_ID, FINAL_ID].sort());
-  assert.equal(all.body.rows[0].answered, 2);
+  assert.equal(all.body.rows.find((row) => row.row_label === ROW).answered, 2);
   const selected = mockRes();
-  await createComparisonHowCommonHandler(handlerArgs(store))({ method: 'GET', query: { table: 'termination-fees-table', runs: FINAL_ID }, headers: {} }, selected);
+  await createComparisonHowCommonHandler(handlerArgs(store))({ method: 'GET', query: { table: TABLE, runs: FINAL_ID }, headers: {} }, selected);
   assert.equal(selected.statusCode, 200);
   assert.equal(selected.body.scope, 'SELECTED');
   assert.deepEqual(selected.body.reference.run_ids, [FINAL_ID]);
-  assert.equal(selected.body.rows[0].answered, 1);
+  assert.equal(selected.body.rows.find((row) => row.row_label === ROW).answered, 1);
 });
 
 test('GET /api/product/compare/how-common requires a valid table and a known run', async () => {
-  const store = fakeStore({ published: [publishedAgreement()], tables: { product_fact_conclusions: [] } });
+  const store = fakeStore({ published: [publishedAgreement()] });
   const noTable = mockRes();
   await createComparisonHowCommonHandler(handlerArgs(store))({ method: 'GET', query: {}, headers: {} }, noTable);
   assert.equal(noTable.statusCode, 400);
@@ -438,7 +431,7 @@ test('GET /api/product/compare/how-common requires a valid table and a known run
   await createComparisonHowCommonHandler(handlerArgs(store))({ method: 'GET', query: { table: '../etc/passwd' }, headers: {} }, badTable);
   assert.equal(badTable.statusCode, 400);
   const unknownRun = mockRes();
-  await createComparisonHowCommonHandler(handlerArgs(store))({ method: 'GET', query: { table: 'termination-fees-table', runs: OTHER_ID }, headers: {} }, unknownRun);
+  await createComparisonHowCommonHandler(handlerArgs(store))({ method: 'GET', query: { table: TABLE, runs: OTHER_ID }, headers: {} }, unknownRun);
   assert.equal(unknownRun.statusCode, 404);
 });
 

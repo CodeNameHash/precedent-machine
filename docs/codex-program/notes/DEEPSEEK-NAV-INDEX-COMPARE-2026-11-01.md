@@ -117,3 +117,35 @@ script from `package.json`.
   corpus grows.
 - The comparison is by `row_label`, not `row_detail`; a sub-item shows inside
   its cell (`row_detail`) and does not create a second row.
+
+## 2026-11-01: PR 490 review blockers
+
+The manager's review (`DEEPSEEK-REVIEW-PR-490-2026-11-01.md`) asked for four
+blockers and two should-fixes. This branch now:
+
+- builds every comparison cell and every how-common reading from
+  `lib/product/table-view.js` `buildTableView()` through the new
+  `lib/product/comparison-view.js`; `answerFor` is no longer the comparison's
+  cell source. Values, multi-value readings, sub-rows and coded Other
+  provisions all count. The same built view feeds the tables API and the
+  how-common API (`comparison-tables.js` `buildComparisonTablesFromViews`,
+  `howCommonFromViews`).
+- pages every count read in `fillComparisonRunCounts` (500-row pages), so the
+  PostgREST 1,000-row cap cannot truncate a draft's coded/table counts.
+- caches the built view in-process by `run_id:updated_at:review_version`, and
+  loads draft views with a four-way concurrency cap, so six live drafts do not
+  serialise into the 60-second route budget.
+- marks every run `comparable` (a release or a READY draft) and defaults the
+  comparison selection and the how-common denominator to those runs. A
+  PARTIAL, FAILED or RUNNING run can still be picked explicitly and is shown
+  with its own state.
+
+`tests/product-compare-api.test.js` is 12 of 12 on this branch. The local
+`test:active` count is re-run after the package 2 merge; CI's `product` job
+still has the two pre-existing Node 22 failures (the Codex final-message test
+and the health-route assertion) and is not a regression from this branch.
+
+Two comparison surfaces remain: `/compare` (released facts and the V1
+picker) and `/analysed/compare` (draft and final from this branch, and the
+page-internal comparison in package 2). Recommended: `/analysed/compare` is
+the comparison to keep; `/compare` can retire into it once Ben decides.
