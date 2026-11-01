@@ -82,7 +82,7 @@ Run on this branch after the merge:
 - `tests/product-compare-in-page.test.js`: **6/6**.
 - `npm run test:active` (run through Node's script runner on this machine,
   which has the node binary but not the npm shim): **995 tests, 995 pass, 0
-  fail, 0 cancelled, 0 skipped, 0 todo** (`duration_ms` 317,241). The two known
+  fail, 0 cancelled, 0 skipped, 0 todo** (`duration_ms` 316,437). The two known
   Node 22 CI failures are pre-existing: the Codex final-message test and the
   health-route assertion.
 
