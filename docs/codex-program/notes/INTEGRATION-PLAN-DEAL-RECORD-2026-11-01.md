@@ -398,3 +398,39 @@ I-1, I-2 and I-3 touch disjoint files from packages 2 and 3 and may run in paral
 | When ready | reply to the manager | Lift the ingestion hold for Metsera (question 3) |
 
 Everything else in this plan is executable by an agent with repository access and the manager's MCP tools.
+
+## 11. Ben's answers (2026-11-01), which supersede the defaults in section 9
+
+1. Partner URL on production from the product branch: yes.
+2. One shared partner login plus the "Reviewing as" switcher, per-user logins later: yes.
+3. Metsera on V2: Ben asked why; the reasons were sent to him (the
+   record's Merger agreement tab needs a V2 run; Metsera's agreement was
+   only ever read on the retired V1 stack; Sonnet is the extraction default
+   the three current deals ran on; after I-3 so the run links to the
+   registry deal and does not load the MICRO database while the backfill
+   and zone work run). Treat as pending his go; the default stays.
+4. Reuse the existing deal ids as registry ids: yes.
+5. First deals partners see: Metsera, Apogee, the five J&J deals, Inphi and
+   SecureWorks: yes. **Added:** the five J&J deals are the next intake on the
+   merger agreement analysis (Corpus V2, Sonnet default, one run at a time
+   on the product database), so their records gain the Merger agreement
+   tab. Sequence them after I-1 (so each run links to its registry deal at
+   intake) and one at a time; the manager owns the intake.
+6. Storylines reviewers are the same people as Corpus reviewers: yes, one
+   identity. **Changed from the default ("not now"):** I-3 maps the
+   Storylines review identity to the host's reviewer table (work package 3's
+   `product_reviewers`), so a reviewer is one record across both modules
+   and every review or feedback entry in either carries the same reviewer id
+   and level.
+7. Database upgrade micro to small: yes.
+8. Biopharma stays a static feed: yes.
+9. Plain rewrites, not Vercel Microfrontends: yes.
+10. "Corpus" is the name of the whole product: yes. **Added:** users never
+    see two product names. The Storylines pages, mounted under the host,
+    show the Corpus bar (PwBar) and no "Deal Storylines" brand; page titles
+    read "Corpus - <deal>"; "Storylines" survives only as an internal
+    module and repository name. I-3 includes the brand change in the
+    Storylines repository (header, titles, favicon) behind its mount.
+11. Roadmap as one JSON file: yes.
+12. Novo Nordisk as the competing bidder on the Metsera record, not a second
+    deal: yes.
