@@ -46,27 +46,33 @@ const TINTS = {
   green: { band: 'bg-[#F1F4F8] border-b border-[#DCE3E1] text-[#03203D]', box: 'bg-[#F1F4F8] text-[#03203D]' },
   blue: { band: 'bg-[#EAF0F6] border-b border-[#DCE3E1] text-[#0B3D71]', box: 'bg-[#EAF0F6] text-[#0B3D71]' },
 };
-const TH = 'border-b border-[#03203D] px-[10px] py-[8px] text-left text-[9px] font-ui font-medium uppercase tracking-[0.12em] text-[#6B7785]';
+// Ben, 2026-11-01: "Visually, if you look at structure mechanics, I think
+// all the text is maybe small or not using the space well enough." Every
+// size below is the 2026-09-14 reading raised by about one seventh: header
+// labels 10.5, cells and subjects 14, quiet links 10, the detail control 11,
+// sub-items 13. Widths, paddings and gaps stay.
+const TH = 'border-b border-[#03203D] px-[10px] py-[8px] text-left text-[10.5px] font-ui font-medium uppercase tracking-[0.12em] text-[#6B7785]';
 const TD = 'px-[10px] py-[10px] align-top';
 const ROW = 'border-b border-[#DCE3E1] last:border-0';
-const TEXT = 'text-[12.5px] leading-relaxed text-[#33475E]';
-const SUBJECT = 'font-ui text-[12.5px] font-semibold text-[#03203D]';
-const LINK = 'text-[9.5px] font-ui text-[#0B3D71] underline-offset-2 hover:underline';
+const TEXT = 'text-[14px] leading-relaxed text-[#33475E]';
+const SUB_TEXT = 'text-[13px] leading-relaxed text-[#33475E]';
+const SUBJECT = 'font-ui text-[14px] font-semibold text-[#03203D]';
+const LINK = 'text-[11px] font-ui text-[#0B3D71] underline-offset-2 hover:underline';
 const FOOT = 'border-t border-[#DCE3E1] bg-[#F1F4F8] px-[10px] py-[8px] align-top';
-const FOOT_LABEL = 'text-[9px] font-ui font-medium uppercase tracking-[0.12em] text-[#6B7785]';
+const FOOT_LABEL = 'text-[10.5px] font-ui font-medium uppercase tracking-[0.12em] text-[#6B7785]';
 // Ben, 2026-09-14: "UI point, 'see provision' has too much visual hierarchy
 // and color which distracts readability." Every "See provision" control and
 // the § reference links used the same way (backing-fact lists, Other
 // provisions, footers, the combined definition) are quiet: small, faint,
 // no capitals, no weight, an underline only under the pointer, placed after
 // the subject so they never compete with it.
-const QUIET = 'text-[8.5px] font-ui font-normal normal-case tracking-normal text-[#6B7785] hover:underline hover:text-[#0B3D71]';
+const QUIET = 'text-[10px] font-ui font-normal normal-case tracking-normal text-[#6B7785] hover:underline hover:text-[#0B3D71]';
 // Ben, 2026-09-14: "make the elements below the top level reps (e.g.
 // Organization) collapsable and hide them initially but have a clear 'more
 // detail' button or similar". The control under a row's subject.
-const DETAIL = 'mt-[2.5px] block text-[9.5px] font-ui font-medium text-[#0B3D71] hover:underline';
+const DETAIL = 'mt-[2.5px] block text-[11px] font-ui font-medium text-[#0B3D71] hover:underline';
 // A pill: a small rounded-[2px] tinted chip, 12px uppercase text, no border.
-const BADGE = 'inline-flex items-center rounded-full border border-[#B9C8DA] px-[6px] py-[1px] text-[9px] font-ui font-medium uppercase tracking-wide';
+const BADGE = 'inline-flex items-center rounded-full border border-[#B9C8DA] px-[6px] py-[1px] text-[10px] font-ui font-medium uppercase tracking-wide';
 
 // Tones as soft tints with the tint's darker colour for the text (the
 // Storylines green and blue, grey for the neutral readings).
@@ -98,6 +104,10 @@ function toneClass(tone) {
 // it was read from, quietly, and still opens the sidebar; "Show codes"
 // brings the pills up. Values and as-drafted text are words already.
 const CodesContext = createContext(true);
+// Ben, 2026-11-01: the as-drafted column of every table is behind one
+// page-wide "Show specifics" control ("Maybe a little toggle which says
+// 'show specifics.' Then I wouldn't have both."); off to start.
+const SpecificsContext = createContext(false);
 
 function Cell({ cell, tableKey, rowIndex, subIndex = null, selected, onSelect }) {
   const showCodes = useContext(CodesContext);
@@ -105,10 +115,14 @@ function Cell({ cell, tableKey, rowIndex, subIndex = null, selected, onSelect })
     return <span className="text-inkFaint" data-testid="table-dash" aria-hidden="true">—</span>;
   }
   if (Array.isArray(cell.values) && cell.values.length > 1) {
+    // Ben, 2026-11-01: "we don't have to use pills ... it makes it a bit hard
+    // to read." Several readings in one cell stack one under another as
+    // words; as pills they wrap in a row.
+    const stacked = !showCodes || !cell.values.some((value) => value.kind === 'pill');
     return (
-      <span className="inline-flex flex-wrap gap-[2.5px]" data-testid="table-multi">
+      <span className={stacked ? 'flex flex-col gap-[1px]' : 'inline-flex flex-wrap gap-[2.5px]'} data-testid="table-multi">
         {cell.values.map((value, index) => (
-          <Cell key={`${value.label}-${index}`} cell={{ ...value, column_id: cell.column_id }} tableKey={tableKey} rowIndex={rowIndex} subIndex={subIndex} selected={selected} onSelect={onSelect} />
+          <Cell key={`${value.label}-${index}`} cell={{ ...value, column_id: cell.column_id, ...(index === cell.values.length - 1 && cell.suffix ? { suffix: cell.suffix } : {}) }} tableKey={tableKey} rowIndex={rowIndex} subIndex={subIndex} selected={selected} onSelect={onSelect} />
         ))}
       </span>
     );
@@ -122,9 +136,17 @@ function Cell({ cell, tableKey, rowIndex, subIndex = null, selected, onSelect })
     : isPill
       ? `${BADGE} ${toneClass(cell.tone)}`
       : (cell.kind === 'value' ? `text-left font-ui ${TEXT}` : `text-left font-body ${TEXT}`);
-  // The words the code was read from; a cell with no cited words (a
-  // default, a presence) keeps its label, set as words.
-  const shown = asWords ? (cell.words || cell.label) : cell.label;
+  // Ben, 2026-11-01: "we don't have to use pills. I'm not sure they're
+  // necessarily the best approach for these things because it makes it a
+  // bit hard to read." With the codes off (the default on every surface) a
+  // coded cell shows the answer in the schema's words, set as text, no
+  // chip; the words it was read from ride on the title. This supersedes the
+  // 2026-10-17 words-first reading (the cited fragment as the cell), which
+  // read as the agreement's fragments rather than as answers.
+  // A suffix_of column follows the answer ("$135.11 per share of Company
+  // Common Stock"; "14 calendar days after the agreement date").
+  const suffix = cell.suffix && cell.suffix.label ? ` ${cell.suffix.label}` : '';
+  const shown = `${cell.label}${suffix}`;
   // The selected pill is outlined in the accent, as the selected card in
   // Deal Storylines is (Ben, 2026-09-14: "I prefer this side bar behavior").
   const selectedClass = selected ? 'ring-2 ring-accent' : '';
@@ -137,7 +159,8 @@ function Cell({ cell, tableKey, rowIndex, subIndex = null, selected, onSelect })
   if (!canSelect) return <span className={baseClass} data-testid={asWords ? 'table-words' : undefined} data-code={asWords ? cell.code : undefined}>{shown}</span>;
   const title = cell.defaulted ? 'Not stated for this row; shown as the column\'s default'
     : (cell.reparsed ? 'Re-read from the cited words; the stored number differed'
-      : (asWords && cell.words ? `Coded: ${cell.label}` : undefined));
+      : (cell.derived === 'from_components' ? 'Read from the per-share forms below; no fact codes the type'
+        : (asWords && cell.words ? `Read from: ${cell.words}` : undefined)));
   return (
     <button
       type="button"
@@ -168,19 +191,19 @@ function Cell({ cell, tableKey, rowIndex, subIndex = null, selected, onSelect })
 // clause and its sourcing are reachable without a pill (Ben, 2026-09-13:
 // "you should be able to see the side bar and sourcing not just by
 // clicking the pills").
-function TermCell({ row, tableKey, rowIndex, subIndex = null, onSelect, detail = null }) {
-  const showCodes = useContext(CodesContext);
+function TermCell({ row, tableKey, rowIndex, subIndex = null, onSelect, detail = null, sub = false }) {
   const first = row.backing_facts[0] || null;
+  const subjectClass = sub ? 'font-ui text-[13px] font-medium text-[#33475E]' : SUBJECT;
   // Ben, 2026-09-14: "I don't like the 'see provision' behaviour - it
   // shouldn't show the provision x-refs but instead should open the side
   // bar". The control opens the row's first fact in the sidebar, the way
   // the subject does; no list of section references.
   const openFirst = () => onSelect({ tableKey, rowIndex, subIndex, columnId: null, componentId: null, componentIds: [], factId: first.fact_id });
   return (
-    <div className="font-ui text-[12.5px]">
+    <div className={`font-ui ${sub ? 'text-[13px]' : 'text-[14px]'}`}>
       {first ? (
-        <button type="button" data-testid="term-open" onClick={openFirst} className={`text-left underline-offset-2 hover:underline ${SUBJECT}`}>{row.subject}</button>
-      ) : <span className={SUBJECT}>{row.subject}</span>}
+        <button type="button" data-testid="term-open" onClick={openFirst} className={`text-left underline-offset-2 hover:underline ${subjectClass}`}>{row.subject}</button>
+      ) : <span className={subjectClass}>{row.subject}</span>}
       {/* A value or vocabulary column filled on this line alone folds in
           here as a trailing detail ("Notice period · 4 business days"):
           Ben, 2026-10-17, "'period' as a column is wasteful as it only
@@ -195,13 +218,13 @@ function TermCell({ row, tableKey, rowIndex, subIndex = null, onSelect, detail =
           onClick={() => onSelect({ tableKey, rowIndex, subIndex, columnId: detail.column_id, componentId: (detail.cell.component_ids || [])[0] || null, componentIds: detail.cell.component_ids || [], factId: (detail.cell.fact_ids || [])[0] || first?.fact_id || null, linkSection: detail.cell.link_section || null })}
           className={`ml-[4.5px] text-left font-ui ${TEXT} underline-offset-2 hover:underline`}
         >
-          {`· ${!showCodes && detail.cell?.kind === 'pill' && detail.cell.words ? detail.cell.words : detail.label}`}
+          {`· ${detail.label}`}
         </button>
       ))}
       {first ? (
         <button type="button" onClick={openFirst} className={`ml-[4.5px] ${QUIET}`} data-testid="see-provision">See provision</button>
       ) : null}
-      {row.subject_note ? <div className="mt-[1px] font-body text-[9.5px] text-[#6b6b6b]" data-testid="subject-note">{row.subject_note}</div> : null}
+      {row.subject_note ? <div className="mt-[1px] font-body text-[11px] text-[#6b6b6b]" data-testid="subject-note">{row.subject_note}</div> : null}
       {detail ? <DetailControl {...detail} /> : null}
     </div>
   );
@@ -245,10 +268,20 @@ function attributeLines(table, row) {
     }));
 }
 
+// Ben, 2026-11-01, on the interim covenants: "the visual hierarchy is
+// weird with the affirmative covenant, 'general terms.' Fix that". A table's
+// group header is a sub-heading of the section (13px semibold, the page's
+// navy, a little space above), not a grey caption the size of the column
+// labels. The lead note under it names an election ("Consideration type:
+// Mixed election. Each share receives, at the holder's election, one of the
+// options below.").
 function GroupHeader({ table }) {
-  if (!table.group_header) return null;
+  if (!table.group_header && !table.lead_note) return null;
   return (
-    <caption className="pb-[4.5px] text-left text-[9.5px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b]" data-testid="table-group-header">{table.group_header}</caption>
+    <caption className="pb-[6px] text-left" data-testid="table-group-header">
+      {table.group_header ? <span className="block font-sans text-[13px] font-semibold tracking-[-.01em] text-[#03203D]">{table.group_header}</span> : null}
+      {table.lead_note ? <span className={`mt-[2px] block font-body ${TEXT}`} data-testid="table-lead-note">{table.lead_note}</span> : null}
+    </caption>
   );
 }
 
@@ -335,7 +368,7 @@ function OtherProvisions({ groups, tableKey, onSelect, label = 'Other provisions
   // it, each with its own term, the way a row's sub-items are.
   return (
     <div className="mt-[9.5px] rounded-[2px] border border-[#dcdcdc]" data-testid="other-provisions" data-open={open || undefined}>
-      <button type="button" onClick={() => setOpen((current) => !current)} aria-expanded={open} className={`flex w-full items-center justify-between px-[7px] py-[4.5px] text-left text-[9.5px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b] ${open ? 'border-b border-[#ececec]' : ''}`} data-testid="other-provisions-toggle">
+      <button type="button" onClick={() => setOpen((current) => !current)} aria-expanded={open} className={`flex w-full items-center justify-between px-[7px] py-[4.5px] text-left text-[11px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b] ${open ? 'border-b border-[#ececec]' : ''}`} data-testid="other-provisions-toggle">
         <span>{label} ({count})</span>
         <span className="text-inkFaint">{open ? '▾' : '▸'}</span>
       </button>
@@ -367,9 +400,9 @@ function OtherProvisions({ groups, tableKey, onSelect, label = 'Other provisions
               if (group.branches.length === 1) return [line];
               return [line, ...group.branches.map((branch, branchIndex) => (
                 <tr key={`${key}-${branchIndex}`} className={ROW} data-testid="other-provision-branch-row">
-                  <td className={`${TD} pl-[18.5px] font-ui text-[12.5px] text-inkMid`} data-testid="other-provision-branch-term">{withSummary ? (branch.term || '') : <button type="button" onClick={() => select(branch.fact_id)} className="text-left underline-offset-2 hover:underline">{branch.term || ''}</button>}</td>
+                  <td className={`${TD} pl-[18.5px] font-ui text-[13px] text-inkMid`} data-testid="other-provision-branch-term">{withSummary ? (branch.term || '') : <button type="button" onClick={() => select(branch.fact_id)} className="text-left underline-offset-2 hover:underline">{branch.term || ''}</button>}</td>
                   {withSummary ? <td className={`${TD} pl-[18.5px]`}>
-                    <button type="button" data-testid="other-provision-branch" onClick={() => select(branch.fact_id)} className="text-left font-body text-[12.5px] leading-relaxed text-inkMid underline-offset-2 hover:underline">{branch.text}</button>
+                    <button type="button" data-testid="other-provision-branch" onClick={() => select(branch.fact_id)} className={`text-left font-body ${SUB_TEXT} underline-offset-2 hover:underline`}>{branch.text}</button>
                   </td> : null}
                 </tr>
               ))];
@@ -386,7 +419,7 @@ function OtherProvisions({ groups, tableKey, onSelect, label = 'Other provisions
 function FactsWithoutReadout({ entries, sectionKey, onSelect }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="mt-[9.5px] text-[9.5px] font-ui text-[#6b6b6b]" data-testid="facts-without-readout">
+    <div className="mt-[9.5px] text-[11px] font-ui text-[#6b6b6b]" data-testid="facts-without-readout">
       <button type="button" onClick={() => setOpen((current) => !current)} className={LINK}>
         {entries.length} fact{entries.length === 1 ? '' : 's'} without a coded readout · {open ? 'hide' : 'see provisions'}
       </button>
@@ -411,7 +444,7 @@ function FactsWithoutReadout({ entries, sectionKey, onSelect }) {
 function HeldFacts({ entries, sectionKey, onSelect }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="mt-[6px] text-[9.5px] font-ui text-[#6b6b6b]" data-testid="held-facts">
+    <div className="mt-[6px] text-[11px] font-ui text-[#6b6b6b]" data-testid="held-facts">
       <button type="button" onClick={() => setOpen((current) => !current)} className={LINK}>
         {entries.length} fact{entries.length === 1 ? '' : 's'} held by validation · {open ? 'hide' : 'see why'}
       </button>
@@ -438,26 +471,14 @@ const DEFINED_TERMS_KEY = 'defined-terms';
 // an icon at the left, the title at 19px medium in the tint's darker
 // colour and a chevron at the far right; still the button that collapses
 // the section (the chevron turns when it is collapsed).
-// Work package 26 (plan finding (232), 2026-10-22). Ben, on the placement
-// of the representation qualifiers: "Option a on placement": the article's
-// REPRESENTATION_QUALIFICATION facts are extracted once, on the
-// introduction node ((207)), and the page joins them above each
-// representation section's table by code (lib/product/table-view.js
-// articleQualifications), in the page's quiet style, only when the
-// introduction has them; each line's words open the fact in the sidebar.
-function ArticleQualifications({ entries, tableKey, onSelect }) {
-  if (!entries || entries.length === 0) return null;
-  return (
-    <div className="mb-[7px] space-y-[2px] text-[9.5px] font-ui text-[#6b6b6b]" data-testid="article-qualifications" data-table-key={tableKey}>
-      {entries.map((entry) => (
-        <p key={entry.fact_id} data-testid="article-qualification">
-          {`${entry.article ? `Article ${entry.article}` : 'The article'} introduction, qualifying every representation below: `}
-          <button type="button" data-testid="article-qualification-words" onClick={() => onSelect({ tableKey, rowIndex: null, subIndex: null, columnId: null, componentId: null, componentIds: [], factId: entry.fact_id })} className="text-left text-[#1f1f1f] underline-offset-2 hover:underline">{entry.text}</button>
-        </p>
-      ))}
-    </div>
-  );
-}
+// Work package 26 (plan finding (232), 2026-10-22) put the article's
+// REPRESENTATION_QUALIFICATION facts above each representation table. Ben,
+// 2026-11-01: "Directly under reps and warranties, you have this text ...
+// Get rid of that because that's what you have under the general
+// exceptions, and you need it twice." The block is gone from the page; the
+// General Exceptions table (lib/product/table-view.js splitLeadingTable)
+// carries the same facts, and the view still exposes them as
+// table.article_qualifications for other surfaces.
 
 function SectionIcon({ tint }) {
   return tint === 'blue' ? (
@@ -475,7 +496,7 @@ function SectionHeading({ title, collapsed, onToggle, tint = 'green' }) {
   return (
     <button type="button" onClick={onToggle} aria-expanded={!collapsed} className={`flex min-h-[38px] w-full items-center gap-[7px] px-[14px] py-[8px] text-left ${TINTS[tint].band}`} data-testid="section-heading">
       <SectionIcon tint={tint} />
-      <h3 className="flex-1 font-sans text-[15px] font-semibold leading-snug tracking-[-.02em]">{title}</h3>
+      <h3 className="flex-1 font-sans text-[17px] font-semibold leading-snug tracking-[-.02em]">{title}</h3>
       <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={`shrink-0 transition-transform ${collapsed ? '-rotate-90' : ''}`}>
         <path d="M6 9l6 6 6-6" />
       </svg>
@@ -494,7 +515,7 @@ function DefinedTermRow({ term }) {
         <button type="button" onClick={() => setOpen((current) => !current)} aria-expanded={open} className={`text-left underline-offset-2 hover:underline ${SUBJECT}`} data-testid="defined-term-toggle">{term.term}</button>
         {term.section_reference ? <span className={`ml-[4.5px] ${QUIET}`}>§ {term.section_reference}</span> : null}
       </td>
-      <td className={`${TD} font-body text-[12.5px] leading-relaxed text-inkMid`}>
+      <td className={`${TD} font-body ${TEXT}`}>
         {open ? (term.definition || <span className="text-inkFaint">Definition not in the closure</span>) : <button type="button" onClick={() => setOpen(true)} className={LINK}>Show</button>}
         {open && term.note ? <div className={`mt-[2px] ${QUIET}`} data-testid="defined-term-note">{term.note}</div> : null}
       </td>
@@ -525,10 +546,18 @@ function DefinedTermsSection({ terms, collapsed, onToggle }) {
 // the DetailControl under the subject; the state is the row's own, so
 // opening one row's detail leaves the others closed. `initialOpen` lets a
 // caller (and the render tests) start every row open.
-function RowGroup({ table, row, rowIndex, selection, onSelect, initialOpen = false }) {
-  const [open, setOpen] = useState(!!initialOpen);
+// Ben, 2026-11-01, on the equity awards table: "Company stock option: I'd
+// show out-of-the-money as an exception, indented below in a new row, but
+// it'll be a little bit smaller, indented underneath company stock option."
+// A table whose sub-items are exceptions (sub_rows_label) starts with them
+// open, indented and a size smaller; every other table's sub-items (the
+// limbs of a representation) stay behind "More detail" (Ben, 2026-09-14).
+function RowGroup({ table, row, rowIndex, selection, onSelect, initialOpen = false, columns = null }) {
+  const [open, setOpen] = useState(!!initialOpen || !!table.sub_rows_label);
   const rowSelected = selection?.tableKey === table.table_key && selection?.rowIndex === rowIndex;
   const subRows = row.sub_rows || [];
+  const shownColumns = columns || table.columns;
+  const shownIds = new Set(shownColumns.map((column) => column.column_id));
   const detail = subRows.length ? { count: subRows.length, label: table.sub_rows_label || null, open, onToggle: () => setOpen((current) => !current) } : null;
   // A click selects one line: the sub-item clicked, or the row's
   // own line, never every line of the row (Ben, 2026-09-13:
@@ -539,15 +568,20 @@ function RowGroup({ table, row, rowIndex, selection, onSelect, initialOpen = fal
       key={key}
       data-testid={sub ? 'table-sub-row' : 'table-row'}
       data-selected={rowSelected || undefined}
-      className={`${ROW} ${rowSelected ? 'bg-accentDim' : ''}`}
+      className={`${ROW} ${rowSelected ? 'bg-accentDim' : ''} ${sub ? 'text-[13px]' : ''}`}
     >
       {table.term_column ? (
         <td className={`${TD} ${sub ? 'pl-[18.5px] text-inkMid' : ''}`}>
-          <TermCell row={entry} tableKey={table.table_key} rowIndex={rowIndex} subIndex={subIndex} onSelect={onSelect} detail={sub ? null : detail} />
+          <TermCell row={entry} tableKey={table.table_key} rowIndex={rowIndex} subIndex={subIndex} onSelect={onSelect} detail={sub ? null : detail} sub={sub} />
         </td>
       ) : null}
-      {entry.cells.map((cell, cellIndex) => (
-        <td key={cell.column_id} className={TD}>
+      {/* Ben, 2026-11-01, on the equity awards table: "Warrants: are there
+          only warrants, or no warrants or whatever?" A row with nothing
+          coded says what its fact says, across the columns. */}
+      {!sub && entry.summary_fallback ? (
+        <td className={`${TD} font-body ${TEXT}`} colSpan={shownColumns.length} data-testid="row-summary-fallback">{entry.summary_fallback}</td>
+      ) : entry.cells.filter((cell) => shownIds.has(cell.column_id)).map((cell, cellIndex) => (
+        <td key={cell.column_id} className={`${TD} ${sub ? SUB_TEXT : ''}`}>
           <Cell
             cell={cell}
             tableKey={table.table_key}
@@ -569,13 +603,47 @@ function RowGroup({ table, row, rowIndex, selection, onSelect, initialOpen = fal
   );
 }
 
+// Ben, 2026-11-01, on the Skechers per-share table: "there's an election.
+// It's this thing or it's this thing." Rows carrying an election_group are
+// set out under one heading line per option, in the order the options first
+// appear; rows of no option follow.
+function groupedRows(rows) {
+  const groups = [];
+  const rest = [];
+  rows.forEach((row, rowIndex) => {
+    if (!row.election_group) { rest.push({ row, rowIndex }); return; }
+    let group = groups.find((candidate) => candidate.label === row.election_group);
+    if (!group) { group = { label: row.election_group, rows: [] }; groups.push(group); }
+    group.rows.push({ row, rowIndex });
+  });
+  return { groups, rest };
+}
+
 function Table({ table, selection, onSelect, initialSubRowsOpen = false }) {
   // Ben, 2026-09-14: "make negative covenant list collapsable (if it is
   // within the covenant section)". A table marked collapsible_rows folds its
   // rows behind a toggle above the header row; open to start.
   const [rowsOpen, setRowsOpen] = useState(true);
+  const showSpecifics = useContext(SpecificsContext);
   if (table.layout === 'attribute grid') return <AttributeGrid table={table} selection={selection} onSelect={onSelect} />;
-  const span = table.columns.length + (table.term_column ? 1 : 0);
+  // Ben, 2026-11-01: the as-drafted column stays behind "Show specifics".
+  const columns = table.columns.filter((column) => !column.specifics || showSpecifics);
+  const span = columns.length + (table.term_column ? 1 : 0);
+  const { groups, rest } = groupedRows(table.rows);
+  const renderRow = (row, rowIndex) => {
+    if (row.absent) {
+      return (
+        <tr key={`${row.subject}-${rowIndex}`} className={ROW} data-testid="table-row" data-absent="true" {...(row.held ? { 'data-held': 'true' } : {})}>
+          {table.term_column ? (
+            <td className={TD}><span className={SUBJECT}>{row.subject}</span></td>
+          ) : null}
+          {/* Work package 16: a row whose only fact is held by validation carries its own words (absent_label) in place of the table's absent label. */}
+          <td className={`${TD} font-ui text-[14px] text-[#6b6b6b]`} colSpan={columns.length} data-testid="table-absent">{row.absent_label || table.absent_row_label}</td>
+        </tr>
+      );
+    }
+    return <RowGroup key={`${row.subject}-${rowIndex}`} table={table} row={row} rowIndex={rowIndex} selection={selection} onSelect={onSelect} initialOpen={initialSubRowsOpen} columns={columns} />;
+  };
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse text-left" data-testid="provision-table" data-table-key={table.table_key}>
@@ -584,7 +652,7 @@ function Table({ table, selection, onSelect, initialSubRowsOpen = false }) {
           <thead>
             <tr>
               <td colSpan={span} className="pb-[4.5px]">
-                <button type="button" onClick={() => setRowsOpen((current) => !current)} aria-expanded={rowsOpen} className={`flex w-full items-center justify-between text-left text-[9.5px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b]`} data-testid="rows-toggle">
+                <button type="button" onClick={() => setRowsOpen((current) => !current)} aria-expanded={rowsOpen} className={`flex w-full items-center justify-between text-left text-[11px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b]`} data-testid="rows-toggle">
                   <span>{rowsOpen ? 'Hide' : 'Show'} {table.rows.length} {table.rows.length === 1 ? 'row' : 'rows'}</span>
                   <span className="text-inkFaint">{rowsOpen ? '▾' : '▸'}</span>
                 </button>
@@ -597,31 +665,24 @@ function Table({ table, selection, onSelect, initialSubRowsOpen = false }) {
             {table.term_column ? (
               <th className={TH}>{table.term_column.header}</th>
             ) : null}
-            {table.columns.map((column) => (
+            {columns.map((column) => (
               <th key={column.column_id} className={TH}>{column.header}</th>
             ))}
           </tr>
         </thead>
         <tbody hidden={table.collapsible_rows ? !rowsOpen : undefined}>
-          {table.rows.map((row, rowIndex) => {
-            if (row.absent) {
-              return (
-                <tr key={`${row.subject}-${rowIndex}`} className={ROW} data-testid="table-row" data-absent="true" {...(row.held ? { 'data-held': 'true' } : {})}>
-                  {table.term_column ? (
-                    <td className={TD}><span className={SUBJECT}>{row.subject}</span></td>
-                  ) : null}
-                  {/* Work package 16: a row whose only fact is held by validation carries its own words (absent_label) in place of the table's absent label. */}
-                  <td className={`${TD} font-ui text-[12.5px] text-[#6b6b6b]`} colSpan={table.columns.length} data-testid="table-absent">{row.absent_label || table.absent_row_label}</td>
-                </tr>
-              );
-            }
-            return <RowGroup key={`${row.subject}-${rowIndex}`} table={table} row={row} rowIndex={rowIndex} selection={selection} onSelect={onSelect} initialOpen={initialSubRowsOpen} />;
-          })}
+          {groups.flatMap((group) => [
+            <tr key={`group-${group.label}`} data-testid="election-group" className="border-b border-[#DCE3E1]">
+              <td colSpan={span} className={`${TD} pb-[4px] pt-[12px] font-ui text-[14px] font-semibold text-[#03203D]`}>{group.label}</td>
+            </tr>,
+            ...group.rows.map(({ row, rowIndex }) => renderRow(row, rowIndex)),
+          ])}
+          {rest.map(({ row, rowIndex }) => renderRow(row, rowIndex))}
         </tbody>
         {table.combined_definition ? (
           <tfoot>
             <tr data-testid="combined-definition">
-              <td colSpan={table.columns.length + (table.term_column ? 1 : 0)} className={FOOT}>
+              <td colSpan={span} className={FOOT}>
                 <div className={FOOT_LABEL}>{table.combined_definition.label}</div>
                 <div className={`mt-[2.5px] font-body ${TEXT}`}>
                   <span className="font-medium">“{table.combined_definition.term}”</span>
@@ -642,7 +703,7 @@ function Table({ table, selection, onSelect, initialSubRowsOpen = false }) {
         {table.footer && table.footer.entries.length ? (
           <tfoot>
             <tr data-testid="table-footer">
-              <td colSpan={table.columns.length + (table.term_column ? 1 : 0)} className={FOOT}>
+              <td colSpan={span} className={FOOT}>
                 <div className={FOOT_LABEL}>{table.footer.label}</div>
                 {table.footer.entries.map((entry, index) => (
                   <div key={`${entry.fact_id}-${index}`} className={`mt-[2.5px] font-body ${TEXT}`}>
@@ -727,8 +788,11 @@ export default function ProvisionTables({
   // Work package 12: whether the code pills show (one page-wide setting);
   // the default is SHOW_CODES_BY_DEFAULT, Ben's to decide.
   initialShowCodes = SHOW_CODES_BY_DEFAULT,
+  // Ben, 2026-11-01: the as-drafted columns behind "Show specifics"; off to start.
+  initialShowSpecifics = false,
 }) {
   const [showCodes, setShowCodes] = useState(initialShowCodes);
+  const [showSpecifics, setShowSpecifics] = useState(!!initialShowSpecifics);
   const factsById = useMemo(() => new Map((facts || []).map((fact) => [factIdOf(fact), fact])), [facts]);
   const [selection, setSelection] = useState(initialSelection);
   // Each section collapses on its heading; the bar above offers collapse /
@@ -770,7 +834,8 @@ export default function ProvisionTables({
   const tabClass = (current) => `${TAB} ${current ? 'border-[#dcdcdc] bg-[#f3f3f3] text-[#1f1f1f]' : 'border-transparent text-[#6b6b6b] hover:text-[#1f1f1f]'}`;
   return (
     <CodesContext.Provider value={showCodes}>
-    <div className="flex flex-wrap gap-[18.5px] lg:flex-nowrap" data-testid="provision-tables" data-show-codes={showCodes ? 'true' : 'false'}>
+    <SpecificsContext.Provider value={showSpecifics}>
+    <div className="flex flex-wrap gap-[18.5px] lg:flex-nowrap" data-testid="provision-tables" data-show-codes={showCodes ? 'true' : 'false'} data-show-specifics={showSpecifics ? 'true' : 'false'}>
       {/* The sidebar is fixed to the viewport's right edge (Deal Storylines;
           Ben, 2026-09-14) and the page keeps its width when it opens. The
           tables used to take 406px of right padding while a fact was
@@ -784,7 +849,8 @@ export default function ProvisionTables({
         <div className="flex items-center gap-[4.5px]" data-testid="section-toggles">
           <button type="button" onClick={() => setAll(false)} disabled={collapsed.size === 0} className={tabClass(collapsed.size === 0)}>Expand all</button>
           <button type="button" onClick={() => setAll(true)} disabled={allCollapsed} className={tabClass(allCollapsed)}>Collapse all</button>
-          <button type="button" onClick={() => setShowCodes((current) => !current)} aria-pressed={showCodes} className={`ml-auto ${tabClass(showCodes)}`} data-testid="codes-toggle">{showCodes ? 'Hide codes' : 'Show codes'}</button>
+          <button type="button" onClick={() => setShowSpecifics((current) => !current)} aria-pressed={showSpecifics} className={`ml-auto ${tabClass(showSpecifics)}`} data-testid="specifics-toggle">{showSpecifics ? 'Hide specifics' : 'Show specifics'}</button>
+          <button type="button" onClick={() => setShowCodes((current) => !current)} aria-pressed={showCodes} className={tabClass(showCodes)} data-testid="codes-toggle">{showCodes ? 'Hide codes' : 'Show codes'}</button>
         </div>
         {tableView.sections.map((section) => {
           const isCollapsed = collapsed.has(section.section_key);
@@ -796,7 +862,6 @@ export default function ProvisionTables({
                   <div className="space-y-[18.5px]">
                     {section.tables.map((table) => (
                       <div key={table.table_key}>
-                        <ArticleQualifications entries={table.article_qualifications} tableKey={table.table_key} onSelect={setSelection} />
                         <Table table={table} selection={selection} onSelect={setSelection} initialSubRowsOpen={initialSubRowsOpen} />
                         {table.other_provisions?.length ? (
                           <OtherProvisions groups={table.other_provisions} tableKey={table.table_key} onSelect={setSelection} label={table.other_provisions_label || 'Other provisions'} />
@@ -838,6 +903,7 @@ export default function ProvisionTables({
         />
       ) : null}
     </div>
+    </SpecificsContext.Provider>
     </CodesContext.Provider>
   );
 }

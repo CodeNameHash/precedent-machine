@@ -12989,6 +12989,16 @@ Complete all mechanical work before asking the smallest exact question.
 
 ## 12. Manager `/goal` prompt
 
+Update, 2026-11-01: the manager now runs on Claude Code Remote with the
+Vercel and Supabase MCP tools (the DeepSeek paragraph below does not apply
+to it). Read findings (303) to (308) before the prompt: three deals are
+extracted on the Sonnet default, Ben's read of the page is applied as rules
+in (308), and the table shapes are edited through
+scripts/product/table-shapes-ben-2026-11-01.js and the pass-3 builder,
+never the committed JSON. Waiting on Ben: his read of the pages after
+(308), the two questions put to him there, the compute upgrade (micro to
+small), and which deals to publish.
+
 Current wording, 2026-10-24. Superseded: the 2026-09-04 wording (a Sol
 implementer at Phase 0) and the 2026-10-23 wording (a manager on Claude Code
 Remote sessions with MCP triggers). The `git` state, the runs and the open
@@ -13270,3 +13280,137 @@ still the DeepSeek-flash Apogee of (290). Next: the review of Apogee
 5fcf3b0e for Ben's read (the previous run's review was initialised and
 driven by scripts/product/drive-review.js, (290)); Ben's decisions on the
 compute (micro to small) and on which deals to publish.
+
+**(308) 2026-11-01: Ben's read of the provisions page, applied as rules
+across every table.** Ben, after reading the Apogee and Skechers pages of
+the Sonnet runs ((304), (306)), gave one block of feedback and the terms of
+the work: "No more feedback. Just go and do these, and make sure all these
+changes are systemic, right? Don't just fix one. Create changes that would
+go through all three of them. Think deeply before you make the changes."
+Every change below is a rule in the shapes
+(scripts/product/table-shapes-ben-2026-11-01.js, applied by the pass-3
+builder, so the committed table-shapes.v3.json carries it), in the view
+(lib/product/table-view.js) or in the page
+(components/product/ProvisionTables.jsx), and applies to every agreement
+and to the released deal page as well as the review preview. His words, and
+what each became:
+
+- "The section under the title that says 'Section with no fat extracted'
+  should go at the bottom of this whole exercise, of the whole sets of
+  tables." The block renders after the last section card.
+- "Visually, if you look at structure mechanics, I think all the text is
+  maybe small or not using the space well enough." Cells and subjects 14px
+  (were 12.5), header labels 10.5 (9), section titles 17 (15), quiet links
+  10 (8.5), sub-items 13; widths and paddings unchanged.
+- "In this first section, structure mechanics, I just show deal structure,
+  merger form, and then just say 'Other provisions.' I put the other ones
+  into 'Other provisions' and just show those too." `headline_columns` on
+  the grid; every other filled attribute line is an Other provisions line
+  (moveHeadlineRest). Apogee: two lines and 25 other provisions.
+- "In consideration, why is consideration type empty? We know it's cash
+  below. Phrase it right. Withholding without interest: those should go
+  into 'Other provisions.' What are you trying to get at with 'without
+  interest'? I'm not quite sure." The type is read from the per-share forms
+  when no fact codes it (`type_from_components`, deriveConsiderationType:
+  Apogee now "All cash", marked derived); the grid keeps the type and the
+  appraisal line; withholding and without-interest are Other provisions.
+- "On the consideration per share, I think that's fine. ... In cash in
+  consideration, you got component, and then the next thing is form cash.
+  It's a bit weird, and the 'per' is kind of weird as well. Think about
+  that." The form names the row and is no longer a cell
+  (`show_row_column: false`); Per is a `suffix_of` the amount: "$135.11 per
+  share of Company Common Stock".
+- "In terms of these pills, we don't have to use pills. I'm not sure
+  they're necessarily the best approach for these things because it makes
+  it a bit hard to read." Codes off by default on every surface (the
+  released page too): a coded cell is its answer in the schema's words, set
+  as text; several readings stack; the cited words ride on the title;
+  "Show codes" brings the chips up. This supersedes the 2026-10-17 reading
+  (the cited fragment as the cell) and the 2026-10-27 pills-on default of
+  the released page.
+- "Warrants: are there only warrants, or no warrants or whatever?" A row
+  with nothing coded says what its fact says across the columns
+  (summary_fallback).
+- "Company stock option: I'd show out-of-the-money as an exception,
+  indented below in a new row, but it'll be a little bit smaller, indented
+  underneath company stock option." Exceptions sub-rows (sub_rows_label)
+  open to start, indented, 13px; representation limbs stay behind "More
+  detail".
+- "Directly under reps and warranties, you have this text ... Get rid of
+  that because that's what you have under the general exceptions, and you
+  need it twice. Have [a] separate table first. It's like general exception
+  ... SEC filings, disclosure, which makes sense. There isn't a bring-down
+  standard for the exceptions, though, so those columns should be empty.
+  The qualifiers: it's not really a qualifier, right? It's more like, I
+  don't know, a different word." The article-qualification block is gone
+  from the page; the General Exceptions and Knowledge rows are the first
+  table of each representations section ("GENERAL EXCEPTIONS": Exception /
+  Terms / Lookback, no bring-down column; splitLeadingTable, `leading_table`).
+- "If you look at authority and enforceability, you hit more detail. You
+  have two bring-downs: 'true and all material respect' and 'true and all
+  respect.' I don't think it can be both." The conditions clause "true and
+  correct in all material respects" was two readings cross-referring to one
+  section; the qualified reading governs when every section the unqualified
+  one cites is also cited by a qualified reading (resolveBringDownConflict;
+  Capitalization keeps both because 3.3(d) is cited alone).
+- "Capitalization: I don't like this 'as drafted' column ... Isn't that
+  the whole thing when you click on a row?"; "'Material contracts': again
+  ... If you want to have specifics, I get it, but I wouldn't in this one
+  ... Maybe a little toggle which says 'show specifics.' Then I wouldn't
+  have both."; "'Interim operating covenants' ... Just have one, right? Not
+  both."; "'Negative covenant': same position ... it's often a bit more
+  important to see it, but again, do the same thing and say 'see more
+  detail.'"; "'No short call mechanics': again, I don't know why we have
+  the 'as drafted' column, and that sort of goes all the way through." One
+  page-wide "Show specifics" control, off to start; an as-drafted column is
+  `specifics` whenever the table has any other filled column, and stays
+  (headed "Summary") only when it is the table's sole content
+  (markSpecifics). A pill is no longer dropped as "stated in the summary"
+  when that summary is hidden, which is why the fiduciary Board
+  determination standard now reads "Inconsistent with fiduciary duties" ("the
+  'would' is the important part there ... stuff that you don't pick up").
+- "'Affirmative covenants': the visual hierarchy is weird with the
+  affirmative covenant, 'general terms.' Fix that". A table's group header
+  is a 13px semibold sub-heading in the page's navy, not a grey caption.
+- "'Intervening event mechanics' has 5 business days in the column with
+  the matching period. Why isn't that in the next column? You get it right
+  in 'superior proposal.'" A folded value takes the line's empty answer
+  cell when it has one, and trails the subject only when every answer cell
+  is filled. "I'd always put intervening event after superior proposal."
+  Superior Proposal now precedes Intervening Event.
+- "I don't think you need all the detail columns immediately: 'votes,'
+  'approvals.' It's weird to have 14 calendar days, then a separate column
+  after the agreement date. I think those two things need to be shown
+  together." The anchor is a `suffix_of` the period: "14 calendar days
+  after the agreement date".
+- "[Registration] rights. Need a summary here. You don't need it as
+  drafted." `summary_only`: the summary shows, the obligor, standard and
+  by-when columns sit behind "Show specifics".
+- "I think you have to make it so clear it's an election. You do say
+  'mixed election.' In 'consideration per share,' I think it needs to be
+  really clear: there's an election. It's this thing or it's this thing.
+  I'm even thinking maybe put 'consideration type: mixed election'
+  immediately below it." On an election deal the per-share table opens
+  with "Consideration type: Mixed election. Each share receives, at the
+  holder's election, one of the options below." and its rows are set out
+  under one heading per option ("Mixed election: $57 in cash per share":
+  Cash $57, Acquirer stock one Parent Unit; "Cash election: $63 in cash per
+  share"), matched by the row's defined term (electionGroupsFor).
+- "capitalization. I stick it right at the bottom, like it wouldn't have
+  its own section ... I put it right at the bottom, above definition or
+  below definition." Capitalization is the last section, above Defined
+  Terms, its own rail group.
+
+Not done, said plainly: "You need to be better here at summarizing how the
+proration works, when the deadlines are" and "'Preserve business
+relationships': I'd probably include, in the right-hand column, the
+assets, business organizations, that listing" are extraction-side (the
+summaries the model writes); the page now shows the election mechanics
+summaries it has, nothing more. "Antitrust remedy divestiture cap. I'd say
+'no cap required'" and "We should pick up the early termination, which
+shows in other regulatory filings. We should pick it up somewhere else.
+Don't." are put back to Ben as questions in the reply of 2026-11-01. The
+three deals' table views were rebuilt and read line by line before and
+after (scratchpad dumps); the page was rendered and screenshotted for
+Apogee and Skechers. Section 9 check: `npm run test:active`, result
+recorded in the commit.

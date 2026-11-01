@@ -243,7 +243,13 @@
           },
           "layout": "attribute grid",
           "subject_label": "The deal",
-          "guidance": "One row for the whole agreement. dealStructure codes the transaction as a whole from the merger provisions: ONE_STEP_MERGER when one merger sub merges with and into the Company (or the Company into the merger sub) and no second merger follows; DOUBLE_MERGER when a second-step merger of the surviving corporation follows; TENDER_OFFER_BACK_END_MERGER when an offer precedes the merger. mergerFormStep1 codes the form of the first (or only) merger from the \"with and into\" words and which entity survives; the step-2 columns are used only for a DOUBLE_MERGER. Every fact of the family contributes the cells it can; the fact stating the merger itself carries dealStructure and mergerFormStep1."
+          "guidance": "One row for the whole agreement. dealStructure codes the transaction as a whole from the merger provisions: ONE_STEP_MERGER when one merger sub merges with and into the Company (or the Company into the merger sub) and no second merger follows; DOUBLE_MERGER when a second-step merger of the surviving corporation follows; TENDER_OFFER_BACK_END_MERGER when an offer precedes the merger. mergerFormStep1 codes the form of the first (or only) merger from the \"with and into\" words and which entity survives; the step-2 columns are used only for a DOUBLE_MERGER. Every fact of the family contributes the cells it can; the fact stating the merger itself carries dealStructure and mergerFormStep1.",
+          "headline_columns": [
+            "dealStructure",
+            "mergerFormStep1",
+            "mergerFormStep2"
+          ],
+          "headline_reason": "Ben, 2026-11-01, on the provisions page: \"I just show deal structure, merger form, and then just say 'Other provisions.' I put the other ones into 'Other provisions' and just show those too.\" Every other attribute line of the grid is an Other provisions line (lib/product/table-view.js moveHeadlineRest)."
         }
       ],
       "print_pages": [
@@ -417,7 +423,19 @@
             "WITHHOLDING",
             "EXCLUSION"
           ],
-          "guidance": "One row for the whole agreement. The consideration-type code describes the package as a whole (cash, stock, cash plus CVR, an election). An APPRAISAL_LINK fact carries no cells at all (its line is derived); the consideration type is coded from the CONSIDERATION_PACKAGE fact (the Merger Consideration definition or conversion clause), never from an appraisal, exclusion or Merger Sub share fact."
+          "guidance": "One row for the whole agreement. The consideration-type code describes the package as a whole (cash, stock, cash plus CVR, an election). An APPRAISAL_LINK fact carries no cells at all (its line is derived); the consideration type is coded from the CONSIDERATION_PACKAGE fact (the Merger Consideration definition or conversion clause), never from an appraisal, exclusion or Merger Sub share fact.",
+          "headline_columns": [
+            "considerationType",
+            "appraisalRights"
+          ],
+          "headline_reason": "Ben, 2026-11-01, on the provisions page: \"Withholding without interest: those should go into 'Other provisions.' What are you trying to get at with 'without interest'? I'm not quite sure.\"",
+          "type_from_components": {
+            "column_id": "considerationType",
+            "components_table_key": "consideration-components",
+            "form_column": "form",
+            "options_table_key": "consideration-election-options",
+            "reason": "Ben, 2026-11-01, on the provisions page: \"why is consideration type empty? We know it's cash below. Phrase it right.\" When no fact codes the type, the page reads it from the per-share forms (and the election options) below (lib/product/table-view.js deriveConsiderationType)."
+          }
         },
         {
           "table_key": "consideration-components",
@@ -534,7 +552,10 @@
                   "addition": true,
                   "reason": "Ben's decision 2026-09-14 (decision 34): no column shows a cited fragment."
                 }
-              ]
+              ],
+              "display": "suffix_of",
+              "suffix_of": "amount",
+              "display_reason": "Ben, 2026-11-01, on the provisions page: \"the 'per' is kind of weird as well. Think about that.\" Said after the amount (\"$135.11 per share of Company Common Stock\"), never a cell of its own."
             },
             {
               "column_id": "definedAs",
@@ -586,6 +607,13 @@
               "CASH_ELECTION": "CASH",
               "STOCK_ELECTION": "PARENT_STOCK"
             }
+          },
+          "show_row_column": false,
+          "show_row_column_reason": "Ben, 2026-11-01, on the provisions page: \"you got component, and then the next thing is form cash. It's a bit weird\". The form names the row; it is not a cell as well.",
+          "row_column_words_fill": "amount",
+          "row_column_words_fill_reason": "A stock leg whose ratio is words (\"one Parent Unit\") shows those words where the amount would be, so the row is never blank.",
+          "election_note": {
+            "reason": "Ben, 2026-11-01, on the provisions page: \"I think you have to make it so clear it's an election ... maybe put 'consideration type: mixed election' immediately below it. That's where you put the per-share action mechanic.\" (lib/product/table-view.js electionGroupsFor)"
           }
         },
         {
@@ -880,7 +908,9 @@
           "no_sub_items": true,
           "addition": true,
           "reason": "Ben, 2026-10-18 (plan finding (163)): \"reg rights I think goes with consideration (but at bottom)\"; on sub-items (plan finding (166)): \"are these from a reg rights agreement? I wouldn't go into anywhere near this depth in this product\". NCS generation 5, 5.17: the Specified Stockholders' registration rights came back as covenants spread over five rows of the general covenants table.",
-          "guidance": "Every covenant of a registration-rights package for the stock consideration (the resale registration statement or shelf, keeping it effective and amending it, the holders' information and approval rights, the indemnities, the expenses, Rule 144 and legend removal, the listing and reporting covenants for the resale period) is on this table's one row, one fact per operative unit, with no row_detail: the row is present or absent, its facts behind it; the code moves a general covenant whose words name the Registration Statement, Registrable Securities, a prospectus, Rule 144 or Rule 415 here from the general covenants table (work package 18, 2026-10-18). A deal without registration rights shows no such table."
+          "guidance": "Every covenant of a registration-rights package for the stock consideration (the resale registration statement or shelf, keeping it effective and amending it, the holders' information and approval rights, the indemnities, the expenses, Rule 144 and legend removal, the listing and reporting covenants for the resale period) is on this table's one row, one fact per operative unit, with no row_detail: the row is present or absent, its facts behind it; the code moves a general covenant whose words name the Registration Statement, Registrable Securities, a prospectus, Rule 144 or Rule 415 here from the general covenants table (work package 18, 2026-10-18). A deal without registration rights shows no such table.",
+          "summary_only": true,
+          "summary_only_reason": "Ben, 2026-11-01, on the provisions page: \"[Registration] rights. Need a summary here. You don't need it as drafted.\""
         }
       ],
       "print_pages": [
@@ -1492,6 +1522,25 @@
                 "row_detail": "No default"
               }
             }
+          },
+          "leading_table": {
+            "table_key": "representations-qualifiers-table-exceptions",
+            "group_header": "GENERAL EXCEPTIONS",
+            "from_rows": [
+              "General Exceptions",
+              "Knowledge"
+            ],
+            "rows_from_sub_rows": [
+              "General Exceptions"
+            ],
+            "drop_columns": [
+              "bringdown"
+            ],
+            "column_headers": {
+              "materiality": "Terms"
+            },
+            "term_header": "Exception",
+            "reason": "Ben, 2026-11-01, on the provisions page: \"have a separate table first ... general exception ... SEC filings, disclosure ... There isn't a bring-down standard for the exceptions, though, so those columns should be empty. The qualifiers: it's not really a qualifier, right?\" (lib/product/table-view.js splitLeadingTable)"
           }
         }
       ],
@@ -1876,7 +1925,26 @@
             "VALID_ISSUANCE_STATUS",
             "CAPITALISATION_ABSENCE",
             "PARTNERSHIP_OR_SUBSIDIARY_EQUITY"
-          ]
+          ],
+          "leading_table": {
+            "table_key": "parent-representations-qualifiers-table-exceptions",
+            "group_header": "GENERAL EXCEPTIONS",
+            "from_rows": [
+              "General Exceptions",
+              "Knowledge"
+            ],
+            "rows_from_sub_rows": [
+              "General Exceptions"
+            ],
+            "drop_columns": [
+              "bringdown"
+            ],
+            "column_headers": {
+              "materiality": "Terms"
+            },
+            "term_header": "Exception",
+            "reason": "Ben, 2026-11-01, on the provisions page: \"have a separate table first ... general exception ... SEC filings, disclosure ... There isn't a bring-down standard for the exceptions, though, so those columns should be empty. The qualifiers: it's not really a qualifier, right?\" (lib/product/table-view.js splitLeadingTable)"
+          }
         }
       ],
       "print_pages": [
@@ -1886,166 +1954,6 @@
       "rail": {
         "group": "Representations",
         "label": "Buyer / Parent",
-        "hex": "#3F8A6A"
-      }
-    },
-    {
-      "section_key": "capitalization",
-      "title": "Capitalization",
-      "legacy_config": "components/review/table-configs/representations-qualifiers.config.js",
-      "note": "Added 2026-09-14 (Ben: \"sure add a table\"); the old app carried the capitalization counts inside the Capitalization; Subsidiaries representation row.",
-      "v2_family_keys": [
-        {
-          "key": "CAPITALISATION",
-          "confidence": "high"
-        }
-      ],
-      "tables": [
-        {
-          "table_key": "capitalization-table",
-          "group_header": null,
-          "term_column": {
-            "header": "Security class",
-            "source": "subject",
-            "fill_from": [
-              "TERM",
-              "OBJECT",
-              "DEFINED_TERM"
-            ]
-          },
-          "columns": [
-            {
-              "column_id": "authorised",
-              "header": "Authorised",
-              "render": "value",
-              "value_kind": "COUNT",
-              "fill_from": [
-                "AMOUNT",
-                "THRESHOLD"
-              ],
-              "from_subtype_keys": [
-                "AUTHORISED_CAPITAL"
-              ],
-              "addition": true,
-              "reason": "Ben's decision 2026-09-14 (decision 34): \"sure add a table\" (the capitalization counts by security class).",
-              "guidance": "The number of shares of this class the charter authorises (an AUTHORISED_CAPITAL fact), parsed from the cited count."
-            },
-            {
-              "column_id": "issued",
-              "header": "Issued and outstanding",
-              "render": "value",
-              "value_kind": "COUNT",
-              "fill_from": [
-                "AMOUNT",
-                "THRESHOLD"
-              ],
-              "from_subtype_keys": [
-                "ISSUED_AND_OUTSTANDING",
-                "EQUITY_AWARD_INVENTORY"
-              ],
-              "addition": true,
-              "reason": "Ben's decision 2026-09-14 (decision 34): \"sure add a table\" (the capitalization counts by security class).",
-              "guidance": "The number of shares of this class issued and outstanding (an ISSUED_AND_OUTSTANDING fact), or, on an award class, the shares subject to outstanding awards of that class (an EQUITY_AWARD_INVENTORY fact), parsed from the cited count."
-            },
-            {
-              "column_id": "reserved",
-              "header": "Reserved for issuance",
-              "render": "value",
-              "value_kind": "COUNT",
-              "fill_from": [
-                "AMOUNT",
-                "THRESHOLD"
-              ],
-              "from_subtype_keys": [
-                "RESERVED_OR_ISSUABLE_SECURITIES"
-              ],
-              "addition": true,
-              "reason": "Ben's decision 2026-09-14 (decision 34): \"sure add a table\" (the capitalization counts by security class).",
-              "guidance": "The number of shares reserved for issuance under this class or plan (a RESERVED_OR_ISSUABLE_SECURITIES fact), parsed from the cited count."
-            },
-            {
-              "column_id": "asOf",
-              "header": "As of",
-              "render": "value",
-              "value_kind": "DATE",
-              "fill_from": [
-                "DATE",
-                "TRIGGER"
-              ],
-              "addition": true,
-              "reason": "Ben's decision 2026-09-14 (decision 34): \"sure add a table\" (the capitalization counts by security class).",
-              "guidance": "The date the count speaks to (the Measurement Date or capitalization date), as the cited words parse; cite the chapeau's date when the limb inherits it."
-            },
-            {
-              "column_id": "validIssuance",
-              "header": "Validly issued",
-              "render": "boolean",
-              "fill_from": [
-                "LITANY",
-                "OPERATION",
-                "STANDARD"
-              ],
-              "from_subtype_keys": [
-                "VALID_ISSUANCE_STATUS"
-              ],
-              "addition": true,
-              "reason": "Ben's decision 2026-09-14 (decision 34): \"sure add a table\" (the capitalization counts by security class).",
-              "guidance": "Present when the representation states that the class is duly authorized, validly issued, fully paid and nonassessable (a VALID_ISSUANCE_STATUS fact on that class's row)."
-            },
-            {
-              "column_id": "asDrafted",
-              "header": "As drafted",
-              "render": "verbatim",
-              "display": "fact_text",
-              "fill_from": [
-                "OPERATION",
-                "OBJECT",
-                "AMOUNT",
-                "QUALIFIER",
-                "EXCEPTION",
-                "LIST",
-                "LITANY"
-              ],
-              "addition": true,
-              "reason": "Ben's decision 2026-09-14 (decision 34): \"sure add a table\" (the capitalization counts by security class).",
-              "guidance": "Shown as the fact's own words as drafted (every component in source order); cite the operative words."
-            }
-          ],
-          "rows_are": "fixed list",
-          "fixed_row_labels": [
-            "Common Stock",
-            "Preferred Stock",
-            "Company Stock Options",
-            "Company RSUs",
-            "Company PSUs",
-            "Company Restricted Stock Awards",
-            "ESPP",
-            "Warrants",
-            "Merger Sub capital stock",
-            "Subsidiary equity"
-          ],
-          "open_rows": true,
-          "only_subtype_keys": [
-            "AUTHORISED_CAPITAL",
-            "ISSUED_AND_OUTSTANDING",
-            "RESERVED_OR_ISSUABLE_SECURITIES",
-            "EQUITY_AWARD_INVENTORY",
-            "VALID_ISSUANCE_STATUS",
-            "CAPITALISATION_ABSENCE",
-            "PARTNERSHIP_OR_SUBSIDIARY_EQUITY"
-          ],
-          "row_from_security_class": true,
-          "footer_from_subtype": {
-            "subtype_key": "CAPITALISATION_ABSENCE",
-            "label": "No other securities",
-            "style": "other_provisions"
-          },
-          "guidance": "One row per security class as the precedent names it (fixed_row_labels; a new class label only when none fits, in the same style). The extractor cuts one fact per class and count: an AUTHORISED_CAPITAL fact goes to the class's row with its authorised count, an ISSUED_AND_OUTSTANDING fact with its issued count, a RESERVED_OR_ISSUABLE_SECURITIES fact with its reserved count (the ESPP reserve on the ESPP row), an EQUITY_AWARD_INVENTORY fact to the award class's row (Company Stock Options, Company RSUs, Company PSUs, Company Restricted Stock Awards) with the shares subject to outstanding awards in the issued column; a sentence that counts two classes is two facts. Every count is parsed by code from the cited words (never written by the model); asOf is the date the count speaks to. A VALID_ISSUANCE_STATUS fact marks its class Validly issued. A CAPITALISATION_ABSENCE fact (no other securities, options, voting agreements or voting debt; no rights plan) is never a row: it carries row_label \"No other securities\" and no cells, and the page shows it as drafted under the table. A PARTNERSHIP_OR_SUBSIDIARY_EQUITY fact is the Subsidiary equity row, or the Subsidiary equity interests limb of Capitalization; Subsidiaries on the representations table. Merger Sub's own capital stock (Article IV) is the \"Merger Sub capital stock\" row, never the Company's Common Stock."
-        }
-      ],
-      "rail": {
-        "group": "Representations",
-        "label": "Capitalization",
         "hex": "#3F8A6A"
       }
     },
@@ -4612,246 +4520,6 @@
       }
     },
     {
-      "section_key": "nosol-intervening",
-      "title": "Intervening Event Mechanics",
-      "legacy_config": "components/review/table-configs/nosol-intervening.config.js",
-      "v2_family_keys": [
-        {
-          "key": "NO_SHOP",
-          "confidence": "high"
-        },
-        {
-          "key": "KEY_DEFINED_TERMS",
-          "confidence": "high"
-        },
-        {
-          "key": "TERMINATION",
-          "confidence": "high"
-        }
-      ],
-      "tables": [
-        {
-          "table_key": "nosol-intervening-table",
-          "group_header": null,
-          "term_column": {
-            "header": "Term",
-            "source": "subject",
-            "fill_from": [
-              "TERM"
-            ]
-          },
-          "columns": [
-            {
-              "column_id": "provision",
-              "header": "Summary",
-              "render": "vocabulary",
-              "vocabulary": [
-                {
-                  "code": "YES",
-                  "label": "Yes",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
-                },
-                {
-                  "code": "NO",
-                  "label": "No",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
-                },
-                {
-                  "code": "ACQUISITION_PROPOSAL_RELATED",
-                  "label": "Events relating to an Acquisition Proposal",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
-                },
-                {
-                  "code": "MEETING_OR_EXCEEDING_PROJECTIONS",
-                  "label": "Meeting or exceeding projections",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
-                },
-                {
-                  "code": "CHANGE_IN_STOCK_PRICE",
-                  "label": "Changes in the stock price",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
-                },
-                {
-                  "code": "CHANGE_IN_CREDIT_RATING",
-                  "label": "Changes in credit rating",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
-                },
-                {
-                  "code": "CHANGES_IN_LAW_OR_GAAP",
-                  "label": "Changes in law or GAAP",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
-                },
-                {
-                  "code": "REGULATORY_OR_CLINICAL_DEVELOPMENTS",
-                  "label": "Regulatory, clinical or product developments",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
-                },
-                {
-                  "code": "INCONSISTENT_WITH_FIDUCIARY_DUTIES",
-                  "label": "Inconsistent with fiduciary duties",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
-                },
-                {
-                  "code": "REASONABLY_LIKELY_TO_BE_INCONSISTENT_WITH_FIDUCIARY_DUTIES",
-                  "label": "Reasonably likely to be inconsistent with fiduciary duties",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
-                },
-                {
-                  "code": "WOULD_VIOLATE_FIDUCIARY_DUTIES",
-                  "label": "Would violate fiduciary duties",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
-                },
-                {
-                  "code": "REQUIRED_BY_FIDUCIARY_DUTIES",
-                  "label": "Required by fiduciary duties",
-                  "tone": "neutral",
-                  "addition": true,
-                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
-                }
-              ],
-              "vocabulary_by_row": {
-                "Intervening Event provision": [
-                  "YES",
-                  "NO"
-                ],
-                "Excluded events": [
-                  "ACQUISITION_PROPOSAL_RELATED",
-                  "MEETING_OR_EXCEEDING_PROJECTIONS",
-                  "CHANGE_IN_STOCK_PRICE",
-                  "CHANGE_IN_CREDIT_RATING",
-                  "CHANGES_IN_LAW_OR_GAAP",
-                  "REGULATORY_OR_CLINICAL_DEVELOPMENTS"
-                ],
-                "Board determination standard": [
-                  "INCONSISTENT_WITH_FIDUCIARY_DUTIES",
-                  "REASONABLY_LIKELY_TO_BE_INCONSISTENT_WITH_FIDUCIARY_DUTIES",
-                  "WOULD_VIOLATE_FIDUCIARY_DUTIES",
-                  "REQUIRED_BY_FIDUCIARY_DUTIES"
-                ]
-              },
-              "fill_from": [
-                "STANDARD",
-                "EFFORTS_STANDARD",
-                "OPERATION",
-                "CONDITION",
-                "EXCEPTION",
-                "QUALIFIER",
-                "ACTOR",
-                "FORUM"
-              ],
-              "addition": true,
-              "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted.",
-              "guidance": "One code from this row's own list (vocabulary_by_row); several cells with distinct codes when the clause states several of them (the acts a no-shop prohibits, the events an intervening-event definition excludes); never a code from another row's list.",
-              "derived": {
-                "from_family": "TERMINATION",
-                "from_subtype": "RECOMMENDATION_CHANGE",
-                "join": "presence",
-                "rows": [
-                  "Parent termination right on a change"
-                ]
-              },
-              "code_from_words_by_row": {
-                "Board determination standard": [
-                  {
-                    "code": "REASONABLY_LIKELY_TO_BE_INCONSISTENT_WITH_FIDUCIARY_DUTIES",
-                    "words": "reasonably likely to be[\\s\\S]{0,20}inconsistent"
-                  },
-                  {
-                    "code": "INCONSISTENT_WITH_FIDUCIARY_DUTIES",
-                    "words": "inconsistent with[\\s\\S]{0,40}fiduciary"
-                  },
-                  {
-                    "code": "WOULD_VIOLATE_FIDUCIARY_DUTIES",
-                    "words": "violat[\\s\\S]{0,30}fiduciary"
-                  },
-                  {
-                    "code": "REQUIRED_BY_FIDUCIARY_DUTIES",
-                    "words": "required (?:by|under)[\\s\\S]{0,30}fiduciary"
-                  }
-                ]
-              }
-            },
-            {
-              "column_id": "period",
-              "header": "Period",
-              "render": "value",
-              "value_kind": "PERIOD",
-              "fill_from": [
-                "PERIOD",
-                "TRIGGER",
-                "DATE"
-              ],
-              "addition": true,
-              "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted. The notice or match period of the intervening-event path."
-            },
-            {
-              "column_id": "asDrafted",
-              "header": "As drafted",
-              "render": "verbatim",
-              "display": "fact_text",
-              "fill_from": [
-                "OPERATION",
-                "OBJECT",
-                "CONDITION",
-                "STANDARD",
-                "EXCEPTION",
-                "QUALIFIER"
-              ],
-              "addition": true,
-              "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted.",
-              "guidance": "Shown as the fact's own words as drafted (every component in source order); cite the operative words."
-            }
-          ],
-          "rows_are": "fixed list",
-          "fixed_row_labels": [
-            "Intervening Event provision",
-            "Definition",
-            "Excluded events",
-            "Board determination standard",
-            "Notice period",
-            "Matching period",
-            "Parent termination right on a change"
-          ],
-          "guidance": "The intervening-event path. Intervening Event provision: YES when the board may change its recommendation for an Intervening Event (a RECOMMENDATION_CHANGE or EXCEPTION_PREREQUISITE fact on that path). Definition: the KEY_DEFINED_TERMS/INTERVENING_EVENT fact, as drafted, no code. Excluded events: one cell per event the definition excludes. Board determination standard: the fiduciary standard the board must meet to change its recommendation for an Intervening Event, one code (a clause such as \"has concluded in good faith, after consultation with its outside counsel, that failure to make an Adverse Recommendation Change on account of the Intervening Event would be, or would be reasonably likely to be, inconsistent with its fiduciary duties\" is REASONABLY_LIKELY_TO_BE_INCONSISTENT_WITH_FIDUCIARY_DUTIES on this row; the consultation is content of the summary). Notice period and Matching period: the NOTICE_PERIOD and INITIAL_MATCH_PERIOD facts that govern a change for an Intervening Event (the superior-proposal path's periods go to the matching-rights table), the number in the period column. Parent termination right on a change is derived by the page from the TERMINATION/RECOMMENDATION_CHANGE fact; never fill it. Board determination standard: always one code from the words of the standard (REASONABLY_LIKELY_TO_BE_INCONSISTENT_WITH_FIDUCIARY_DUTIES for \"would be, or would be reasonably likely to be, inconsistent\"; INCONSISTENT_WITH_FIDUCIARY_DUTIES for \"inconsistent\" alone; WOULD_VIOLATE_FIDUCIARY_DUTIES; REQUIRED_BY_FIDUCIARY_DUTIES), never a readout without it (generation 8, 5.02(f); work package 7).",
-          "fact_type_rows": {
-            "EXCEPTION_PREREQUISITE": "Board determination standard",
-            "RECOMMENDATION_CHANGE": "Board determination standard"
-          },
-          "fact_type_rows_when": "(?=[\\s\\S]*Intervening Event)(?=[\\s\\S]*fiduciary dut)"
-        }
-      ],
-      "print_pages": [
-        98
-      ],
-      "rail": {
-        "group": "No-Solicitation / No-Shop",
-        "label": "Intervening Event",
-        "hex": "#A8538C"
-      }
-    },
-    {
       "section_key": "nosol-superior",
       "title": "Superior Proposal Definition and Standards",
       "legacy_config": "components/review/table-configs/nosol-superior.config.js",
@@ -5126,6 +4794,247 @@
       "rail": {
         "group": "No-Solicitation / No-Shop",
         "label": "Superior Proposal",
+        "hex": "#A8538C"
+      },
+      "placement_reason": "Ben, 2026-11-01, on the provisions page: \"I'd always put intervening event after superior proposal.\""
+    },
+    {
+      "section_key": "nosol-intervening",
+      "title": "Intervening Event Mechanics",
+      "legacy_config": "components/review/table-configs/nosol-intervening.config.js",
+      "v2_family_keys": [
+        {
+          "key": "NO_SHOP",
+          "confidence": "high"
+        },
+        {
+          "key": "KEY_DEFINED_TERMS",
+          "confidence": "high"
+        },
+        {
+          "key": "TERMINATION",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "nosol-intervening-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Term",
+            "source": "subject",
+            "fill_from": [
+              "TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "provision",
+              "header": "Summary",
+              "render": "vocabulary",
+              "vocabulary": [
+                {
+                  "code": "YES",
+                  "label": "Yes",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
+                },
+                {
+                  "code": "NO",
+                  "label": "No",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
+                },
+                {
+                  "code": "ACQUISITION_PROPOSAL_RELATED",
+                  "label": "Events relating to an Acquisition Proposal",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
+                },
+                {
+                  "code": "MEETING_OR_EXCEEDING_PROJECTIONS",
+                  "label": "Meeting or exceeding projections",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
+                },
+                {
+                  "code": "CHANGE_IN_STOCK_PRICE",
+                  "label": "Changes in the stock price",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
+                },
+                {
+                  "code": "CHANGE_IN_CREDIT_RATING",
+                  "label": "Changes in credit rating",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
+                },
+                {
+                  "code": "CHANGES_IN_LAW_OR_GAAP",
+                  "label": "Changes in law or GAAP",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
+                },
+                {
+                  "code": "REGULATORY_OR_CLINICAL_DEVELOPMENTS",
+                  "label": "Regulatory, clinical or product developments",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
+                },
+                {
+                  "code": "INCONSISTENT_WITH_FIDUCIARY_DUTIES",
+                  "label": "Inconsistent with fiduciary duties",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
+                },
+                {
+                  "code": "REASONABLY_LIKELY_TO_BE_INCONSISTENT_WITH_FIDUCIARY_DUTIES",
+                  "label": "Reasonably likely to be inconsistent with fiduciary duties",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
+                },
+                {
+                  "code": "WOULD_VIOLATE_FIDUCIARY_DUTIES",
+                  "label": "Would violate fiduciary duties",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
+                },
+                {
+                  "code": "REQUIRED_BY_FIDUCIARY_DUTIES",
+                  "label": "Required by fiduciary duties",
+                  "tone": "neutral",
+                  "addition": true,
+                  "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted."
+                }
+              ],
+              "vocabulary_by_row": {
+                "Intervening Event provision": [
+                  "YES",
+                  "NO"
+                ],
+                "Excluded events": [
+                  "ACQUISITION_PROPOSAL_RELATED",
+                  "MEETING_OR_EXCEEDING_PROJECTIONS",
+                  "CHANGE_IN_STOCK_PRICE",
+                  "CHANGE_IN_CREDIT_RATING",
+                  "CHANGES_IN_LAW_OR_GAAP",
+                  "REGULATORY_OR_CLINICAL_DEVELOPMENTS"
+                ],
+                "Board determination standard": [
+                  "INCONSISTENT_WITH_FIDUCIARY_DUTIES",
+                  "REASONABLY_LIKELY_TO_BE_INCONSISTENT_WITH_FIDUCIARY_DUTIES",
+                  "WOULD_VIOLATE_FIDUCIARY_DUTIES",
+                  "REQUIRED_BY_FIDUCIARY_DUTIES"
+                ]
+              },
+              "fill_from": [
+                "STANDARD",
+                "EFFORTS_STANDARD",
+                "OPERATION",
+                "CONDITION",
+                "EXCEPTION",
+                "QUALIFIER",
+                "ACTOR",
+                "FORUM"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted.",
+              "guidance": "One code from this row's own list (vocabulary_by_row); several cells with distinct codes when the clause states several of them (the acts a no-shop prohibits, the events an intervening-event definition excludes); never a code from another row's list.",
+              "derived": {
+                "from_family": "TERMINATION",
+                "from_subtype": "RECOMMENDATION_CHANGE",
+                "join": "presence",
+                "rows": [
+                  "Parent termination right on a change"
+                ]
+              },
+              "code_from_words_by_row": {
+                "Board determination standard": [
+                  {
+                    "code": "REASONABLY_LIKELY_TO_BE_INCONSISTENT_WITH_FIDUCIARY_DUTIES",
+                    "words": "reasonably likely to be[\\s\\S]{0,20}inconsistent"
+                  },
+                  {
+                    "code": "INCONSISTENT_WITH_FIDUCIARY_DUTIES",
+                    "words": "inconsistent with[\\s\\S]{0,40}fiduciary"
+                  },
+                  {
+                    "code": "WOULD_VIOLATE_FIDUCIARY_DUTIES",
+                    "words": "violat[\\s\\S]{0,30}fiduciary"
+                  },
+                  {
+                    "code": "REQUIRED_BY_FIDUCIARY_DUTIES",
+                    "words": "required (?:by|under)[\\s\\S]{0,30}fiduciary"
+                  }
+                ]
+              }
+            },
+            {
+              "column_id": "period",
+              "header": "Period",
+              "render": "value",
+              "value_kind": "PERIOD",
+              "fill_from": [
+                "PERIOD",
+                "TRIGGER",
+                "DATE"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted. The notice or match period of the intervening-event path."
+            },
+            {
+              "column_id": "asDrafted",
+              "header": "As drafted",
+              "render": "verbatim",
+              "display": "fact_text",
+              "fill_from": [
+                "OPERATION",
+                "OBJECT",
+                "CONDITION",
+                "STANDARD",
+                "EXCEPTION",
+                "QUALIFIER"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): every no-shop row answers its own question with a code from its row's list and the clause as drafted.",
+              "guidance": "Shown as the fact's own words as drafted (every component in source order); cite the operative words."
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Intervening Event provision",
+            "Definition",
+            "Excluded events",
+            "Board determination standard",
+            "Notice period",
+            "Matching period",
+            "Parent termination right on a change"
+          ],
+          "guidance": "The intervening-event path. Intervening Event provision: YES when the board may change its recommendation for an Intervening Event (a RECOMMENDATION_CHANGE or EXCEPTION_PREREQUISITE fact on that path). Definition: the KEY_DEFINED_TERMS/INTERVENING_EVENT fact, as drafted, no code. Excluded events: one cell per event the definition excludes. Board determination standard: the fiduciary standard the board must meet to change its recommendation for an Intervening Event, one code (a clause such as \"has concluded in good faith, after consultation with its outside counsel, that failure to make an Adverse Recommendation Change on account of the Intervening Event would be, or would be reasonably likely to be, inconsistent with its fiduciary duties\" is REASONABLY_LIKELY_TO_BE_INCONSISTENT_WITH_FIDUCIARY_DUTIES on this row; the consultation is content of the summary). Notice period and Matching period: the NOTICE_PERIOD and INITIAL_MATCH_PERIOD facts that govern a change for an Intervening Event (the superior-proposal path's periods go to the matching-rights table), the number in the period column. Parent termination right on a change is derived by the page from the TERMINATION/RECOMMENDATION_CHANGE fact; never fill it. Board determination standard: always one code from the words of the standard (REASONABLY_LIKELY_TO_BE_INCONSISTENT_WITH_FIDUCIARY_DUTIES for \"would be, or would be reasonably likely to be, inconsistent\"; INCONSISTENT_WITH_FIDUCIARY_DUTIES for \"inconsistent\" alone; WOULD_VIOLATE_FIDUCIARY_DUTIES; REQUIRED_BY_FIDUCIARY_DUTIES), never a readout without it (generation 8, 5.02(f); work package 7).",
+          "fact_type_rows": {
+            "EXCEPTION_PREREQUISITE": "Board determination standard",
+            "RECOMMENDATION_CHANGE": "Board determination standard"
+          },
+          "fact_type_rows_when": "(?=[\\s\\S]*Intervening Event)(?=[\\s\\S]*fiduciary dut)"
+        }
+      ],
+      "print_pages": [
+        98
+      ],
+      "rail": {
+        "group": "No-Solicitation / No-Shop",
+        "label": "Intervening Event",
         "hex": "#A8538C"
       }
     },
@@ -5737,7 +5646,10 @@
                   "addition": true,
                   "reason": "Ben's decision 2026-09-14 (decision 34): no column shows a cited fragment."
                 }
-              ]
+              ],
+              "display": "suffix_of",
+              "suffix_of": "value",
+              "display_reason": "Ben, 2026-11-01, on the provisions page: \"It's weird to have 14 calendar days, then a separate column after the agreement date. I think those two things need to be shown together.\""
             },
             {
               "column_id": "detail",
@@ -9185,6 +9097,167 @@
         "label": "No Other Reps / Fraud",
         "hex": "#8A8782"
       }
+    },
+    {
+      "section_key": "capitalization",
+      "title": "Capitalization",
+      "legacy_config": "components/review/table-configs/representations-qualifiers.config.js",
+      "note": "Added 2026-09-14 (Ben: \"sure add a table\"); the old app carried the capitalization counts inside the Capitalization; Subsidiaries representation row.",
+      "v2_family_keys": [
+        {
+          "key": "CAPITALISATION",
+          "confidence": "high"
+        }
+      ],
+      "tables": [
+        {
+          "table_key": "capitalization-table",
+          "group_header": null,
+          "term_column": {
+            "header": "Security class",
+            "source": "subject",
+            "fill_from": [
+              "TERM",
+              "OBJECT",
+              "DEFINED_TERM"
+            ]
+          },
+          "columns": [
+            {
+              "column_id": "authorised",
+              "header": "Authorised",
+              "render": "value",
+              "value_kind": "COUNT",
+              "fill_from": [
+                "AMOUNT",
+                "THRESHOLD"
+              ],
+              "from_subtype_keys": [
+                "AUTHORISED_CAPITAL"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): \"sure add a table\" (the capitalization counts by security class).",
+              "guidance": "The number of shares of this class the charter authorises (an AUTHORISED_CAPITAL fact), parsed from the cited count."
+            },
+            {
+              "column_id": "issued",
+              "header": "Issued and outstanding",
+              "render": "value",
+              "value_kind": "COUNT",
+              "fill_from": [
+                "AMOUNT",
+                "THRESHOLD"
+              ],
+              "from_subtype_keys": [
+                "ISSUED_AND_OUTSTANDING",
+                "EQUITY_AWARD_INVENTORY"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): \"sure add a table\" (the capitalization counts by security class).",
+              "guidance": "The number of shares of this class issued and outstanding (an ISSUED_AND_OUTSTANDING fact), or, on an award class, the shares subject to outstanding awards of that class (an EQUITY_AWARD_INVENTORY fact), parsed from the cited count."
+            },
+            {
+              "column_id": "reserved",
+              "header": "Reserved for issuance",
+              "render": "value",
+              "value_kind": "COUNT",
+              "fill_from": [
+                "AMOUNT",
+                "THRESHOLD"
+              ],
+              "from_subtype_keys": [
+                "RESERVED_OR_ISSUABLE_SECURITIES"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): \"sure add a table\" (the capitalization counts by security class).",
+              "guidance": "The number of shares reserved for issuance under this class or plan (a RESERVED_OR_ISSUABLE_SECURITIES fact), parsed from the cited count."
+            },
+            {
+              "column_id": "asOf",
+              "header": "As of",
+              "render": "value",
+              "value_kind": "DATE",
+              "fill_from": [
+                "DATE",
+                "TRIGGER"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): \"sure add a table\" (the capitalization counts by security class).",
+              "guidance": "The date the count speaks to (the Measurement Date or capitalization date), as the cited words parse; cite the chapeau's date when the limb inherits it."
+            },
+            {
+              "column_id": "validIssuance",
+              "header": "Validly issued",
+              "render": "boolean",
+              "fill_from": [
+                "LITANY",
+                "OPERATION",
+                "STANDARD"
+              ],
+              "from_subtype_keys": [
+                "VALID_ISSUANCE_STATUS"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): \"sure add a table\" (the capitalization counts by security class).",
+              "guidance": "Present when the representation states that the class is duly authorized, validly issued, fully paid and nonassessable (a VALID_ISSUANCE_STATUS fact on that class's row)."
+            },
+            {
+              "column_id": "asDrafted",
+              "header": "As drafted",
+              "render": "verbatim",
+              "display": "fact_text",
+              "fill_from": [
+                "OPERATION",
+                "OBJECT",
+                "AMOUNT",
+                "QUALIFIER",
+                "EXCEPTION",
+                "LIST",
+                "LITANY"
+              ],
+              "addition": true,
+              "reason": "Ben's decision 2026-09-14 (decision 34): \"sure add a table\" (the capitalization counts by security class).",
+              "guidance": "Shown as the fact's own words as drafted (every component in source order); cite the operative words."
+            }
+          ],
+          "rows_are": "fixed list",
+          "fixed_row_labels": [
+            "Common Stock",
+            "Preferred Stock",
+            "Company Stock Options",
+            "Company RSUs",
+            "Company PSUs",
+            "Company Restricted Stock Awards",
+            "ESPP",
+            "Warrants",
+            "Merger Sub capital stock",
+            "Subsidiary equity"
+          ],
+          "open_rows": true,
+          "only_subtype_keys": [
+            "AUTHORISED_CAPITAL",
+            "ISSUED_AND_OUTSTANDING",
+            "RESERVED_OR_ISSUABLE_SECURITIES",
+            "EQUITY_AWARD_INVENTORY",
+            "VALID_ISSUANCE_STATUS",
+            "CAPITALISATION_ABSENCE",
+            "PARTNERSHIP_OR_SUBSIDIARY_EQUITY"
+          ],
+          "row_from_security_class": true,
+          "footer_from_subtype": {
+            "subtype_key": "CAPITALISATION_ABSENCE",
+            "label": "No other securities",
+            "style": "other_provisions"
+          },
+          "guidance": "One row per security class as the precedent names it (fixed_row_labels; a new class label only when none fits, in the same style). The extractor cuts one fact per class and count: an AUTHORISED_CAPITAL fact goes to the class's row with its authorised count, an ISSUED_AND_OUTSTANDING fact with its issued count, a RESERVED_OR_ISSUABLE_SECURITIES fact with its reserved count (the ESPP reserve on the ESPP row), an EQUITY_AWARD_INVENTORY fact to the award class's row (Company Stock Options, Company RSUs, Company PSUs, Company Restricted Stock Awards) with the shares subject to outstanding awards in the issued column; a sentence that counts two classes is two facts. Every count is parsed by code from the cited words (never written by the model); asOf is the date the count speaks to. A VALID_ISSUANCE_STATUS fact marks its class Validly issued. A CAPITALISATION_ABSENCE fact (no other securities, options, voting agreements or voting debt; no rights plan) is never a row: it carries row_label \"No other securities\" and no cells, and the page shows it as drafted under the table. A PARTNERSHIP_OR_SUBSIDIARY_EQUITY fact is the Subsidiary equity row, or the Subsidiary equity interests limb of Capitalization; Subsidiaries on the representations table. Merger Sub's own capital stock (Article IV) is the \"Merger Sub capital stock\" row, never the Company's Common Stock."
+        }
+      ],
+      "rail": {
+        "group": "Capitalization",
+        "label": "Capitalization",
+        "hex": "#3F8A6A"
+      },
+      "placement_reason": "Ben, 2026-11-01, on the provisions page: \"capitalization. I stick it right at the bottom ... above definition or below definition.\" Placed last, above Defined Terms."
     },
     {
       "section_key": "defined-terms",

@@ -22,6 +22,18 @@ release-ready. Findings (246) to (287) are the 2026-10-24/25 session
 (publish over a direct connection, the statement timeout, the state size).
 Sections 2, 5 and 6 below are stale where they disagree with those blocks.
 
+Update, 2026-11-01: three deals are extracted on the Sonnet default in the
+product database (findings (304), (306), (307): Apogee 5fcf3b0e, Skechers
+612ed714, QXO 24dbdaca; nothing published from them). Ben read the Apogee
+and Skechers pages and gave one block of feedback; finding (308) records
+his words and the rules they became (the as-drafted columns behind "Show
+specifics", answers as text instead of pills, the General Exceptions table,
+the headline-only structure grid, the per-share election grouping, the
+section order). Shape rules now live in
+scripts/product/table-shapes-ben-2026-11-01.js, applied by the pass-3
+builder: edit the builder's modules, never the committed JSON, which the
+shapes test regenerates.
+
 ## 0. Update, 2026-10-24 08:30 EDT (read this first; sections 2 and 6 below are superseded where they disagree)
 
 Two deals have now run end to end. Findings (237) to (245) carry the evidence.

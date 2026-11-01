@@ -191,6 +191,12 @@ test('a contract-shaped vocabulary cell renders its vocabulary label and keeps i
   assert.deepEqual(cell.component_ids, ['aaf01d341b5c8926bdace0f8685ee73523f250d183dd4a7020a81d4054903367']);
   assert.deepEqual(cell.fact_ids, [structureFact.proposal_id]);
   assert.equal(table.rows[0].cells.find((candidate) => candidate.column_id === 'closingTiming'), undefined, 'the detail column without a summary is dropped');
+  // Ben, 2026-11-01: "I just show deal structure, merger form, and then just
+  // say 'Other provisions.'" The grid shows the headline columns; the
+  // effects line is an Other provisions line (the row keeps its cell).
+  assert.deepEqual(table.columns.map((column) => column.column_id), ['dealStructure', 'mergerFormStep1', 'mergerFormStep2']);
+  assert.ok(table.rest_columns.some((column) => column.column_id === 'effectsOfMerger'));
+  assert.ok(table.other_provisions.some((group) => group.from_attribute && group.term === 'Effects of Merger' && group.common_text === 'DGCL'));
 });
 
 test('a one-per-agreement table gathers every fact of the family into one row', () => {
@@ -744,29 +750,32 @@ test('generation 6 article-introduction facts land on the General Exceptions row
   const section = view.sections.find((candidate) => candidate.section_key === 'representations-qualifiers');
   assert.ok(section, 'the representations section renders');
   assert.equal((section.facts_without_readout || []).length, 0);
-  assert.equal(section.tables.length, 1, 'the separate general-qualifications table is retired');
+  // Ben, 2026-11-01: "have a separate table first. It's like general
+  // exception ... SEC filings, disclosure". The General Exceptions sources
+  // are the rows of the section's first table, without the bring-down
+  // column (lib/product/table-view.js splitLeadingTable).
+  assert.equal(section.tables.length, 2, 'the exceptions table, then the representations');
   const table = section.tables[0];
-  assert.equal(table.table_key, 'representations-qualifiers-table');
-  assert.equal(table.rows[0].subject, 'General Exceptions', 'the first row of the table');
-  const row = table.rows[0];
-  assert.deepEqual(row.sub_rows.map((sub) => sub.subject), ['SEC Filings', 'Disclosure Letter', 'Other']);
+  assert.equal(table.table_key, 'representations-qualifiers-table-exceptions');
+  assert.equal(table.group_header, 'GENERAL EXCEPTIONS');
+  assert.equal(table.term_column.header, 'Exception');
+  assert.deepEqual(table.columns.map((column) => [column.column_id, column.header]), [['materiality', 'Terms'], ['lookback', 'Lookback']]);
+  assert.deepEqual(table.rows.map((row) => row.subject), ['SEC Filings', 'Disclosure Letter', 'Other']);
+  assert.equal(section.tables[1].table_key, 'representations-qualifiers-table');
+  assert.equal(section.tables[1].rows.some((row) => row.subject === 'General Exceptions'), false);
   const cellOf = (line, columnId) => line.cells.find((cell) => cell.column_id === columnId);
   const labels = (cell) => (cell.values ? cell.values.map((value) => value.label) : [cell.label]);
-  const sec = row.sub_rows[0];
+  const sec = table.rows[0];
   assert.deepEqual(labels(cellOf(sec, 'materiality')).sort(), ['Exhibits excluded', 'Forward-looking statements excluded', 'Risk Factors excluded', 'Specific historical facts still count']);
   assert.equal(cellOf(sec, 'lookback').label, '1 business day', 'the cut-off parsed from the PERIOD component');
   assert.deepEqual(cellOf(sec, 'lookback').component_ids, ['w-period']);
   assert.deepEqual(sec.backing_facts.map((entry) => entry.fact_id), ['intro-window', 'intro-excluded', 'intro-carve-back']);
   const fls = cellOf(sec, 'materiality').values.find((value) => value.code === 'EXCLUDES_FORWARD_LOOKING_STATEMENTS');
   assert.ok(fls.component_ids.includes('x-fls'), 'the code cites the words that name it');
-  const disclosure = row.sub_rows[1];
+  const disclosure = table.rows[1];
   assert.deepEqual(labels(cellOf(disclosure, 'materiality')), ['Arranged by section']);
   assert.deepEqual(disclosure.backing_facts.map((entry) => entry.fact_id), ['intro-letter']);
-  assert.deepEqual(row.sub_rows[2].backing_facts.map((entry) => entry.fact_id), ['intro-other']);
-  // The row's own line is the overview of its sub-items: the categories
-  // first, the detail on opening.
-  assert.ok(labels(cellOf(row, 'materiality')).includes('Risk Factors excluded'));
-  assert.equal(cellOf(row, 'lookback').label, '1 business day');
+  assert.deepEqual(table.rows[2].backing_facts.map((entry) => entry.fact_id), ['intro-other']);
 });
 
 test('the introduction of the Parent article goes to the Parent representations table', () => {
@@ -778,8 +787,9 @@ test('the introduction of the Parent article goes to the Parent representations 
   const view = buildTableView({ facts: [parentIntro], tableShapes, legalSchema });
   assert.equal(view.sections.some((candidate) => candidate.section_key === 'representations-qualifiers'), false);
   const parent = view.sections.find((candidate) => candidate.section_key === 'parent-representations-qualifiers');
-  assert.equal(parent.tables[0].rows[0].subject, 'General Exceptions');
-  assert.deepEqual(parent.tables[0].rows[0].sub_rows.map((sub) => sub.subject), ['Disclosure Letter']);
+  // Ben, 2026-11-01: the General Exceptions sources are the first table of the section.
+  assert.equal(parent.tables[0].table_key, 'parent-representations-qualifiers-table-exceptions');
+  assert.deepEqual(parent.tables[0].rows.map((row) => [row.subject, row.from_row]), [['Disclosure Letter', 'General Exceptions']]);
 });
 
 test('a REPRESENTATION_QUALIFICATION readout coded to the General Exceptions row renders as the extractor wrote it', () => {
@@ -794,11 +804,16 @@ test('a REPRESENTATION_QUALIFICATION readout coded to the General Exceptions row
     ] },
   };
   const view = buildTableView({ facts: [coded], tableShapes, legalSchema });
-  const row = view.sections.find((candidate) => candidate.section_key === 'representations-qualifiers').tables[0].rows[0];
-  assert.equal(row.subject, 'General Exceptions');
-  assert.equal(row.sub_rows[0].subject, 'SEC Filings');
-  assert.equal(row.sub_rows[0].cells.find((cell) => cell.column_id === 'lookback').label, 'January 1, 2023');
-  assert.equal(row.sub_rows[0].cells.find((cell) => cell.column_id === 'materiality').label, 'Risk Factors excluded');
+  // Ben, 2026-11-01: the General Exceptions rows are the first table of the
+  // section, one row per source of exception.
+  const exceptions = view.sections.find((candidate) => candidate.section_key === 'representations-qualifiers').tables[0];
+  assert.equal(exceptions.table_key, 'representations-qualifiers-table-exceptions');
+  const row = exceptions.rows[0];
+  assert.equal(row.subject, 'SEC Filings');
+  assert.equal(row.from_row, 'General Exceptions');
+  assert.equal(row.cells.find((cell) => cell.column_id === 'lookback').label, 'January 1, 2023');
+  assert.equal(row.cells.find((cell) => cell.column_id === 'materiality').label, 'Risk Factors excluded');
+  assert.equal(row.cells.some((cell) => cell.column_id === 'bringdown'), false, 'no bring-down standard on an exception');
 });
 
 test('the Knowledge definition lands on the Knowledge row: the standard under Standard, whose knowledge counts under Persons', () => {
@@ -874,7 +889,7 @@ test('capitalisation facts without a readout fill the capitalization table by se
   const view = buildTableView({ facts: [authorised, issued, options, espp, plans, valid, absence, uncounted], tableShapes, legalSchema });
   const section = view.sections.find((candidate) => candidate.section_key === 'capitalization');
   assert.ok(section, 'the capitalization section renders');
-  assert.equal(section.rail.group, 'Representations');
+  assert.equal(section.rail.group, 'Capitalization', 'Ben, 2026-11-01: last, above Defined Terms, its own rail group');
   const table = section.tables[0];
   assert.equal(table.table_key, 'capitalization-table');
   // The authorised count is stated for the common stock alone, so the column
@@ -1284,11 +1299,11 @@ test('a readout naming a retired table is placed by the page rules', () => {
   };
   const view = buildTableView({ facts: [fact], tableShapes, legalSchema });
   const tables = view.sections.flatMap((section) => section.tables);
-  const parent = tables.find((candidate) => candidate.table_key === 'parent-representations-qualifiers-table');
-  const company = tables.find((candidate) => candidate.table_key === 'representations-qualifiers-table');
-  const rowIds = (table) => (table ? table.rows.filter((row) => !row.absent).flatMap((row) => row.backing_facts.map((entry) => entry.fact_id)) : []);
-  assert.deepEqual(rowIds(parent), ['iv-intro']);
-  assert.deepEqual(rowIds(company), []);
+  // Ben, 2026-11-01: the General Exceptions rows are a table of their own
+  // before the representations; the section's tables together hold the fact.
+  const rowIds = (prefix) => tables.filter((candidate) => candidate.table_key.startsWith(prefix)).flatMap((table) => table.rows.filter((row) => !row.absent).flatMap((row) => row.backing_facts.map((entry) => entry.fact_id)));
+  assert.deepEqual(rowIds('parent-representations-qualifiers-table'), ['iv-intro']);
+  assert.deepEqual(rowIds('representations-qualifiers-table'), []);
 });
 
 // Metsera generation 6, 9.03: the MAE summary is derived from the row's own
@@ -1398,14 +1413,27 @@ test('applyColumnRules folds a one-line column into a trailing detail, hides pil
   assert.deepEqual(out.columns.map((column) => column.column_id), ['provision', 'asDrafted']);
   assert.deepEqual(out.rows[1].trailing_details.map((detail) => [detail.column_id, detail.header, detail.label]), [['period', 'Period', '48 hours']]);
   assert.equal(out.rows[0].trailing_details, undefined);
-  // (b) "Required promptly" is stated by the summaries that carry it: the pill goes, its code stays on the cell.
+  // (b) Ben, 2026-11-01: the as-drafted summary is behind "Show specifics"
+  // when the table has coded answers, so it no longer stands in for a pill:
+  // "Required promptly" stays as an answer, nothing is stated_in_summary.
   const notice = out.rows[1].cells.find((cell) => cell.column_id === 'provision');
-  assert.equal(notice.label, 'Required within a stated period');
-  assert.deepEqual(notice.stated_in_summary, ['REQUIRED_PROMPTLY']);
+  assert.deepEqual(notice.values.map((value) => value.code), ['REQUIRED_WITHIN_STATED_PERIOD', 'REQUIRED_PROMPTLY']);
+  assert.equal(notice.stated_in_summary, undefined);
   const updates = out.rows[2].cells.find((cell) => cell.column_id === 'provision');
-  assert.equal(updates.kind, 'dash');
-  assert.deepEqual(updates.stated_in_summary, ['REQUIRED_PROMPTLY']);
+  assert.equal(updates.label, 'Required promptly');
   assert.equal(out.rows[0].cells.find((cell) => cell.column_id === 'provision').label, 'Required', 'a pill the summary does not state stays');
+  // Ben, 2026-11-01, on the intervening-event table: "5 business days in the
+  // column with the matching period. Why isn't that in the next column?" A
+  // folded value takes the line's empty answer cell when it has one.
+  const matching = applyColumnRules({ ...table, rows: [
+    { subject: 'Board determination standard', cells: [pill('Inconsistent', 'INCONSISTENT'), dash('period'), text('Board must find a breach')], backing_facts: [{ fact_id: 'f' }] },
+    { subject: 'Matching period', cells: [dash('provision'), value('5 business days'), text('Parent gets five business days')], backing_facts: [{ fact_id: 'f' }] },
+    { subject: 'Termination right', cells: [pill('Yes', 'YES'), dash('period'), text('Parent may terminate')], backing_facts: [{ fact_id: 'f' }] },
+  ] }, shapeColumns);
+  const home = matching.rows[1].cells.find((cell) => cell.column_id === 'provision');
+  assert.equal(home.label, '5 business days');
+  assert.equal(home.folded_from_column, 'period');
+  assert.equal(matching.rows[1].trailing_details, undefined);
   // (c) the summary column stays.
   assert.equal(out.rows[0].cells.find((cell) => cell.column_id === 'asDrafted').label, 'Company must notify Parent of any proposal');
   // A one-row table keeps its columns; an absent row does not count as a row.

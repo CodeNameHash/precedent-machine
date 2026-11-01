@@ -337,7 +337,7 @@ test('a held fact with a null structure node lands in unplaced_held, not held_fa
   assert.ok(html.indexOf('data-testid="published-summary"') < html.indexOf('data-testid="unplaced-held"'), 'the block is after PublishedSummary');
   const block = html.match(/<section[^>]*data-testid="unplaced-held"[^>]*>/);
   assert.ok(block, 'the block renders');
-  assert.match(block[0], /text-\[9\.5px\]/);
+  assert.match(block[0], /text-\[11px\]/);
   assert.match(block[0], /font-ui/);
   assert.match(block[0], /text-\[#6b6b6b\]/);
   assert.doesNotMatch(block[0], /amber|yellow|red/, 'quiet, not a warning banner');
@@ -477,9 +477,11 @@ test('a section that returned no facts is named under the title with its reason,
   assert.equal(lines.length, 2);
   assert.match(lines[0], /§ 3\.30 No Other Representation — no facts were extracted: the families routed to this section produced no fact\. This is not a finding that the agreement has no such provision\./);
   assert.match(lines[1], /§ 5\.16 Regulatory Matters — no facts were extracted: the analysis read this section as having no provision of the catalogued families\. This is not a finding that the agreement has no such provision\./);
-  // Under the title, above the rule: the reader meets the hole before the tables.
-  assert.ok(html.indexOf('</h1>') < html.indexOf('data-testid="sections-without-facts"'));
-  assert.ok(html.indexOf('data-testid="sections-without-facts"') < html.indexOf('data-testid="preview-rule"'));
+  // Ben, 2026-11-01: "The section under the title that says 'Section with no
+  // fat extracted' should go at the bottom of this whole exercise, of the
+  // whole sets of tables." After the rule and after every section card.
+  assert.ok(html.indexOf('data-testid="preview-rule"') < html.indexOf('data-testid="sections-without-facts"'));
+  assert.ok(html.lastIndexOf('data-testid="provision-section"') < html.indexOf('data-testid="sections-without-facts"'));
   // A routing the payload does not carry still lists the section: the hole
   // is known even when its reason is not.
   const unrecorded = noFactsWorkspace();
@@ -543,6 +545,8 @@ const unescapeHtml = (text) => text.replace(/&quot;/g, '"').replace(/&#x27;/g, "
 
 test('the article\'s qualification facts sit above each representation section\'s table, in the quiet style, only when the introduction has them', () => {
   const tableShapes = require('../contracts/product/table-shapes.v3.json');
+  const legalSchema = require('../contracts/product/legal-schema.v2.json');
+  const { buildTableView } = require('../lib/product/table-view');
   const { articleQualifications } = require('../lib/product/table-view');
   const ws = withIntroductions(workspace(), { extra: [
     // A held qualification and an introduction fact of another subtype are
@@ -559,28 +563,18 @@ test('the article\'s qualification facts sit above each representation section\'
     ['parent-representations-qualifiers-table', [['p-iv-letter', 'IV-INTRO', 'IV', IV_WORDS]]],
   ]);
 
+  // Ben, 2026-11-01: "Directly under reps and warranties, you have this
+  // text ... Get rid of that because that's what you have under the general
+  // exceptions, and you need it twice." The view still carries the entries
+  // (table.article_qualifications) for other surfaces; the page renders no
+  // block, and the General Exceptions table carries the same facts.
+  const view = buildTableView({ facts: preview.facts, heldFacts: preview.held_facts || [], tableShapes, legalSchema });
+  const tables = view.sections.flatMap((section) => section.tables);
+  assert.deepEqual(tables.filter((table) => table.article_qualifications).map((table) => table.table_key), ['representations-qualifiers-table', 'parent-representations-qualifiers-table']);
   const html = renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: ws, runId: 'run-1' }));
-  const blocks = [...html.matchAll(/<div class="mb-\[7px\] space-y-\[2px\] text-\[9\.5px\] font-ui text-\[#6b6b6b\]" data-testid="article-qualifications" data-table-key="([^"]+)">(.*?)<\/div>/g)];
-  assert.deepEqual(blocks.map((match) => match[1]), ['representations-qualifiers-table', 'parent-representations-qualifiers-table']);
-  const lines = blocks.map((match) => [...match[2].matchAll(/<p data-testid="article-qualification">([^<]*)<button type="button" data-testid="article-qualification-words"[^>]*>([^<]*)<\/button><\/p>/g)].map((line) => [unescapeHtml(line[1]), unescapeHtml(line[2])]));
-  assert.deepEqual(lines, [
-    [['Article III introduction, qualifying every representation below: ', III_WORDS]],
-    [['Article IV introduction, qualifying every representation below: ', IV_WORDS]],
-  ]);
-  // Above the table of its section, under the section heading; the General
-  // Exceptions row the same facts fill is still there.
-  for (const key of ['representations-qualifiers-table', 'parent-representations-qualifiers-table']) {
-    const block = html.indexOf(`data-testid="article-qualifications" data-table-key="${key}"`);
-    const table = html.indexOf(`data-testid="provision-table" data-table-key="${key}"`);
-    assert.ok(block > 0 && table > block, `${key}: the lines come before the table`);
-    assert.ok(html.lastIndexOf('data-testid="section-heading"', block) > html.lastIndexOf('data-testid="provision-table"', block), `${key}: the lines sit under their own section heading`);
-  }
-  assert.match(html, /General Exceptions/);
+  assert.doesNotMatch(html, /article-qualification/);
+  assert.match(html, /GENERAL EXCEPTIONS/);
   assert.doesNotMatch(html, /Held words|Status words/);
-
-  // Only the company's introduction: one block; no introduction: none.
-  const companyOnly = renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: withIntroductions(workspace(), { parent: false }), runId: 'run-1' }));
-  assert.deepEqual([...companyOnly.matchAll(/data-testid="article-qualifications" data-table-key="([^"]+)"/g)].map((match) => match[1]), ['representations-qualifiers-table']);
   assert.doesNotMatch(renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: workspace(), runId: 'run-1' })), /article-qualification/);
   assert.equal(articleQualifications(previewFactsFromWorkspace(workspace()).facts, tableShapes).size, 0);
 });

@@ -114,7 +114,8 @@ test('group headers render in the table caption', () => {
   const carveout = { ...fixture.facts.find((fact) => fact.fact_id === 'f-mae-carveout-1'), conclusions: { table_key: 'mae-carveouts-parent', row_label: 'War', cells: [] } };
   const view = buildTableView({ facts: [carveout], tableShapes, legalSchema });
   const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts: [carveout] }));
-  assert.match(html, /data-testid="table-group-header"[^>]*>CARVE-OUTS/);
+  // Ben, 2026-11-01: the group header is a sub-heading (a span inside the caption), not a grey caption.
+  assert.match(html, /data-testid="table-group-header"[^>]*><span class="block font-sans text-\[13px\] font-semibold[^"]*">CARVE-OUTS/);
 });
 
 const maeCarveoutFact = fixture.facts.find((fact) => fact.fact_id === 'f-mae-carveout-1');
@@ -174,14 +175,16 @@ test('a one-per-agreement table renders as an attribute grid, one line per colum
   const view = buildTableView({ facts: [structureFact], tableShapes, legalSchema });
   const html = renderToStaticMarkup(React.createElement(ProvisionTables, { initialShowCodes: true, tableView: view, facts: [structureFact] }));
   assert.match(html, /data-layout="attribute-grid"/);
-  assert.match(html, /data-column-id="effectsOfMerger"/);
-  assert.match(html, />DGCL</);
+  assert.match(html, /data-column-id="dealStructure"/);
+  assert.match(html, /data-column-id="mergerFormStep1"/);
   assert.doesNotMatch(html, /data-testid="table-row"/);
-  // Four lines: the detail ("as drafted") columns with no summary are dropped
-  // (Ben, 2026-09-14: "can we kill 'as drafted' columns throughout"), the
-  // legacy Merger Form line is gone (decision 28), step-2 lines are hidden
-  // until the deal is coded as a double merger.
-  assert.equal((html.match(/data-testid="attribute-row"/g) || []).length, 4);
+  // Ben, 2026-11-01: "I just show deal structure, merger form, and then just
+  // say 'Other provisions.'" Two lines (step 2 only for a double merger);
+  // the effects line is an Other provisions line.
+  assert.equal((html.match(/data-testid="attribute-row"/g) || []).length, 2);
+  assert.doesNotMatch(html, /data-column-id="effectsOfMerger"/);
+  assert.match(html, /data-testid="other-provision-term">Effects of Merger</);
+  assert.match(html, /data-testid="other-provision-line"[^>]*>DGCL</);
 });
 
 test('the attribute grid shows step-2 lines only for a double merger', () => {
@@ -279,8 +282,9 @@ test('the provision rail groups sections the old app\'s way, one anchor per sect
   assert.doesNotMatch(html, /bg-black/);
   const groups = html.match(/data-testid="provision-rail-group"/g) || [];
   // 17 old-app groups plus Tax Matters and Financing (work package 5, plan
-  // finding (52): three families had no page).
-  assert.equal(groups.length, 19);
+  // finding (52): three families had no page), plus Capitalization on its
+  // own at the bottom (Ben, 2026-11-01).
+  assert.equal(groups.length, 20);
   assert.match(html, /href="#provision-section-structure-mechanics"/);
   assert.match(html, /href="#provision-section-tax-matters"/);
   assert.match(html, /href="#provision-section-financing"/);
@@ -406,8 +410,11 @@ test('a one-per-agreement table renders its other provisions as a collapsed Term
   assert.match(html, /<div[^>]*data-testid="other-provisions"/, 'the same card as the tables');
   assert.doesNotMatch(html, /data-testid="other-provisions"[^>]*data-open/);
   assert.match(html, /<table[^>]*data-testid="other-provisions-table"[^>]*hidden/, 'collapsed to start');
-  assert.match(html, /Other provisions \(3\)/);
+  // Ben, 2026-11-01: the grid's non-headline lines (here Effects of Merger)
+  // join the Other provisions, first.
+  assert.match(html, /Other provisions \(4\)/);
   assert.match(html, /data-testid="other-provisions-table"[^]*?<th[^>]*>Term<\/th><th[^>]*>Summary<\/th>/);
+  assert.match(html, /data-testid="other-provision-term">Effects of Merger</);
   // The Term is a summary from the component labels, the reference quiet beside it.
   assert.match(html, /data-testid="other-provision-term">files</);
   assert.match(html, /data-testid="other-provision-term">files · obj</);
@@ -415,7 +422,7 @@ test('a one-per-agreement table renders its other provisions as a collapsed Term
   assert.match(html, /data-testid="other-provision-branch-term">obj</);
   // The block sits under the grid: after the attribute-grid table, before the next section.
   assert.ok(html.indexOf('data-layout="attribute-grid"') < html.indexOf('data-testid="other-provisions"'));
-  assert.equal((html.match(/data-testid="other-provision"/g) || []).length, 2, 'two lines: one sentence with branches, one sentence alone');
+  assert.equal((html.match(/data-testid="other-provision"/g) || []).length, 3, 'three lines: the effects attribute, one sentence with branches, one sentence alone');
   assert.match(html, /data-branches="2"/);
   assert.equal((html.match(/data-testid="other-provision-branch-row"/g) || []).length, 2, 'branches are indented rows under their sentence');
   assert.equal((html.match(/data-testid="other-provision-branch"/g) || []).length, 2);
@@ -442,9 +449,11 @@ test('sections are Storylines cards with a tinted header band, pills are tinted 
   assert.match(html, /<section class="bg-white border-0 border-t-\[10px\] border-\[#DCE3E1\] overflow-hidden" data-testid="provision-section"/);
   assert.match(html, /data-testid="section-heading"[^>]*>/);
   assert.match(html, /<button[^>]*class="[^"]*bg-\[#F1F4F8\][^"]*text-\[#03203D\][^"]*"[^>]*data-testid="section-heading"/);
-  assert.match(html, /<h3 class="flex-1 font-sans text-\[15px\] font-semibold leading-snug tracking-\[-.02em\]">/);
-  assert.match(html, /data-testid="table-pill"[^>]*class="inline-flex items-center rounded-full border border-\[#B9C8DA\] px-\[6px\] py-\[1px\] text-\[9px\] font-ui font-medium uppercase tracking-wide/);
-  assert.match(html, /<th class="border-b border-\[#03203D\] px-\[10px\] py-\[8px\] text-left text-\[9px\] font-ui font-medium uppercase tracking-\[0\.12em\] text-\[#6B7785\]">/);
+  // Ben, 2026-11-01: "all the text is maybe small or not using the space well enough": title 17, pills 10, header labels 10.5, cells 14.
+  assert.match(html, /<h3 class="flex-1 font-sans text-\[17px\] font-semibold leading-snug tracking-\[-.02em\]">/);
+  assert.match(html, /data-testid="table-pill"[^>]*class="inline-flex items-center rounded-full border border-\[#B9C8DA\] px-\[6px\] py-\[1px\] text-\[10px\] font-ui font-medium uppercase tracking-wide/);
+  assert.match(html, /<th class="border-b border-\[#03203D\] px-\[10px\] py-\[8px\] text-left text-\[10\.5px\] font-ui font-medium uppercase tracking-\[0\.12em\] text-\[#6B7785\]">/);
+  assert.match(html, /text-\[14px\] leading-relaxed text-\[#33475E\]/);
   assert.match(html, /data-testid="section-toggles"><button[^>]*class="rounded-\[2px\] border px-\[12px\] py-\[7px\] text-\[13px\] font-ui/);
   assert.doesNotMatch(html, /shadow/);
   assert.doesNotMatch(html, /font-mono/);
@@ -460,7 +469,7 @@ test('"See provision" and the § links are quiet controls: small, faint, no capi
   const controls = html.match(/<button[^>]*data-testid="see-provision"[^>]*>/g) || [];
   assert.ok(controls.length > 0);
   for (const control of controls) {
-    assert.match(control, /text-\[8.5px\]/);
+    assert.match(control, /text-\[10px\]/);
     assert.match(control, /font-ui/);
     assert.match(control, /text-\[#6B7785\]/);
     assert.match(control, /hover:underline/);
@@ -568,13 +577,18 @@ test('the equity awards table calls its sub-rows "Exceptions"', () => {
       { subject: 'Out of the money', backing_facts: [{ fact_id: 'm' }], cells: [{ column_id: 'treatment', kind: 'pill', label: 'Cancelled', tone: 'standard', component_ids: ['m-c'], fact_ids: ['m'] }] },
     ] }],
   }] }] };
+  // Ben, 2026-11-01: "I'd show out-of-the-money as an exception, indented
+  // below in a new row, but it'll be a little bit smaller, indented
+  // underneath company stock option." An exceptions table opens with its
+  // sub-rows shown, indented and a size smaller; the control reads "Less
+  // detail" and folds them.
   const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts: [] }));
-  assert.match(html, /<button[^>]*data-testid="more-detail"[^>]*>[^<]*Exceptions \(2\)</);
+  assert.equal((html.match(/data-testid="table-sub-row"/g) || []).length, 2);
+  assert.match(html, /Out of the money/);
+  assert.match(html, /<button[^>]*data-testid="more-detail"[^>]*data-open="true"[^>]*>[^<]*Less detail</);
   assert.doesNotMatch(html, /More detail/);
-  assert.doesNotMatch(html, /data-testid="table-sub-row"/);
-  const open = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts: [], initialSubRowsOpen: true }));
-  assert.equal((open.match(/data-testid="table-sub-row"/g) || []).length, 2);
-  assert.match(open, /Out of the money/);
+  assert.match(html, /data-testid="table-sub-row"[^>]*class="[^"]*text-\[13px\]/);
+  assert.match(html, /<td class="px-\[10px\] py-\[10px\] align-top pl-\[18\.5px\] text-inkMid">/);
 });
 
 // Ben, 2026-09-14: "we should be able to show the reader the general
@@ -824,17 +838,23 @@ test('a reparsed value cell carries data-reparsed and a title saying the words w
 // Work package 12 (plan finding (76)). Ben, 2026-10-17: "I know the pills are
 // likely helpful for background comparison work etc but do we need to show
 // them here? Consider this more generally on the UI pills etc."
-test('by default a coded cell shows the words it was read from, the pills come up behind one page-wide "Show codes" control', () => {
+// Ben, 2026-11-01: "we don't have to use pills. I'm not sure they're
+// necessarily the best approach for these things because it makes it a bit
+// hard to read." The answer is set as text in the schema's words, no chip;
+// the words it was read from ride on the title; "Show codes" brings the
+// chips up.
+test('by default a coded cell shows its answer as text, the pills come up behind one page-wide "Show codes" control', () => {
   const { SHOW_CODES_BY_DEFAULT } = require('../lib/product/table-view');
-  assert.equal(SHOW_CODES_BY_DEFAULT, false, 'the proposed default: words first; Ben decides');
+  assert.equal(SHOW_CODES_BY_DEFAULT, false, 'answers as text first; Ben decides');
   const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView, facts }));
   assert.match(html, /data-testid="provision-tables"[^>]*data-show-codes="false"/);
   assert.match(html, /data-testid="codes-toggle"[^>]*>Show codes</);
   assert.doesNotMatch(html, /data-testid="table-pill"/, 'no pill while the codes are hidden');
   assert.match(html, /data-testid="table-words"/);
   // The material-contracts qualifier cell was read from "any real property
-  // lease": those words show, the code label rides on the title.
-  assert.match(html, /data-testid="table-words"[^>]*title="Coded: Material"[^>]*>any real property lease</);
+  // lease": the answer "Material" shows, the words ride on the title.
+  assert.match(html, /data-testid="table-words"[^>]*title="Read from: any real property lease"[^>]*>Material</);
+  assert.doesNotMatch(html, /data-testid="table-words"[^>]*>any real property lease</);
   const shown = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView, facts, initialShowCodes: true }));
   assert.match(shown, /data-show-codes="true"/);
   assert.match(shown, /data-testid="codes-toggle"[^>]*>Hide codes</);
@@ -859,7 +879,8 @@ test('the cited words ride on every coded cell and trailing detail; a cell witho
     defined_terms: [],
   };
   const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: folded, facts: [] }));
-  assert.match(html, /data-testid="trailing-detail"[^>]*>· promptly \(and in any event within 48 hours\)</, 'the detail shows the words');
+  // Ben, 2026-11-01: answers as text; the detail shows its label in both modes.
+  assert.match(html, /data-testid="trailing-detail"[^>]*>· Period Required promptly</, 'the detail shows its label');
   assert.match(html, /data-testid="table-words"[^>]*>Yes</, 'no cited words: the label, as words');
   const shown = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: folded, facts: [], initialShowCodes: true }));
   assert.match(shown, /data-testid="trailing-detail"[^>]*>· Period Required promptly</);

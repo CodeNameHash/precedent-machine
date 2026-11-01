@@ -529,6 +529,8 @@ test('Decision 27: sections run in the old app\'s order and each carries its rai
   assert.ok(keys.indexOf('mae-definitions') < keys.indexOf('ioc-exceptions'));
   assert.ok(keys.indexOf('conditions') < keys.indexOf('termination-rights'));
   assert.ok(keys.indexOf('employee-benefits') < keys.indexOf('general-covenants'));
+  // Ben, 2026-11-01: "I'd always put intervening event after superior proposal."
+  assert.ok(keys.indexOf('nosol-superior') < keys.indexOf('nosol-intervening'));
   assert.equal(keys[keys.length - 1], 'defined-terms');
   for (const section of tableShapesV3.sections) {
     assert.ok(section.rail && section.rail.group && section.rail.label && /^#[0-9A-F]{6}$/i.test(section.rail.hex), section.section_key);
@@ -708,9 +710,12 @@ test('the representations tables open with the old version\'s General Exceptions
 test('the capitalization table counts each security class, the numbers parsed from cited words, the absence facts as its footer', () => {
   const section = findSectionV3('capitalization');
   assert.deepEqual(section.v2_family_keys.map((entry) => entry.key), ['CAPITALISATION']);
-  assert.deepEqual(section.rail, { group: 'Representations', label: 'Capitalization', hex: '#3F8A6A' });
+  // Ben, 2026-11-01: "capitalization. I stick it right at the bottom ...
+  // above definition or below definition." Its own rail group, last before
+  // Defined Terms.
+  assert.deepEqual(section.rail, { group: 'Capitalization', label: 'Capitalization', hex: '#3F8A6A' });
   const keys = tableShapesV3.sections.map((s) => s.section_key);
-  assert.equal(keys.indexOf('capitalization'), keys.indexOf('parent-representations-qualifiers') + 1);
+  assert.equal(keys.indexOf('capitalization'), keys.indexOf('defined-terms') - 1);
   const table = findTableV3(section, 'capitalization-table');
   assert.equal(table.rows_are, 'fixed list');
   assert.equal(table.open_rows, true);

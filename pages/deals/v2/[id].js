@@ -94,9 +94,11 @@ export default function ReleasedDealPage({ agreement, market = {}, agreementCoun
           <div className="mt-[12px]"><ProvisionTables
               tableView={tableView}
               facts={agreement.facts}
-              // The coded answers are the point of the page: pills on, so a
-              // reader sees the answer before the words (Ben, 2026-10-27).
-              initialShowCodes
+              // The coded answers are the point of the page (Ben, 2026-10-27:
+              // the answer before the words). Since 2026-11-01 the answer
+              // is set as text with the codes off ("we don't have to use
+              // pills ... it makes it a bit hard to read"); "Show codes"
+              // brings the chips up.
               onSource={() => { if (agreement.retrieval_url) window.open(agreement.retrieval_url, '_blank', 'noopener'); }}
             /></div></details>}
       </div>

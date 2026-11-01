@@ -94,8 +94,8 @@ function stateBadge(progress, published) {
 function UnplacedHeldFacts({ entries }) {
   if (!entries || entries.length === 0) return null;
   return (
-    <section className="mt-[18.5px] border-t border-[#ececec] pt-[9.5px] font-ui text-[9.5px] text-[#6b6b6b]" aria-labelledby="unplaced-held-heading" data-testid="unplaced-held">
-      <h2 id="unplaced-held-heading" className="font-ui text-[9.5px] font-medium uppercase tracking-[0.08em] text-[#6b6b6b]">Facts the model proposed that could not be placed in a table</h2>
+    <section className="mt-[18.5px] border-t border-[#ececec] pt-[9.5px] font-ui text-[11px] text-[#6b6b6b]" aria-labelledby="unplaced-held-heading" data-testid="unplaced-held">
+      <h2 id="unplaced-held-heading" className="font-ui text-[11px] font-medium uppercase tracking-[0.08em] text-[#6b6b6b]">Facts the model proposed that could not be placed in a table</h2>
       <ul className="mt-[2.5px] space-y-[1px]">
         {entries.map((entry, index) => (
           <li key={`${entry.fact_id}-${index}`} data-testid="unplaced-held-fact">
@@ -128,11 +128,11 @@ const NO_FACTS_REASONS = {
 function SectionsWithoutFacts({ entries }) {
   if (!entries || entries.length === 0) return null;
   return (
-    <section className="mt-[7px]" aria-labelledby="no-facts-heading" data-testid="sections-without-facts">
-      <h2 id="no-facts-heading" className="text-[9.5px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b]">Sections with no facts extracted</h2>
+    <section className="mt-[18.5px] border-t border-[#ececec] pt-[9.5px]" aria-labelledby="no-facts-heading" data-testid="sections-without-facts">
+      <h2 id="no-facts-heading" className="text-[11px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b]">Sections with no facts extracted</h2>
       <ul className="mt-[2.5px] space-y-[2px]">
         {entries.map((entry) => (
-          <li key={entry.structure_node_id || entry.section_reference} className="text-[9.5px] font-ui text-[#6b6b6b]" data-testid="section-without-facts">
+          <li key={entry.structure_node_id || entry.section_reference} className="text-[11px] font-ui text-[#6b6b6b]" data-testid="section-without-facts">
             <span className="text-[#1f1f1f]">{`§ ${entry.section_reference}${entry.heading ? ` ${entry.heading}` : ''}`}</span>
             {` — no facts were extracted: ${NO_FACTS_REASONS[entry.reason] || NO_FACTS_REASONS.NOT_RECORDED}. This is not a finding that the agreement has no such provision.`}
           </li>
@@ -225,7 +225,6 @@ export function ProvisionsPreviewBody({ workspace, runId }) {
                   ))}
                 </div>
               ) : null}
-              <SectionsWithoutFacts entries={preview.sections_without_facts} />
               {live && progress.status !== 'FAILED' ? <p className="mt-[7px] rounded-[2px] bg-amber-50 px-[7px] py-[4.5px] text-[9.5px] font-ui text-amber-700" data-testid="preview-live">Filling in as sections complete. This page refreshes itself every minute.</p> : null}
               <div className="mt-[16px] h-[10px] w-full bg-[#B9C8DA]" data-testid="preview-rule" aria-hidden="true" />
             </header>
@@ -238,8 +237,11 @@ export function ProvisionsPreviewBody({ workspace, runId }) {
               sectionTextByFactId={preview.sectionTextByFactId}
               reviewItemsByFactId={preview.reviewItemsByFactId}
               heldFacts={preview.held_facts || []}
-              initialShowCodes
             />
+            {/* Ben, 2026-11-01: "The section under the title that says
+                'Section with no fat extracted' should go at the bottom of
+                this whole exercise, of the whole sets of tables." */}
+            <SectionsWithoutFacts entries={preview.sections_without_facts} />
             <UnplacedHeldFacts entries={preview.unplaced_held} />
           </div>
         </>

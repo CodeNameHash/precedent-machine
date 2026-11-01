@@ -20,6 +20,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { validateTableShapesV3 } = require('../../lib/product/table-shapes');
 const { applyDecision34 } = require('./table-shapes-decision-34');
+const { applyBen20261101 } = require('./table-shapes-ben-2026-11-01');
 
 const ROOT = path.join(__dirname, '..', '..');
 const PASS2_PATH = path.join(ROOT, 'contracts/product/table-shapes.v2.json');
@@ -1217,6 +1218,10 @@ function build() {
   // row list; no fragment columns anywhere. scripts/product/table-shapes-decision-34.js.
   applyDecision34(doc);
   applyDecision27SectionOrder(doc);
+  // Ben, 2026-11-01, on the provisions page of the three Sonnet runs: the
+  // headline lines, the suffix columns, the General Exceptions table, the
+  // section order amendments. scripts/product/table-shapes-ben-2026-11-01.js.
+  applyBen20261101(doc);
   // Any MAE-coded entry added by a later decision links to the definition too.
   linkMaeCodesToDefinition(doc);
 
