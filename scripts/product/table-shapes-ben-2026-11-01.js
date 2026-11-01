@@ -452,6 +452,21 @@ function applyBen20261101(doc) {
   applyPersistence(doc);
   applyClearSkies(doc);
   applyNoOtherRepsSides(doc);
+  applyCarveOutProvisos(doc);
+}
+
+// 22. Round 4 (Ben: "Carve-back provisos as drafted - why is this showing
+// up?"): the footer is the provisos to the carve-outs, each named by what it
+// is and each distinct one once (lib/product/table-view.js
+// groupFooterEntries).
+function applyCarveOutProvisos(doc) {
+  for (const table of allTables(doc)) {
+    const footer = table.footer_from_subtype;
+    if (!footer || !Array.isArray(footer.subtype_keys) || !footer.subtype_keys.includes('DISPROPORTIONALITY_CARVEBACK')) continue;
+    footer.label = 'Provisos to the carve-outs';
+    footer.kind_labels = { DISPROPORTIONALITY_CARVEBACK: 'Disproportionality carve-back', UNDERLYING_CAUSE_RESTORATION: 'Underlying cause still counts' };
+    footer.label_reason = `Ben, 2026-11-01, round 4: "Carve-back provisos as drafted - why is this showing up?" The underlying-cause proviso is not a carve-back; each distinct proviso is shown once.`;
+  }
 }
 
 // 21. Round 4 (Ben, 2026-11-01): "for no other reps/fraud, why does that not

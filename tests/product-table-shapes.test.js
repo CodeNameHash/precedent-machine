@@ -335,7 +335,11 @@ test('Decision 25: MAE definitions say "None" for a party without one; carve-out
     const carveback = table.columns[1];
     assert.deepEqual(carveback.vocabulary.map((entry) => entry.code), ['YES', 'NO']);
     assert.equal(carveback.absent_code, 'NO');
-    assert.deepEqual(table.footer_from_subtype, { subtype_keys: ['DISPROPORTIONALITY_CARVEBACK', 'UNDERLYING_CAUSE_RESTORATION'], label: 'Carve-back provisos as drafted' });
+    // Round 4 (Ben: "Carve-back provisos as drafted - why is this showing
+    // up?"): the provisos to the carve-outs, each named by what it is.
+    assert.deepEqual(table.footer_from_subtype.subtype_keys, ['DISPROPORTIONALITY_CARVEBACK', 'UNDERLYING_CAUSE_RESTORATION']);
+    assert.equal(table.footer_from_subtype.label, 'Provisos to the carve-outs');
+    assert.deepEqual(table.footer_from_subtype.kind_labels, { DISPROPORTIONALITY_CARVEBACK: 'Disproportionality carve-back', UNDERLYING_CAUSE_RESTORATION: 'Underlying cause still counts' });
     assert.match(table.guidance, /generic title/);
     // A footer fact needs no readout (finding (39)); the guidance agrees with
     // the section's no_conclusions_subtype_keys instead of asking for a row_label.

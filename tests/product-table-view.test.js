@@ -486,9 +486,9 @@ test('a carve-out row with no carve-back reading says No, and the carve-back fac
   assert.equal(gaapCell.code, 'NO');
   assert.equal(gaapCell.defaulted, true);
   assert.equal(table.rows[0].cells.find((cell) => cell.column_id === 'disproportionateCarveback').label, 'Yes');
-  assert.equal(table.footer.label, 'Carve-back provisos as drafted');
+  assert.equal(table.footer.label, 'Provisos to the carve-outs');
   // The footer shows the carve-back as drafted (its own words in full), not the cited fragment (decision 34).
-  assert.deepEqual(table.footer.entries.map((entry) => [entry.fact_id, entry.text]), [['mae-cb', 'except to the extent disproportionate clauses (i) through (iv)']]);
+  assert.deepEqual(table.footer.entries.map((entry) => [entry.fact_id, entry.text]), [['mae-cb', 'Disproportionality carve-back: except to the extent disproportionate clauses (i) through (iv)']]);
 });
 
 // Metsera generation 7, 2026-09-14: the underlying-cause proviso had no
