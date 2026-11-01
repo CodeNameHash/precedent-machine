@@ -51,7 +51,13 @@ function cellText(cell) {
 
 function rowDistribution(distribution, rowLabel) {
   if (!distribution) return null;
-  const found = (distribution.rows || []).find((row) => row.row_label === rowLabel);
+  // how-common gives one distribution per row and column; the row line
+  // shows the row's own (not a sub-row's) most-answered column, a coded one
+  // first.
+  const coded = (row) => (row.entries || []).some((entry) => /^[A-Z0-9_]+$/.test(String(entry.code || '')));
+  const found = (distribution.rows || [])
+    .filter((row) => row.row_label === rowLabel && !row.row_detail)
+    .sort((left, right) => Number(coded(right)) - Number(coded(left)) || (right.answered || 0) - (left.answered || 0))[0];
   if (found) return found;
   return {
     row_label: rowLabel,

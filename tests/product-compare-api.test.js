@@ -452,3 +452,31 @@ test('the analysed index body renders draft and final rows and the compare actio
   assert.match(html, /Compare selected/);
   assert.match(html, /analysed\/compare\?runs=/);
 });
+
+// PR 490 re-review: how-common gives one distribution per row, parent row
+// and column, never a pool of several columns' readings (the per-share
+// "Cash" row mixed the form, the per and the amount).
+test('how-common keeps each column of a row apart, and a sub-row apart from its row', () => {
+  const view = (runId, cells, sub = []) => ({
+    run_id: runId,
+    tables: [{ table_key: 'consideration-components', rows: [
+      { table_key: 'consideration-components', row_label: 'Cash', row_detail: null, cells },
+      ...sub.map((subCells) => ({ table_key: 'consideration-components', row_label: 'Out of the money', row_detail: 'Cash', cells: subCells })),
+    ] }],
+  });
+  const form = { column_id: 'form', code: 'CASH', label: 'Cash' };
+  const per = { column_id: 'per', code: 'PER_SHARE_OF_COMPANY_COMMON_STOCK', label: 'Per share of Company Common Stock' };
+  const amount = (label) => ({ column_id: 'amount', label });
+  const result = howCommonFromViews([
+    view('a', [form, per, amount('$135.11')], [[{ column_id: 'form', code: 'NONE', label: 'None' }]]),
+    view('b', [form, per, amount('$63')]),
+  ], 'consideration-components');
+  const keyed = result.rows.map((row) => [row.row_label, row.row_detail, row.column_id, row.entries.map((entry) => `${entry.code}:${entry.count}`).join(',')]);
+  assert.deepEqual(keyed, [
+    ['Cash', null, 'amount', '$135.11:1,$63:1'],
+    ['Cash', null, 'form', 'CASH:2'],
+    ['Cash', null, 'per', 'PER_SHARE_OF_COMPANY_COMMON_STOCK:2'],
+    ['Out of the money', 'Cash', 'form', 'NONE:1'],
+  ]);
+  assert.equal(result.rows.find((row) => row.column_id === 'form' && !row.row_detail).entries[0].value, 'Cash');
+});
