@@ -674,7 +674,9 @@ test('the content column keeps its width when a selection opens the sidebar', ()
   assert.ok(column, 'the content column marks the open sidebar');
   assert.equal(column[1], 'min-w-0 flex-1 space-y-[16px]');
   assert.match(closed, /<div class="min-w-0 flex-1 space-y-\[16px\]">/);
-  assert.doesNotMatch(open, /pr-\[406px\]/);
+  // The toolbar keeps its controls clear of the fixed panel; the content
+  // column itself must not take the panel's width (the page must not reflow).
+  assert.doesNotMatch(column[1], /pr-/);
 });
 
 // Ben, 2026-10-17 (plan finding (42)), on the sidebar: "not formatted very

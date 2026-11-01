@@ -1,6 +1,7 @@
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import EvidenceSidebar from './EvidenceSidebar';
 import { SHOW_CODES_BY_DEFAULT, factIdOf, factSummaryText } from '../../lib/product/table-view';
+import { marketLine } from '../../lib/product/comparison-tables';
 import { walk } from '../../lib/product/fact-components';
 
 // Ben, 2026-09-14, on the scaled page: "sidebar width now good but font
@@ -125,9 +126,16 @@ const CodesContext = createContext(true);
 // page-wide "Show specifics" control ("Maybe a little toggle which says
 // 'show specifics.' Then I wouldn't have both."); off to start.
 const SpecificsContext = createContext(false);
+// Package 2: the market payload behind the Compare toggle. Null when the
+// toggle is off, so a Cell renders exactly as it did before.
+const MarketContext = createContext(null);
+// Everything opens every collapsed group without changing the local state
+// each group keeps for its own toggle.
+const EverythingContext = createContext(false);
 
-function Cell({ cell, tableKey, rowIndex, subIndex = null, selected, onSelect }) {
+function Cell({ cell, tableKey, rowIndex, subIndex = null, subject = null, selected, onSelect }) {
   const showCodes = useContext(CodesContext);
+  const market = useContext(MarketContext);
   if (cell.kind === 'dash') {
     return <span className="text-inkFaint" data-testid="table-dash" aria-hidden="true">—</span>;
   }
@@ -139,7 +147,7 @@ function Cell({ cell, tableKey, rowIndex, subIndex = null, selected, onSelect })
     return (
       <span className={stacked ? 'flex flex-col gap-[1px]' : 'inline-flex flex-wrap gap-[2.5px]'} data-testid="table-multi">
         {cell.values.map((value, index) => (
-          <Cell key={`${value.label}-${index}`} cell={{ ...value, column_id: cell.column_id, ...(index === cell.values.length - 1 && cell.suffix && !cell.values.some((candidate) => candidate.suffix) ? { suffix: cell.suffix } : {}) }} tableKey={tableKey} rowIndex={rowIndex} subIndex={subIndex} selected={selected} onSelect={onSelect} />
+          <Cell key={`${value.label}-${index}`} cell={{ ...value, column_id: cell.column_id, ...(index === cell.values.length - 1 && cell.suffix && !cell.values.some((candidate) => candidate.suffix) ? { suffix: cell.suffix } : {}) }} tableKey={tableKey} rowIndex={rowIndex} subIndex={subIndex} subject={subject} selected={selected} onSelect={onSelect} />
         ))}
       </span>
     );
@@ -178,41 +186,71 @@ function Cell({ cell, tableKey, rowIndex, subIndex = null, selected, onSelect })
   // The selected pill is outlined in the accent, as the selected card in
   // Deal Storylines is (Ben, 2026-09-14: "I prefer this side bar behavior").
   const selectedClass = selected ? 'ring-2 ring-accent' : '';
+  const selectPayload = {
+    tableKey,
+    rowIndex,
+    subIndex,
+    columnId: cell.column_id,
+    componentId: (cell.component_ids || [])[0] || null,
+    componentIds: cell.component_ids || [],
+    factId: (cell.fact_ids || [])[0] || null,
+    linkSection: cell.link_section || null,
+    value: cell.code || cell.label || null,
+    subject,
+  };
   // Ben, 2026-09-14, on the MAE (aggregate) cell: "for the definition, take
   // out of table but when you click the MAE box and the side bar opens,
   // there is a fixed visual element at the bottom of the side bar that has
   // the MAE definition summary which you can click through to get the full
   // definition". No inline "definition" link: the cell carries its
   // link_section on the selection and the sidebar pins the summary.
-  if (!canSelect) return <span className={baseClass} data-testid={asWords ? 'table-words' : undefined} data-code={asWords ? cell.code : undefined} title={manyTitle || undefined}>{shown}{qualifier}</span>;
-  const title = manyTitle ? manyTitle : cell.defaulted ? 'Not stated for this row; shown as the column\'s default'
-    : (cell.reparsed ? 'Re-read from the cited words; the stored number differed'
-      : (cell.derived === 'from_components' ? 'Read from the per-share forms below; no fact codes the type'
-        : (asWords && cell.words ? `Read from: ${cell.words}` : undefined)));
+  const content = !canSelect
+    ? <span className={baseClass} data-testid={asWords ? 'table-words' : undefined} data-code={asWords ? cell.code : undefined} title={manyTitle || undefined}>{shown}{qualifier}</span>
+    : (() => {
+      const title = manyTitle ? manyTitle : cell.defaulted ? 'Not stated for this row; shown as the column\'s default'
+        : (cell.reparsed ? 'Re-read from the cited words; the stored number differed'
+          : (cell.derived === 'from_components' ? 'Read from the per-share forms below; no fact codes the type'
+            : (asWords && cell.words ? `Read from: ${cell.words}` : undefined)));
+      return (
+        <button
+          type="button"
+          data-testid={testId}
+          data-selected={selected || undefined}
+          onClick={() => onSelect(selectPayload)}
+          className={`${baseClass} ${selectedClass}`}
+          title={title}
+          data-defaulted={cell.defaulted || undefined}
+          data-reparsed={cell.reparsed || undefined}
+          data-code={asWords ? cell.code : undefined}
+          data-many={manyTitle ? 'true' : undefined}
+        >
+          {shown}{qualifier}
+        </button>
+      );
+    })();
+  // Package 2: one quiet line under the coded answer. It opens the same
+  // cell (the sidebar), never a new interaction. Only a real cell reading
+  // gets a line: not a dash, not as-drafted text.
+  const marketKey = market && subject && cell.column_id ? `${tableKey}|${subject}|${cell.column_id}` : null;
+  const distribution = marketKey ? market.cells?.[marketKey] : null;
+  const line = distribution && (cell.kind === 'pill' || cell.kind === 'value') && cell.label
+    ? marketLine(distribution, cell.code || cell.label)
+    : null;
   return (
-    <button
-      type="button"
-      data-testid={testId}
-      data-selected={selected || undefined}
-      onClick={() => onSelect({
-        tableKey,
-        rowIndex,
-        subIndex,
-        columnId: cell.column_id,
-        componentId: (cell.component_ids || [])[0] || null,
-        componentIds: cell.component_ids || [],
-        factId: (cell.fact_ids || [])[0] || null,
-        linkSection: cell.link_section || null,
-      })}
-      className={`${baseClass} ${selectedClass}`}
-      title={title}
-      data-defaulted={cell.defaulted || undefined}
-      data-reparsed={cell.reparsed || undefined}
-      data-code={asWords ? cell.code : undefined}
-      data-many={manyTitle ? 'true' : undefined}
-    >
-      {shown}{qualifier}
-    </button>
+    <span className="flex flex-col items-start gap-[1px]">
+      {content}
+      {line ? (
+        <button
+          type="button"
+          data-testid="market-line"
+          data-market={line.kind}
+          onClick={() => onSelect(selectPayload)}
+          className="block text-left font-ui text-[11px] leading-snug text-[#6B7785] hover:underline hover:text-[#0B3D71]"
+        >
+          {line.text}
+        </button>
+      ) : null}
+    </span>
   );
 }
 
@@ -366,7 +404,7 @@ function AttributeGrid({ table, selection, onSelect }) {
                 </td>
                 <td className={TD}>
                   {cell ? (
-                    <Cell cell={cell} tableKey={table.table_key} rowIndex={0} selected={!!rowSelected && selection?.columnId === column.column_id} onSelect={onSelect} />
+                    <Cell cell={cell} tableKey={table.table_key} rowIndex={0} subject={row.subject || table.term_column?.header || table.group_header || table.table_key} selected={!!rowSelected && selection?.columnId === column.column_id} onSelect={onSelect} />
                   ) : <span className="text-inkFaint" data-testid="table-dash" aria-hidden="true">—</span>}
                 </td>
               </tr>,
@@ -408,11 +446,48 @@ function summarySaysMore(lines) {
   return lines.some(([term, text]) => normalise(text) && normalise(text) !== normalise(term));
 }
 
-function OtherProvisions({ groups, tableKey, onSelect, label = 'Other provisions' }) {
+function otherProvisionMarketLines({ fact, group, tableKey, market }) {
+  if (!market || !fact) return [];
+  const cells = Array.isArray(fact.conclusions?.cells)
+    ? fact.conclusions.cells
+    : Object.entries(fact.conclusions?.cells || {}).map(([columnId, cell]) => ({ ...cell, column_id: columnId }));
+  const out = [];
+  for (const cell of cells) {
+    if (!cell?.column_id) continue;
+    const value = cell.code || cell.label || cell.text;
+    if (!value) continue;
+    const key = `${tableKey}|${group.term || 'Other provisions'}|${cell.column_id}`;
+    const distribution = market.cells?.[key];
+    if (!distribution) continue;
+    out.push({ key: `${cell.column_id}:${value}`, line: marketLine(distribution, value) });
+  }
+  return out;
+}
+
+function OtherProvisionMarket({ lines, factId, onSelect }) {
+  if (!lines.length) return null;
+  return lines.map(({ key, line }) => (
+    <button
+      key={key}
+      type="button"
+      data-testid="market-line"
+      data-market={line.kind}
+      onClick={() => onSelect({ factId })}
+      className="mt-[1px] block text-left font-ui text-[11px] leading-snug text-[#6B7785] hover:underline hover:text-[#0B3D71]"
+    >
+      {line.text}
+    </button>
+  ));
+}
+
+function OtherProvisions({ groups, tableKey, onSelect, label = 'Other provisions', factsById = null }) {
+  const forced = useContext(EverythingContext);
+  const market = useContext(MarketContext);
   const [open, setOpen] = useState(false);
+  const effectiveOpen = forced || open;
   const count = groups.reduce((total, group) => total + group.branches.length, 0);
   const withSummary = summarySaysMore(groups.flatMap((group) => [[group.term, group.common_text], ...group.branches.map((branch) => [branch.term, branch.text])]));
-  const select = (factId) => onSelect({ tableKey, rowIndex: 0, columnId: null, componentId: null, componentIds: [], factId });
+  const select = (factId, subject = null) => onSelect({ tableKey, rowIndex: 0, columnId: null, componentId: null, componentIds: [], factId, subject });
   // Ben, 2026-09-14, on the first rendering (a list of lines with § marks):
   // "It should look like the rest of the table structure etc and for now no
   // summary is fine but ultimately we want to get to summary". The same
@@ -423,13 +498,13 @@ function OtherProvisions({ groups, tableKey, onSelect, label = 'Other provisions
   // sentence cut into branches is one row with its branches indented under
   // it, each with its own term, the way a row's sub-items are.
   return (
-    <div className="mt-[9.5px] rounded-[2px] border border-[#dcdcdc]" data-testid="other-provisions" data-open={open || undefined}>
-      <button type="button" onClick={() => setOpen((current) => !current)} aria-expanded={open} className={`flex w-full items-center justify-between px-[7px] py-[4.5px] text-left text-[11px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b] ${open ? 'border-b border-[#ececec]' : ''}`} data-testid="other-provisions-toggle">
+    <div className="mt-[9.5px] rounded-[2px] border border-[#dcdcdc]" data-testid="other-provisions" data-open={effectiveOpen || undefined}>
+      <button type="button" onClick={() => setOpen((current) => !current)} aria-expanded={effectiveOpen} className={`flex w-full items-center justify-between px-[7px] py-[4.5px] text-left text-[11px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b] ${effectiveOpen ? 'border-b border-[#ececec]' : ''}`} data-testid="other-provisions-toggle">
         <span>{label} ({count})</span>
-        <span className="text-inkFaint">{open ? '▾' : '▸'}</span>
+        <span className="text-inkFaint">{effectiveOpen ? '▾' : '▸'}</span>
       </button>
       {(
-        <table className="w-full border-collapse text-left" data-testid="other-provisions-table" data-summary-column={withSummary ? 'true' : 'false'} hidden={!open}>
+        <table className="w-full border-collapse text-left" data-testid="other-provisions-table" data-summary-column={withSummary ? 'true' : 'false'} hidden={!effectiveOpen}>
           <thead>
             <tr>
               <th className={withSummary ? `w-[111.5px] ${TH}` : TH}>Term</th>
@@ -445,20 +520,23 @@ function OtherProvisions({ groups, tableKey, onSelect, label = 'Other provisions
                   <td className={`${TD} ${SUBJECT}`}>
                     {withSummary
                       ? <span data-testid="other-provision-term">{group.term || ''}</span>
-                      : <button type="button" data-testid="other-provision-term" onClick={() => select(lead.fact_id)} className="text-left underline-offset-2 hover:underline">{group.term || ''}</button>}
+                      : <button type="button" data-testid="other-provision-term" onClick={() => select(lead.fact_id, group.term)} className="text-left underline-offset-2 hover:underline">{group.term || ''}</button>}
                     {lead.section_reference ? <span className={`ml-[4.5px] ${QUIET}`} data-testid="other-provision-ref">§ {lead.section_reference}</span> : null}
+                    {market ? <OtherProvisionMarket lines={otherProvisionMarketLines({ fact: factsById?.get(lead.fact_id), group, tableKey, market })} factId={lead.fact_id} onSelect={(entry) => select(entry.factId, group.term)} /> : null}
                   </td>
                   {withSummary ? <td className={TD}>
-                    <button type="button" data-testid="other-provision-line" onClick={() => select(lead.fact_id)} className={`text-left font-body underline-offset-2 hover:underline ${TEXT}`}>{group.common_text}</button>
+                    <button type="button" data-testid="other-provision-line" onClick={() => select(lead.fact_id, group.term)} className={`text-left font-body underline-offset-2 hover:underline ${TEXT}`}>{group.common_text}</button>
                   </td> : null}
                 </tr>
               );
               if (group.branches.length === 1) return [line];
               return [line, ...group.branches.map((branch, branchIndex) => (
                 <tr key={`${key}-${branchIndex}`} className={ROW} data-testid="other-provision-branch-row">
-                  <td className={`${TD} pl-[18.5px] font-ui text-[13px] text-inkMid`} data-testid="other-provision-branch-term">{withSummary ? (branch.term || '') : <button type="button" onClick={() => select(branch.fact_id)} className="text-left underline-offset-2 hover:underline">{branch.term || ''}</button>}</td>
+                  <td className={`${TD} pl-[18.5px] font-ui text-[13px] text-inkMid`} data-testid="other-provision-branch-term">{withSummary ? (branch.term || '') : <button type="button" onClick={() => select(branch.fact_id, group.term)} className="text-left underline-offset-2 hover:underline">{branch.term || ''}</button>}
+                    {market ? <OtherProvisionMarket lines={otherProvisionMarketLines({ fact: factsById?.get(branch.fact_id), group, tableKey, market })} factId={branch.fact_id} onSelect={(entry) => select(entry.factId, group.term)} /> : null}
+                  </td>
                   {withSummary ? <td className={`${TD} pl-[18.5px]`}>
-                    <button type="button" data-testid="other-provision-branch" onClick={() => select(branch.fact_id)} className={`text-left font-body ${SUB_TEXT} underline-offset-2 hover:underline`}>{branch.text}</button>
+                    <button type="button" data-testid="other-provision-branch" onClick={() => select(branch.fact_id, group.term)} className={`text-left font-body ${SUB_TEXT} underline-offset-2 hover:underline`}>{branch.text}</button>
                   </td> : null}
                 </tr>
               ))];
@@ -473,13 +551,15 @@ function OtherProvisions({ groups, tableKey, onSelect, label = 'Other provisions
 // Facts of the section's families that carry no readout: evidence the tables
 // cannot place, listed so nothing is hidden and each opens in the sidebar.
 function FactsWithoutReadout({ entries, sectionKey, onSelect }) {
+  const forced = useContext(EverythingContext);
   const [open, setOpen] = useState(false);
+  const effectiveOpen = forced || open;
   return (
     <div className="mt-[9.5px] text-[11px] font-ui text-[#6b6b6b]" data-testid="facts-without-readout">
       <button type="button" onClick={() => setOpen((current) => !current)} className={LINK}>
-        {entries.length} fact{entries.length === 1 ? '' : 's'} without a coded readout · {open ? 'hide' : 'see provisions'}
+        {entries.length} fact{entries.length === 1 ? '' : 's'} without a coded readout · {effectiveOpen ? 'hide' : 'see provisions'}
       </button>
-      {open ? (
+      {effectiveOpen ? (
         <ul className="mt-[2.5px] space-y-[1px] pl-[4.5px]">
           {entries.map((entry, index) => (
             <li key={`${entry.fact_id}-${index}`}>
@@ -498,13 +578,15 @@ function FactsWithoutReadout({ entries, sectionKey, onSelect }) {
 // their section with the reason in plain words, in the same quiet style as
 // the facts without a readout, so an empty table says why (NCS 3.4).
 function HeldFacts({ entries, sectionKey, onSelect }) {
+  const forced = useContext(EverythingContext);
   const [open, setOpen] = useState(false);
+  const effectiveOpen = forced || open;
   return (
     <div className="mt-[6px] text-[11px] font-ui text-[#6b6b6b]" data-testid="held-facts">
       <button type="button" onClick={() => setOpen((current) => !current)} className={LINK}>
-        {entries.length} fact{entries.length === 1 ? '' : 's'} held by validation · {open ? 'hide' : 'see why'}
+        {entries.length} fact{entries.length === 1 ? '' : 's'} held by validation · {effectiveOpen ? 'hide' : 'see why'}
       </button>
-      {open ? (
+      {effectiveOpen ? (
         <ul className="mt-[2.5px] space-y-[1px] pl-[4.5px]">
           {entries.map((entry, index) => (
             <li key={`${entry.fact_id}-${index}`} data-testid="held-fact">
@@ -634,12 +716,14 @@ function DefinedTermsSection({ terms, collapsed, onToggle }) {
 // open, indented and a size smaller; every other table's sub-items (the
 // limbs of a representation) stay behind "More detail" (Ben, 2026-09-14).
 function RowGroup({ table, row, rowIndex, selection, onSelect, initialOpen = false, columns = null }) {
+  const forced = useContext(EverythingContext);
   const [open, setOpen] = useState(!!initialOpen || !!table.sub_rows_label);
+  const effectiveOpen = forced || open;
   const rowSelected = selection?.tableKey === table.table_key && selection?.rowIndex === rowIndex;
   const subRows = row.sub_rows || [];
   const shownColumns = columns || table.columns;
   const shownIds = new Set(shownColumns.map((column) => column.column_id));
-  const detail = subRows.length ? { count: subRows.length, label: table.sub_rows_label || null, open, onToggle: () => setOpen((current) => !current) } : null;
+  const detail = subRows.length ? { count: subRows.length, label: table.sub_rows_label || null, open: effectiveOpen, onToggle: () => setOpen((current) => !current) } : null;
   // A click selects one line: the sub-item clicked, or the row's
   // own line, never every line of the row (Ben, 2026-09-13:
   // "clicking one of the qualifications shouldn't cause the others
@@ -668,6 +752,7 @@ function RowGroup({ table, row, rowIndex, selection, onSelect, initialOpen = fal
             tableKey={table.table_key}
             rowIndex={rowIndex}
             subIndex={subIndex}
+            subject={entry.subject}
             selected={!!rowSelected && (selection?.subIndex ?? null) === subIndex && selection?.columnId === cell.column_id}
             onSelect={onSelect}
           />
@@ -679,7 +764,7 @@ function RowGroup({ table, row, rowIndex, selection, onSelect, initialOpen = fal
   return (
     <>
       {line(row, `${row.subject}-${rowIndex}`, false)}
-      {open ? subRows.map((subRow, subIndex) => line(subRow, `${row.subject}-${rowIndex}-${subIndex}`, true, subIndex)) : null}
+      {effectiveOpen ? subRows.map((subRow, subIndex) => line(subRow, `${row.subject}-${rowIndex}-${subIndex}`, true, subIndex)) : null}
     </>
   );
 }
@@ -706,7 +791,9 @@ function Table({ table, selection, onSelect, initialSubRowsOpen = false }) {
   // rows behind a toggle above the header row; open to start.
   // Ben, 2026-11-01, round 3: "I'd have the other protections sort of
   // hidden. You have to click to open them." (rows_start_collapsed).
+  const forced = useContext(EverythingContext);
   const [rowsOpen, setRowsOpen] = useState(!table.rows_start_collapsed);
+  const effectiveRowsOpen = forced || rowsOpen;
   const showSpecifics = useContext(SpecificsContext);
   if (table.layout === 'attribute grid') return <AttributeGrid table={table} selection={selection} onSelect={onSelect} />;
   // Ben, 2026-11-01: the as-drafted column stays behind "Show specifics".
@@ -743,15 +830,15 @@ function Table({ table, selection, onSelect, initialSubRowsOpen = false }) {
           <thead>
             <tr>
               <td colSpan={span} className="pb-[4.5px]">
-                <button type="button" onClick={() => setRowsOpen((current) => !current)} aria-expanded={rowsOpen} className={`flex w-full items-center justify-between text-left text-[11px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b]`} data-testid="rows-toggle">
-                  <span>{rowsOpen ? 'Hide' : 'Show'} {table.rows.length} {table.rows.length === 1 ? 'row' : 'rows'}</span>
-                  <span className="text-inkFaint">{rowsOpen ? '▾' : '▸'}</span>
+                <button type="button" onClick={() => setRowsOpen((current) => !current)} aria-expanded={effectiveRowsOpen} className={`flex w-full items-center justify-between text-left text-[11px] font-ui font-medium uppercase tracking-[0.08em] text-[#6b6b6b]`} data-testid="rows-toggle">
+                  <span>{effectiveRowsOpen ? 'Hide' : 'Show'} {table.rows.length} {table.rows.length === 1 ? 'row' : 'rows'}</span>
+                  <span className="text-inkFaint">{effectiveRowsOpen ? '▾' : '▸'}</span>
                 </button>
               </td>
             </tr>
           </thead>
         ) : null}
-        <thead hidden={table.collapsible_rows ? !rowsOpen : undefined}>
+        <thead hidden={table.collapsible_rows ? !effectiveRowsOpen : undefined}>
           <tr>
             {table.term_column ? (
               <th className={TH}>{table.term_column.header}</th>
@@ -761,7 +848,7 @@ function Table({ table, selection, onSelect, initialSubRowsOpen = false }) {
             ))}
           </tr>
         </thead>
-        <tbody hidden={table.collapsible_rows ? !rowsOpen : undefined}>
+        <tbody hidden={table.collapsible_rows ? !effectiveRowsOpen : undefined}>
           {groups.flatMap((group) => [
             <tr key={`group-${group.label}`} data-testid="election-group" className="border-b border-[#DCE3E1]">
               <td colSpan={span} className={`${TD} pb-[4px] pt-[12px] font-ui text-[14px] font-semibold text-[#03203D]`}>{group.label}</td>
@@ -860,6 +947,32 @@ function linkedDefinitionFor(selection, tableView, facts) {
   };
 }
 
+function marketForSelection({ selection, tableView, market, runId }) {
+  if (!selection || !market || !selection.columnId) return null;
+  let subject = selection.subject || null;
+  for (const section of subject ? [] : (tableView?.sections || [])) {
+    const table = (section.tables || []).find((candidate) => candidate.table_key === selection.tableKey);
+    if (!table) continue;
+    const row = (table.rows || [])[selection.rowIndex];
+    if (!row) break;
+    subject = selection.subIndex == null ? row.subject : row.sub_rows?.[selection.subIndex]?.subject;
+    break;
+  }
+  if (!subject) return null;
+  const key = `${selection.tableKey}|${subject}|${selection.columnId}`;
+  const distribution = market.cells?.[key];
+  if (!distribution) return null;
+  const selectedValue = selection.value;
+  const entries = Object.entries(distribution.codes || {}).map(([code, entry]) => ({
+    code,
+    label: entry.label || code,
+    count: Number(entry.count || 0),
+    run_ids: entry.run_ids || [],
+    self: code === selectedValue || entry.label === selectedValue,
+  })).sort((left, right) => right.count - left.count || left.label.localeCompare(right.label));
+  return { label: subject, total: Number(distribution.total || 0), entries, runs: market.runs || {}, run_id: runId || null };
+}
+
 export default function ProvisionTables({
   tableView,
   facts = [],
@@ -881,9 +994,18 @@ export default function ProvisionTables({
   initialShowCodes = SHOW_CODES_BY_DEFAULT,
   // Ben, 2026-11-01: the as-drafted columns behind "Show specifics"; off to start.
   initialShowSpecifics = false,
+  // Package 2: the run whose market line is read; the optional payload for
+  // static renders/tests; and the two test-only starting states.
+  runId = null,
+  initialMarket = null,
+  initialCompare = false,
+  initialEverything = false,
 }) {
   const [showCodes, setShowCodes] = useState(initialShowCodes);
   const [showSpecifics, setShowSpecifics] = useState(!!initialShowSpecifics);
+  const [everything, setEverything] = useState(!!initialEverything);
+  const [compare, setCompare] = useState(!!initialCompare);
+  const [market, setMarket] = useState(initialMarket || null);
   const factsById = useMemo(() => new Map((facts || []).map((fact) => [factIdOf(fact), fact])), [facts]);
   const [selection, setSelection] = useState(initialSelection);
   // Each section collapses on its heading; the bar above offers collapse /
@@ -894,10 +1016,33 @@ export default function ProvisionTables({
   // families).
   const [collapsed, setCollapsed] = useState(() => new Set((tableView?.sections || []).filter((section) => section.coverage_only).map((section) => section.section_key)));
 
+  // Ben's "Compare" setting is remembered per browser; every access is
+  // guarded, and the read happens after mount so the server HTML is stable.
+  useEffect(() => {
+    try { if (window.localStorage.getItem('pm-compare') === '1') setCompare(true); } catch { /* storage unavailable */ }
+  }, []);
+  useEffect(() => {
+    try { window.localStorage.setItem('pm-compare', compare ? '1' : '0'); } catch { /* storage unavailable */ }
+  }, [compare]);
+  // The market payload loads only when Compare is on, and only once per run.
+  useEffect(() => {
+    if (!compare || !runId || market) return undefined;
+    let cancelled = false;
+    fetch(`/api/product/compare/market?run=${encodeURIComponent(runId)}`, { headers: { accept: 'application/json' } })
+      .then((response) => (response.ok ? response.json() : Promise.reject(new Error(String(response.status)))))
+      .then((body) => { if (!cancelled) setMarket(body); })
+      .catch(() => { if (!cancelled) setMarket(null); });
+    return () => { cancelled = true; };
+  }, [compare, runId, market]);
+  useEffect(() => { setMarket(initialMarket || null); }, [runId, initialMarket]);
+
   if (!tableView || tableView.sections.length === 0) return null;
 
+  const effectiveCodes = everything ? false : showCodes;
+  const effectiveSpecifics = everything ? true : showSpecifics;
+  const effectiveCollapsed = everything ? new Set() : collapsed;
   const selectedFact = selection ? factsById.get(selection.factId) || null : null;
-  const allCollapsed = tableView.sections.every((section) => collapsed.has(section.section_key));
+  const allCollapsed = tableView.sections.every((section) => effectiveCollapsed.has(section.section_key));
   const toggleSection = (key) => setCollapsed((current) => {
     const next = new Set(current);
     if (next.has(key)) next.delete(key); else next.add(key);
@@ -924,9 +1069,11 @@ export default function ProvisionTables({
   const TAB = 'rounded-[2px] border px-[12px] py-[7px] text-[13px] font-ui leading-none transition-colors';
   const tabClass = (current) => `${TAB} ${current ? 'border-[#dcdcdc] bg-[#f3f3f3] text-[#1f1f1f]' : 'border-transparent text-[#6b6b6b] hover:text-[#1f1f1f]'}`;
   return (
-    <CodesContext.Provider value={showCodes}>
-    <SpecificsContext.Provider value={showSpecifics}>
-    <div className="flex flex-wrap gap-[18.5px] lg:flex-nowrap" data-testid="provision-tables" data-show-codes={showCodes ? 'true' : 'false'} data-show-specifics={showSpecifics ? 'true' : 'false'}>
+    <EverythingContext.Provider value={everything}>
+    <MarketContext.Provider value={compare ? market : null}>
+    <CodesContext.Provider value={effectiveCodes}>
+    <SpecificsContext.Provider value={effectiveSpecifics}>
+    <div className="flex flex-wrap gap-[18.5px] lg:flex-nowrap" data-testid="provision-tables" data-show-codes={effectiveCodes ? 'true' : 'false'} data-show-specifics={effectiveSpecifics ? 'true' : 'false'} data-everything={everything ? 'true' : undefined} data-compare={compare ? 'true' : 'false'}>
       {/* The sidebar is fixed to the viewport's right edge (Deal Storylines;
           Ben, 2026-09-14) and the page keeps its width when it opens. The
           tables used to take 406px of right padding while a fact was
@@ -937,15 +1084,17 @@ export default function ProvisionTables({
           finding (42)): the panel comes up over the page, as the Storylines
           panel does ("the page scrolls under it", finding (37)). */}
       <div className="min-w-0 flex-1 space-y-[16px]" data-sidebar-open={selectedFact ? 'true' : undefined}>
-        <div className="flex items-center gap-[4.5px]" data-testid="section-toggles">
-          <button type="button" onClick={() => setAll(false)} disabled={collapsed.size === 0} className={tabClass(collapsed.size === 0)}>Expand all</button>
+        <div className={`flex flex-wrap items-center gap-[4.5px] ${selectedFact ? 'lg:pr-[406px]' : ''}`} data-testid="section-toggles">
+          <button type="button" onClick={() => setAll(false)} disabled={effectiveCollapsed.size === 0} className={tabClass(effectiveCollapsed.size === 0)}>Expand all</button>
           <button type="button" onClick={() => setAll(true)} disabled={allCollapsed} className={tabClass(allCollapsed)}>Collapse all</button>
-          <button type="button" onClick={() => setShowSpecifics((current) => !current)} aria-pressed={showSpecifics} className={`ml-auto ${tabClass(showSpecifics)}`} data-testid="specifics-toggle">{showSpecifics ? 'Hide specifics' : 'Show specifics'}</button>
-          <button type="button" onClick={() => setShowCodes((current) => !current)} aria-pressed={showCodes} className={tabClass(showCodes)} data-testid="codes-toggle">{showCodes ? 'Hide codes' : 'Show codes'}</button>
+          <button type="button" onClick={() => setEverything((current) => !current)} aria-pressed={everything} className={tabClass(everything)} data-testid="everything-toggle">Everything</button>
+          <button type="button" onClick={() => setCompare((current) => !current)} aria-pressed={compare} className={tabClass(compare)} data-testid="compare-toggle">{compare ? 'Hide compare' : 'Compare'}</button>
+          <button type="button" onClick={() => setShowSpecifics((current) => !current)} aria-pressed={effectiveSpecifics} disabled={everything} className={`ml-auto ${tabClass(effectiveSpecifics)} disabled:opacity-40`} data-testid="specifics-toggle">{effectiveSpecifics ? 'Hide specifics' : 'Show specifics'}</button>
+          <button type="button" onClick={() => setShowCodes((current) => !current)} aria-pressed={effectiveCodes} disabled={everything} className={`${tabClass(effectiveCodes)} disabled:opacity-40`} data-testid="codes-toggle">{effectiveCodes ? 'Hide codes' : 'Show codes'}</button>
         </div>
         <SectionJump sections={tableView.sections} />
         {tableView.sections.map((section) => {
-          const isCollapsed = collapsed.has(section.section_key);
+          const isCollapsed = effectiveCollapsed.has(section.section_key);
           return (
             <section key={section.section_key} className={CARD} data-testid="provision-section" data-collapsed={isCollapsed || undefined} id={`provision-section-${section.section_key}`}>
               <SectionHeading title={section.title} collapsed={isCollapsed} onToggle={() => toggleSection(section.section_key)} />
@@ -955,11 +1104,11 @@ export default function ProvisionTables({
                     {/* Ben, 2026-11-01, round 2: a table embedded under the
                         consideration type (the per-share and election
                         options tables) is shown only with the specifics. */}
-                    {section.tables.filter((table) => !table.embedded_in || showSpecifics).map((table) => (
+                    {section.tables.filter((table) => !table.embedded_in || effectiveSpecifics).map((table) => (
                       <div key={table.table_key} data-embedded={table.embedded_in || undefined}>
                         {table.other_provisions_only ? null : <Table table={table} selection={selection} onSelect={setSelection} initialSubRowsOpen={initialSubRowsOpen} />}
                         {table.other_provisions?.length ? (
-                          <OtherProvisions groups={table.other_provisions} tableKey={table.table_key} onSelect={setSelection} label={table.other_provisions_label || 'Other provisions'} />
+                          <OtherProvisions groups={table.other_provisions} tableKey={table.table_key} onSelect={setSelection} label={table.other_provisions_label || 'Other provisions'} factsById={factsById} />
                         ) : null}
                       </div>
                     ))}
@@ -976,7 +1125,7 @@ export default function ProvisionTables({
           );
         })}
         {tableView.defined_terms.length ? (
-          <DefinedTermsSection terms={tableView.defined_terms} collapsed={collapsed.has(DEFINED_TERMS_KEY)} onToggle={() => toggleSection(DEFINED_TERMS_KEY)} />
+          <DefinedTermsSection terms={tableView.defined_terms} collapsed={effectiveCollapsed.has(DEFINED_TERMS_KEY)} onToggle={() => toggleSection(DEFINED_TERMS_KEY)} />
         ) : null}
       </div>
       {selectedFact ? (
@@ -995,10 +1144,13 @@ export default function ProvisionTables({
           linkedDefinition={linkedDefinition}
           onOpenDefinition={openDefinition}
           initialTreeOpen={initialTreeOpen}
+          market={marketForSelection({ selection, tableView, market: compare ? market : null, runId })}
         />
       ) : null}
     </div>
     </SpecificsContext.Provider>
     </CodesContext.Provider>
+    </MarketContext.Provider>
+    </EverythingContext.Provider>
   );
 }

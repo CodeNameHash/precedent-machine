@@ -97,6 +97,7 @@ export function QueryProvisionsBody({
                   groups={[{ family_key: 'ALL', collapsed: false, facts: agreement.facts }]}
                   tableShapes={tableShapesV3}
                   legalSchema={legalSchemaV2}
+                  runId={agreement.run_id}
                 />
               </div>
             ))}

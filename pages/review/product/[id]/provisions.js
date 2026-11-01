@@ -237,6 +237,7 @@ export function ProvisionsPreviewBody({ workspace, runId }) {
               heading={null}
               tableShapes={tableShapesV3}
               legalSchema={legalSchemaV2}
+              runId={runId}
               sectionTextByFactId={preview.sectionTextByFactId}
               reviewItemsByFactId={preview.reviewItemsByFactId}
               heldFacts={preview.held_facts || []}

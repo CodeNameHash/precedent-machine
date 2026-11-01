@@ -99,10 +99,52 @@ function LinkedDefinition({ definition, onOpen }) {
   </div>;
 }
 
+// Package 2: "How this compares" above the Interpretation Tree. The rows are
+// the distribution of the selected cell over the reference set; the selected
+// deal's own reading is marked, and every other deal links to its preview.
+// The denominator is answering deals, and not-stated is never a "No".
+function MarketComparison({ market }) {
+  const entries = Array.isArray(market?.entries) ? market.entries : [];
+  const total = Number(market?.total || 0);
+  return (
+    <section data-testid="evidence-market" className="border-b border-[#DCE3E1] pb-[14px]">
+      <p className="text-[10.5px] font-ui font-medium uppercase tracking-[0.12em] text-[#6B7785]">How this compares</p>
+      <p className="mt-[3px] font-ui text-[12.5px] font-medium leading-snug text-[#33475E]">
+        {market?.label || 'This reading'}<span className="ml-[5px] font-normal text-[#6B7785]">· {total} deal{total === 1 ? '' : 's'} answer this cell</span>
+      </p>
+      {entries.length === 0 ? <p className={`mt-[7px] ${NOTE}`}>No other deal answers this cell.</p> : (
+        <ul className="mt-[8px] space-y-[9px]" data-testid="evidence-market-entries">
+          {entries.map((entry) => (
+            <li key={entry.code || entry.label} data-testid="evidence-market-entry" data-self={entry.self || undefined}>
+              <div className="flex flex-wrap items-baseline justify-between gap-[6px]">
+                <span className={`font-ui text-[12.5px] leading-snug ${entry.self ? 'font-semibold text-[#03203D]' : 'text-[#33475E]'}`}>{entry.label}</span>
+                <span className="font-ui text-[10.5px] tabular-nums text-[#6B7785]">{entry.count} of {total}</span>
+              </div>
+              <div className="mt-[3px] h-[3px] w-full bg-[#ECF0EF]" role="img" aria-label={`${entry.label} ${entry.count} of ${total}`}>
+                <div className="h-[3px] bg-[#03203D]" style={{ width: `${total ? Math.max(2, Math.round((entry.count / total) * 100)) : 0}%` }} />
+              </div>
+              {entry.self ? <p className="mt-[2px] text-[9.5px] font-ui text-[#6B7785]">This deal</p> : null}
+              {entry.run_ids?.length ? (
+                <p className="mt-[2px] flex flex-wrap gap-x-[7px] gap-y-[1px]">
+                  {entry.run_ids.map((runId) => (
+                    <a key={runId} href={`/review/product/${runId}/provisions`} className={`${TEXT_LINK} mr-[7px]`} data-testid="evidence-market-deal">{market.runs?.[runId] || runId}</a>
+                  ))}
+                </p>
+              ) : null}
+            </li>
+          ))}
+        </ul>
+      )}
+      <p className={`mt-[7px] ${NOTE}`}>Counts are deals that answer this cell; a deal that does not is not a “No”.</p>
+    </section>
+  );
+}
+
 export default function EvidenceSidebar({
   fact, componentId = null, componentIds = null, reviewItem = null, provenance = null, sectionText = null,
   onDecision = null, onComment = null, onReset = null, onClose = null, busy = false,
   linkedDefinition = null, onOpenDefinition = null, initialTreeOpen = true,
+  market = null,
 }) {
   if (!fact) return null;
   // A coded cell may rest on several components read together (a merger
@@ -213,6 +255,7 @@ export default function EvidenceSidebar({
     </div>
     <div className="divide-y divide-[#ececec] px-[18.5px] [&>*]:py-[14px]">
     {tab !== 'detail' ? null : <>
+    {market ? <MarketComparison market={market} /> : null}
     <section data-testid="evidence-layers">
       {/* Ben, 2026-09-14: "in right hand side bar - hide detail under the
           full layer tree as the default. Also call it Interpretation Tree
