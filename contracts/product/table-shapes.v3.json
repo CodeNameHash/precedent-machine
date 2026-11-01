@@ -5492,10 +5492,6 @@
                   "PULL_AND_REFILE_PROHIBITED_WITHOUT_CONSENT",
                   "PULL_AND_REFILE_PERMITTED"
                 ],
-                "Non-impediment covenant": [
-                  "NO_ACQUISITIONS_THAT_DELAY_CLEARANCE",
-                  "NO_ACTION_INCONSISTENT_WITH_APPROVALS"
-                ],
                 "Third-party consents": [
                   "EFFORTS_NO_PAYMENT_REQUIRED",
                   "PAYMENT_ONLY_AS_AGREED",
@@ -5512,6 +5508,10 @@
                   "EXPRESS_HELL_OR_HIGH_WATER",
                   "REMEDY_ONLY_IF_CONDITIONED_ON_CLOSING",
                   "SILENT"
+                ],
+                "Non-impediment covenant (clear skies)": [
+                  "NO_ACQUISITIONS_THAT_DELAY_CLEARANCE",
+                  "NO_ACTION_INCONSISTENT_WITH_APPROVALS"
                 ]
               },
               "fill_from": [
@@ -5578,7 +5578,7 @@
             "Consultation and participation",
             "Information sharing",
             "Timing agreements and pull-and-refile",
-            "Non-impediment covenant",
+            "Non-impediment covenant (clear skies)",
             "Third-party consents",
             "Regulatory request response"
           ],
@@ -5594,15 +5594,21 @@
             "CONSULTATION": "Consultation and participation",
             "INFORMATION_SHARING": "Information sharing",
             "TIMING_AGREEMENT": "Timing agreements and pull-and-refile",
-            "NON_IMPEDIMENT": "Non-impediment covenant",
+            "NON_IMPEDIMENT": "Non-impediment covenant (clear skies)",
             "THIRD_PARTY_CONSENTS": "Third-party consents",
             "REGULATORY_REQUEST_RESPONSE": "Regulatory request response"
           },
           "guidance": "One row per regulatory term as the precedent names it; the row follows from the fact's subtype (subtype_rows). The Provision cell is the code from that row's list that the clause establishes (an efforts covenant that says \"reasonable best efforts\" is REASONABLE_BEST_EFFORTS; a proviso that no party need take any action not conditioned on Closing is REMEDY_ONLY_IF_CONDITIONED_ON_CLOSING); period carries the number of days of a filing deadline or response period; asDrafted shows the covenant's words. A limb of a row (the HSR filing and the foreign filings on Other regulatory filings) is a sub-item (row_detail naming the regime) with the same columns. On Regulatory litigation, a covenant to contest and resist (or to contest, resist or appeal) any proceeding is MUST_DEFEND_INCLUDING_APPEALS, not MUST_DEFEND (Ben, 2026-11-01: \"it also says 'contest and resist.' I think that includes appeals\").",
           "row_aliases": {
-            "Remedy commitment (divestiture cap)": "Remedies cap"
+            "Remedy commitment (divestiture cap)": "Remedies cap",
+            "Non-impediment covenant": "Non-impediment covenant (clear skies)"
           },
-          "row_aliases_reason": "Ben, 2026-11-01, second read of the provisions page: \"Change the words to 'vestiture cap' in answers regulatory to 'remedies cap.'\""
+          "row_aliases_reason": "Ben, 2026-11-01, second read of the provisions page: \"Change the words to 'vestiture cap' in answers regulatory to 'remedies cap.'\"",
+          "outside_date_words": {
+            "column_id": "period",
+            "label": "Outside Date",
+            "reason": "Ben, 2026-11-01, round 4: \"in period you should say outside date rather than giving the date\"."
+          }
         }
       ],
       "print_pages": [],

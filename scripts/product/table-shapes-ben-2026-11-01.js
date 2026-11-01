@@ -450,6 +450,18 @@ function applyBen20261101(doc) {
   applyElectionCapsFromDefinedTerms(doc);
   applyOtherProtectionsHidden(doc);
   applyPersistence(doc);
+  applyClearSkies(doc);
+}
+
+// 20. Round 4 (Ben, 2026-11-01): "on AT for the non-impediment covenant (i)
+// add 'Clear Skies' after it and then in period you should say outside date
+// rather than giving the date". The row is renamed (the old label an alias
+// for stored readouts); a period that is the agreement's Outside Date reads
+// "Outside Date" (lib/product/table-view.js, outside_date_words).
+function applyClearSkies(doc) {
+  const table = findTable(doc, 'antitrust-regulatory-table');
+  renameRow(table, 'Non-impediment covenant', 'Non-impediment covenant (clear skies)');
+  table.outside_date_words = { column_id: 'period', label: 'Outside Date', reason: `Ben, 2026-11-01, round 4: "in period you should say outside date rather than giving the date".` };
 }
 
 module.exports = { applyBen20261101 };

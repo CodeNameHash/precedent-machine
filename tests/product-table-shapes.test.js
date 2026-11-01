@@ -611,7 +611,10 @@ test('Decision 34: Antitrust / Regulatory is the Envestnet row list, each row na
   // regulatory to 'remedies cap.'" The old label stays as an alias for
   // stored readouts.
   assert.deepEqual(table.fixed_row_labels.slice(0, 7), ['Efforts standard', 'Filing deadline', 'Other regulatory filings', 'Remedies cap', 'Regulatory litigation', 'Strategy control', 'Consultation and participation']);
-  assert.deepEqual(table.row_aliases, { 'Remedy commitment (divestiture cap)': 'Remedies cap' });
+  // Round 4: "for the non-impediment covenant (i) add 'Clear Skies' after it".
+  assert.deepEqual(table.row_aliases, { 'Remedy commitment (divestiture cap)': 'Remedies cap', 'Non-impediment covenant': 'Non-impediment covenant (clear skies)' });
+  assert.ok(table.fixed_row_labels.includes('Non-impediment covenant (clear skies)'));
+  assert.equal(table.outside_date_words.label, 'Outside Date');
   assert.equal(table.subtype_rows.REMEDY_LIMITATION, 'Remedies cap');
   assert.equal(table.subtype_rows.EFFORTS, 'Efforts standard');
   const provision = table.columns.find((c) => c.column_id === 'provision');
