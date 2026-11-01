@@ -142,7 +142,7 @@ export function AnalysedIndexBody({
 
         <div className="mt-[16px] flex flex-wrap items-center justify-between gap-3">
           <p className="m-0 font-ui text-[12px] text-[#6B7785]">
-            {visible.length} run{visible.length === 1 ? '' : 's'} · {tables} coded table{tables === 1 ? '' : 's'} · draft runs follow the current review
+            {visible.length} run{visible.length === 1 ? '' : 's'} · {tables} coded table{tables === 1 ? '' : 's'} · draft runs follow the current review · partly analysed runs are left out of the default comparison
           </p>
           <div className="flex items-center gap-3">
             <span className="font-ui text-[11px] text-[#6B7785]">{selected.length} selected · up to {MAX_COMPARE_RUNS}</span>
@@ -191,7 +191,7 @@ export function AnalysedIndexBody({
                   const checked = selected.includes(run.run_id);
                   const disabled = !checked && selected.length >= MAX_COMPARE_RUNS;
                   return (
-                    <tr key={run.run_id} className="border-b border-[#DCE3E1] align-top hover:bg-[#F8FAFC]" data-testid="analysed-run" data-phase={run.phase}>
+                    <tr key={run.run_id} className="border-b border-[#DCE3E1] align-top hover:bg-[#F8FAFC]" data-testid="analysed-run" data-phase={run.phase} data-comparable={run.comparable ? 'true' : 'false'}>
                       <td className="px-[8px] py-[11px]">
                         <input
                           type="checkbox"

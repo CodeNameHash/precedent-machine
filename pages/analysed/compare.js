@@ -83,6 +83,7 @@ function RunChip({ run, selected, onToggle }) {
       aria-pressed={selected}
       data-testid="run-chip"
       data-run-id={run.run_id}
+      data-comparable={run.comparable ? 'true' : 'false'}
       className={`inline-flex max-w-full items-center gap-[6px] rounded-full border px-[11px] py-[5px] text-left font-ui text-[11.5px] transition-colors ${selected ? 'border-[#03203D] bg-[#03203D] text-white' : 'border-[#B9C8DA] bg-white text-[#33475E] hover:border-[#0B3D71]'}`}
       title={`${run.agreement_label} · ${run.phase_label} · ${run.status_label}`}
     >
@@ -203,7 +204,11 @@ export default function AnalysedComparePage() {
     if (!Array.isArray(runs) || selectedInitialised.current) return;
     const available = new Set(runs.map((run) => run.run_id));
     const fromQuery = queryList(router.query.runs).filter((id) => UUID.test(id) && available.has(id));
-    setSelected(fromQuery.length ? fromQuery.slice(0, MAX_RUNS) : runs.slice(0, 2).map((run) => run.run_id));
+    // PR 490 review: a PARTIAL/FAILED/RUNNING run is not a default
+    // comparison; it is only picked explicitly.
+    const preferred = runs.filter((run) => run.comparable);
+    const defaults = (preferred.length ? preferred : runs).slice(0, 2).map((run) => run.run_id);
+    setSelected(fromQuery.length ? fromQuery.slice(0, MAX_RUNS) : defaults);
     selectedInitialised.current = true;
   }, [runs, router.query.runs]);
 
