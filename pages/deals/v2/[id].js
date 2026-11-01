@@ -93,6 +93,7 @@ export default function ReleasedDealPage({ agreement, market = {}, agreementCoun
         {agreement.facts.length === 0 ? null : <details className="mt-[28px]"><summary className="cursor-pointer font-ui text-[13px] font-semibold text-[#0B3D71]">The provision tables</summary>
           <div className="mt-[12px]"><ProvisionTables
               tableView={tableView}
+              runId={agreement.run_id}
               facts={agreement.facts}
               // The coded answers are the point of the page (Ben, 2026-10-27:
               // the answer before the words). Since 2026-11-01 the answer

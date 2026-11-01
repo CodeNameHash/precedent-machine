@@ -174,6 +174,8 @@ export default function PublishedSummary({
   // The coded answers can be shown by default on a surface whose job is to be
   // read rather than reviewed (work package 54, finding (303)).
   initialShowCodes = undefined,
+  // Package 2: the run whose market line the Compare toggle reads.
+  runId = null,
 }) {
   const flatFacts = useMemo(() => (groups || []).flatMap((group) => group.facts), [groups]);
   const tableView = useMemo(
@@ -194,6 +196,7 @@ export default function PublishedSummary({
       <ProvisionTables
         tableView={tableView}
         initialShowCodes={initialShowCodes}
+        runId={runId}
         facts={flatFacts}
         reviewItemsByFactId={reviewItemsByFactId}
         provenanceByFactId={provenanceByFactId}
