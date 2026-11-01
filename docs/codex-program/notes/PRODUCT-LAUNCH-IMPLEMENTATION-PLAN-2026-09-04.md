@@ -13693,3 +13693,38 @@ column. Ben's round-4 points and what each became:
 - The integrated deal record (Corpus + Deal Storylines + the biopharma
   site): an architecture plan commissioned, to be written to
   docs/codex-program/notes/INTEGRATION-PLAN-DEAL-RECORD-2026-11-01.md.
+
+**(313) 2026-11-01: Metsera run; out-of-scope exhibit coverage; cost.**
+Ben: "okay do the metsera deal - cna you track (i) how much usage of the
+weekly plan it takes and (ii) how much it would cost on API?"
+
+- Run `07922e92-a778-483a-b843-96f230050e9c` (Pfizer / Metsera merger
+  agreement of 2025-09-21; Amendment No. 1 not run) on the subscription
+  CLI provider. 85 of 85 sections complete, 309 calls, extraction
+  14:17-15:59 UTC. READY at 16:34 UTC.
+- Bug: finalisation failed `DRAFT_COVERAGE_COMPLETENESS
+  Exhibit-B:RESIDUAL_PARAGRAPH`. The out-of-scope exhibit path recorded the
+  residual pass but no residual-paragraph coverage. Fixed in code
+  (1e74b009, `lib/product/agreement-draft.js`): the path writes one
+  NOT_FOUND assertion per disposition (reason OUT_OF_SCOPE_EXHIBIT), and
+  assembly derives them for stored results that lack them.
+  `tests/product-out-of-scope-exhibit.test.js`.
+- Recovery for this run only: the 225 derived Exhibit-B rows, computed by
+  the module's own `makeCoverage`, inserted into
+  `product_coverage_assertions` (insert-only table), then the run reset to
+  DRAFT_FINALIZATION and woken. Finalisation held the MICRO database for
+  about 35 minutes; no query answered meanwhile.
+- Cost on the API (from `product_model_calls`):
+
+  | Model | Calls | Cache writes | Cache reads | Output | CLI cost |
+  |---|---|---|---|---|---|
+  | Sonnet 5.5 | 135 | 9,036,558 | 108,532 | 1,932,704 | $55.48 |
+  | Haiku 5.5 | 174 | 1,136,634 | 10,370 | 208,017 | $0.33 |
+
+  The CLI's figure matches list prices with one-hour cache writes. Almost
+  every prompt is written to cache and never read back, so caching costs
+  2x the input rate for no reuse; at plain input rates the run would be
+  about $38 instead of $56. Open: send these calls uncached, or order
+  them so the shared agreement prefix is read from cache.
+- Weekly plan usage cannot be read from the session; Ben reads Settings →
+  Usage.
