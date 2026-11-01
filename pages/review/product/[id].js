@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import ReviewWorkspace from '../../../components/product/ReviewWorkspace';
+import ProvisionReview from '../../../components/product/ProvisionReview';
 import { useUser } from '../../../lib/useUser';
 import { useSessionUser } from '../../../lib/useSessionUser';
 import { parseFocusSections } from '../../../lib/product/section-highlight';
@@ -26,5 +27,8 @@ export default function ProductReviewPage() {
   const id = Array.isArray(router.query.id) ? router.query.id[0] : router.query.id;
   const brief = id ? briefForRun(id) : null;
   const focus = id ? resolveFocus(router.query, brief) : [];
-  return id ? <ReviewWorkspace runId={id} focus={focus} brief={brief} allSectionsHref={focus.length ? `/review/product/${id}?all=1` : null} /> : null;
+  const legacy = router.query.legacy === '1';
+  return id ? (legacy
+    ? <ReviewWorkspace runId={id} focus={focus} brief={brief} allSectionsHref={focus.length ? `/review/product/${id}?all=1` : null} />
+    : <ProvisionReview runId={id} />) : null;
 }

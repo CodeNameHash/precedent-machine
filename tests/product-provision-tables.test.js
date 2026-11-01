@@ -450,7 +450,7 @@ test('a one-per-agreement table renders its other provisions as a collapsed Term
 // font size not good": font sizes raised by 1.3, layout unchanged.
 test('sections are Storylines cards with a tinted header band, pills are tinted chips, nothing casts a shadow', () => {
   const html = renderToStaticMarkup(React.createElement(ProvisionTables, { initialShowCodes: true, tableView, facts }));
-  assert.match(html, /<section class="bg-white border-0 border-t-\[10px\] border-\[#DCE3E1\] overflow-hidden" data-testid="provision-section"/);
+  assert.match(html, /<section class="bg-white border-0 border-t-\[10px\] border-\[#DCE3E1\] overflow-hidden[^"]*" data-testid="provision-section"/);
   assert.match(html, /data-testid="section-heading"[^>]*>/);
   assert.match(html, /<button[^>]*class="[^"]*bg-\[#F1F4F8\][^"]*text-\[#03203D\][^"]*"[^>]*data-testid="section-heading"/);
   // Ben, 2026-11-01: "all the text is maybe small or not using the space well enough": title 17, pills 10, header labels 10.5, cells 14.
@@ -458,7 +458,7 @@ test('sections are Storylines cards with a tinted header band, pills are tinted 
   assert.match(html, /data-testid="table-pill"[^>]*class="inline-flex items-center rounded-full border border-\[#B9C8DA\] px-\[6px\] py-\[1px\] text-\[10px\] font-ui font-medium uppercase tracking-wide/);
   assert.match(html, /<th class="border-b border-\[#03203D\] px-\[10px\] py-\[8px\] text-left text-\[10\.5px\] font-ui font-medium uppercase tracking-\[0\.12em\] text-\[#6B7785\]">/);
   assert.match(html, /text-\[14px\] leading-relaxed text-\[#33475E\]/);
-  assert.match(html, /data-testid="section-toggles"><button[^>]*class="rounded-\[2px\] border px-\[12px\] py-\[7px\] text-\[13px\] font-ui/);
+  assert.match(html, /data-testid="section-toggles"><button[^>]*class="rounded-full border px-\[12px\] py-\[7px\] text-\[12px\] font-ui font-semibold/);
   assert.doesNotMatch(html, /shadow/);
   assert.doesNotMatch(html, /font-mono/);
   assert.doesNotMatch(html, /font-display/);

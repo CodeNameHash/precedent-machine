@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // Ben, 2026-09-14, on the scaled page: "sidebar width now good but font
 // size not good". Every width, padding, gap, band height and the page
@@ -41,14 +41,39 @@ export function railGroups(sections) {
 export default function ProvisionRail({ sections, title = null, topOffset = 0 }) {
   const groups = railGroups(sections);
   const [active, setActive] = useState(groups[0]?.sections?.[0]?.section_key || null);
+  // The rail marks the section in view as active. The observer is a browser
+  // concern; static renders keep the first section active.
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof IntersectionObserver === 'undefined') return undefined;
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries.filter((entry) => entry.isIntersecting)
+        .sort((left, right) => left.boundingClientRect.top - right.boundingClientRect.top)[0];
+      if (visible?.target?.id) setActive(visible.target.id.replace('provision-section-', ''));
+    }, { rootMargin: '-70px 0px -55% 0px', threshold: 0 });
+    for (const section of sections || []) {
+      const element = document.getElementById(`provision-section-${section.section_key}`);
+      if (element) observer.observe(element);
+    }
+    return () => observer.disconnect();
+  }, [sections]);
   if (!groups.length) return null;
+  const jump = (event, sectionKey) => {
+    setActive(sectionKey);
+    if (typeof window === 'undefined') return;
+    event.preventDefault();
+    window.dispatchEvent(new CustomEvent('pm:open-section', { detail: { sectionKey } }));
+    window.setTimeout(() => {
+      const element = document.getElementById(`provision-section-${sectionKey}`);
+      if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 0);
+  };
   const item = (sectionKey, label, { sub = false } = {}) => {
     const isActive = active === sectionKey;
     return (
       <a
         key={sectionKey}
         href={`#provision-section-${sectionKey}`}
-        onClick={() => setActive(sectionKey)}
+        onClick={(event) => jump(event, sectionKey)}
         data-testid="provision-rail-item"
         data-active={isActive || undefined}
         className={`block rounded-[2px] font-sans leading-snug ${sub ? 'text-[12px]' : 'text-[13px]'} ${isActive ? 'bg-white font-semibold text-[#03203D]' : 'font-medium text-white hover:bg-white/10'}`}

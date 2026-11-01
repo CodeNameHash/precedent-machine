@@ -144,7 +144,7 @@ export default function EvidenceSidebar({
   fact, componentId = null, componentIds = null, reviewItem = null, provenance = null, sectionText = null,
   onDecision = null, onComment = null, onReset = null, onClose = null, busy = false,
   linkedDefinition = null, onOpenDefinition = null, initialTreeOpen = true,
-  market = null,
+  market = null, onFeedback = null,
 }) {
   if (!fact) return null;
   // A coded cell may rest on several components read together (a merger
@@ -245,7 +245,10 @@ export default function EvidenceSidebar({
           {fact.section_reference ? <p className="text-[10px] font-ui tracking-[0.02em] text-[#6b6b6b]" data-testid="evidence-eyebrow">{displaySectionReference(fact.section_reference)}</p> : null}
           <p className="mt-[7px] font-sans text-[21px] font-semibold leading-tight tracking-tight text-[#1f1f1f]">{fact.headline?.label || 'Evidence'}</p>
         </div>
-        {onClose ? <button type="button" onClick={onClose} aria-label="Close evidence" className="text-[21px] leading-none text-[#6b6b6b] hover:text-[#1f1f1f]">×</button> : null}
+        <div className="flex items-center gap-[8px]">
+          {onFeedback ? <button type="button" onClick={onFeedback} data-testid="evidence-feedback" className="rounded-full border border-[#B9C8DA] px-[9px] py-[3px] font-ui text-[9px] font-semibold uppercase tracking-[0.08em] text-[#0B3D71] hover:bg-[#EAF0F6]">Feedback</button> : null}
+          {onClose ? <button type="button" onClick={onClose} aria-label="Close evidence" className="text-[21px] leading-none text-[#6b6b6b] hover:text-[#1f1f1f]">×</button> : null}
+        </div>
       </div>
       <div className="mt-[14px] flex gap-[16px] border-b border-[#ececec]" role="tablist" data-testid="evidence-tabs">
         {tabButton('detail', 'Detail', 'evidence-tab-detail')}
