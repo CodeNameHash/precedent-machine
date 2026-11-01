@@ -74,4 +74,21 @@ test('the Form of CVR Agreement exhibit is out of scope: one note, its families 
   assert.ok(factTypes.length > 0 && factTypes.every((assertion) => assertion.state === 'NOT_FOUND' && routed.includes(assertion.family_key)), 'the routed families\' fact types are NOT_FOUND');
   assert.equal(result.coverage.find((assertion) => assertion.subject_kind === 'SECTION').state, 'NOT_FOUND');
   assert.deepEqual(result.routing.families, routed, 'the routing stays as evidence of what the exhibit holds');
+  // Plan finding (313), Metsera run 07922e92: the draft gate wants one
+  // RESIDUAL_PARAGRAPH assertion per paragraph the residual pass lists; the
+  // run failed at finalisation without them.
+  const dispositions = result.residual_pass.dispositions;
+  assert.ok(dispositions.length > 0, 'the fixture has residual paragraphs');
+  const paragraphs = result.coverage.filter((assertion) => assertion.subject_kind === 'RESIDUAL_PARAGRAPH');
+  assert.deepEqual(paragraphs.map((assertion) => assertion.subject_id).sort(), dispositions.map((item) => item.source_span_id).sort());
+  assert.ok(paragraphs.every((assertion) => assertion.state === 'NOT_FOUND'));
+  // A result stored before the fix (no RESIDUAL_PARAGRAPH coverage) gets the
+  // assertions at assembly, so the stored Metsera run finalises unchanged.
+  const { assembleAgreementDraft } = require('../lib/product/agreement-draft');
+  const stored = { ...result, coverage: result.coverage.filter((assertion) => assertion.subject_kind !== 'RESIDUAL_PARAGRAPH') };
+  const draft = assembleAgreementDraft({ sourceDocument, agreementStructure, legalSchema, results: [stored] });
+  const assembled = draft.coverage_assertions.filter((assertion) => assertion.subject_kind === 'RESIDUAL_PARAGRAPH' && assertion.structure_node_id === exhibitB.node_id);
+  assert.deepEqual(assembled.map((assertion) => assertion.subject_id).sort(), dispositions.map((item) => item.source_span_id).sort());
+  const fresh = assembleAgreementDraft({ sourceDocument, agreementStructure, legalSchema, results: [result] });
+  assert.equal(fresh.coverage_assertions.filter((assertion) => assertion.subject_kind === 'RESIDUAL_PARAGRAPH').length, dispositions.length, 'no duplicates when the result already has them');
 });
