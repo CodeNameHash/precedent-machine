@@ -59,8 +59,8 @@ function disagreedLabel(item) {
     || item.edited_statement || original.statement || 'Disagreed fact';
 }
 
-// A disagreed fact leaves the tables (the preview shows only facts the
-// review keeps), so the page lists them here with an Undo.
+// A disagreed fact stays in the tables, greyed and labelled Disagreed with
+// its See reason (and Undo); the page also lists them here with an Undo.
 function DisagreedList({ items, onReset, busy }) {
   if (!items.length) return null;
   return (
@@ -82,7 +82,7 @@ function DisagreedList({ items, onReset, busy }) {
 // The page body for a loaded workspace; the default export fetches it and
 // sends the commands.
 export function ProvisionReviewBody({ workspace, runId, command, busy = false, error = '' }) {
-  const preview = useMemo(() => previewFactsFromWorkspace(workspace), [workspace]);
+  const preview = useMemo(() => previewFactsFromWorkspace(workspace, { includeRejected: true }), [workspace]);
   const view = useMemo(() => buildReviewView(workspace), [workspace]);
   const tableView = useMemo(() => buildTableView({
     facts: preview.facts,
@@ -95,7 +95,10 @@ export function ProvisionReviewBody({ workspace, runId, command, busy = false, e
   const title = displayIdentityParties(workspace.analysis.source_document?.display_parties || workspace.analysis.source_document?.parties, 'Agreement review');
   const status = state.status || 'DRAFT';
   const draft = status === 'DRAFT';
-  const decidableItemIds = new Set([...preview.reviewItemsByFactId.values()].map((item) => item?.item_id).filter(Boolean));
+  // Only the valid facts are decidable here; a held fact's item can be
+  // disagreed with from its reason panel but is decided in the legacy
+  // workspace.
+  const decidableItemIds = new Set(preview.facts.map((fact) => preview.reviewItemsByFactId.get(fact.fact_id)?.item_id).filter(Boolean));
   const blockers = publicationBlockers({ state, decidableItemIds, canPublish: view.can_publish });
   const disagreed = (state.items || []).filter((item) => FACT_KINDS.has(item.kind) && item.decision === 'REJECTED');
   const legacyHref = `/review/product/${runId}?legacy=1`;
@@ -143,6 +146,8 @@ export function ProvisionReviewBody({ workspace, runId, command, busy = false, e
           runId={runId}
           reviewItemsByFactId={preview.reviewItemsByFactId}
           sectionTextByFactId={preview.sectionTextByFactId}
+          heldFacts={preview.held_facts || []}
+          citedWordsByFactId={preview.citedWordsByFactId || null}
           onDecision={draft ? (itemId, decision) => command({ type: 'DECIDE_ITEM', item_id: itemId, decision }) : null}
           onComment={draft ? (itemId, comment) => command({ type: 'COMMENT_ITEM', item_id: itemId, comment }) : null}
           onReset={reset}

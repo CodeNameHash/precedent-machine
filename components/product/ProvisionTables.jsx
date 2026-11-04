@@ -4,6 +4,7 @@ import { SHOW_CODES_BY_DEFAULT, factIdOf, factSummaryText } from '../../lib/prod
 import { marketLine } from '../../lib/product/comparison-tables';
 import FeedbackDialog from './FeedbackDialog';
 import { walk } from '../../lib/product/fact-components';
+import { levelLabel } from '../../lib/product/reviewers';
 
 // Ben, 2026-09-14, on the scaled page: "sidebar width now good but font
 // size not good". Every width, padding, gap, band height and the page
@@ -278,8 +279,145 @@ function ReviewComponents({ components = [], level = 0 }) {
   );
 }
 
+// Review mode reaches every answer line through one context: the facts a
+// reason panel can open (the page's facts and its held facts), the review
+// items, section texts and cited words by fact, and the review commands.
+// Null outside review mode, so the read and lawyer pages render as before.
+const ReviewContext = createContext(null);
+
+// A line is shown as disagreed when every fact behind it is one the review
+// rejected (lib/product/provisions-preview.js marks it review_rejected).
+function lineRejected(review, factIds) {
+  if (!review) return false;
+  const ids = (factIds || []).filter(Boolean);
+  return ids.length > 0 && ids.every((factId) => review.factsById.get(factId)?.review_rejected === true);
+}
+// A line backed by several facts of which only some are disagreed says how
+// many ("2 of 9 disagreed"), and its See reason opens the first disagreed
+// fact, so its Undo is in reach.
+function rejectedCount(review, factIds) {
+  if (!review) return { rejected: 0, total: 0, first: null };
+  const ids = (factIds || []).filter(Boolean);
+  const rejectedIds = ids.filter((factId) => review.factsById.get(factId)?.review_rejected === true);
+  return { rejected: rejectedIds.length, total: ids.length, first: rejectedIds[0] || null };
+}
+function reasonFactFor(review, factIds) {
+  const ids = (factIds || []).filter(Boolean);
+  if (!review || !ids.length) return null;
+  return rejectedCount(review, ids).first || ids[0];
+}
+function PartlyRejectedLabel({ review, factIds }) {
+  const { rejected, total } = rejectedCount(review, factIds);
+  if (!rejected || rejected === total) return null;
+  return <span className="ml-[4.5px] font-ui text-[9.5px] font-semibold uppercase tracking-[0.08em] text-[#6B7785]" data-testid="review-partly-rejected-label" data-rejected={rejected} data-total={total}>{`${rejected} of ${total} disagreed`}</span>;
+}
+const cx = (...classes) => classes.filter(Boolean).join(' ');
+const REJECTED_LINE = 'text-[#6B7785] [&_*]:!text-[#6B7785]';
+const REJECTED_ANSWER = 'line-through [&_*]:line-through';
+function RejectedLabel() {
+  return <span className="ml-[4.5px] font-ui text-[9.5px] font-semibold uppercase tracking-[0.08em] text-[#6B7785] no-underline" data-testid="review-rejected-label">Disagreed</span>;
+}
+
+// One quiet See reason control, the same on every line.
+function SeeReason({ open, onToggle }) {
+  return <button type="button" onClick={onToggle} aria-expanded={open} className={`ml-[4.5px] ${QUIET}`} data-testid="see-reason">{open ? 'Hide reason' : 'See reason'}</button>;
+}
+
+// Which line of a block has its reason open: one at a time, keyed by line;
+// a line whose fact is the page's initialReasonFactId starts open.
+function useReasonKey(lines) {
+  const review = useContext(ReviewContext);
+  const initial = review?.initialReasonFactId ? (lines.find((line) => line.factId === review.initialReasonFactId)?.key ?? null) : null;
+  const [openKey, setOpenKey] = useState(initial);
+  return [openKey, (key) => setOpenKey((current) => (current === key ? null : key))];
+}
+
+// The reason panel for one fact, read from the review context.
+function ReasonPanelFor({ factId }) {
+  const review = useContext(ReviewContext);
+  if (!review || !factId) return null;
+  return (
+    <ReviewReasonPanel
+      fact={review.factsById.get(factId) || null}
+      reviewItem={review.reviewItemsByFactId ? review.reviewItemsByFactId.get(factId) || null : null}
+      sectionText={review.sectionTextByFactId ? review.sectionTextByFactId.get(factId) || null : null}
+      citedWords={review.citedWordsByFactId ? review.citedWordsByFactId.get(factId) || null : null}
+      onDecision={review.onDecision}
+      onComment={review.onComment}
+      onReset={review.onReset}
+      busy={review.busy}
+    />
+  );
+}
+
+function ReasonRow({ factId, colSpan }) {
+  return (
+    <tr data-testid="review-reason-row" className="border-b border-[#DCE3E1]">
+      <td colSpan={colSpan} className="p-0"><ReasonPanelFor factId={factId} /></td>
+    </tr>
+  );
+}
+
+// The cited passages' places in the section text, as [start, end) character
+// ranges, merged where they overlap. A passage is placed by its UTF-8 offset
+// when the section text there reads the same words, else at its first
+// verbatim occurrence; a passage the section does not contain is not marked.
+export function citedRanges(sectionText, citedWords) {
+  const text = sectionText?.exact_text;
+  if (typeof text !== 'string' || !text || !Array.isArray(citedWords) || !citedWords.length) return [];
+  const base = Number.isFinite(sectionText.start_byte) ? sectionText.start_byte : null;
+  let bytes = null;
+  const ranges = [];
+  for (const passage of citedWords) {
+    const words = typeof passage === 'string' ? passage : passage?.text;
+    if (!words) continue;
+    let start = -1;
+    if (base !== null && Number.isFinite(passage?.start_byte) && passage.start_byte >= base) {
+      if (!bytes) bytes = new TextEncoder().encode(text);
+      const offset = passage.start_byte - base;
+      if (offset <= bytes.length) {
+        const at = new TextDecoder().decode(bytes.subarray(0, offset)).length;
+        if (text.startsWith(words, at)) start = at;
+      }
+    }
+    if (start < 0) start = text.indexOf(words);
+    if (start >= 0) ranges.push([start, start + words.length]);
+  }
+  ranges.sort((left, right) => left[0] - right[0]);
+  const merged = [];
+  for (const range of ranges) {
+    const last = merged[merged.length - 1];
+    if (last && range[0] <= last[1]) last[1] = Math.max(last[1], range[1]);
+    else merged.push([...range]);
+  }
+  return merged;
+}
+
+function MarkedSection({ sectionText, citedWords }) {
+  const text = sectionText.exact_text;
+  const ranges = citedRanges(sectionText, citedWords);
+  const parts = [];
+  let at = 0;
+  ranges.forEach(([start, end], index) => {
+    if (start > at) parts.push(text.slice(at, start));
+    parts.push(<mark key={index} className="bg-[#FFF3C4] text-inherit" data-testid="review-reason-mark">{text.slice(start, end)}</mark>);
+    at = end;
+  });
+  if (at < text.length) parts.push(text.slice(at));
+  return parts;
+}
+
+const PANEL_LABEL = 'font-ui text-[10.5px] font-medium uppercase tracking-[0.12em] text-[#6B7785]';
+
 // The reviewer reads a decision in words, never the state machine's code.
 export const DECISION_LABELS = { PENDING: 'Pending', ACCEPTED: 'Agreed', REJECTED: 'Disagreed', EDITED: 'Edited', UNRESOLVED: 'Unresolved' };
+// "Agreed by Ben Goodchild · Partner": who decided, in words; nothing when
+// the item names no reviewer, or is still pending.
+const DECIDED_BY = { ACCEPTED: 'Agreed by', REJECTED: 'Disagreed by', EDITED: 'Edited by' };
+export function reviewerLine(prefix, reviewer) {
+  if (!prefix || !reviewer || typeof reviewer.name !== 'string' || !reviewer.name.trim()) return null;
+  return `${prefix} ${reviewer.name.trim()}${reviewer.level ? ` · ${levelLabel(reviewer.level)}` : ''}`;
+}
 const PANEL_BUTTON = 'rounded-full border px-[12px] py-[4px] font-ui text-[10.5px] font-semibold disabled:opacity-40';
 const panelButtonClass = (pressed) => `${PANEL_BUTTON} ${pressed ? 'border-[#03203D] bg-[#03203D] text-white' : 'border-[#B9C8DA] bg-white text-[#0B3D71] hover:border-[#03203D]'}`;
 
@@ -288,31 +426,61 @@ const panelButtonClass = (pressed) => `${PANEL_BUTTON} ${pressed ? 'border-[#032
 // than the viewport less the page gutters, so it never runs off-screen.
 // The actions are offered only while the review is a draft: the page passes
 // no handlers once it is published.
-export function ReviewReasonPanel({ fact, reviewItem, sectionText, onDecision, onComment, onReset = null, busy = false }) {
+// The left column leads with the words the fact cites, once each; the whole
+// section follows behind "Show full section", the cited passages marked
+// where they stand. A fact citing no words shows the section text as before.
+export function ReviewReasonPanel({ fact, reviewItem, sectionText, citedWords = null, onDecision, onComment, onReset = null, busy = false, initialSectionOpen = false }) {
   const [commentOpen, setCommentOpen] = useState(false);
   const [commentDraft, setCommentDraft] = useState(reviewItem?.comment || '');
+  const [sectionOpen, setSectionOpen] = useState(!!initialSectionOpen);
   if (!fact) return null;
   const decision = reviewItem?.decision || 'PENDING';
+  const decidedBy = reviewerLine(DECIDED_BY[decision], reviewItem?.decided_by_reviewer);
+  const commentBy = reviewerLine('Comment by', reviewItem?.comment_reviewer);
+  // A held fact cannot be agreed (lib/product/review-state.js); it can be
+  // disagreed with and undone.
+  const canAgree = !fact.validation_status || fact.validation_status === 'VALID';
+  const cited = Array.isArray(citedWords) ? citedWords.map((passage) => (typeof passage === 'string' ? passage : passage?.text)).filter(Boolean) : [];
+  const SECTION_TEXT = 'whitespace-pre-wrap break-words font-body text-[12px] leading-relaxed text-[#33475E]';
   return (
-    <div className="sticky left-0 max-w-[calc(100vw-64px)] border-t border-[#DCE3E1] bg-[#F8FAFC] px-[14px] py-[12px]" data-testid="review-reason">
+    <div className="sticky left-0 max-w-[calc(100vw-64px)] border-t border-[#DCE3E1] bg-[#F8FAFC] px-[14px] py-[12px] text-left no-underline [&_*]:no-underline" data-testid="review-reason">
       <div className="grid gap-[12px] lg:grid-cols-[1.15fr_1fr]">
+        {cited.length ? (
+          <div className="min-w-0">
+            <p className={PANEL_LABEL}>Cited words</p>
+            <ul className="mt-[4px] max-h-[220px] space-y-[3px] overflow-y-auto" data-testid="review-reason-cited">
+              {cited.map((words, index) => (
+                <li key={`${index}-${words.slice(0, 24)}`} className="break-words font-body text-[12px] leading-snug text-[#03203D]" data-testid="review-reason-cited-words">“{words}”</li>
+              ))}
+            </ul>
+            {sectionText?.exact_text ? <>
+              <button type="button" onClick={() => setSectionOpen((current) => !current)} aria-expanded={sectionOpen} className={`mt-[8px] block ${QUIET} text-[10.5px]`} data-testid="review-reason-section-toggle">{sectionOpen ? 'Hide full section' : 'Show full section'}</button>
+              <p className={`mt-[4px] max-h-[260px] overflow-y-auto ${SECTION_TEXT}`} data-testid="review-reason-text" hidden={!sectionOpen}>
+                <MarkedSection sectionText={sectionText} citedWords={citedWords} />
+              </p>
+            </> : null}
+          </div>
+        ) : (
+          <div className="min-w-0">
+            <p className={PANEL_LABEL}>Provision text</p>
+            <p className={`mt-[4px] max-h-[220px] overflow-y-auto ${SECTION_TEXT}`} data-testid="review-reason-text">
+              {sectionText?.exact_text || 'The full section text is not available for this fact.'}
+            </p>
+          </div>
+        )}
         <div className="min-w-0">
-          <p className="font-ui text-[10.5px] font-medium uppercase tracking-[0.12em] text-[#6B7785]">Provision text</p>
-          <p className="mt-[4px] max-h-[220px] overflow-y-auto whitespace-pre-wrap break-words font-body text-[12px] leading-relaxed text-[#33475E]" data-testid="review-reason-text">
-            {sectionText?.exact_text || 'The full section text is not available for this fact.'}
-          </p>
-        </div>
-        <div className="min-w-0">
-          <p className="font-ui text-[10.5px] font-medium uppercase tracking-[0.12em] text-[#6B7785]">Interpretation tree</p>
+          <p className={PANEL_LABEL}>Interpretation tree</p>
           <div className="mt-[4px] max-h-[220px] overflow-y-auto">
             {fact.components?.length ? <ReviewComponents components={fact.components} /> : <p className="font-body text-[12px] text-[#6B7785]">No component tree for this fact.</p>}
           </div>
         </div>
       </div>
       <div className="mt-[10px] flex flex-wrap items-center gap-[6px]" data-testid="review-reason-actions">
-        <span className="mr-[4px] font-ui text-[10px] text-[#6B7785]" data-testid="review-reason-decision" data-decision={decision}>{DECISION_LABELS[decision] || decision}</span>
+        {decidedBy
+          ? <span className="mr-[4px] font-ui text-[10px] text-[#6B7785]" data-testid="review-reason-decision" data-decision={decision}>{decidedBy}</span>
+          : <span className="mr-[4px] font-ui text-[10px] text-[#6B7785]" data-testid="review-reason-decision" data-decision={decision}>{DECISION_LABELS[decision] || decision}</span>}
         {onDecision && reviewItem ? <>
-          <button type="button" disabled={busy} aria-pressed={decision === 'ACCEPTED'} onClick={() => onDecision(reviewItem.item_id, 'ACCEPTED')} className={panelButtonClass(decision === 'ACCEPTED')} data-testid="review-agree">Agree</button>
+          {canAgree ? <button type="button" disabled={busy} aria-pressed={decision === 'ACCEPTED'} onClick={() => onDecision(reviewItem.item_id, 'ACCEPTED')} className={panelButtonClass(decision === 'ACCEPTED')} data-testid="review-agree">Agree</button> : null}
           <button type="button" disabled={busy} aria-pressed={decision === 'REJECTED'} onClick={() => onDecision(reviewItem.item_id, 'REJECTED')} className={panelButtonClass(decision === 'REJECTED')} data-testid="review-disagree">Disagree</button>
         </> : null}
         {onComment && reviewItem ? (
@@ -329,7 +497,7 @@ export function ReviewReasonPanel({ fact, reviewItem, sectionText, onDecision, o
           <button type="button" onClick={() => setCommentOpen(false)} className="font-ui text-[10.5px] text-[#6B7785]">Cancel</button>
         </div>
       ) : null}
-      {reviewItem?.comment ? <p className="mt-[6px] font-body text-[11px] text-[#33475E]"><span className="font-ui font-semibold">Comment:</span> {reviewItem.comment}</p> : null}
+      {reviewItem?.comment ? <p className="mt-[6px] font-body text-[11px] text-[#33475E]" data-testid="review-reason-comment"><span className="font-ui font-semibold">Comment:</span> {reviewItem.comment}{commentBy ? <span className="ml-[6px] font-ui text-[10px] text-[#6B7785]" data-testid="review-reason-comment-by">{commentBy}</span> : null}</p> : null}
     </div>
   );
 }
@@ -338,7 +506,7 @@ export function ReviewReasonPanel({ fact, reviewItem, sectionText, onDecision, o
 // clause and its sourcing are reachable without a pill (Ben, 2026-09-13:
 // "you should be able to see the side bar and sourcing not just by
 // clicking the pills").
-function TermCell({ row, tableKey, rowIndex, subIndex = null, onSelect, detail = null, sub = false, reviewMode = false, reasonOpen = false, onReason = null }) {
+function TermCell({ row, tableKey, rowIndex, subIndex = null, onSelect, detail = null, sub = false, reviewMode = false, reasonOpen = false, onReason = null, rejected = false, partly = null }) {
   const first = row.backing_facts[0] || null;
   const subjectClass = sub ? 'font-ui text-[13px] font-medium text-[#33475E]' : SUBJECT;
   // Ben, 2026-09-14: "I don't like the 'see provision' behaviour - it
@@ -371,9 +539,9 @@ function TermCell({ row, tableKey, rowIndex, subIndex = null, onSelect, detail =
       {first ? (
         <button type="button" onClick={openFirst} className={`ml-[4.5px] ${QUIET}`} data-testid="see-provision">See provision</button>
       ) : null}
-      {reviewMode && onReason ? (
-        <button type="button" onClick={onReason} aria-expanded={reasonOpen} className={`ml-[4.5px] ${QUIET}`} data-testid="see-reason">{reasonOpen ? 'Hide reason' : 'See reason'}</button>
-      ) : null}
+      {rejected ? <RejectedLabel /> : null}
+      {partly}
+      {reviewMode && onReason ? <SeeReason open={reasonOpen} onToggle={onReason} /> : null}
       {row.subject_note ? <div className="mt-[1px] font-body text-[11px] text-[#6b6b6b]" data-testid="subject-note">{row.subject_note}</div> : null}
       {detail ? <DetailControl {...detail} /> : null}
     </div>
@@ -436,10 +604,22 @@ function GroupHeader({ table }) {
 }
 
 function AttributeGrid({ table, selection, onSelect }) {
+  const review = useContext(ReviewContext);
   const row = table.rows[0];
+  const lines = row ? attributeLines(table, row) : [];
+  const lineFact = (column) => {
+    const cell = row.cells.find((candidate) => candidate.column_id === column.column_id);
+    const backing = row.backing_facts.filter((entry) => (cell?.fact_ids || []).includes(entry.fact_id));
+    return { cell, backing, factId: review ? reasonFactFor(review, cell?.fact_ids || []) || backing[0]?.fact_id || null : null };
+  };
+  const reasonLines = review ? lines.flatMap((column) => {
+    const { cell, factId } = lineFact(column);
+    const options = Array.isArray(cell?.options) ? cell.options : [];
+    return [{ key: column.column_id, factId }, ...options.map((option, index) => ({ key: `${column.column_id}-option-${index}`, factId: reasonFactFor(review, option.fact_id ? [option.fact_id] : (option.fact_ids || [])) }))];
+  }) : [];
+  const [reasonKey, toggleReason] = useReasonKey(reasonLines);
   if (!row) return null;
   const rowSelected = selection?.tableKey === table.table_key && selection?.rowIndex === 0;
-  const lines = attributeLines(table, row);
   return (
     <div className="overflow-x-auto">
       <table className="w-full table-fixed border-collapse text-left" data-testid="provision-table" data-table-key={table.table_key} data-layout="attribute-grid">
@@ -453,8 +633,7 @@ function AttributeGrid({ table, selection, onSelect }) {
         </thead>
         <tbody>
           {lines.map((column) => {
-            const cell = row.cells.find((candidate) => candidate.column_id === column.column_id);
-            const backing = row.backing_facts.filter((entry) => (cell?.fact_ids || []).includes(entry.fact_id));
+            const { cell, backing, factId: lineFactId } = lineFact(column);
             // Ben, 2026-11-01, round 2: "I'd rather have 'consideration
             // type' and then, immediately under it, have the components
             // laid out ... maybe as a subrow or something"; "There are two
@@ -463,12 +642,19 @@ function AttributeGrid({ table, selection, onSelect }) {
             // "Cash election"), each saying what a share receives; on a
             // plain package one per component, named by its form.
             const options = Array.isArray(cell?.options) ? cell.options : [];
-            const optionRows = options.map((option, index) => (
-              <tr key={`${column.column_id}-option-${index}`} className={`${ROW} ${rowSelected && selection?.columnId === column.column_id ? 'bg-accentDim' : ''}`} data-testid="attribute-option" data-option-kind={cell.options_kind}>
+            const optionRows = options.flatMap((option, index) => {
+              const optionKey = `${column.column_id}-option-${index}`;
+              const optionFactIds = option.fact_id ? [option.fact_id] : (option.fact_ids || []);
+              const optionRejected = lineRejected(review, optionFactIds);
+              return [
+              <tr key={optionKey} className={optionRejected ? cx(ROW, rowSelected && selection?.columnId === column.column_id && 'bg-accentDim', REJECTED_LINE) : `${ROW} ${rowSelected && selection?.columnId === column.column_id ? 'bg-accentDim' : ''}`} data-testid="attribute-option" data-option-kind={cell.options_kind} data-review-rejected={optionRejected || undefined}>
                 <td className={`${TD} pl-[18.5px]`}>
                   <span className="font-ui text-[13px] font-medium text-[#33475E]">{cell.options_kind === 'election' && option.label ? `Option: ${option.label}` : (option.label || 'Every option')}</span>
+                  {optionRejected ? <RejectedLabel /> : null}
+                  {review ? <PartlyRejectedLabel review={review} factIds={optionFactIds} /> : null}
+                  {review && optionFactIds[0] ? <SeeReason open={reasonKey === optionKey} onToggle={() => toggleReason(optionKey)} /> : null}
                 </td>
-                <td className={TD}>
+                <td className={cx(TD, optionRejected && REJECTED_ANSWER)}>
                   <button
                     type="button"
                     data-testid="attribute-option-text"
@@ -478,19 +664,27 @@ function AttributeGrid({ table, selection, onSelect }) {
                     {option.text}
                   </button>
                 </td>
-              </tr>
-            ));
+              </tr>,
+              review && reasonKey === optionKey ? <ReasonRow key={`${optionKey}-reason`} factId={reasonFactFor(review, optionFactIds)} colSpan={2} /> : null,
+              ];
+            });
+            const rejected = lineRejected(review, cell?.fact_ids || []);
             return [
-              <tr key={column.column_id} className={ROW} data-testid="attribute-row" data-column-id={column.column_id}>
+              <tr key={column.column_id} className={cx(ROW, rejected && REJECTED_LINE)} data-testid="attribute-row" data-column-id={column.column_id} data-review-rejected={rejected || undefined}>
                 <td className={`${TD} ${SUBJECT}`}>
-                  <AttributeTerm header={column.header} backing={backing} tableKey={table.table_key} onSelect={onSelect} />
+                  <AttributeTerm header={column.header} backing={backing} tableKey={table.table_key} onSelect={onSelect}>
+                    {rejected ? <RejectedLabel /> : null}
+                    {review ? <PartlyRejectedLabel review={review} factIds={cell?.fact_ids || []} /> : null}
+                    {review && lineFactId ? <SeeReason open={reasonKey === column.column_id} onToggle={() => toggleReason(column.column_id)} /> : null}
+                  </AttributeTerm>
                 </td>
-                <td className={TD}>
+                <td className={cx(TD, rejected && REJECTED_ANSWER)}>
                   {cell ? (
                     <Cell cell={cell} tableKey={table.table_key} rowIndex={0} subject={row.subject || table.term_column?.header || table.group_header || table.table_key} selected={!!rowSelected && selection?.columnId === column.column_id} onSelect={onSelect} />
                   ) : <span className="text-inkFaint" data-testid="table-dash" aria-hidden="true">—</span>}
                 </td>
               </tr>,
+              review && lineFactId && reasonKey === column.column_id ? <ReasonRow key={`${column.column_id}-reason`} factId={lineFactId} colSpan={2} /> : null,
               ...optionRows,
             ];
           })}
@@ -500,7 +694,7 @@ function AttributeGrid({ table, selection, onSelect }) {
   );
 }
 
-function AttributeTerm({ header, backing, tableKey, onSelect }) {
+function AttributeTerm({ header, backing, tableKey, onSelect, children = null }) {
   const first = backing[0] || null;
   return (
     <div>
@@ -508,6 +702,7 @@ function AttributeTerm({ header, backing, tableKey, onSelect }) {
       {first ? (
         <button type="button" onClick={() => onSelect({ tableKey, rowIndex: 0, columnId: null, componentId: null, componentIds: [], factId: first.fact_id })} className={`ml-[4.5px] ${QUIET}`} data-testid="see-provision">See provision</button>
       ) : null}
+      {children}
     </div>
   );
 }
@@ -571,6 +766,13 @@ function OtherProvisions({ groups, tableKey, onSelect, label = 'Other provisions
   const count = groups.reduce((total, group) => total + group.branches.length, 0);
   const withSummary = summarySaysMore(groups.flatMap((group) => [[group.term, group.common_text], ...group.branches.map((branch) => [branch.term, branch.text])]));
   const select = (factId, subject = null) => onSelect({ tableKey, rowIndex: 0, columnId: null, componentId: null, componentIds: [], factId, subject });
+  const review = useContext(ReviewContext);
+  const groupKey = (group, index) => `${group.subtype_key}-${group.span_id}-${index}`;
+  const [reasonKey, toggleReason] = useReasonKey(review ? groups.flatMap((group, index) => [
+    { key: groupKey(group, index), factId: reasonFactFor(review, group.branches.map((branch) => branch.fact_id)) },
+    ...(group.branches.length > 1 ? group.branches.map((branch, branchIndex) => ({ key: `${groupKey(group, index)}-${branchIndex}`, factId: branch.fact_id })) : []),
+  ]) : []);
+  const reasonSpan = withSummary ? 2 : 1;
   // Ben, 2026-09-14, on the first rendering (a list of lines with § marks):
   // "It should look like the rest of the table structure etc and for now no
   // summary is fine but ultimately we want to get to summary". The same
@@ -600,33 +802,46 @@ function OtherProvisions({ groups, tableKey, onSelect, label = 'Other provisions
           </thead>
           <tbody>
             {groups.flatMap((group, index) => {
-              const key = `${group.subtype_key}-${group.span_id}-${index}`;
+              const key = groupKey(group, index);
               const lead = group.branches[0];
+              const rejected = lineRejected(review, group.branches.map((branch) => branch.fact_id));
+              const leadFactId = reasonFactFor(review, group.branches.map((branch) => branch.fact_id));
+              const leadReason = review && leadFactId && reasonKey === key ? <ReasonRow key={`${key}-reason`} factId={leadFactId} colSpan={reasonSpan} /> : null;
               const line = (
-                <tr key={key} className={ROW} data-testid="other-provision" data-branches={group.branches.length > 1 ? group.branches.length : undefined}>
+                <tr key={key} className={cx(ROW, rejected && REJECTED_LINE)} data-testid="other-provision" data-branches={group.branches.length > 1 ? group.branches.length : undefined} data-review-rejected={rejected || undefined}>
                   <td className={`${TD} ${SUBJECT}`}>
                     {withSummary
                       ? <span data-testid="other-provision-term">{group.term || ''}</span>
                       : <button type="button" data-testid="other-provision-term" onClick={() => select(lead.fact_id, group.term)} className="text-left underline-offset-2 hover:underline">{group.term || ''}</button>}
                     {lead.section_reference ? <span className={`ml-[4.5px] ${QUIET}`} data-testid="other-provision-ref">§ {lead.section_reference}</span> : null}
+                    {rejected ? <RejectedLabel /> : null}
+                    {review ? <PartlyRejectedLabel review={review} factIds={group.branches.map((branch) => branch.fact_id)} /> : null}
+                    {review && leadFactId ? <SeeReason open={reasonKey === key} onToggle={() => toggleReason(key)} /> : null}
                     {market ? <OtherProvisionMarket lines={otherProvisionMarketLines({ fact: factsById?.get(lead.fact_id), group, tableKey, market })} factId={lead.fact_id} onSelect={(entry) => select(entry.factId, group.term)} /> : null}
                   </td>
-                  {withSummary ? <td className={TD}>
+                  {withSummary ? <td className={cx(TD, rejected && REJECTED_ANSWER)}>
                     <button type="button" data-testid="other-provision-line" onClick={() => select(lead.fact_id, group.term)} className={`text-left font-body underline-offset-2 hover:underline ${TEXT}`}>{group.common_text}</button>
                   </td> : null}
                 </tr>
               );
-              if (group.branches.length === 1) return [line];
-              return [line, ...group.branches.map((branch, branchIndex) => (
-                <tr key={`${key}-${branchIndex}`} className={ROW} data-testid="other-provision-branch-row">
+              if (group.branches.length === 1) return leadReason ? [line, leadReason] : [line];
+              return [line, leadReason, ...group.branches.flatMap((branch, branchIndex) => {
+                const branchKey = `${key}-${branchIndex}`;
+                const branchRejected = lineRejected(review, [branch.fact_id]);
+                return [
+                <tr key={branchKey} className={cx(ROW, branchRejected && REJECTED_LINE)} data-testid="other-provision-branch-row" data-review-rejected={branchRejected || undefined}>
                   <td className={`${TD} pl-[18.5px] font-ui text-[13px] text-inkMid`} data-testid="other-provision-branch-term">{withSummary ? (branch.term || '') : <button type="button" onClick={() => select(branch.fact_id, group.term)} className="text-left underline-offset-2 hover:underline">{branch.term || ''}</button>}
+                    {branchRejected ? <RejectedLabel /> : null}
+                    {review && branch.fact_id ? <SeeReason open={reasonKey === branchKey} onToggle={() => toggleReason(branchKey)} /> : null}
                     {market ? <OtherProvisionMarket lines={otherProvisionMarketLines({ fact: factsById?.get(branch.fact_id), group, tableKey, market })} factId={branch.fact_id} onSelect={(entry) => select(entry.factId, group.term)} /> : null}
                   </td>
-                  {withSummary ? <td className={`${TD} pl-[18.5px]`}>
+                  {withSummary ? <td className={cx(`${TD} pl-[18.5px]`, branchRejected && REJECTED_ANSWER)}>
                     <button type="button" data-testid="other-provision-branch" onClick={() => select(branch.fact_id, group.term)} className={`text-left font-body ${SUB_TEXT} underline-offset-2 hover:underline`}>{branch.text}</button>
                   </td> : null}
-                </tr>
-              ))];
+                </tr>,
+                review && branch.fact_id && reasonKey === branchKey ? <ReasonRow key={`${branchKey}-reason`} factId={branch.fact_id} colSpan={reasonSpan} /> : null,
+                ];
+              })];
             })}
           </tbody>
         </table>
@@ -639,7 +854,9 @@ function OtherProvisions({ groups, tableKey, onSelect, label = 'Other provisions
 // cannot place, listed so nothing is hidden and each opens in the sidebar.
 function FactsWithoutReadout({ entries, sectionKey, onSelect }) {
   const forced = useContext(EverythingContext);
-  const [open, setOpen] = useState(false);
+  const review = useContext(ReviewContext);
+  const [reasonKey, toggleReason] = useReasonKey(review ? entries.map((entry, index) => ({ key: `${entry.fact_id}-${index}`, factId: entry.fact_id })) : []);
+  const [open, setOpen] = useState(!!(review?.initialReasonFactId && entries.some((entry) => entry.fact_id === review.initialReasonFactId)));
   const effectiveOpen = forced || open;
   return (
     <div className="mt-[9.5px] text-[11px] font-ui text-[#6b6b6b]" data-testid="facts-without-readout">
@@ -648,13 +865,20 @@ function FactsWithoutReadout({ entries, sectionKey, onSelect }) {
       </button>
       {effectiveOpen ? (
         <ul className="mt-[2.5px] space-y-[1px] pl-[4.5px]">
-          {entries.map((entry, index) => (
-            <li key={`${entry.fact_id}-${index}`}>
-              <button type="button" data-testid="backing-fact" onClick={() => onSelect({ tableKey: `${sectionKey}:without-readout`, rowIndex: index, columnId: null, componentId: null, factId: entry.fact_id })} className="text-[#1f1f1f] underline-offset-2 hover:underline">
-                {entry.section_reference ? `§ ${entry.section_reference}` : entry.fact_id}{entry.headline ? ` · ${entry.headline}` : ''}
-              </button>
-            </li>
-          ))}
+          {entries.map((entry, index) => {
+            const key = `${entry.fact_id}-${index}`;
+            const rejected = lineRejected(review, [entry.fact_id]);
+            return (
+              <li key={key} className={rejected ? REJECTED_LINE : undefined} data-review-rejected={rejected || undefined}>
+                <button type="button" data-testid="backing-fact" onClick={() => onSelect({ tableKey: `${sectionKey}:without-readout`, rowIndex: index, columnId: null, componentId: null, factId: entry.fact_id })} className={cx('text-[#1f1f1f] underline-offset-2 hover:underline', rejected && 'line-through')}>
+                  {entry.section_reference ? `§ ${entry.section_reference}` : entry.fact_id}{entry.headline ? ` · ${entry.headline}` : ''}
+                </button>
+                {rejected ? <RejectedLabel /> : null}
+                {review && entry.fact_id ? <SeeReason open={reasonKey === key} onToggle={() => toggleReason(key)} /> : null}
+                {review && entry.fact_id && reasonKey === key ? <div className="mt-[4px]"><ReasonPanelFor factId={entry.fact_id} /></div> : null}
+              </li>
+            );
+          })}
         </ul>
       ) : null}
     </div>
@@ -666,7 +890,9 @@ function FactsWithoutReadout({ entries, sectionKey, onSelect }) {
 // the facts without a readout, so an empty table says why (NCS 3.4).
 function HeldFacts({ entries, sectionKey, onSelect }) {
   const forced = useContext(EverythingContext);
-  const [open, setOpen] = useState(false);
+  const review = useContext(ReviewContext);
+  const [reasonKey, toggleReason] = useReasonKey(review ? entries.map((entry, index) => ({ key: `${entry.fact_id}-${index}`, factId: entry.fact_id })) : []);
+  const [open, setOpen] = useState(!!(review?.initialReasonFactId && entries.some((entry) => entry.fact_id === review.initialReasonFactId)));
   const effectiveOpen = forced || open;
   return (
     <div className="mt-[6px] text-[11px] font-ui text-[#6b6b6b]" data-testid="held-facts">
@@ -675,14 +901,21 @@ function HeldFacts({ entries, sectionKey, onSelect }) {
       </button>
       {effectiveOpen ? (
         <ul className="mt-[2.5px] space-y-[1px] pl-[4.5px]">
-          {entries.map((entry, index) => (
-            <li key={`${entry.fact_id}-${index}`} data-testid="held-fact">
-              <button type="button" onClick={() => onSelect({ tableKey: `${sectionKey}:held`, rowIndex: index, columnId: null, componentId: null, factId: entry.fact_id })} className="text-[#1f1f1f] underline-offset-2 hover:underline">
-                {entry.section_reference ? `§ ${entry.section_reference}` : entry.fact_id}{entry.headline ? ` · ${entry.headline}` : ''}
-              </button>
-              <span data-testid="held-fact-reason">{` — ${entry.reason}`}</span>
-            </li>
-          ))}
+          {entries.map((entry, index) => {
+            const key = `${entry.fact_id}-${index}`;
+            const rejected = lineRejected(review, [entry.fact_id]);
+            return (
+              <li key={key} data-testid="held-fact" className={rejected ? REJECTED_LINE : undefined} data-review-rejected={rejected || undefined}>
+                <button type="button" onClick={() => onSelect({ tableKey: `${sectionKey}:held`, rowIndex: index, columnId: null, componentId: null, factId: entry.fact_id })} className={cx('text-[#1f1f1f] underline-offset-2 hover:underline', rejected && 'line-through')}>
+                  {entry.section_reference ? `§ ${entry.section_reference}` : entry.fact_id}{entry.headline ? ` · ${entry.headline}` : ''}
+                </button>
+                <span data-testid="held-fact-reason">{` — ${entry.reason}`}</span>
+                {rejected ? <RejectedLabel /> : null}
+                {review && entry.fact_id ? <SeeReason open={reasonKey === key} onToggle={() => toggleReason(key)} /> : null}
+                {review && entry.fact_id && reasonKey === key ? <div className="mt-[4px]"><ReasonPanelFor factId={entry.fact_id} /></div> : null}
+              </li>
+            );
+          })}
         </ul>
       ) : null}
     </div>
@@ -823,12 +1056,22 @@ function DefinedTermsSection({ terms, collapsed, onToggle }) {
 // A table whose sub-items are exceptions (sub_rows_label) starts with them
 // open, indented and a size smaller; every other table's sub-items (the
 // limbs of a representation) stay behind "More detail" (Ben, 2026-09-14).
-function RowGroup({ table, row, rowIndex, selection, onSelect, initialOpen = false, columns = null, reviewMode = false, factsById = null, reviewItemsByFactId = null, sectionTextByFactId = null, onDecision = null, onComment = null, onReset = null, busy = false, initialReasonFactId = null }) {
-  // Both contexts are read on every render, so the hook order never changes.
+function RowGroup({ table, row, rowIndex, selection, onSelect, initialOpen = false, columns = null }) {
+  // The contexts are read on every render, so the hook order never changes.
   const everything = useContext(EverythingContext);
   const sectionOpen = useContext(SectionOpenContext);
+  const review = useContext(ReviewContext);
+  const subRows = row.sub_rows || [];
+  // In review mode every line, the row's own and each sub-row, has its own
+  // See reason on its first fact; one panel is open at a time in the group.
+  const backingIds = (entry) => (entry.backing_facts || []).map((fact) => fact.fact_id);
+  const [reasonKey, toggleReason] = useReasonKey(review ? [
+    { key: 'row', factId: reasonFactFor(review, backingIds(row)) },
+    ...subRows.map((subRow, subIndex) => ({ key: `sub-${subIndex}`, factId: reasonFactFor(review, backingIds(subRow)) })),
+  ] : []);
+  const initialSubReason = !!review?.initialReasonFactId && subRows.some((subRow) => reasonFactFor(review, backingIds(subRow)) === review.initialReasonFactId);
   const defaultOpen = !!initialOpen || !!table.sub_rows_label;
-  const [open, setOpen] = useState(defaultOpen || sectionOpen);
+  const [open, setOpen] = useState(defaultOpen || sectionOpen || initialSubReason);
   // A section's Specifics pill opens its More detail groups, and closing the
   // pill puts them back; each row's own toggle still works in between.
   const sectionOpenSeen = useRef(sectionOpen);
@@ -837,12 +1080,8 @@ function RowGroup({ table, row, rowIndex, selection, onSelect, initialOpen = fal
     sectionOpenSeen.current = sectionOpen;
     setOpen(sectionOpen || defaultOpen);
   }, [sectionOpen, defaultOpen]);
-  const reasonFactId = reviewMode ? (row.backing_facts?.[0]?.fact_id || null) : null;
-  const [reasonOpen, setReasonOpen] = useState(Boolean(initialReasonFactId && reasonFactId === initialReasonFactId));
-  const reasonFact = reasonFactId && factsById ? factsById.get(reasonFactId) || null : null;
   const effectiveOpen = everything || open;
   const rowSelected = selection?.tableKey === table.table_key && selection?.rowIndex === rowIndex;
-  const subRows = row.sub_rows || [];
   const shownColumns = columns || table.columns;
   const shownIds = new Set(shownColumns.map((column) => column.column_id));
   const detail = subRows.length ? { count: subRows.length, label: table.sub_rows_label || null, open: effectiveOpen, onToggle: () => setOpen((current) => !current) } : null;
@@ -850,25 +1089,34 @@ function RowGroup({ table, row, rowIndex, selection, onSelect, initialOpen = fal
   // own line, never every line of the row (Ben, 2026-09-13:
   // "clicking one of the qualifications shouldn't cause the others
   // to turn orange").
-  const line = (entry, key, sub, subIndex = null) => (
+  const span = (shownColumns.length || 0) + (table.term_column ? 1 : 0);
+  const line = (entry, key, sub, subIndex = null) => {
+    const lineKey = sub ? `sub-${subIndex}` : 'row';
+    const lineFactId = reasonFactFor(review, backingIds(entry));
+    const rejected = lineRejected(review, backingIds(entry));
+    const partly = review ? <PartlyRejectedLabel review={review} factIds={backingIds(entry)} /> : null;
+    const reasonOpen = !!lineFactId && reasonKey === lineKey;
+    const onReason = lineFactId ? () => toggleReason(lineKey) : null;
+    const tr = (
     <tr
       key={key}
       data-testid={sub ? 'table-sub-row' : 'table-row'}
       data-selected={rowSelected || undefined}
-      className={`${ROW} ${rowSelected ? 'bg-accentDim' : ''} ${sub ? 'text-[13px]' : ''}`}
+      data-review-rejected={rejected || undefined}
+      className={`${ROW} ${rowSelected ? 'bg-accentDim' : ''} ${sub ? 'text-[13px]' : ''}${rejected ? ` ${REJECTED_LINE}` : ''}`}
     >
       {table.term_column ? (
         <td className={`${TD} ${sub ? 'pl-[18.5px] text-inkMid' : ''}`}>
-          <TermCell row={entry} tableKey={table.table_key} rowIndex={rowIndex} subIndex={subIndex} onSelect={onSelect} detail={sub ? null : detail} sub={sub} reviewMode={reviewMode && !sub} reasonOpen={!sub && reasonOpen} onReason={!sub ? () => setReasonOpen((current) => !current) : null} />
+          <TermCell row={entry} tableKey={table.table_key} rowIndex={rowIndex} subIndex={subIndex} onSelect={onSelect} detail={sub ? null : detail} sub={sub} reviewMode={!!review} reasonOpen={reasonOpen} onReason={onReason} rejected={rejected} partly={partly} />
         </td>
       ) : null}
       {/* Ben, 2026-11-01, on the equity awards table: "Warrants: are there
           only warrants, or no warrants or whatever?" A row with nothing
           coded says what its fact says, across the columns. */}
       {!sub && entry.summary_fallback ? (
-        <td className={`${TD} font-body ${TEXT}`} colSpan={shownColumns.length} data-testid="row-summary-fallback">{entry.summary_fallback}</td>
+        <td className={`${TD} font-body ${TEXT}${rejected ? ` ${REJECTED_ANSWER}` : ''}`} colSpan={shownColumns.length} data-testid="row-summary-fallback">{entry.summary_fallback}</td>
       ) : shownColumns.map((column) => entry.cells.find((candidate) => candidate.column_id === column.column_id) || { column_id: column.column_id, kind: 'dash', label: null, tone: null, component_ids: [], fact_ids: [] }).map((cell, cellIndex) => (
-        <td key={cell.column_id} className={`${TD} ${sub ? SUB_TEXT : ''}`}>
+        <td key={cell.column_id} className={`${TD} ${sub ? SUB_TEXT : ''}${rejected ? ` ${REJECTED_ANSWER}` : ''}`}>
           <Cell
             cell={cell}
             tableKey={table.table_key}
@@ -878,30 +1126,21 @@ function RowGroup({ table, row, rowIndex, selection, onSelect, initialOpen = fal
             selected={!!rowSelected && (selection?.subIndex ?? null) === subIndex && selection?.columnId === cell.column_id}
             onSelect={onSelect}
           />
+          {!table.term_column && cellIndex === 0 ? <>
+            {rejected ? <RejectedLabel /> : null}
+            {partly}
+            {onReason ? <SeeReason open={reasonOpen} onToggle={onReason} /> : null}
+          </> : null}
           {!table.term_column && !sub && cellIndex === 0 && detail ? <DetailControl {...detail} /> : null}
         </td>
       ))}
     </tr>
-  );
-  const reasonRow = reasonFactId && reasonOpen ? (
-    <tr data-testid="review-reason-row" className="border-b border-[#DCE3E1]">
-      <td colSpan={(shownColumns.length || 0) + (table.term_column ? 1 : 0)} className="p-0">
-        <ReviewReasonPanel
-          fact={reasonFact}
-          reviewItem={reviewItemsByFactId ? reviewItemsByFactId.get(reasonFactId) || null : null}
-          sectionText={sectionTextByFactId ? sectionTextByFactId.get(reasonFactId) || null : null}
-          onDecision={onDecision}
-          onComment={onComment}
-          onReset={onReset}
-          busy={busy}
-        />
-      </td>
-    </tr>
-  ) : null;
+    );
+    return reasonOpen ? [tr, <ReasonRow key={`${key}-reason`} factId={lineFactId} colSpan={span} />] : tr;
+  };
   return (
     <>
       {line(row, `${row.subject}-${rowIndex}`, false)}
-      {reasonRow}
       {effectiveOpen ? subRows.map((subRow, subIndex) => line(subRow, `${row.subject}-${rowIndex}-${subIndex}`, true, subIndex)) : null}
     </>
   );
@@ -938,7 +1177,36 @@ function groupedRows(rows) {
   return { groups, rest };
 }
 
-function Table({ table, selection, onSelect, initialSubRowsOpen = false, reviewMode = false, factsById = null, reviewItemsByFactId = null, sectionTextByFactId = null, onDecision = null, onComment = null, onReset = null, busy = false, initialReasonFactId = null }) {
+// A row with no reading (the table's absent label, or a held row's own
+// words). In review mode a held row's facts get See reason, as any line.
+function AbsentRow({ table, row, columns, span }) {
+  const review = useContext(ReviewContext);
+  const factIds = (row.backing_facts || []).map((fact) => fact.fact_id);
+  const factId = reasonFactFor(review, factIds);
+  const [reasonKey, toggleReason] = useReasonKey(factId ? [{ key: 'row', factId }] : []);
+  const rejected = lineRejected(review, factIds);
+  const open = !!factId && reasonKey === 'row';
+  const tr = (
+    <tr className={rejected ? cx(ROW, REJECTED_LINE) : ROW} data-testid="table-row" data-absent="true" {...(row.held ? { 'data-held': 'true' } : {})} data-review-rejected={rejected || undefined}>
+      {table.term_column ? (
+        <td className={TD}>
+          <span className={SUBJECT}>{row.subject}</span>
+          {rejected ? <RejectedLabel /> : null}
+          {review ? <PartlyRejectedLabel review={review} factIds={factIds} /> : null}
+          {factId ? <SeeReason open={open} onToggle={() => toggleReason('row')} /> : null}
+        </td>
+      ) : null}
+      {/* Work package 16: a row whose only fact is held by validation carries its own words (absent_label) in place of the table's absent label. */}
+      <td className={`${TD} font-ui text-[14px] text-[#6b6b6b]`} colSpan={columns.length} data-testid="table-absent">
+        {row.absent_label || table.absent_row_label}
+        {!table.term_column && factId ? <SeeReason open={open} onToggle={() => toggleReason('row')} /> : null}
+      </td>
+    </tr>
+  );
+  return open ? <>{tr}<ReasonRow factId={factId} colSpan={span} /></> : tr;
+}
+
+function Table({ table, selection, onSelect, initialSubRowsOpen = false }) {
   // Ben, 2026-09-14: "make negative covenant list collapsable (if it is
   // within the covenant section)". A table marked collapsible_rows folds its
   // rows behind a toggle above the header row; open to start.
@@ -956,17 +1224,9 @@ function Table({ table, selection, onSelect, initialSubRowsOpen = false, reviewM
   const keys = rowKeys(table.rows);
   const renderRow = (row, rowIndex) => {
     if (row.absent) {
-      return (
-        <tr key={keys[rowIndex]} className={ROW} data-testid="table-row" data-absent="true" {...(row.held ? { 'data-held': 'true' } : {})}>
-          {table.term_column ? (
-            <td className={TD}><span className={SUBJECT}>{row.subject}</span></td>
-          ) : null}
-          {/* Work package 16: a row whose only fact is held by validation carries its own words (absent_label) in place of the table's absent label. */}
-          <td className={`${TD} font-ui text-[14px] text-[#6b6b6b]`} colSpan={columns.length} data-testid="table-absent">{row.absent_label || table.absent_row_label}</td>
-        </tr>
-      );
+      return <AbsentRow key={keys[rowIndex]} table={table} row={row} columns={columns} span={span} />;
     }
-    return <RowGroup key={keys[rowIndex]} table={table} row={row} rowIndex={rowIndex} selection={selection} onSelect={onSelect} initialOpen={initialSubRowsOpen} columns={columns} reviewMode={reviewMode} factsById={factsById} reviewItemsByFactId={reviewItemsByFactId} sectionTextByFactId={sectionTextByFactId} onDecision={onDecision} onComment={onComment} onReset={onReset} busy={busy} initialReasonFactId={initialReasonFactId} />;
+    return <RowGroup key={keys[rowIndex]} table={table} row={row} rowIndex={rowIndex} selection={selection} onSelect={onSelect} initialOpen={initialSubRowsOpen} columns={columns} />;
   };
   return (
     <div className="overflow-x-auto">
@@ -1213,6 +1473,10 @@ export default function ProvisionTables({
   // The review page renders the same tables with an inline See reason panel.
   mode = 'read',
   initialReasonFactId = null,
+  // Review mode: the held facts a reason panel can open, and each fact's
+  // cited words (lib/product/provisions-preview.js citedWordsOf).
+  heldFacts = null,
+  citedWordsByFactId = null,
 }) {
   const [showCodes, setShowCodes] = useState(initialShowCodes);
   const [specificsSections, setSpecificsSections] = useState(() => new Set(initialShowSpecifics ? (tableView?.sections || []).map((section) => section.section_key) : []));
@@ -1226,6 +1490,12 @@ export default function ProvisionTables({
   const [market, setMarket] = useState(initialMarket || null);
   const [feedback, setFeedback] = useState(null);
   const factsById = useMemo(() => new Map((facts || []).map((fact) => [factIdOf(fact), fact])), [facts]);
+  const review = useMemo(() => {
+    if (mode !== 'review') return null;
+    const reasonFacts = new Map(factsById);
+    for (const fact of heldFacts || []) if (fact && !reasonFacts.has(factIdOf(fact))) reasonFacts.set(factIdOf(fact), fact);
+    return { factsById: reasonFacts, reviewItemsByFactId, sectionTextByFactId, citedWordsByFactId, onDecision, onComment, onReset, busy, initialReasonFactId };
+  }, [mode, factsById, heldFacts, reviewItemsByFactId, sectionTextByFactId, citedWordsByFactId, onDecision, onComment, onReset, busy, initialReasonFactId]);
   const [selection, setSelection] = useState(initialSelection);
   // Each section collapses on its heading; the bar above offers collapse /
   // expand all (Ben, 2026-09-13). Collapsed keys live here so a republish of
@@ -1325,6 +1595,7 @@ export default function ProvisionTables({
   const TAB = 'rounded-full border px-[12px] py-[7px] text-[12px] font-ui font-semibold leading-none transition-colors';
   const tabClass = (current) => `${TAB} ${current ? 'border-[#03203D] bg-[#03203D] text-white' : 'border-[#B9C8DA] bg-white text-[#0B3D71] hover:border-[#03203D]'}`;
   return (
+    <ReviewContext.Provider value={review}>
     <EverythingContext.Provider value={everything}>
     <MarketContext.Provider value={compare ? market : null}>
     <CodesContext.Provider value={effectiveCodes}>
@@ -1371,7 +1642,7 @@ export default function ProvisionTables({
                         options tables) is shown only with the specifics. */}
                     {section.tables.filter((table) => !table.embedded_in || sectionSpecifics).map((table) => (
                       <div key={table.table_key} data-embedded={table.embedded_in || undefined}>
-                        {table.other_provisions_only ? null : <Table table={table} selection={selection} onSelect={setSelection} initialSubRowsOpen={initialSubRowsOpen} reviewMode={mode === 'review'} factsById={factsById} reviewItemsByFactId={reviewItemsByFactId} sectionTextByFactId={sectionTextByFactId} onDecision={onDecision} onComment={onComment} onReset={onReset} busy={busy} initialReasonFactId={initialReasonFactId} />}
+                        {table.other_provisions_only ? null : <Table table={table} selection={selection} onSelect={setSelection} initialSubRowsOpen={initialSubRowsOpen} />}
                         {table.other_provisions?.length ? (
                           <OtherProvisions groups={table.other_provisions} tableKey={table.table_key} onSelect={setSelection} label={table.other_provisions_label || 'Other provisions'} factsById={factsById} />
                         ) : null}
@@ -1421,5 +1692,6 @@ export default function ProvisionTables({
     {runId ? <FeedbackDialog open={Boolean(feedback)} context={feedback} runId={runId} onClose={() => setFeedback(null)} /> : null}
     </MarketContext.Provider>
     </EverythingContext.Provider>
+    </ReviewContext.Provider>
   );
 }

@@ -1118,3 +1118,158 @@ test('the legacy workspace\'s Show all sections link stays in the legacy workspa
   assert.equal(legacySectionsHref('run-1', []), null);
   assert.deepEqual(resolveFocus({ legacy: '1', all: '1' }, { sections: [{ reference: '7.1' }] }), []);
 });
+
+// Review mode: a disagreed fact stays on the page, greyed and labelled, with
+// See reason on every answer line; the cited words lead the reason panel.
+function reviewModeView() {
+  return {
+    sections: [{
+      section_key: 'reps', title: 'Representations', facts_without_readout: [{ fact_id: 'loose-1', section_reference: '3.9', headline: 'Loose fact' }], held_facts: [{ fact_id: 'held-1', section_reference: '3.10', headline: 'Held fact', reason: 'the words do not support it' }],
+      tables: [
+        {
+          table_key: 'reps-table', layout: 'rows', term_column: { header: 'Rep' }, columns: [{ column_id: 'q', header: 'Qualifier' }],
+          rows: [
+            { subject: 'Organization', backing_facts: [{ fact_id: 'f1' }], cells: [{ column_id: 'q', kind: 'value', label: 'Knowledge', fact_ids: ['f1'], component_ids: [] }], sub_rows: [{ subject: 'Good standing', backing_facts: [{ fact_id: 'f2' }], cells: [{ column_id: 'q', kind: 'value', label: 'MAE', fact_ids: ['f2'], component_ids: [] }] }] },
+            { subject: 'Capitalization', backing_facts: [{ fact_id: 'f3' }], cells: [{ column_id: 'q', kind: 'value', label: 'None', fact_ids: ['f3'], component_ids: [] }] },
+          ],
+        },
+        {
+          table_key: 'structure-table', layout: 'attribute grid', columns: [{ column_id: 'form', header: 'Merger form' }],
+          rows: [{ subject: 'Agreement', backing_facts: [{ fact_id: 'g1' }], cells: [{ column_id: 'form', kind: 'value', label: 'Reverse triangular', fact_ids: ['g1'], component_ids: [] }] }],
+          other_provisions: [{ subtype_key: 'FILING', span_id: 's1', term: 'Certificate of merger', common_text: 'Company files the certificate', branches: [{ fact_id: 'o1', section_reference: '1.03', term: 'Certificate of merger', text: 'Company files the certificate' }] }],
+        },
+      ],
+    }],
+    defined_terms: [],
+  };
+}
+const reviewModeFacts = (rejected = []) => ['f1', 'f2', 'f3', 'g1', 'o1', 'loose-1'].map((factId) => ({ fact_id: factId, components: [], ...(rejected.includes(factId) ? { review_rejected: true } : {}) }));
+
+test('review mode greys a disagreed row with its label and See reason; read mode shows neither', () => {
+  const props = { tableView: reviewModeView(), initialSubRowsOpen: true, initialEverything: true };
+  const review = renderToStaticMarkup(React.createElement(ProvisionTables, { ...props, facts: reviewModeFacts(['f1']), mode: 'review', reviewItemsByFactId: new Map([['f1', { item_id: 'i1', decision: 'REJECTED' }]]), onReset: () => {} }));
+  const row = /<tr[^>]*data-testid="table-row"[^>]*data-review-rejected="true"[^>]*class="([^"]*)"[^>]*>([\s\S]*?)<\/tr>/.exec(review);
+  assert.ok(row, 'the disagreed row is on the page, marked');
+  assert.match(row[1], /\[&amp;_\*\]:!text-\[#6B7785\]|\[&_\*\]:!text-\[#6B7785\]/);
+  assert.match(row[2], /data-testid="review-rejected-label"[^>]*>Disagreed</);
+  assert.match(row[2], /data-testid="see-reason"/);
+  assert.match(row[2], /<td class="[^"]*line-through[^"]*"/, 'the answer is struck through');
+  assert.equal((review.match(/data-review-rejected="true"/g) || []).length, 1, 'only the line whose facts are all disagreed');
+  const read = renderToStaticMarkup(React.createElement(ProvisionTables, { ...props, facts: reviewModeFacts(['f1']) }));
+  assert.doesNotMatch(read, /data-review-rejected|review-rejected-label|data-testid="see-reason"/);
+});
+
+test('See reason is on every answer line in review mode: grid, sub-row, Other provisions, held and no-readout facts', () => {
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: reviewModeView(), facts: reviewModeFacts(), mode: 'review', initialSubRowsOpen: true, initialEverything: true, heldFacts: [{ fact_id: 'held-1', components: [], validation_status: 'INVALID' }] }));
+  const within = (pattern) => { const match = pattern.exec(html); assert.ok(match, String(pattern)); return match[0]; };
+  assert.match(within(/<tr[^>]*data-testid="attribute-row"[\s\S]*?<\/tr>/), /data-testid="see-reason"/);
+  assert.match(within(/<tr[^>]*data-testid="table-sub-row"[\s\S]*?<\/tr>/), /data-testid="see-reason"/);
+  assert.match(within(/<tr[^>]*data-testid="other-provision"[\s\S]*?<\/tr>/), /data-testid="see-reason"/);
+  assert.match(within(/<li[^>]*data-testid="held-fact"[\s\S]*?<\/li>/), /data-testid="see-reason"/);
+  assert.match(within(/data-testid="facts-without-readout"[\s\S]*?<\/ul>/), /data-testid="see-reason"/);
+  // 2 rows + 1 sub-row + 1 grid line + 1 other provision + held + no-readout.
+  assert.equal((html.match(/data-testid="see-reason"/g) || []).length, 7);
+  // The grid line's reason opens the panel on that line's fact.
+  const opened = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: reviewModeView(), facts: reviewModeFacts(), mode: 'review', initialReasonFactId: 'g1' }));
+  assert.match(opened, /data-testid="attribute-row"[\s\S]*?Hide reason[\s\S]*?data-testid="review-reason-row"/);
+  const held = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: reviewModeView(), facts: reviewModeFacts(), mode: 'review', initialReasonFactId: 'held-1', heldFacts: [{ fact_id: 'held-1', components: [], validation_status: 'INVALID' }], reviewItemsByFactId: new Map([['held-1', { item_id: 'h1', decision: 'PENDING' }]]), onDecision: () => {} }));
+  assert.match(held, /data-testid="held-fact"[\s\S]*?data-testid="review-reason"/);
+  assert.doesNotMatch(held, /data-testid="review-agree"/, 'a held fact cannot be agreed');
+  assert.match(held, /data-testid="review-disagree"/);
+});
+
+test('the reason panel leads with the cited words and marks them in the full section', () => {
+  const sectionText = { exact_text: 'Section 1.01 The Merger. Upon the terms hereof, Merger Sub shall be merged with and into the Company. The Company survives.', start_byte: 1000 };
+  const html = renderToStaticMarkup(React.createElement(ReviewReasonPanel, {
+    fact: { fact_id: 'f1', components: [] },
+    sectionText,
+    // "the Company" also stands earlier; the byte offset puts the mark on the second one.
+    citedWords: [{ text: 'Merger Sub shall be merged', start_byte: 1000 + sectionText.exact_text.indexOf('Merger Sub') }, { text: 'The Company', start_byte: 1000 + sectionText.exact_text.lastIndexOf('The Company') }],
+  }));
+  assert.ok(html.indexOf('Cited words') < html.indexOf('Show full section'), 'cited words first');
+  assert.match(html, /data-testid="review-reason-cited-words"[^>]*>“Merger Sub shall be merged”</);
+  assert.match(html, /data-testid="review-reason-section-toggle"[^>]*>Show full section</);
+  assert.match(html, /data-testid="review-reason-text" hidden=""/);
+  const marks = [...html.matchAll(/<mark class="bg-\[#FFF3C4\][^"]*"[^>]*>([^<]*)<\/mark>/g)].map((match) => match[1]);
+  assert.deepEqual(marks, ['Merger Sub shall be merged', 'The Company']);
+  assert.match(html, /into the Company\. <mark/, 'the second "the Company" is marked, not the first');
+  // No cited words: the section text as before.
+  const fallback = renderToStaticMarkup(React.createElement(ReviewReasonPanel, { fact: { fact_id: 'f1', components: [] }, sectionText }));
+  assert.match(fallback, />Provision text</);
+  assert.doesNotMatch(fallback, /Cited words|<mark/);
+  assert.match(fallback, /data-testid="review-reason-text">Section 1\.01/);
+});
+
+test('citedRanges places a passage by its UTF-8 offset past multibyte text and merges overlaps', () => {
+  const { citedRanges } = require('../components/product/ProvisionTables.jsx');
+  const text = '“Quoted” term; the Company and the Company again';
+  const second = text.lastIndexOf('the Company');
+  const startByte = Buffer.byteLength(text.slice(0, second), 'utf8');
+  assert.deepEqual(citedRanges({ exact_text: text, start_byte: 0 }, [{ text: 'the Company', start_byte: startByte }]), [[second, second + 11]]);
+  assert.deepEqual(citedRanges({ exact_text: text, start_byte: 0 }, ['the Company', 'Company and']), [[text.indexOf('the Company'), text.indexOf('the Company') + 15]]);
+  assert.deepEqual(citedRanges({ exact_text: text }, ['absent words']), []);
+});
+
+test('the reason panel names who decided and who commented, and nothing when no reviewer is named', () => {
+  const fact = { fact_id: 'f1', components: [] };
+  const ben = { id: 'r1', name: 'Ben Goodchild', level: 'PARTNER', trusted: true };
+  const agreed = renderToStaticMarkup(React.createElement(ReviewReasonPanel, { fact, reviewItem: { item_id: 'i1', decision: 'ACCEPTED', decided_by_reviewer: ben, comment: 'Fine.', comment_reviewer: { name: 'Ann Lee', level: 'SENIOR_ASSOCIATE' } } }));
+  assert.match(agreed, /data-testid="review-reason-decision"[^>]*>Agreed by Ben Goodchild · Partner</);
+  assert.match(agreed, /data-testid="review-reason-comment-by"[^>]*>Comment by Ann Lee · Senior associate</);
+  const disagreed = renderToStaticMarkup(React.createElement(ReviewReasonPanel, { fact, reviewItem: { item_id: 'i1', decision: 'REJECTED', decided_by_reviewer: ben } }));
+  assert.match(disagreed, />Disagreed by Ben Goodchild · Partner</);
+  const edited = renderToStaticMarkup(React.createElement(ReviewReasonPanel, { fact, reviewItem: { item_id: 'i1', decision: 'EDITED', decided_by_reviewer: ben } }));
+  assert.match(edited, />Edited by Ben Goodchild · Partner</);
+  const anonymous = renderToStaticMarkup(React.createElement(ReviewReasonPanel, { fact, reviewItem: { item_id: 'i1', decision: 'ACCEPTED', decided_by_reviewer: null, comment: 'Fine.', comment_reviewer: null } }));
+  assert.match(anonymous, /data-testid="review-reason-decision"[^>]*>Agreed</);
+  assert.doesNotMatch(anonymous, / by |review-reason-comment-by/);
+});
+
+test('the review page keeps a disagreed fact on the page; the lawyer preview still leaves it out', () => {
+  const ws = reviewWorkspace({ decisions: { 0: 'REJECTED' } });
+  const html = reviewBody(ws);
+  assert.match(html, /Disagreed \(1\)/, 'the Disagreed list stays');
+  // The disagreed fact is the fixture's only Material Contracts fact.
+  const section = /data-testid="provision-section"[^>]*id="provision-section-material-contracts"/;
+  assert.match(html, section, 'the disagreed fact\'s section stays');
+  const { ProvisionsPreviewBody } = require('../pages/review/product/[id]/provisions.js');
+  const preview = renderToStaticMarkup(React.createElement(ProvisionsPreviewBody, { workspace: ws, runId: 'run-1' }));
+  assert.doesNotMatch(preview, section);
+  assert.doesNotMatch(preview, /data-review-rejected|review-rejected-label|data-testid="see-reason"/);
+});
+
+test('a row with only some facts disagreed says how many, and its See reason opens the first disagreed fact', () => {
+  const view = reviewModeView();
+  const table = view.sections[0].tables[0];
+  table.rows[1] = { subject: 'Capitalization', backing_facts: [{ fact_id: 'f3' }, { fact_id: 'f4' }, { fact_id: 'f5' }], cells: [{ column_id: 'q', kind: 'value', label: 'None', fact_ids: ['f3', 'f4', 'f5'], component_ids: [] }] };
+  const facts = [...reviewModeFacts(['f4']), { fact_id: 'f4', components: [], review_rejected: true }, { fact_id: 'f5', components: [] }];
+  const items = new Map([['f4', { item_id: 'i4', decision: 'REJECTED' }]]);
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts, mode: 'review', reviewItemsByFactId: items, onReset: () => {}, initialReasonFactId: 'f4' }));
+  const row = /<tr[^>]*data-testid="table-row"[^>]*>(?:(?!<\/tr>)[\s\S])*Capitalization[\s\S]*?<\/tr>/.exec(html)[0];
+  assert.match(row, /data-testid="review-partly-rejected-label"[^>]*>1 of 3 disagreed</);
+  assert.doesNotMatch(row, /data-review-rejected|review-rejected-label/, 'not greyed: two facts still stand');
+  // Opened on its first disagreed fact: the panel offers Undo.
+  assert.match(html, /Capitalization[\s\S]*?Hide reason[\s\S]*?data-testid="review-reason-row"[\s\S]*?data-decision="REJECTED"[\s\S]*?data-testid="review-undo"/);
+  const read = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts }));
+  assert.doesNotMatch(read, /review-partly-rejected-label/);
+});
+
+test('the full section toggle reads Hide full section once open', () => {
+  const sectionText = { exact_text: 'Merger Sub shall be merged.', start_byte: 0 };
+  const html = renderToStaticMarkup(React.createElement(ReviewReasonPanel, { fact: { fact_id: 'f1', components: [] }, sectionText, citedWords: ['Merger Sub'], initialSectionOpen: true }));
+  assert.match(html, /aria-expanded="true"[^>]*data-testid="review-reason-section-toggle"[^>]*>Hide full section</);
+  assert.match(html, /data-testid="review-reason-text">/);
+  assert.doesNotMatch(html, /data-testid="review-reason-text" hidden/);
+});
+
+test('a held absent row gets See reason in review mode, and renders as before in read mode', () => {
+  const view = reviewModeView();
+  view.sections[0].tables[0].rows.push({ subject: 'Brokers', absent: true, held: true, absent_label: 'Held by validation', backing_facts: [{ fact_id: 'held-1' }], cells: [], sub_rows: [] });
+  const heldFacts = [{ fact_id: 'held-1', components: [], validation_status: 'INVALID' }];
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts: reviewModeFacts(), heldFacts, mode: 'review', initialReasonFactId: 'held-1' }));
+  const row = /<tr[^>]*data-absent="true"[\s\S]*?<\/tr>/.exec(html)[0];
+  assert.match(row, /Brokers[\s\S]*data-testid="see-reason"[^>]*>Hide reason</);
+  assert.match(html, /data-absent="true"[\s\S]*?<\/tr><tr data-testid="review-reason-row"/);
+  const read = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: view, facts: reviewModeFacts() }));
+  assert.match(read, /<tr class="border-b border-\[#DCE3E1\] last:border-0" data-testid="table-row" data-absent="true" data-held="true"><td class="[^"]*"><span class="[^"]*">Brokers<\/span><\/td><td[^>]*data-testid="table-absent">Held by validation<\/td><\/tr>/);
+});

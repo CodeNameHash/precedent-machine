@@ -719,3 +719,40 @@ test('a run with no facts at all still names its empty sections, and a substanti
   article.analysis.sections.push({ structure_node_id: 'node-article', section_reference: 'ARTICLE IX', families: [], disposition: 'IMMATERIAL' });
   assert.equal(previewFactsFromWorkspace(article).sections_without_facts.some((entry) => entry.section_reference === 'ARTICLE IX'), false);
 });
+
+// The review page's option: a disagreed fact stays, marked, with its cited
+// words; without the option the output is what the lawyer preview read.
+test('includeRejected keeps a disagreed fact marked with its cited words; the default output is unchanged', () => {
+  const rejectedId = `p-1-${fixture.facts[1].fact_id}`;
+  const ws = workspace({ items: [{ kind: 'PROPOSAL', item_id: 'item-r', source_id: rejectedId, decision: 'REJECTED', original: {}, decided_by_reviewer: { id: 'r1', name: 'Ben Goodchild', level: 'PARTNER', trusted: true }, comment_reviewer: null }] });
+  const cited = 'Section 3.14 Material Contracts.';
+  const later = SECTION_TEXT.indexOf(cited, 10);
+  ws.analysis.spans.push(
+    { span_id: 's-cite-1', kind: 'SUPPORTING_EVIDENCE', structure_node_id: NODE, start_byte: later, end_byte: later + cited.length, exact_text: cited },
+    { span_id: 's-cite-2', kind: 'SUPPORTING_EVIDENCE', structure_node_id: NODE, start_byte: later, end_byte: later + 7, exact_text: 'Section' },
+    { span_id: 's-cite-3', kind: 'SUPPORTING_EVIDENCE', structure_node_id: NODE, start_byte: 0, end_byte: cited.length, exact_text: cited },
+  );
+  ws.analysis.proposals.find((proposal) => proposal.proposal_id === rejectedId).source_span_ids = ['s-cite-1', 's-cite-2', 's-cite-3'];
+  const before = previewFactsFromWorkspace(ws);
+  // The default: the fact is left out, nothing is marked and no cited words travel.
+  assert.equal(before.facts.length, fixture.facts.length - 1);
+  assert.ok(!before.facts.some((fact) => fact.fact_id === rejectedId));
+  assert.ok(!JSON.stringify(before.facts).includes('review_rejected'));
+  assert.ok(!Object.hasOwn(before, 'citedWordsByFactId'));
+  assert.deepEqual(Object.keys(before).sort(), ['facts', 'held_count', 'held_facts', 'out_of_scope', 'reviewItemsByFactId', 'schema_drift', 'section_count', 'sectionTextByFactId', 'sections_without_facts', 'unplaced_held'].sort());
+  assert.deepEqual(previewFactsFromWorkspace(ws, {}), before);
+  const review = previewFactsFromWorkspace(ws, { includeRejected: true });
+  assert.equal(review.facts.length, fixture.facts.length);
+  const kept = review.facts.find((fact) => fact.fact_id === rejectedId);
+  assert.equal(kept.review_rejected, true);
+  assert.equal(review.facts.filter((fact) => fact.review_rejected).length, 1);
+  assert.equal(review.reviewItemsByFactId.get(rejectedId).decision, 'REJECTED');
+  assert.deepEqual(review.reviewItemsByFactId.get(rejectedId).decided_by_reviewer, { name: 'Ben Goodchild', level: 'PARTNER', trusted: true });
+  assert.ok(!Object.hasOwn(review.reviewItemsByFactId.get(rejectedId), 'comment_reviewer'), 'a null reviewer is left out');
+  assert.equal(review.sectionTextByFactId.get(rejectedId).exact_text, SECTION_TEXT);
+  // Once each, a passage inside a longer one left out, in agreement order.
+  assert.deepEqual(review.citedWordsByFactId.get(rejectedId), [{ text: cited, start_byte: 0 }]);
+  // The rest of the output is the default's, but for the kept fact.
+  assert.deepEqual(review.facts.filter((fact) => fact.fact_id !== rejectedId), before.facts);
+  assert.deepEqual(review.held_facts, before.held_facts);
+});

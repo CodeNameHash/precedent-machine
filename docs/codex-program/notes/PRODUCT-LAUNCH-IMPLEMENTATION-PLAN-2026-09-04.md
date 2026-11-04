@@ -13755,3 +13755,25 @@ Ben: "Do that. Burn tokens where you see fit".
   section, not only the cited words; See reason is not yet on attribute
   grids, sub-rows or Other provisions; the review API does not record the
   reviewer cookie on decisions.
+
+**(315) 2026-11-04: the open review-page items from (314) closed.**
+Ben: "continue fixing that then".
+
+- Disagreed facts stay on the review page: `previewFactsFromWorkspace(ws,
+  { includeRejected: true })` (review page only; the lawyer page's output
+  is unchanged, checked on Metsera) marks them `review_rejected`. A line
+  whose facts are all disagreed is greyed, struck through and labelled
+  Disagreed; a row with some disagreed says "n OF m DISAGREED" and its See
+  reason opens on the disagreed fact, so Undo is always reachable.
+- The reason panel leads with the cited words (deduplicated, in agreement
+  order); "Show full section" shows the section with those passages
+  marked at their byte offsets.
+- See reason on every answer line in review mode: attribute grids and
+  their options, sub-rows, Other provisions, held, absent and no-readout
+  rows.
+- Decisions, comments and resets record the declared reviewer from the
+  `pm_reviewer` cookie (`decided_by_reviewer`, `comment_reviewer`,
+  `reset_by_reviewer`: id, name, level, trusted; null without a cookie; a
+  reviewer sent in the request body is ignored). The panel shows "Agreed
+  by Ben Goodchild · Partner". No migration; old stored items load as
+  before. `tests/product-review-reviewer.test.js`.
