@@ -252,7 +252,7 @@ function FactRow({ fact, selected, onSelect, onDecision, onComment, onReset, onS
   </li>;
 }
 
-export function FocusedSection({ section, analysis, busy, command, openSource, cardPropsFor, lookFor = null }) {
+export function FocusedSection({ section, analysis, busy, command, openSource, cardPropsFor, lookFor = null, runId = null }) {
   const spansById = useMemo(() => new Map((analysis.spans || []).map((span) => [span.span_id, span])), [analysis.spans]);
   const groups = useMemo(() => sectionFacts(section, spansById), [section, spansById]);
   const [selectedId, setSelectedId] = useState(null);
@@ -340,12 +340,13 @@ export function FocusedSection({ section, analysis, busy, command, openSource, c
         onComment={comment}
         onReset={reset}
         busy={busy}
+        runId={runId}
       />
     </div> : null}
   </section>;
 }
 
-export default function FocusedReview({ view, analysis, focus, busy, command, openSource, cardPropsFor, allSectionsHref, brief = null }) {
+export default function FocusedReview({ view, analysis, focus, busy, command, openSource, cardPropsFor, allSectionsHref, brief = null, runId = null }) {
   const lookFor = new Map((brief?.sections || []).map((item) => [item.reference, item.look_for]));
   const sections = focus.map((reference) => ({
     reference,
@@ -367,6 +368,6 @@ export default function FocusedReview({ view, analysis, focus, busy, command, op
       {brief.ask?.length ? <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-inkMid">{brief.ask.map((line, index) => <li key={index}>{line}</li>)}</ol> : null}
       <p className="mt-2 text-xs text-inkLight">Each section below starts with what to look for. Comments are saved with the fact and read by the assistant; an edit is compared with the original wording to understand the correction.</p>
     </div> : null}
-    {sections.filter((item) => item.section).map((item) => <FocusedSection key={item.section.node.node_id} section={item.section} analysis={analysis} busy={busy} command={command} openSource={openSource} cardPropsFor={cardPropsFor} lookFor={lookFor.get(item.reference) || null} />)}
+    {sections.filter((item) => item.section).map((item) => <FocusedSection key={item.section.node.node_id} section={item.section} analysis={analysis} busy={busy} command={command} openSource={openSource} cardPropsFor={cardPropsFor} lookFor={lookFor.get(item.reference) || null} runId={runId} />)}
   </section>;
 }

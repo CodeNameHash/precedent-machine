@@ -21,14 +21,31 @@ require.extensions['.jsx'] = function compileJsx(module, filename) {
   module._compile(transformed.code, filename);
 };
 
+const projectRoot = path.join(__dirname, '..');
+const originalJsLoader = require.extensions['.js'];
+require.extensions['.js'] = function compileProjectEsm(module, filename) {
+  if (!filename.startsWith(projectRoot) || filename.includes(`${path.sep}node_modules${path.sep}`)) {
+    return originalJsLoader(module, filename);
+  }
+  const source = fs.readFileSync(filename, 'utf8');
+  if (!/(^|\n)\s*(import\s|export\s)/.test(source)) return originalJsLoader(module, filename);
+  const transformed = transformSync(source, {
+    filename,
+    jsc: { parser: { syntax: 'ecmascript', jsx: true }, transform: { react: { runtime: 'automatic' } } },
+    module: { type: 'commonjs' },
+  });
+  module._compile(transformed.code, filename);
+};
+
 const ProvisionTables = require('../components/product/ProvisionTables.jsx').default;
 const { ReviewReasonPanel } = require('../components/product/ProvisionTables.jsx');
 const FeedbackDialog = require('../components/product/FeedbackDialog.jsx').default;
 const {
-  createProductFeedbackHandler, KINDS, STATUSES,
+  createProductFeedbackHandler, KINDS, STATUSES, readFilters,
 } = require('../lib/product/feedback-handler');
 const {
   reviewerCookieId, levelLabel, adminActor, reviewerFromRow, reviewerCookie, REVIEWER_COOKIE,
+  reviewerForRequest, reviewersResponse, publicReviewer,
 } = require('../lib/product/reviewers');
 const { ProductRequestAuthError } = require('../lib/product/request-auth');
 
@@ -79,7 +96,38 @@ function handlerArgs(client, { actor = 'ben', admin = true } = {}) {
     getClient: () => client,
     actorResolver: async () => { if (actor === null) throw new ProductRequestAuthError('UNAUTHENTICATED'); return actor; },
     adminCheck: () => admin,
-    reviewerResolver: async () => ({ id: 'r1', name: 'Ben Goodchild', level: 'PARTNER', trusted: true }),
+    reviewerResolver: async () => ({ id: 'r1', name: 'Ben Goodchild', level: 'PARTNER', active: true, trusted: true }),
+  };
+}
+
+const RUN_ID = '11111111-1111-4111-8111-111111111111';
+const FACT_ID = '44444444-4444-4444-8444-444444444444';
+
+async function postFeedback(handler, body) {
+  const res = mockRes();
+  await handler({ method: 'POST', headers: { 'x-pm-csrf': 'same-origin' }, body: { kind: 'WRONG_ANSWER', run_id: RUN_ID, body: 'x', ...body } }, res);
+  return res;
+}
+
+// A product_reviewers client: rows by id, or a thrown / returned error.
+function reviewersClient({ rows = [], throws = false, error = null } = {}) {
+  return {
+    from(table) {
+      assert.equal(table, 'product_reviewers');
+      let id = null;
+      const builder = {
+        select() { return builder; },
+        eq(column, value) { if (column === 'id') id = value; return builder; },
+        order() { return builder; },
+        limit() { return builder; },
+        maybeSingle() {
+          if (throws) return Promise.reject(new Error('database down'));
+          if (error) return Promise.resolve({ data: null, error });
+          return Promise.resolve({ data: rows.find((row) => row.id === id) || null, error: null });
+        },
+      };
+      return builder;
+    },
   };
 }
 
@@ -137,7 +185,7 @@ test('POST feedback records the context, author and level', async () => {
     body: {
       run_id: '11111111-1111-4111-8111-111111111111', page_path: '/review/product/x', section_key: 'material-contracts',
       table_key: 'material-contracts-table', row_subject: 'Real estate leases', column_id: 'qualifier',
-      cell_code: 'MATERIAL', cell_label: 'Material', fact_ids: ['f1'], kind: 'WRONG_ANSWER', body: 'The qualifier is wrong.',
+      cell_code: 'MATERIAL', cell_label: 'Material', fact_ids: [FACT_ID], kind: 'WRONG_ANSWER', body: 'The qualifier is wrong.',
     },
   }, res);
   assert.equal(res.statusCode, 201);
@@ -146,7 +194,139 @@ test('POST feedback records the context, author and level', async () => {
   assert.equal(client.state.inserted.author_name, 'Ben Goodchild');
   assert.equal(client.state.inserted.author_level, 'PARTNER');
   assert.equal(client.state.inserted.status, 'open');
-  assert.deepEqual(client.state.inserted.fact_ids, ['f1']);
+  assert.equal(client.state.inserted.trusted, true);
+  assert.deepEqual(client.state.inserted.fact_ids, [FACT_ID]);
+});
+
+test('reviewerForRequest returns null, not a partner, without a valid cookie', async () => {
+  const rows = [
+    { id: 'p1', name: 'Pat Partner', level: 'PARTNER', email: 'p@example.com', active: true },
+    { id: 'j1', name: 'Jo Junior', level: 'JUNIOR_ASSOCIATE', email: null, active: true },
+    { id: 'old', name: 'Old Partner', level: 'PARTNER', email: null, active: false },
+  ];
+  const req = (id) => ({ headers: id ? { cookie: `${REVIEWER_COOKIE}=${id}` } : {} });
+  assert.equal(await reviewerForRequest({ req: req(null), client: reviewersClient({ rows }) }), null);
+  assert.equal(await reviewerForRequest({ req: req('nobody'), client: reviewersClient({ rows }) }), null);
+  assert.equal(await reviewerForRequest({ req: req('old'), client: reviewersClient({ rows }) }), null);
+  assert.equal(await reviewerForRequest({ req: req('p1'), client: reviewersClient({ throws: true }) }), null);
+  assert.equal(await reviewerForRequest({ req: req('p1'), client: reviewersClient({ error: { message: 'x' } }) }), null);
+  assert.equal(await reviewerForRequest({ req: req('p1'), client: null }), null);
+  const partner = await reviewerForRequest({ req: req('p1'), client: reviewersClient({ rows }) });
+  assert.equal(partner.level, 'PARTNER');
+  assert.equal(partner.trusted, true);
+  const junior = await reviewerForRequest({ req: req('j1'), client: reviewersClient({ rows }) });
+  assert.equal(junior.level, 'JUNIOR_ASSOCIATE');
+  assert.equal(junior.trusted, false);
+  assert.equal(reviewerFromRow({ id: 'old', name: 'Old', level: 'PARTNER', active: false }).trusted, false);
+  const source = fs.readFileSync(path.join(__dirname, '../lib/product/reviewers.js'), 'utf8');
+  assert.doesNotMatch(source, /defaultReviewer|Ben Goodchild/);
+});
+
+test('POST feedback with no declared reviewer stores the actor, no level and untrusted', async () => {
+  for (const resolved of [null, { id: 'x', name: 'Ghost', level: 'NOT_A_LEVEL', active: true }, { id: 'o', name: 'Old', level: 'PARTNER', active: false }]) {
+    const client = feedbackClient();
+    const handler = createProductFeedbackHandler({ ...handlerArgs(client, { actor: 'session-user' }), reviewerResolver: async () => resolved });
+    const res = await postFeedback(handler, {});
+    assert.equal(res.statusCode, 201);
+    assert.equal(res.body.trusted, false);
+    assert.equal(client.state.inserted.author_id, 'session-user');
+    assert.equal(client.state.inserted.author_name, 'session-user');
+    assert.equal(client.state.inserted.author_level, null);
+    assert.equal(client.state.inserted.trusted, false);
+  }
+  const client = feedbackClient();
+  const handler = createProductFeedbackHandler({ ...handlerArgs(client, { actor: 'session-user' }), reviewerResolver: async () => ({ id: 'j', name: 'Jo Junior', level: 'JUNIOR_ASSOCIATE', active: true, trusted: true }) });
+  const res = await postFeedback(handler, {});
+  assert.equal(res.body.trusted, false);
+  assert.equal(client.state.inserted.author_id, 'session-user');
+  assert.equal(client.state.inserted.author_level, 'JUNIOR_ASSOCIATE');
+  assert.equal(client.state.inserted.trusted, false);
+});
+
+test('the reviewers response hides emails from non-admins and keeps the switcher rendering', () => {
+  const rows = [{ id: 'p1', name: 'Pat', level: 'PARTNER', email: 'p@example.com', active: true }];
+  const declared = reviewerFromRow(rows[0]);
+  const reader = reviewersResponse({ rows, declared, actor: 'reader', admin: false });
+  assert.equal(reader.schema_version, 'PRODUCT_REVIEWERS/V1');
+  assert.equal('email' in reader.reviewers[0], false);
+  assert.equal('email' in reader.current, false);
+  assert.deepEqual([reader.reviewers[0].id, reader.reviewers[0].name, reader.reviewers[0].level], ['p1', 'Pat', 'PARTNER']);
+  assert.equal(reader.current.id, 'p1');
+  assert.equal(reader.current.declared, true);
+  const admin = reviewersResponse({ rows, declared, actor: 'ben', admin: true });
+  assert.equal(admin.reviewers[0].email, 'p@example.com');
+  const undeclared = reviewersResponse({ rows, declared: null, actor: 'reader', admin: false });
+  assert.equal(undeclared.current.id, null);
+  assert.equal(undeclared.current.name, 'reader');
+  assert.equal(undeclared.current.level, null);
+  assert.equal(undeclared.current.trusted, false);
+  assert.equal(undeclared.current.declared, false);
+  assert.equal(publicReviewer(null), null);
+});
+
+test('POST feedback validates the run, the fact ids and the field lengths', async () => {
+  const client = feedbackClient();
+  const handler = createProductFeedbackHandler(handlerArgs(client));
+  for (const runId of ['run-1', 42, '', '11111111-1111-4111-8111-11111111111']) {
+    assert.equal((await postFeedback(handler, { run_id: runId })).statusCode, 400);
+  }
+  assert.equal(client.state.inserted, null);
+  assert.equal((await postFeedback(handler, { body: 'x'.repeat(10001) })).statusCode, 400);
+  assert.equal((await postFeedback(handler, { body: 'x'.repeat(10000) })).statusCode, 201);
+  for (const name of ['page_path', 'section_key', 'table_key', 'row_subject', 'column_id', 'cell_code', 'cell_label']) {
+    assert.equal((await postFeedback(handler, { [name]: 'y'.repeat(501) })).statusCode, 400, name);
+  }
+  const ok = await postFeedback(handler, { cell_label: 'y'.repeat(500), fact_ids: [FACT_ID, 'f1', 7, null, FACT_ID, '../x'] });
+  assert.equal(ok.statusCode, 201);
+  assert.equal(client.state.inserted.cell_label.length, 500);
+  assert.deepEqual(client.state.inserted.fact_ids, [FACT_ID]);
+});
+
+test('feedback GET filters must be a UUID run and known status, level and kind', async () => {
+  const client = feedbackClient([{ id: 'a', run_id: RUN_ID, status: 'open', kind: 'MISSING', author_level: 'PARTNER' }]);
+  const handler = createProductFeedbackHandler(handlerArgs(client));
+  for (const query of [{ run: 'abc' }, { status: 'closed' }, { level: 'INTERN' }, { kind: 'PRAISE' }]) {
+    const res = mockRes();
+    await handler({ method: 'GET', headers: {}, query }, res);
+    assert.equal(res.statusCode, 400, JSON.stringify(query));
+  }
+  const res = mockRes();
+  await handler({ method: 'GET', headers: {}, query: { run: RUN_ID, status: 'open', level: 'PARTNER', kind: 'MISSING' } }, res);
+  assert.equal(res.statusCode, 200);
+  assert.equal(res.body.feedback.length, 1);
+  assert.deepEqual(readFilters({}).filters, { status: null, run_id: null, author_level: null, kind: null });
+});
+
+test('PATCH reopening clears the resolver, time and note', async () => {
+  const id = '55555555-5555-4555-8555-555555555555';
+  const client = feedbackClient([{ id, status: 'done', resolved_by: 'ben', resolved_at: '2026-11-01T00:00:00.000Z', resolution_note: 'Fixed.' }]);
+  const handler = createProductFeedbackHandler(handlerArgs(client));
+  const res = mockRes();
+  await handler({ method: 'PATCH', headers: { 'x-pm-csrf': 'same-origin' }, body: { id, status: 'open', resolution_note: 'stale' } }, res);
+  assert.equal(res.statusCode, 200);
+  assert.deepEqual(client.state.updated, { status: 'open', resolved_by: null, resolved_at: null, resolution_note: null });
+  const noNote = mockRes();
+  await createProductFeedbackHandler(handlerArgs(feedbackClient([{ id, status: 'open' }])))({ method: 'PATCH', headers: { 'x-pm-csrf': 'same-origin' }, body: { id, status: 'accepted', resolution_note: '   ' } }, noNote);
+  assert.equal(noNote.statusCode, 400);
+});
+
+test('the admin page needs a typed note and ignores a partial Run filter', () => {
+  const page = require('../pages/admin/feedback.js');
+  assert.equal(page.feedbackQuery({ status: 'open', run: '1111', level: '', kind: '' }), 'status=open');
+  assert.equal(page.feedbackQuery({ status: '', run: RUN_ID, level: 'PARTNER', kind: 'MISSING' }), `run=${RUN_ID}&level=PARTNER&kind=MISSING`);
+  const source = fs.readFileSync(path.join(__dirname, '../pages/admin/feedback.js'), 'utf8');
+  assert.doesNotMatch(source, /Reviewed in the feedback list/);
+  assert.equal((source.match(/disabled=\{busy \|\| !\(notes\[item\.id\] \|\| ''\)\.trim\(\)\}/g) || []).length, 3);
+});
+
+test('the feedback migration bounds the text fields and ties trusted to a trusted level', () => {
+  const sql = fs.readFileSync(path.join(__dirname, '../supabase/migrations/20261101000000_product_feedback_and_reviewers.sql'), 'utf8');
+  assert.match(sql, /body text NOT NULL CHECK \(length\(trim\(body\)\) > 0 AND length\(body\) <= 10000\)/);
+  for (const name of ['page_path', 'section_key', 'table_key', 'row_subject', 'column_id', 'cell_code', 'cell_label', 'author_id', 'author_name']) {
+    assert.match(sql, new RegExp(`${name} text CHECK \\(${name} IS NULL OR length\\(${name}\\) <= 500\\)`), name);
+  }
+  assert.match(sql, /trusted boolean NOT NULL DEFAULT false/);
+  assert.match(sql, /CHECK \(NOT trusted OR author_level IN \('PARTNER', 'SENIOR_ASSOCIATE'\)\)/);
 });
 
 test('POST feedback refuses a missing kind, body or run, and an anonymous reader', async () => {

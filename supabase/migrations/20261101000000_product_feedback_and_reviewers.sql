@@ -9,9 +9,9 @@
 
 CREATE TABLE IF NOT EXISTS public.product_reviewers (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  name text NOT NULL,
+  name text NOT NULL CHECK (length(name) <= 500),
   level text NOT NULL CHECK (level IN ('PARTNER', 'SENIOR_ASSOCIATE', 'MID_LEVEL_ASSOCIATE', 'JUNIOR_ASSOCIATE')),
-  email text,
+  email text CHECK (email IS NULL OR length(email) <= 500),
   active boolean NOT NULL DEFAULT true,
   created_at timestamptz NOT NULL DEFAULT now()
 );
@@ -27,23 +27,27 @@ CREATE TABLE IF NOT EXISTS public.product_feedback (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   created_at timestamptz NOT NULL DEFAULT now(),
   run_id uuid NOT NULL,
-  page_path text,
-  section_key text,
-  table_key text,
-  row_subject text,
-  column_id text,
-  cell_code text,
-  cell_label text,
-  fact_ids jsonb NOT NULL DEFAULT '[]'::jsonb,
+  page_path text CHECK (page_path IS NULL OR length(page_path) <= 500),
+  section_key text CHECK (section_key IS NULL OR length(section_key) <= 500),
+  table_key text CHECK (table_key IS NULL OR length(table_key) <= 500),
+  row_subject text CHECK (row_subject IS NULL OR length(row_subject) <= 500),
+  column_id text CHECK (column_id IS NULL OR length(column_id) <= 500),
+  cell_code text CHECK (cell_code IS NULL OR length(cell_code) <= 500),
+  cell_label text CHECK (cell_label IS NULL OR length(cell_label) <= 500),
+  fact_ids jsonb NOT NULL DEFAULT '[]'::jsonb CHECK (jsonb_typeof(fact_ids) = 'array' AND jsonb_array_length(fact_ids) <= 50),
   kind text NOT NULL CHECK (kind IN ('WRONG_ANSWER', 'MISSING', 'UNCLEAR', 'OTHER')),
-  body text NOT NULL CHECK (length(trim(body)) > 0),
-  author_id text,
-  author_name text,
+  body text NOT NULL CHECK (length(trim(body)) > 0 AND length(body) <= 10000),
+  author_id text CHECK (author_id IS NULL OR length(author_id) <= 500),
+  author_name text CHECK (author_name IS NULL OR length(author_name) <= 500),
   author_level text CHECK (author_level IN ('PARTNER', 'SENIOR_ASSOCIATE', 'MID_LEVEL_ASSOCIATE', 'JUNIOR_ASSOCIATE')),
+  -- True only when the reviewer cookie named an active partner or senior
+  -- associate; the cookie is a self-declared preference, not a login.
+  trusted boolean NOT NULL DEFAULT false,
   status text NOT NULL DEFAULT 'open' CHECK (status IN ('open', 'accepted', 'rejected', 'done')),
-  resolved_by text,
+  resolved_by text CHECK (resolved_by IS NULL OR length(resolved_by) <= 500),
   resolved_at timestamptz,
-  resolution_note text
+  resolution_note text CHECK (resolution_note IS NULL OR length(resolution_note) <= 2000),
+  CONSTRAINT product_feedback_trusted_level CHECK (NOT trusted OR author_level IN ('PARTNER', 'SENIOR_ASSOCIATE'))
 );
 
 CREATE INDEX IF NOT EXISTS product_feedback_status_created_idx ON public.product_feedback (status, created_at DESC);

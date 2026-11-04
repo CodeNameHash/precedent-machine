@@ -7,6 +7,20 @@ import PwBar from '../../components/chrome/PwBar';
 import { Breadcrumbs, EmptyState, SkeletonCard } from '../../components/UI';
 
 const STATUSES = ['open', 'accepted', 'rejected', 'done'];
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+// The query sent to the feedback API. The Run filter is applied only once it
+// is a full UUID, so a half-typed id is ignored rather than refused.
+export function feedbackQuery(filters = {}) {
+  const params = new URLSearchParams();
+  for (const [key, raw] of Object.entries(filters)) {
+    const value = typeof raw === 'string' ? raw.trim() : '';
+    if (!value) continue;
+    if (key === 'run' && !UUID.test(value)) continue;
+    params.set(key, value);
+  }
+  return params.toString();
+}
 const LEVELS = [
   ['PARTNER', 'Partner'],
   ['SENIOR_ASSOCIATE', 'Senior associate'],
@@ -43,11 +57,11 @@ export default function FeedbackAdminPage() {
     if (!session.loading && !session.admin) router.replace('/');
   }, [router, session.admin, session.loading]);
 
+  const runFilter = UUID.test(filters.run.trim()) ? filters.run.trim() : '';
+
   async function load() {
     setError('');
-    const params = new URLSearchParams();
-    for (const [key, value] of Object.entries(filters)) if (value) params.set(key, value);
-    const response = await fetch(`/api/product/feedback?${params.toString()}`, { headers: { accept: 'application/json' } });
+    const response = await fetch(`/api/product/feedback?${feedbackQuery(filters)}`, { headers: { accept: 'application/json' } });
     const body = await response.json();
     if (!response.ok) throw new Error(body.error || 'Feedback could not be read');
     setFeedback(body.feedback || []);
@@ -55,19 +69,25 @@ export default function FeedbackAdminPage() {
   useEffect(() => {
     if (session.loading || !session.admin) return;
     load().catch((failure) => setError(failure.message));
-  }, [session.loading, session.admin, filters.status, filters.run, filters.level, filters.kind]);
+  }, [session.loading, session.admin, filters.status, runFilter, filters.level, filters.kind]);
 
   async function resolve(item, status) {
+    const note = (notes[item.id] || '').trim();
+    if (status !== 'open' && !note) {
+      setError('Type a resolution note first.');
+      return;
+    }
     setBusy(true);
     setError('');
     try {
       const response = await fetch('/api/product/feedback', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', 'X-PM-CSRF': 'same-origin' },
-        body: JSON.stringify({ id: item.id, status, resolution_note: notes[item.id] || item.resolution_note || 'Reviewed in the feedback list.' }),
+        body: JSON.stringify({ id: item.id, status, resolution_note: note }),
       });
       const body = await response.json();
       if (!response.ok) throw new Error(body.error || 'Feedback could not be updated');
+      setNotes((current) => ({ ...current, [item.id]: '' }));
       await load();
     } catch (failure) {
       setError(failure.message);
@@ -133,9 +153,9 @@ export default function FeedbackAdminPage() {
                 </p>
                 <div className="mt-[8px] flex flex-wrap items-center gap-[6px]">
                   <input value={notes[item.id] || ''} onChange={(event) => setNotes((current) => ({ ...current, [item.id]: event.target.value }))} placeholder="Resolution note" className="min-w-[220px] flex-1 rounded-full border border-[#B9C8DA] px-[10px] py-[5px] font-ui text-[11px]" />
-                  <button type="button" disabled={busy} onClick={() => resolve(item, 'accepted')} className="rounded-full bg-[#03203D] px-[11px] py-[4px] font-ui text-[10.5px] font-semibold text-white disabled:opacity-40">Accept</button>
-                  <button type="button" disabled={busy} onClick={() => resolve(item, 'rejected')} className="rounded-full border border-[#B9C8DA] px-[11px] py-[4px] font-ui text-[10.5px] font-semibold text-[#0B3D71] disabled:opacity-40">Reject</button>
-                  <button type="button" disabled={busy} onClick={() => resolve(item, 'done')} className="rounded-full border border-[#B9C8DA] px-[11px] py-[4px] font-ui text-[10.5px] font-semibold text-[#0B3D71] disabled:opacity-40">Done</button>
+                  <button type="button" disabled={busy || !(notes[item.id] || '').trim()} onClick={() => resolve(item, 'accepted')} className="rounded-full bg-[#03203D] px-[11px] py-[4px] font-ui text-[10.5px] font-semibold text-white disabled:opacity-40">Accept</button>
+                  <button type="button" disabled={busy || !(notes[item.id] || '').trim()} onClick={() => resolve(item, 'rejected')} className="rounded-full border border-[#B9C8DA] px-[11px] py-[4px] font-ui text-[10.5px] font-semibold text-[#0B3D71] disabled:opacity-40">Reject</button>
+                  <button type="button" disabled={busy || !(notes[item.id] || '').trim()} onClick={() => resolve(item, 'done')} className="rounded-full border border-[#B9C8DA] px-[11px] py-[4px] font-ui text-[10.5px] font-semibold text-[#0B3D71] disabled:opacity-40">Done</button>
                   {item.page_path ? <Link href={`${item.page_path}${item.section_key ? `#provision-section-${item.section_key}` : ''}`} className="font-ui text-[10.5px] text-[#0B3D71] underline-offset-2 hover:underline">Open</Link> : null}
                 </div>
               </article>

@@ -272,7 +272,7 @@ export function DraftReview({ workspace, view, busy, command, openSource, focus 
   });
   const focused = focus.length > 0;
   return <>
-    {focused ? <FocusedReview view={view} analysis={analysis} focus={focus} busy={busy} command={command} openSource={openSource} cardPropsFor={cardPropsFor} allSectionsHref={allSectionsHref} brief={brief} /> : null}
+    {focused ? <FocusedReview view={view} analysis={analysis} focus={focus} busy={busy} command={command} openSource={openSource} cardPropsFor={cardPropsFor} allSectionsHref={allSectionsHref} brief={brief} runId={workspace?.analysis?.analysis_run_id || null} /> : null}
     {focused ? null : <nav aria-label="Review navigation" className="pw-review-jump">
       <div className="pw-review-jump-row">
         <label className="pw-review-jump-label">

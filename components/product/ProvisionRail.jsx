@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 // Ben, 2026-09-14, on the scaled page: "sidebar width now good but font
 // size not good". Every width, padding, gap, band height and the page
@@ -41,21 +41,31 @@ export function railGroups(sections) {
 export default function ProvisionRail({ sections, title = null, topOffset = 0 }) {
   const groups = railGroups(sections);
   const [active, setActive] = useState(groups[0]?.sections?.[0]?.section_key || null);
-  // The rail marks the section in view as active. The observer is a browser
-  // concern; static renders keep the first section active.
+  // The rail marks the topmost section in view as active. An observer
+  // callback carries only the entries that changed, so the sections in view
+  // are kept in a set across callbacks. The observer is a browser concern;
+  // static renders keep the first section active.
+  const inView = useRef(new Set());
+  const sectionKeys = (sections || []).map((section) => section.section_key).join('|');
   useEffect(() => {
     if (typeof window === 'undefined' || typeof IntersectionObserver === 'undefined') return undefined;
+    const visible = inView.current;
+    visible.clear();
     const observer = new IntersectionObserver((entries) => {
-      const visible = entries.filter((entry) => entry.isIntersecting)
-        .sort((left, right) => left.boundingClientRect.top - right.boundingClientRect.top)[0];
-      if (visible?.target?.id) setActive(visible.target.id.replace('provision-section-', ''));
+      for (const entry of entries) {
+        if (entry.isIntersecting) visible.add(entry.target); else visible.delete(entry.target);
+      }
+      const topmost = [...visible]
+        .map((element) => ({ element, top: element.getBoundingClientRect().top }))
+        .sort((left, right) => left.top - right.top)[0];
+      if (topmost?.element?.id) setActive(topmost.element.id.replace('provision-section-', ''));
     }, { rootMargin: '-70px 0px -55% 0px', threshold: 0 });
-    for (const section of sections || []) {
-      const element = document.getElementById(`provision-section-${section.section_key}`);
+    for (const key of sectionKeys ? sectionKeys.split('|') : []) {
+      const element = document.getElementById(`provision-section-${key}`);
       if (element) observer.observe(element);
     }
-    return () => observer.disconnect();
-  }, [sections]);
+    return () => { observer.disconnect(); visible.clear(); };
+  }, [sectionKeys]);
   if (!groups.length) return null;
   const jump = (event, sectionKey) => {
     setActive(sectionKey);

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import EvidenceSidebar from './EvidenceSidebar';
 import { SHOW_CODES_BY_DEFAULT, factIdOf, factSummaryText } from '../../lib/product/table-view';
 import { marketLine } from '../../lib/product/comparison-tables';
@@ -278,21 +278,31 @@ function ReviewComponents({ components = [], level = 0 }) {
   );
 }
 
-export function ReviewReasonPanel({ fact, reviewItem, sectionText, onDecision, onComment, busy = false }) {
+// The reviewer reads a decision in words, never the state machine's code.
+export const DECISION_LABELS = { PENDING: 'Pending', ACCEPTED: 'Agreed', REJECTED: 'Disagreed', EDITED: 'Edited', UNRESOLVED: 'Unresolved' };
+const PANEL_BUTTON = 'rounded-full border px-[12px] py-[4px] font-ui text-[10.5px] font-semibold disabled:opacity-40';
+const panelButtonClass = (pressed) => `${PANEL_BUTTON} ${pressed ? 'border-[#03203D] bg-[#03203D] text-white' : 'border-[#B9C8DA] bg-white text-[#0B3D71] hover:border-[#03203D]'}`;
+
+// The panel sits in a full-width cell of a table that scrolls sideways on a
+// phone; its content is pinned to the scroll box's left edge and no wider
+// than the viewport less the page gutters, so it never runs off-screen.
+// The actions are offered only while the review is a draft: the page passes
+// no handlers once it is published.
+export function ReviewReasonPanel({ fact, reviewItem, sectionText, onDecision, onComment, onReset = null, busy = false }) {
   const [commentOpen, setCommentOpen] = useState(false);
   const [commentDraft, setCommentDraft] = useState(reviewItem?.comment || '');
   if (!fact) return null;
   const decision = reviewItem?.decision || 'PENDING';
   return (
-    <div className="border-t border-[#DCE3E1] bg-[#F8FAFC] px-[14px] py-[12px]" data-testid="review-reason">
+    <div className="sticky left-0 max-w-[calc(100vw-64px)] border-t border-[#DCE3E1] bg-[#F8FAFC] px-[14px] py-[12px]" data-testid="review-reason">
       <div className="grid gap-[12px] lg:grid-cols-[1.15fr_1fr]">
-        <div>
+        <div className="min-w-0">
           <p className="font-ui text-[10.5px] font-medium uppercase tracking-[0.12em] text-[#6B7785]">Provision text</p>
-          <p className="mt-[4px] max-h-[220px] overflow-y-auto whitespace-pre-wrap font-body text-[12px] leading-relaxed text-[#33475E]" data-testid="review-reason-text">
+          <p className="mt-[4px] max-h-[220px] overflow-y-auto whitespace-pre-wrap break-words font-body text-[12px] leading-relaxed text-[#33475E]" data-testid="review-reason-text">
             {sectionText?.exact_text || 'The full section text is not available for this fact.'}
           </p>
         </div>
-        <div>
+        <div className="min-w-0">
           <p className="font-ui text-[10.5px] font-medium uppercase tracking-[0.12em] text-[#6B7785]">Interpretation tree</p>
           <div className="mt-[4px] max-h-[220px] overflow-y-auto">
             {fact.components?.length ? <ReviewComponents components={fact.components} /> : <p className="font-body text-[12px] text-[#6B7785]">No component tree for this fact.</p>}
@@ -300,18 +310,21 @@ export function ReviewReasonPanel({ fact, reviewItem, sectionText, onDecision, o
         </div>
       </div>
       <div className="mt-[10px] flex flex-wrap items-center gap-[6px]" data-testid="review-reason-actions">
-        <span className="mr-[4px] font-ui text-[10px] text-[#6B7785]">Decision: {decision}</span>
+        <span className="mr-[4px] font-ui text-[10px] text-[#6B7785]" data-testid="review-reason-decision" data-decision={decision}>{DECISION_LABELS[decision] || decision}</span>
         {onDecision && reviewItem ? <>
-          <button type="button" disabled={busy} onClick={() => onDecision(reviewItem.item_id, 'ACCEPTED')} className="rounded-full bg-[#03203D] px-[12px] py-[4px] font-ui text-[10.5px] font-semibold text-white disabled:opacity-40">Agree</button>
-          <button type="button" disabled={busy} onClick={() => onDecision(reviewItem.item_id, 'REJECTED')} className="rounded-full border border-[#B9C8DA] bg-white px-[12px] py-[4px] font-ui text-[10.5px] font-semibold text-[#0B3D71] disabled:opacity-40">Disagree</button>
+          <button type="button" disabled={busy} aria-pressed={decision === 'ACCEPTED'} onClick={() => onDecision(reviewItem.item_id, 'ACCEPTED')} className={panelButtonClass(decision === 'ACCEPTED')} data-testid="review-agree">Agree</button>
+          <button type="button" disabled={busy} aria-pressed={decision === 'REJECTED'} onClick={() => onDecision(reviewItem.item_id, 'REJECTED')} className={panelButtonClass(decision === 'REJECTED')} data-testid="review-disagree">Disagree</button>
         </> : null}
         {onComment && reviewItem ? (
-          <button type="button" onClick={() => setCommentOpen((current) => !current)} className="rounded-full border border-[#B9C8DA] bg-white px-[12px] py-[4px] font-ui text-[10.5px] font-semibold text-[#0B3D71]">Comment</button>
+          <button type="button" onClick={() => setCommentOpen((current) => !current)} aria-expanded={commentOpen} className={panelButtonClass(false)} data-testid="review-comment">Comment</button>
+        ) : null}
+        {onReset && reviewItem && decision !== 'PENDING' ? (
+          <button type="button" disabled={busy} onClick={() => onReset(reviewItem.item_id)} className="font-ui text-[10.5px] font-semibold text-[#0B3D71] underline-offset-2 hover:underline disabled:opacity-40" data-testid="review-undo">Undo</button>
         ) : null}
       </div>
-      {commentOpen && reviewItem ? (
+      {commentOpen && reviewItem && onComment ? (
         <div className="mt-[7px] flex flex-wrap items-center gap-[6px]">
-          <textarea aria-label="Review comment" value={commentDraft} onChange={(event) => setCommentDraft(event.target.value)} rows={2} className="min-w-[220px] flex-1 rounded-[2px] border border-[#B9C8DA] px-[8px] py-[5px] font-ui text-[11px] focus:outline-none focus:ring-1 focus:ring-[#03203D]" />
+          <textarea aria-label="Review comment" value={commentDraft} onChange={(event) => setCommentDraft(event.target.value)} rows={2} className="min-w-0 flex-1 basis-[200px] rounded-[2px] border border-[#B9C8DA] px-[8px] py-[5px] font-ui text-[11px] focus:outline-none focus:ring-1 focus:ring-[#03203D]" />
           <button type="button" disabled={busy || !commentDraft.trim()} onClick={() => { onComment(reviewItem.item_id, commentDraft.trim()); setCommentOpen(false); }} className="rounded-full bg-[#03203D] px-[12px] py-[4px] font-ui text-[10.5px] font-semibold text-white disabled:opacity-40">Save comment</button>
           <button type="button" onClick={() => setCommentOpen(false)} className="font-ui text-[10.5px] text-[#6B7785]">Cancel</button>
         </div>
@@ -729,30 +742,35 @@ function SectionJump({ sections }) {
   );
 }
 
+// The heading row: the title toggles the section; the Specifics pill sits
+// before the chevron (spec A3), and Report, where the page can record
+// feedback, before the pill.
 function SectionHeading({ title, collapsed, onToggle, tint = 'green', specificsOn = null, onSpecifics = null, onReport = null }) {
   return (
-    <div className="flex items-stretch">
-      <button type="button" onClick={onToggle} aria-expanded={!collapsed} className={`flex min-h-[38px] min-w-0 flex-1 items-center gap-[7px] px-[14px] py-[8px] text-left ${TINTS[tint].band}`} data-testid="section-heading">
+    <div className={`flex items-stretch border-b border-[#DCE3E1] ${TINTS[tint].box}`}>
+      <button type="button" onClick={onToggle} aria-expanded={!collapsed} className={`flex min-h-[38px] min-w-0 flex-1 items-center gap-[7px] py-[8px] pl-[14px] pr-[8px] text-left ${TINTS[tint].box}`} data-testid="section-heading">
         <SectionIcon tint={tint} />
         <h3 className="flex-1 font-sans text-[17px] font-semibold leading-snug tracking-[-.02em]">{title}</h3>
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={`shrink-0 transition-transform ${collapsed ? '-rotate-90' : ''}`}>
-          <path d="M6 9l6 6 6-6" />
-        </svg>
       </button>
+      {onReport ? (
+        <button type="button" onClick={onReport} data-testid="section-report" className="shrink-0 px-[8px] font-ui text-[10px] font-medium text-[#6B7785] hover:text-[#0B3D71] hover:underline">Report</button>
+      ) : null}
       {onSpecifics ? (
         <button
           type="button"
           onClick={onSpecifics}
           aria-pressed={specificsOn === true}
           data-testid="section-specifics"
-          className={`shrink-0 border-l border-[#DCE3E1] px-[11px] font-ui text-[10px] font-semibold uppercase tracking-[0.08em] ${specificsOn ? 'bg-[#03203D] text-white' : 'bg-white text-[#0B3D71] hover:bg-[#EAF0F6]'}`}
+          className={`my-auto shrink-0 rounded-full border px-[10px] py-[4px] font-ui text-[10px] font-semibold uppercase tracking-[0.08em] ${specificsOn ? 'border-[#03203D] bg-[#03203D] text-white' : 'border-[#B9C8DA] bg-white text-[#0B3D71] hover:border-[#03203D]'}`}
         >
           Specifics
         </button>
       ) : null}
-      {onReport ? (
-        <button type="button" onClick={onReport} data-testid="section-report" className="shrink-0 border-l border-[#DCE3E1] px-[10px] font-ui text-[10px] font-medium text-[#6B7785] hover:bg-[#EAF0F6] hover:text-[#0B3D71]">Report</button>
-      ) : null}
+      <button type="button" onClick={onToggle} aria-expanded={!collapsed} aria-label={collapsed ? `Expand ${title}` : `Collapse ${title}`} className="flex shrink-0 items-center px-[12px]" data-testid="section-chevron">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={`shrink-0 transition-transform ${collapsed ? '-rotate-90' : ''}`}>
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </button>
     </div>
   );
 }
@@ -805,13 +823,24 @@ function DefinedTermsSection({ terms, collapsed, onToggle }) {
 // A table whose sub-items are exceptions (sub_rows_label) starts with them
 // open, indented and a size smaller; every other table's sub-items (the
 // limbs of a representation) stay behind "More detail" (Ben, 2026-09-14).
-function RowGroup({ table, row, rowIndex, selection, onSelect, initialOpen = false, columns = null, reviewMode = false, factsById = null, reviewItemsByFactId = null, sectionTextByFactId = null, onDecision = null, onComment = null, busy = false, initialReasonFactId = null }) {
-  const forced = useContext(EverythingContext) || useContext(SectionOpenContext);
-  const [open, setOpen] = useState(!!initialOpen || !!table.sub_rows_label);
+function RowGroup({ table, row, rowIndex, selection, onSelect, initialOpen = false, columns = null, reviewMode = false, factsById = null, reviewItemsByFactId = null, sectionTextByFactId = null, onDecision = null, onComment = null, onReset = null, busy = false, initialReasonFactId = null }) {
+  // Both contexts are read on every render, so the hook order never changes.
+  const everything = useContext(EverythingContext);
+  const sectionOpen = useContext(SectionOpenContext);
+  const defaultOpen = !!initialOpen || !!table.sub_rows_label;
+  const [open, setOpen] = useState(defaultOpen || sectionOpen);
+  // A section's Specifics pill opens its More detail groups, and closing the
+  // pill puts them back; each row's own toggle still works in between.
+  const sectionOpenSeen = useRef(sectionOpen);
+  useEffect(() => {
+    if (sectionOpenSeen.current === sectionOpen) return;
+    sectionOpenSeen.current = sectionOpen;
+    setOpen(sectionOpen || defaultOpen);
+  }, [sectionOpen, defaultOpen]);
   const reasonFactId = reviewMode ? (row.backing_facts?.[0]?.fact_id || null) : null;
   const [reasonOpen, setReasonOpen] = useState(Boolean(initialReasonFactId && reasonFactId === initialReasonFactId));
   const reasonFact = reasonFactId && factsById ? factsById.get(reasonFactId) || null : null;
-  const effectiveOpen = forced || open;
+  const effectiveOpen = everything || open;
   const rowSelected = selection?.tableKey === table.table_key && selection?.rowIndex === rowIndex;
   const subRows = row.sub_rows || [];
   const shownColumns = columns || table.columns;
@@ -863,6 +892,7 @@ function RowGroup({ table, row, rowIndex, selection, onSelect, initialOpen = fal
           sectionText={sectionTextByFactId ? sectionTextByFactId.get(reasonFactId) || null : null}
           onDecision={onDecision}
           onComment={onComment}
+          onReset={onReset}
           busy={busy}
         />
       </td>
@@ -881,6 +911,21 @@ function RowGroup({ table, row, rowIndex, selection, onSelect, initialOpen = fal
 // It's this thing or it's this thing." Rows carrying an election_group are
 // set out under one heading line per option, in the order the options first
 // appear; rows of no option follow.
+// A row is keyed by the fact behind it, so a row that leaves the table (a
+// disagreed fact is not shown) does not hand its open state to the next
+// row. A row with no fact, or a second row on the same fact, falls back to
+// its subject and position.
+export function rowKeys(rows) {
+  const seen = new Set();
+  return (rows || []).map((row, rowIndex) => {
+    const factId = row?.backing_facts?.[0]?.fact_id || null;
+    let key = factId ? `fact:${factId}` : `${row?.subject}-${rowIndex}`;
+    if (seen.has(key)) key = `${key}-${row?.subject}-${rowIndex}`;
+    seen.add(key);
+    return key;
+  });
+}
+
 function groupedRows(rows) {
   const groups = [];
   const rest = [];
@@ -893,7 +938,7 @@ function groupedRows(rows) {
   return { groups, rest };
 }
 
-function Table({ table, selection, onSelect, initialSubRowsOpen = false, reviewMode = false, factsById = null, reviewItemsByFactId = null, sectionTextByFactId = null, onDecision = null, onComment = null, busy = false, initialReasonFactId = null }) {
+function Table({ table, selection, onSelect, initialSubRowsOpen = false, reviewMode = false, factsById = null, reviewItemsByFactId = null, sectionTextByFactId = null, onDecision = null, onComment = null, onReset = null, busy = false, initialReasonFactId = null }) {
   // Ben, 2026-09-14: "make negative covenant list collapsable (if it is
   // within the covenant section)". A table marked collapsible_rows folds its
   // rows behind a toggle above the header row; open to start.
@@ -908,10 +953,11 @@ function Table({ table, selection, onSelect, initialSubRowsOpen = false, reviewM
   const columns = table.columns.filter((column) => !column.specifics || showSpecifics);
   const span = columns.length + (table.term_column ? 1 : 0);
   const { groups, rest } = groupedRows(table.rows);
+  const keys = rowKeys(table.rows);
   const renderRow = (row, rowIndex) => {
     if (row.absent) {
       return (
-        <tr key={`${row.subject}-${rowIndex}`} className={ROW} data-testid="table-row" data-absent="true" {...(row.held ? { 'data-held': 'true' } : {})}>
+        <tr key={keys[rowIndex]} className={ROW} data-testid="table-row" data-absent="true" {...(row.held ? { 'data-held': 'true' } : {})}>
           {table.term_column ? (
             <td className={TD}><span className={SUBJECT}>{row.subject}</span></td>
           ) : null}
@@ -920,7 +966,7 @@ function Table({ table, selection, onSelect, initialSubRowsOpen = false, reviewM
         </tr>
       );
     }
-    return <RowGroup key={`${row.subject}-${rowIndex}`} table={table} row={row} rowIndex={rowIndex} selection={selection} onSelect={onSelect} initialOpen={initialSubRowsOpen} columns={columns} reviewMode={reviewMode} factsById={factsById} reviewItemsByFactId={reviewItemsByFactId} sectionTextByFactId={sectionTextByFactId} onDecision={onDecision} onComment={onComment} busy={busy} initialReasonFactId={initialReasonFactId} />;
+    return <RowGroup key={keys[rowIndex]} table={table} row={row} rowIndex={rowIndex} selection={selection} onSelect={onSelect} initialOpen={initialSubRowsOpen} columns={columns} reviewMode={reviewMode} factsById={factsById} reviewItemsByFactId={reviewItemsByFactId} sectionTextByFactId={sectionTextByFactId} onDecision={onDecision} onComment={onComment} onReset={onReset} busy={busy} initialReasonFactId={initialReasonFactId} />;
   };
   return (
     <div className="overflow-x-auto">
@@ -1055,30 +1101,60 @@ function linkedDefinitionFor(selection, tableView, facts) {
   };
 }
 
-function feedbackForSelection({ selection, tableView }) {
+// The feedback context for the sidebar's Feedback control. A selection in a
+// table names its section, table, row and cell; one outside a table (a held
+// fact, a fact without a readout, an Other provisions line) still names its
+// section, found from the selection's key or from the fact it opened.
+export function feedbackForSelection({ selection, tableView }) {
   if (!selection) return null;
+  const sections = tableView?.sections || [];
   let section = null;
   let table = null;
   let row = null;
-  for (const candidate of tableView?.sections || []) {
+  for (const candidate of sections) {
     const found = (candidate.tables || []).find((entry) => entry.table_key === selection.tableKey);
     if (!found) continue;
     section = candidate;
     table = found;
-    row = (found.rows || [])[selection.rowIndex] || null;
+    row = selection.rowIndex == null ? null : (found.rows || [])[selection.rowIndex] || null;
     break;
   }
-  if (!table) return null;
+  const factIds = selection.factIds || (selection.factId ? [selection.factId] : []);
+  if (!section && typeof selection.tableKey === 'string' && selection.tableKey.includes(':')) {
+    const sectionKey = selection.tableKey.slice(0, selection.tableKey.indexOf(':'));
+    section = sections.find((candidate) => candidate.section_key === sectionKey) || null;
+  }
+  if (!section && selection.factId) section = sectionOfFact(sections, selection.factId);
+  const subRow = row && selection.subIndex != null ? (row.sub_rows || [])[selection.subIndex] || null : null;
   return {
     section_key: section?.section_key || null,
     section_title: section?.title || null,
-    table_key: table.table_key,
-    row_subject: selection.subject || row?.subject || null,
+    table_key: table?.table_key || null,
+    row_subject: selection.subject || subRow?.subject || row?.subject || null,
     column_id: selection.columnId || null,
     cell_code: selection.cellCode || null,
     cell_label: selection.cellLabel || null,
-    fact_ids: selection.factIds || (selection.factId ? [selection.factId] : []),
+    fact_ids: factIds,
   };
+}
+
+function sectionOfFact(sections, factId) {
+  const names = (entry) => entry && (entry.fact_id === factId || (entry.fact_ids || []).includes(factId));
+  for (const section of sections) {
+    if ((section.held_facts || []).some(names) || (section.facts_without_readout || []).some(names)) return section;
+    for (const table of section.tables || []) {
+      for (const row of table.rows || []) {
+        if ((row.backing_facts || []).some(names) || (row.cells || []).some(names)) return section;
+        for (const subRow of row.sub_rows || []) {
+          if ((subRow.backing_facts || []).some(names) || (subRow.cells || []).some(names)) return section;
+        }
+      }
+      for (const group of table.other_provisions || []) {
+        if ((group.branches || []).some(names)) return section;
+      }
+    }
+  }
+  return null;
 }
 
 function marketForSelection({ selection, tableView, market, runId }) {
@@ -1194,6 +1270,26 @@ export default function ProvisionTables({
     window.addEventListener('pm:open-section', openSection);
     return () => window.removeEventListener('pm:open-section', openSection);
   }, []);
+  // An opened link to #provision-section-<key> expands that section and
+  // scrolls to it once the tables are on the page (the browser's own jump
+  // happens before the data loads, when the section is not there yet).
+  useEffect(() => {
+    const openHash = () => {
+      const match = /^#provision-section-(.+)$/.exec(window.location.hash || '');
+      if (!match) return;
+      const sectionKey = decodeURIComponent(match[1]);
+      setCollapsed((current) => {
+        if (!current.has(sectionKey)) return current;
+        const next = new Set(current);
+        next.delete(sectionKey);
+        return next;
+      });
+      window.setTimeout(() => document.getElementById(`provision-section-${sectionKey}`)?.scrollIntoView({ block: 'start' }), 0);
+    };
+    openHash();
+    window.addEventListener('hashchange', openHash);
+    return () => window.removeEventListener('hashchange', openHash);
+  }, []);
 
   if (!tableView || tableView.sections.length === 0) return null;
 
@@ -1263,7 +1359,7 @@ export default function ProvisionTables({
                 onToggle={() => toggleSection(section.section_key)}
                 specificsOn={sectionSpecifics}
                 onSpecifics={() => { if (isCollapsed) toggleSection(section.section_key); toggleSpecifics(section.section_key); }}
-                onReport={() => setFeedback({ section_key: section.section_key, section_title: section.title })}
+                onReport={runId ? () => setFeedback({ section_key: section.section_key, section_title: section.title }) : null}
               />
               {isCollapsed ? null : (
                 <SpecificsContext.Provider value={sectionSpecifics}>
@@ -1275,7 +1371,7 @@ export default function ProvisionTables({
                         options tables) is shown only with the specifics. */}
                     {section.tables.filter((table) => !table.embedded_in || sectionSpecifics).map((table) => (
                       <div key={table.table_key} data-embedded={table.embedded_in || undefined}>
-                        {table.other_provisions_only ? null : <Table table={table} selection={selection} onSelect={setSelection} initialSubRowsOpen={initialSubRowsOpen} reviewMode={mode === 'review'} factsById={factsById} reviewItemsByFactId={reviewItemsByFactId} sectionTextByFactId={sectionTextByFactId} onDecision={onDecision} onComment={onComment} busy={busy} initialReasonFactId={initialReasonFactId} />}
+                        {table.other_provisions_only ? null : <Table table={table} selection={selection} onSelect={setSelection} initialSubRowsOpen={initialSubRowsOpen} reviewMode={mode === 'review'} factsById={factsById} reviewItemsByFactId={reviewItemsByFactId} sectionTextByFactId={sectionTextByFactId} onDecision={onDecision} onComment={onComment} onReset={onReset} busy={busy} initialReasonFactId={initialReasonFactId} />}
                         {table.other_provisions?.length ? (
                           <OtherProvisions groups={table.other_provisions} tableKey={table.table_key} onSelect={setSelection} label={table.other_provisions_label || 'Other provisions'} factsById={factsById} />
                         ) : null}
@@ -1316,13 +1412,13 @@ export default function ProvisionTables({
           onOpenDefinition={openDefinition}
           initialTreeOpen={initialTreeOpen}
           market={marketForSelection({ selection, tableView, market: compare ? market : null, runId })}
-          onFeedback={() => setFeedback(feedbackForSelection({ selection, tableView }))}
+          onFeedback={runId ? () => setFeedback(feedbackForSelection({ selection, tableView })) : null}
         />
       ) : null}
     </div>
     </SpecificsContext.Provider>
     </CodesContext.Provider>
-    <FeedbackDialog open={Boolean(feedback)} context={feedback} runId={runId} onClose={() => setFeedback(null)} />
+    {runId ? <FeedbackDialog open={Boolean(feedback)} context={feedback} runId={runId} onClose={() => setFeedback(null)} /> : null}
     </MarketContext.Provider>
     </EverythingContext.Provider>
   );

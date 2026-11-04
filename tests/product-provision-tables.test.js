@@ -969,3 +969,152 @@ test('held facts render under their section with the reason in words, collapsed 
   assert.match(html, /1 fact held by validation · see why/);
   assert.doesNotMatch(html, /held-fact-reason/, 'the reasons open on a click; the count is the quiet line');
 });
+
+// The review page fixes: row keys, the disagreed list and its Undo, the
+// published state, the pressed decision, the feedback context and gating.
+const projectRoot = path.join(__dirname, '..');
+const plainJsLoader = require.extensions['.js'];
+require.extensions['.js'] = function compileProjectEsm(module, filename) {
+  if (!filename.startsWith(projectRoot) || filename.includes(`${path.sep}node_modules${path.sep}`)) {
+    return plainJsLoader(module, filename);
+  }
+  const source = fs.readFileSync(filename, 'utf8');
+  if (!/(^|\n)\s*(import\s|export\s)/.test(source)) return plainJsLoader(module, filename);
+  const transformed = transformSync(source, {
+    filename,
+    jsc: { parser: { syntax: 'ecmascript', jsx: true }, transform: { react: { runtime: 'automatic' } } },
+    module: { type: 'commonjs' },
+  });
+  module._compile(transformed.code, filename);
+};
+const { ReviewReasonPanel, rowKeys, feedbackForSelection } = require('../components/product/ProvisionTables.jsx');
+const { ProvisionReviewBody } = require('../components/product/ProvisionReview.jsx');
+const layersFixture = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures/product/published-layers-fixture.v2.json'), 'utf8'));
+
+const REVIEW_NODE = 'node-3-14';
+function reviewWorkspace({ status = 'DRAFT', decisions = {}, extraItems = [] } = {}) {
+  const proposals = layersFixture.facts.map((fact, index) => {
+    const { fact_id: factId, section_reference, coverage_only, ...rest } = fact;
+    return {
+      schema_version: 'PRODUCT_PROPOSAL/V1', proposal_id: `p-${index}-${factId}`, structure_node_id: REVIEW_NODE,
+      statement: `Statement ${index}`, roles: {}, source_span_ids: [], proposition_group_id: null, validation_status: 'VALID', ...rest,
+    };
+  });
+  const items = proposals.map((proposal, index) => ({
+    kind: 'PROPOSAL', item_id: `item-${index}`, source_id: proposal.proposal_id, structure_node_id: REVIEW_NODE,
+    family_key: proposal.family_key, decision: decisions[index] || 'PENDING', original: proposal,
+  }));
+  return {
+    analysis: {
+      source_document: { parties: ['Parent Inc.', 'Target Corp.'] },
+      agreement_structure: { nodes: [{ node_id: REVIEW_NODE, reference: '3.14', authored_order: 1 }] },
+      sections: [{ structure_node_id: REVIEW_NODE, section_reference: '3.14' }],
+      source_closures: [{ source_closure_id: 'c-3-14', structure_node_id: REVIEW_NODE, section_reference: '3.14', full_section_span_id: 's-full' }],
+      spans: [{ span_id: 's-full', kind: 'FULL_SECTION', structure_node_id: REVIEW_NODE, start_byte: 0, end_byte: 10, exact_text: 'Section 3.14' }],
+      proposals, proposition_groups: [], fact_links: [], issues: [], coverage_assertions: [],
+    },
+    review: { version: 3, state: { status, items: [...items, ...extraItems], agreement_coverage: { decision: 'PENDING' } } },
+    progress: { status: 'READY' },
+  };
+}
+const reviewBody = (workspace) => renderToStaticMarkup(React.createElement(ProvisionReviewBody, { workspace, runId: 'run-1', command: async () => null }));
+
+test('rows are keyed by their first fact, with the subject and position as the fallback', () => {
+  assert.deepEqual(rowKeys([
+    { subject: 'A', backing_facts: [{ fact_id: 'f1' }] },
+    { subject: 'B', backing_facts: [] },
+    { subject: 'C', backing_facts: [{ fact_id: 'f1' }] },
+  ]), ['fact:f1', 'B-1', 'fact:f1-C-2']);
+  // Removing the first row (a disagreed fact) leaves the next row's key as it was.
+  assert.equal(rowKeys([{ subject: 'D', backing_facts: [{ fact_id: 'f2' }] }])[0], rowKeys([{ subject: 'A', backing_facts: [{ fact_id: 'f1' }] }, { subject: 'D', backing_facts: [{ fact_id: 'f2' }] }])[1]);
+});
+
+test('the reason panel humanises the decision, presses only the current one and offers Undo once decided', () => {
+  const fact = { fact_id: 'f1', components: [] };
+  const pending = renderToStaticMarkup(React.createElement(ReviewReasonPanel, { fact, reviewItem: { item_id: 'i1', decision: 'PENDING' }, onDecision: () => {}, onComment: () => {}, onReset: () => {} }));
+  assert.match(pending, /data-decision="PENDING"[^>]*>Pending</);
+  assert.doesNotMatch(pending, /Decision: PENDING/);
+  assert.match(pending, /aria-pressed="false"[^>]*border-\[#B9C8DA\] bg-white[^>]*data-testid="review-agree"/);
+  assert.match(pending, /aria-pressed="false"[^>]*data-testid="review-disagree"/);
+  assert.doesNotMatch(pending, /data-testid="review-undo"/);
+  const agreed = renderToStaticMarkup(React.createElement(ReviewReasonPanel, { fact, reviewItem: { item_id: 'i1', decision: 'ACCEPTED' }, onDecision: () => {}, onComment: () => {}, onReset: () => {} }));
+  assert.match(agreed, />Agreed</);
+  assert.match(agreed, /aria-pressed="true"[^>]*bg-\[#03203D\] text-white[^>]*data-testid="review-agree"/);
+  assert.match(agreed, /aria-pressed="false"[^>]*data-testid="review-disagree"/);
+  assert.match(agreed, /data-testid="review-undo"/);
+  assert.match(agreed, /sticky left-0 max-w-\[calc\(100vw-32px\)\]/);
+  const edited = renderToStaticMarkup(React.createElement(ReviewReasonPanel, { fact, reviewItem: { item_id: 'i1', decision: 'EDITED' } }));
+  assert.match(edited, />Edited</);
+  assert.doesNotMatch(edited, /review-agree|review-comment|review-undo/, 'no handlers, no actions');
+});
+
+test('a draft review lists the disagreed facts with Undo and says why it cannot be finalised', () => {
+  const html = reviewBody(reviewWorkspace({
+    decisions: { 0: 'REJECTED' },
+    extraItems: [{ kind: 'ISSUE', item_id: 'issue-1', source_id: 'x', decision: 'PENDING', original: { kind: 'CHECK' } }],
+  }));
+  assert.match(html, /data-testid="review-disagreed"/);
+  assert.match(html, /Disagreed \(1\)/);
+  assert.match(html, /data-testid="review-disagreed-undo"/);
+  assert.match(html, /data-testid="review-save"/);
+  assert.match(html, /<button[^>]*disabled=""[^>]*data-testid="review-finalise"/);
+  assert.match(html, /data-testid="review-publish-blockers"/);
+  assert.match(html, /still to decide on this page/);
+  assert.match(html, /1 other review item[^<]*legacy workspace/);
+  assert.match(html, /href="\/review\/product\/run-1\?legacy=1"/);
+  assert.doesNotMatch(html, /data-testid="review-revise"/);
+});
+
+test('a published review hides the review actions and offers Revise', () => {
+  const html = reviewBody(reviewWorkspace({ status: 'PUBLISHED', decisions: { 0: 'REJECTED', 1: 'ACCEPTED' } }));
+  assert.match(html, /data-testid="review-revise"/);
+  assert.doesNotMatch(html, /data-testid="review-save"|data-testid="review-finalise"|review-publish-blockers/);
+  assert.doesNotMatch(html, /data-testid="review-disagreed-undo"/);
+  assert.match(html, /data-review-status="PUBLISHED"/);
+});
+
+function subRowView() {
+  return {
+    sections: [{
+      section_key: 'reps', title: 'Representations', held_facts: [{ fact_id: 'held-1' }],
+      tables: [{
+        table_key: 'reps-table', layout: 'rows', term_column: { header: 'Rep' }, columns: [{ column_id: 'q', header: 'Qualifier' }],
+        rows: [{ subject: 'Organization', backing_facts: [{ fact_id: 'f1' }], cells: [], sub_rows: [{ subject: 'Good standing', backing_facts: [{ fact_id: 'f2' }], cells: [] }] }],
+      }],
+    }],
+    defined_terms: [],
+  };
+}
+
+test('feedback names the sub row, and falls back to the section outside a table', () => {
+  const view = subRowView();
+  const sub = feedbackForSelection({ tableView: view, selection: { tableKey: 'reps-table', rowIndex: 0, subIndex: 0, factId: 'f2' } });
+  assert.equal(sub.row_subject, 'Good standing');
+  assert.equal(sub.section_key, 'reps');
+  const held = feedbackForSelection({ tableView: view, selection: { tableKey: 'reps:held', rowIndex: 0, factId: 'held-1' } });
+  assert.deepEqual([held.section_key, held.section_title, held.table_key, held.fact_ids], ['reps', 'Representations', null, ['held-1']]);
+  const loose = feedbackForSelection({ tableView: view, selection: { factId: 'f1' } });
+  assert.equal(loose.section_key, 'reps');
+  assert.ok(feedbackForSelection({ tableView: view, selection: { factId: 'unknown' } }), 'never null for a selection');
+});
+
+test('Report and the feedback form render only with a run', () => {
+  const without = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: subRowView(), facts: [] }));
+  assert.doesNotMatch(without, /data-testid="section-report"/);
+  const withRun = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: subRowView(), facts: [], runId: 'run-1' }));
+  assert.match(withRun, /data-testid="section-report"/);
+  // The Specifics pill sits before the chevron.
+  assert.ok(withRun.indexOf('data-testid="section-specifics"') < withRun.indexOf('data-testid="section-chevron"'));
+});
+
+test('Specifics opens a section\'s More detail groups', () => {
+  const html = renderToStaticMarkup(React.createElement(ProvisionTables, { tableView: subRowView(), facts: [], initialShowSpecifics: true }));
+  assert.match(html, /data-testid="more-detail"[^>]*data-open="true"/);
+});
+
+test('the legacy workspace\'s Show all sections link stays in the legacy workspace', () => {
+  const { legacySectionsHref, resolveFocus } = require('../pages/review/product/[id].js');
+  assert.equal(legacySectionsHref('run-1', ['7.1']), '/review/product/run-1?legacy=1&all=1');
+  assert.equal(legacySectionsHref('run-1', []), null);
+  assert.deepEqual(resolveFocus({ legacy: '1', all: '1' }, { sections: [{ reference: '7.1' }] }), []);
+});

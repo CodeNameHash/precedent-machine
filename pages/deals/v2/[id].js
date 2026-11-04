@@ -59,7 +59,7 @@ export default function ReleasedDealPage({ agreement, market = {}, agreementCoun
       <Head><title>{`Corpus - ${agreement.agreement_label}`}</title></Head>
       <PwBar active="index" />
       <div className="flex">
-      <ProvisionRail sections={tableShapesV3.sections} title={agreement.agreement_label} />
+      <ProvisionRail sections={tableShapesV3.sections} title={agreement.agreement_label} topOffset={58} />
       <div className="min-w-0 flex-1 border-t-[10px] border-[#B9C8DA] px-[max(16px,min(4vw,64px))] py-[clamp(28px,4vw,56px)]" data-testid="released-screen">
         <header className="mb-[24px]" data-testid="released-header">
           <div className="flex flex-wrap items-center gap-[7px]">

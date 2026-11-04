@@ -17,6 +17,11 @@ export function resolveFocus(query, brief) {
   return (brief?.sections || []).map((item) => item.reference);
 }
 
+// The legacy workspace's "Show all sections" stays in the legacy workspace.
+export function legacySectionsHref(id, focus) {
+  return focus.length ? `/review/product/${id}?legacy=1&all=1` : null;
+}
+
 export default function ProductReviewPage() {
   useUser({ redirectTo: '/login' });
   const router = useRouter();
@@ -29,6 +34,6 @@ export default function ProductReviewPage() {
   const focus = id ? resolveFocus(router.query, brief) : [];
   const legacy = router.query.legacy === '1';
   return id ? (legacy
-    ? <ReviewWorkspace runId={id} focus={focus} brief={brief} allSectionsHref={focus.length ? `/review/product/${id}?all=1` : null} />
+    ? <ReviewWorkspace runId={id} focus={focus} brief={brief} allSectionsHref={legacySectionsHref(id, focus)} />
     : <ProvisionReview runId={id} />) : null;
 }

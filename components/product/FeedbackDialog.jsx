@@ -21,7 +21,8 @@ export default function FeedbackDialog({ open, context = null, runId = null, onC
     setBody('');
     setKind('WRONG_ANSWER');
   }, [open]);
-  if (!open) return null;
+  // Feedback is saved against a run; with none there is nothing to open.
+  if (!open || !runId) return null;
   async function submit(event) {
     event.preventDefault();
     if (!body.trim() || !runId) return;
@@ -62,9 +63,9 @@ export default function FeedbackDialog({ open, context = null, runId = null, onC
           </div>
           <button type="button" onClick={onClose} aria-label="Close feedback" className="text-[20px] leading-none text-[#6B7785]">×</button>
         </div>
-        {context?.section_key || context?.row_subject ? (
+        {context?.section_key || context?.section_title || context?.row_subject ? (
           <p className="mt-[8px] font-body text-[11.5px] leading-snug text-[#6B7785]" data-testid="feedback-context">
-            {[context.section_key, context.row_subject, context.cell_label].filter(Boolean).join(' · ')}
+            {[context.section_title || context.section_key, context.row_subject, context.cell_label].filter(Boolean).join(' · ')}
           </p>
         ) : null}
         {state.done ? (

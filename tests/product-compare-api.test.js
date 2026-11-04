@@ -456,6 +456,34 @@ test('GET /api/product/compare/market returns the selected run\'s cells with the
   assert.equal(cell.codes.OUTSIDE_ORDINARY_COURSE.count, 1);
 });
 
+test('GET /api/product/compare/market keeps the selected run when the reference set is over the cap', async () => {
+  const { listComparisonRuns } = require('../lib/product/comparison-read');
+  const published = Array.from({ length: 65 }, (_, index) => publishedAgreement({
+    runId: `${String(index + 1).padStart(8, '0')}-1111-4111-8111-111111111111`,
+  }));
+  const store = fakeStore({ published });
+  const scope = await listComparisonRuns({ store, actor: 'ben', shapes: tableShapes });
+  const selected = scope.filter((run) => run.comparable).at(-1).run_id;
+  const res = mockRes();
+  await createComparisonMarketHandler(handlerArgs(store))({ method: 'GET', query: { run: selected }, headers: {} }, res);
+  assert.equal(res.statusCode, 200);
+  assert.equal(res.body.run, selected);
+  assert.equal(res.body.total_runs, 60);
+  assert.ok(Object.prototype.hasOwnProperty.call(res.body.runs, selected));
+});
+
+test('GET /api/product/compare/market answers 404 when the selected run has no view', async () => {
+  const store = fakeStore({ published: [publishedAgreement()] });
+  const original = store.listPublishedLayeredFacts;
+  let calls = 0;
+  // The two scope reads see the run; the view read no longer finds it.
+  store.listPublishedLayeredFacts = async () => { calls += 1; return calls <= 2 ? original() : []; };
+  const res = mockRes();
+  await createComparisonMarketHandler(handlerArgs(store))({ method: 'GET', query: { run: FINAL_ID }, headers: {} }, res);
+  assert.equal(res.statusCode, 404);
+  assert.equal(res.body.error, 'Run not found');
+});
+
 test('GET /api/product/compare/market validates the run and refuses an unknown one', async () => {
   const store = fakeStore({ published: [publishedAgreement()] });
   const missing = mockRes();
