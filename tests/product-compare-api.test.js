@@ -23,7 +23,7 @@ const {
 } = require('../lib/product/comparison-tables');
 const {
   createComparisonRunsHandler, createComparisonTablesHandler,
-  createComparisonHowCommonHandler,
+  createComparisonHowCommonHandler, createComparisonMarketHandler,
 } = require('../lib/product/comparison-handlers');
 const { ProductRequestAuthError } = require('../lib/product/request-auth');
 
@@ -433,6 +433,44 @@ test('GET /api/product/compare/how-common requires a valid table and a known run
   const unknownRun = mockRes();
   await createComparisonHowCommonHandler(handlerArgs(store))({ method: 'GET', query: { table: TABLE, runs: OTHER_ID }, headers: {} }, unknownRun);
   assert.equal(unknownRun.statusCode, 404);
+});
+
+test('GET /api/product/compare/market returns the selected run\'s cells with the reference distribution', async () => {
+  const draft = draftContext();
+  const store = fakeStore({
+    runs: [{ run_id: DRAFT_ID, status: 'READY', created_at: '2026-10-25T00:00:00.000Z', updated_at: '2026-10-25T00:10:00.000Z', access_role: 'OWNER' }],
+    published: [publishedAgreement()],
+    draft,
+  });
+  const handler = createComparisonMarketHandler(handlerArgs(store));
+  const res = mockRes();
+  await handler({ method: 'GET', query: { run: FINAL_ID }, headers: {} }, res);
+  assert.equal(res.statusCode, 200);
+  assert.equal(res.body.schema_version, 'PRODUCT_COMPARE_MARKET/V1');
+  assert.equal(res.body.run, FINAL_ID);
+  assert.equal(res.body.total_runs, 2);
+  assert.equal(res.body.runs[DRAFT_ID], 'Target Inc. / Acquirer LLC');
+  const cell = res.body.cells[`${TABLE}|${ROW}|qualifier`];
+  assert.equal(cell.total, 2);
+  assert.equal(cell.codes.MATERIAL.count, 1);
+  assert.equal(cell.codes.OUTSIDE_ORDINARY_COURSE.count, 1);
+});
+
+test('GET /api/product/compare/market validates the run and refuses an unknown one', async () => {
+  const store = fakeStore({ published: [publishedAgreement()] });
+  const missing = mockRes();
+  await createComparisonMarketHandler(handlerArgs(store))({ method: 'GET', query: {}, headers: {} }, missing);
+  assert.equal(missing.statusCode, 400);
+  const bad = mockRes();
+  await createComparisonMarketHandler(handlerArgs(store))({ method: 'GET', query: { run: 'nope' }, headers: {} }, bad);
+  assert.equal(bad.statusCode, 400);
+  const unknown = mockRes();
+  await createComparisonMarketHandler(handlerArgs(store))({ method: 'GET', query: { run: OTHER_ID }, headers: {} }, unknown);
+  assert.equal(unknown.statusCode, 404);
+  const post = mockRes();
+  await createComparisonMarketHandler(handlerArgs(store))({ method: 'POST', query: { run: FINAL_ID }, headers: {} }, post);
+  assert.equal(post.statusCode, 405);
+  assert.equal(post.headers.Allow, 'GET');
 });
 
 test('the analysed index body renders draft and final rows and the compare action', () => {
