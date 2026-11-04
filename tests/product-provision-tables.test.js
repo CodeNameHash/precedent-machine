@@ -1042,7 +1042,7 @@ test('the reason panel humanises the decision, presses only the current one and 
   assert.match(agreed, /aria-pressed="true"[^>]*bg-\[#03203D\] text-white[^>]*data-testid="review-agree"/);
   assert.match(agreed, /aria-pressed="false"[^>]*data-testid="review-disagree"/);
   assert.match(agreed, /data-testid="review-undo"/);
-  assert.match(agreed, /sticky left-0 max-w-\[calc\(100vw-32px\)\]/);
+  assert.match(agreed, /sticky left-0 max-w-\[calc\(100vw-64px\)\]/);
   const edited = renderToStaticMarkup(React.createElement(ReviewReasonPanel, { fact, reviewItem: { item_id: 'i1', decision: 'EDITED' } }));
   assert.match(edited, />Edited</);
   assert.doesNotMatch(edited, /review-agree|review-comment|review-undo/, 'no handlers, no actions');
