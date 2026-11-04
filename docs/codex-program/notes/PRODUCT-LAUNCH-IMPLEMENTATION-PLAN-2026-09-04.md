@@ -13728,3 +13728,30 @@ weekly plan it takes and (ii) how much it would cost on API?"
   them so the shared agreement prefix is read from cache.
 - Weekly plan usage cannot be read from the session; Ben reads Settings →
   Usage.
+
+**(314) 2026-11-04: PR 492 (DeepSeek packages 2 and 3) reviewed, fixed, merged.**
+Ben: "Do that. Burn tokens where you see fit".
+
+- Merged into the product branch with a fix commit on top. Two independent
+  reviews (server, UI), a render of the Metsera run in review mode (861
+  facts, every one with its review item and section text; 233 rows carry
+  See reason) and a before/after render of the lawyer page (content
+  unchanged; the new pills, Report and Specifics as asked).
+- Fixed before merge: the reviewer cookie had defaulted every author to a
+  trusted partner (now no level, trusted false, unless the cookie names an
+  active partner or senior associate); a Disagree made the row vanish and
+  moved the open panel to another row (rows keyed by fact, Undo, a
+  Disagreed list); actions showed on a published review and Finalise was
+  not gated (now draft-only, Revise, gated on can_publish with reasons);
+  Feedback did nothing without a run or table context; the market read
+  could drop the selected run; feedback input validation; legacy
+  all-sections link; hook order; rail highlight; phone header height and
+  reason panel overflow.
+- Migration `20261101000000_product_feedback_and_reviewers.sql` applied to
+  the product database; Ben Goodchild seeded as PARTNER. Ben adds the
+  other reviewers.
+- Open: rejected facts still leave the tables (provisions-preview drops
+  them; the Disagreed list stands in); the reason panel shows the whole
+  section, not only the cited words; See reason is not yet on attribute
+  grids, sub-rows or Other provisions; the review API does not record the
+  reviewer cookie on decisions.
